@@ -1,0 +1,373 @@
+category: system_operations
+
+tools:
+  - name: get_environment_variable
+    descriptions:
+      minimal: "Get env variable"
+      short: "Get the value of an environment variable"
+      medium: "Get the value of a system environment variable by name."
+      long: "Retrieve the value of a system environment variable. Returns null if the variable doesn't exist. Example: get_environment_variable(name='PATH')."
+      verbose: "Retrieve the value of a system environment variable by its name. Returns the variable's value as a string, or null if the variable is not set. Can optionally return a default value if the variable doesn't exist. Example: get_environment_variable(name='DATABASE_URL', default='localhost:5432'). Note: Environment variable names are case-sensitive on Unix systems but case-insensitive on Windows. Warning: Be cautious with sensitive environment variables containing credentials."
+    parameters:
+      - name: name
+        type: string
+        description: "Name of the environment variable"
+        required: true
+      - name: default
+        type: string
+        description: "Default value if variable not found"
+        required: false
+    tags: ["system", "environment", "config", "variable", "read"]
+    test_prompts:
+      single:
+        - "Get the value of the PATH environment variable"
+        - "What is the HOME environment variable set to?"
+        - "Retrieve the DATABASE_URL environment variable"
+        - "Get the current user's username from environment"
+
+  - name: set_environment_variable
+    descriptions:
+      minimal: "Set env variable"
+      short: "Set an environment variable"
+      medium: "Set or update a system environment variable for the current process."
+      long: "Set or update an environment variable for the current process. The change persists for the duration of the process. Example: set_environment_variable(name='MY_VAR', value='hello')."
+      verbose: "Set or update an environment variable for the current process and optionally for the system. Process-level changes are temporary and last only for the current session. System-level persistence requires elevated privileges. Example: set_environment_variable(name='API_KEY', value='abc123', persist=false). Note: Child processes inherit the updated environment. Warning: System-level persistence (persist=true) may require administrator/root privileges and affects all future processes."
+    parameters:
+      - name: name
+        type: string
+        description: "Name of the environment variable"
+        required: true
+      - name: value
+        type: string
+        description: "Value to set"
+        required: true
+      - name: persist
+        type: boolean
+        description: "Persist beyond current process (requires privileges)"
+        required: false
+        default: false
+    tags: ["system", "environment", "config", "variable", "write"]
+    test_prompts:
+      single:
+        - "Set the DEBUG environment variable to true"
+        - "Create an environment variable called MY_APP_MODE with value 'development'"
+        - "Set API_KEY to the given value"
+
+  - name: execute_command
+    descriptions:
+      minimal: "Run command"
+      short: "Execute a shell command"
+      medium: "Execute a shell command and return the output. Supports specifying the working directory."
+      long: "Execute a shell command and capture its output (stdout and stderr). Can specify working directory and timeout. Example: execute_command(command='ls -la', working_dir='/home/user')."
+      verbose: "Execute a shell command and capture its output. Returns stdout, stderr, and exit code. Can specify working directory, timeout, and environment variables. Supports running commands in the background. Example: execute_command(command='git status', working_dir='/projects/myapp', timeout=30, env='{\"GIT_AUTHOR_NAME\": \"Bot\"}'). Note: Commands run in a new shell process by default. Warning: Be extremely cautious with user-provided input to prevent command injection attacks. Never execute untrusted commands."
+    parameters:
+      - name: command
+        type: string
+        description: "The shell command to execute"
+        required: true
+      - name: working_dir
+        type: string
+        description: "Working directory for the command"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Timeout in seconds (0 = no timeout)"
+        required: false
+        default: 60
+      - name: env
+        type: string
+        description: "JSON object of additional environment variables"
+        required: false
+    tags: ["system", "command", "shell", "execute", "run", "process"]
+    test_prompts:
+      single:
+        - "Run 'ls -la' in the current directory"
+        - "Execute the git status command"
+        - "Run the build script"
+        - "Execute 'npm install' in the project folder"
+
+  - name: get_system_info
+    descriptions:
+      minimal: "Get system info"
+      short: "Get information about the system"
+      medium: "Get system information including OS, CPU, memory, and disk details."
+      long: "Retrieve detailed system information including operating system, CPU, memory usage, disk space, and network interfaces. Example: get_system_info(include='all')."
+      verbose: "Retrieve comprehensive system information. Categories: 'os' (operating system name, version, architecture), 'cpu' (processor info, core count, usage), 'memory' (total, available, used, swap), 'disk' (partitions, space, usage), 'network' (interfaces, addresses, stats), 'process' (current process info). Example: get_system_info(include='memory,disk') returns only memory and disk information. Note: Some detailed information may require elevated privileges. Warning: Exposing system information may have security implications."
+    parameters:
+      - name: include
+        type: string
+        description: "Categories to include (comma-separated or 'all')"
+        required: false
+        default: "all"
+    tags: ["system", "info", "os", "cpu", "memory", "disk", "hardware"]
+    test_prompts:
+      single:
+        - "Get the current system information"
+        - "How much free memory does the system have?"
+        - "What operating system is this?"
+        - "Show me the disk space usage"
+        - "Get CPU and memory information"
+
+  - name: get_current_datetime
+    descriptions:
+      minimal: "Get current time"
+      short: "Get the current date and time"
+      medium: "Get the current date and time, optionally in a specific timezone."
+      long: "Get the current date and time. Can return in different formats and timezones. Example: get_current_datetime(format='%Y-%m-%d %H:%M:%S', timezone='UTC')."
+      verbose: "Get the current date and time with flexible formatting and timezone support. Supports standard format codes: %Y (year), %m (month), %d (day), %H (hour 24h), %I (hour 12h), %M (minute), %S (second), %p (AM/PM), %Z (timezone), %A (weekday name), %B (month name). Returns both formatted string and Unix timestamp. Example: get_current_datetime(format='%B %d, %Y at %I:%M %p', timezone='America/New_York'). Note: Timezone names follow IANA timezone database. Warning: System time may be out of sync; consider NTP for critical applications."
+    parameters:
+      - name: format
+        type: string
+        description: "Output format (strftime format string)"
+        required: false
+        default: "%Y-%m-%d %H:%M:%S"
+      - name: timezone
+        type: string
+        description: "Timezone (e.g., 'UTC', 'America/New_York')"
+        required: false
+        default: "local"
+    tags: ["system", "time", "date", "datetime", "clock", "timezone"]
+    test_prompts:
+      single:
+        - "What is the current time?"
+        - "Get today's date"
+        - "What time is it in UTC?"
+        - "Get the current date and time in ISO format"
+
+  - name: sleep_delay
+    descriptions:
+      minimal: "Wait/sleep"
+      short: "Pause execution for a specified duration"
+      medium: "Pause execution for a specified number of seconds or milliseconds."
+      long: "Pause the current execution for a specified duration. Useful for rate limiting, waiting for resources, or scheduling. Example: sleep_delay(duration=5, unit='seconds')."
+      verbose: "Pause execution for a specified duration. Useful for implementing rate limits, waiting for external resources, or creating delays between operations. Can specify duration in various units: seconds, milliseconds, minutes. Example: sleep_delay(duration=500, unit='milliseconds') pauses for half a second. Note: The actual sleep time may be slightly longer due to system scheduling. Warning: Long sleep durations may cause timeouts in calling systems."
+    parameters:
+      - name: duration
+        type: number
+        description: "How long to sleep"
+        required: true
+      - name: unit
+        type: string
+        description: "Time unit"
+        required: false
+        default: "seconds"
+        enum: ["seconds", "milliseconds", "minutes"]
+    tags: ["system", "sleep", "wait", "delay", "pause", "time"]
+    test_prompts:
+      single:
+        - "Wait for 5 seconds"
+        - "Pause execution for 100 milliseconds"
+        - "Sleep for 1 minute"
+        - "Add a 2 second delay"
+
+  - name: generate_uuid
+    descriptions:
+      minimal: "Generate UUID"
+      short: "Generate a unique identifier"
+      medium: "Generate a universally unique identifier (UUID) in various formats."
+      long: "Generate a UUID (Universally Unique Identifier). Supports UUID versions 1, 4, and 5. Example: generate_uuid(version=4)."
+      verbose: "Generate a Universally Unique Identifier (UUID). Versions: 1 (timestamp-based, includes MAC address), 4 (random, most common), 5 (name-based using SHA-1, requires namespace and name). Output formats: 'standard' (8-4-4-4-12 with hyphens), 'hex' (32 hex chars, no hyphens), 'urn' (urn:uuid: prefix). Example: generate_uuid(version=4, format='standard') produces '550e8400-e29b-41d4-a716-446655440000'. Note: Version 4 UUIDs have 122 bits of randomness. Warning: Version 1 UUIDs expose MAC address and timestamp."
+    parameters:
+      - name: version
+        type: integer
+        description: "UUID version (1, 4, or 5)"
+        required: false
+        default: 4
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "standard"
+        enum: ["standard", "hex", "urn"]
+      - name: namespace
+        type: string
+        description: "Namespace for version 5 (UUID or predefined name)"
+        required: false
+      - name: name
+        type: string
+        description: "Name for version 5"
+        required: false
+    tags: ["system", "uuid", "id", "generate", "unique", "identifier"]
+    test_prompts:
+      single:
+        - "Generate a new UUID"
+        - "Create a unique identifier"
+        - "Generate a UUID v4"
+        - "Make a random UUID for the new record"
+
+  - name: hash_data
+    descriptions:
+      minimal: "Hash data"
+      short: "Generate a hash of data"
+      medium: "Generate a cryptographic hash of text or file data using various algorithms."
+      long: "Generate a cryptographic hash of input data. Supports MD5, SHA-1, SHA-256, SHA-512, and other algorithms. Example: hash_data(data='hello world', algorithm='sha256')."
+      verbose: "Generate a cryptographic hash of text or file contents using various algorithms. Supported algorithms: md5 (128-bit, not secure), sha1 (160-bit, deprecated), sha256 (256-bit, recommended), sha384, sha512 (most secure), blake2b, blake2s. Output formats: 'hex' (hexadecimal string), 'base64' (Base64 encoded), 'raw' (binary). Example: hash_data(data='password123', algorithm='sha256', format='hex') returns 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f'. Note: Use SHA-256 or stronger for security applications. Warning: MD5 and SHA-1 are broken for security purposes; use only for checksums."
+    parameters:
+      - name: data
+        type: string
+        description: "The data to hash (or file path if is_file=true)"
+        required: true
+      - name: algorithm
+        type: string
+        description: "Hash algorithm"
+        required: false
+        default: "sha256"
+        enum: ["md5", "sha1", "sha256", "sha384", "sha512", "blake2b", "blake2s"]
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "hex"
+        enum: ["hex", "base64", "raw"]
+      - name: is_file
+        type: boolean
+        description: "If true, treat data as file path"
+        required: false
+        default: false
+    tags: ["system", "hash", "crypto", "checksum", "security", "digest"]
+    test_prompts:
+      single:
+        - "Generate SHA256 hash of 'hello world'"
+        - "Calculate the MD5 checksum of this text"
+        - "Hash the file using SHA-512"
+        - "Create a hash of the password"
+
+  - name: encode_decode
+    descriptions:
+      minimal: "Encode/decode data"
+      short: "Encode or decode data in various formats"
+      medium: "Encode or decode data using Base64, hex, URL encoding, or other formats."
+      long: "Encode or decode data in various formats including Base64, hex, URL encoding, and HTML entities. Example: encode_decode(data='hello', operation='encode', format='base64')."
+      verbose: "Encode or decode data using various encoding schemes. Formats: 'base64' (binary-to-text), 'base64url' (URL-safe base64), 'hex' (hexadecimal), 'url' (URL/percent encoding), 'html' (HTML entities), 'unicode_escape' (Python unicode escapes), 'rot13' (simple letter substitution). Example: encode_decode(data='Hello World!', operation='encode', format='base64') returns 'SGVsbG8gV29ybGQh'. Note: Base64 increases data size by ~33%. Warning: Encoding is not encryption; it provides no security."
+    parameters:
+      - name: data
+        type: string
+        description: "Data to encode or decode"
+        required: true
+      - name: operation
+        type: string
+        description: "Whether to encode or decode"
+        required: true
+        enum: ["encode", "decode"]
+      - name: format
+        type: string
+        description: "Encoding format"
+        required: true
+        enum: ["base64", "base64url", "hex", "url", "html", "unicode_escape", "rot13"]
+    tags: ["system", "encode", "decode", "base64", "hex", "convert"]
+    test_prompts:
+      single:
+        - "Encode 'hello world' in base64"
+        - "Decode this base64 string"
+        - "Convert the text to hexadecimal"
+        - "URL encode this string"
+
+  - name: compress_decompress
+    descriptions:
+      minimal: "Compress/decompress"
+      short: "Compress or decompress data"
+      medium: "Compress or decompress data using gzip, zlib, or other algorithms."
+      long: "Compress or decompress data or files using various compression algorithms. Supports gzip, zlib, bz2, and lzma. Example: compress_decompress(data='...long text...', operation='compress', algorithm='gzip')."
+      verbose: "Compress or decompress data using various algorithms. Algorithms: 'gzip' (widely compatible, good balance), 'zlib' (gzip without headers), 'bz2' (better compression, slower), 'lzma' (best compression, slowest). Compression levels: 1 (fastest, least compression) to 9 (slowest, best compression). Output is Base64 encoded for text data. Example: compress_decompress(input_file='data.json', output_file='data.json.gz', operation='compress', algorithm='gzip', level=6). Note: Compression ratio depends on data content; already-compressed data won't compress further. Warning: Decompression bombs are possible; validate input sizes."
+    parameters:
+      - name: data
+        type: string
+        description: "Data to compress/decompress (or use file parameters)"
+        required: false
+      - name: input_file
+        type: string
+        description: "Input file path (alternative to data)"
+        required: false
+      - name: output_file
+        type: string
+        description: "Output file path (for file operations)"
+        required: false
+      - name: operation
+        type: string
+        description: "Whether to compress or decompress"
+        required: true
+        enum: ["compress", "decompress"]
+      - name: algorithm
+        type: string
+        description: "Compression algorithm"
+        required: false
+        default: "gzip"
+        enum: ["gzip", "zlib", "bz2", "lzma"]
+      - name: level
+        type: integer
+        description: "Compression level (1-9)"
+        required: false
+        default: 6
+    tags: ["system", "compress", "decompress", "gzip", "zip", "archive"]
+    test_prompts:
+      single:
+        - "Compress this text using gzip"
+        - "Decompress the gzipped data"
+        - "Compress the log file"
+        - "Extract the compressed archive"
+
+  - name: list_processes
+    descriptions:
+      minimal: "List processes"
+      short: "List running processes"
+      medium: "List running processes on the system with their resource usage."
+      long: "List all running processes with details like PID, name, CPU usage, and memory usage. Can filter by name or resource usage. Example: list_processes(filter_name='python', sort_by='cpu')."
+      verbose: "List running processes on the system with detailed information including PID, name, status, CPU percentage, memory usage, user, and command line. Can filter by process name or minimum resource thresholds. Sorting options: 'cpu', 'memory', 'pid', 'name'. Example: list_processes(filter_name='chrome', sort_by='memory', limit=10) returns top 10 Chrome processes by memory. Note: Full command lines may require elevated privileges. Warning: Listing all processes can be slow on systems with many processes."
+    parameters:
+      - name: filter_name
+        type: string
+        description: "Filter processes by name (partial match)"
+        required: false
+      - name: sort_by
+        type: string
+        description: "Sort results by this field"
+        required: false
+        default: "cpu"
+        enum: ["cpu", "memory", "pid", "name"]
+      - name: limit
+        type: integer
+        description: "Maximum number of processes to return"
+        required: false
+        default: 50
+    tags: ["system", "process", "list", "ps", "monitor", "task"]
+    test_prompts:
+      single:
+        - "List all running processes"
+        - "Show processes using the most CPU"
+        - "Find all Python processes"
+        - "List the top 10 processes by memory usage"
+
+  - name: kill_process
+    descriptions:
+      minimal: "Kill process"
+      short: "Terminate a running process"
+      medium: "Terminate a running process by its PID or name."
+      long: "Terminate a running process using its PID or name. Can send different signals (SIGTERM, SIGKILL). Example: kill_process(pid=1234) or kill_process(name='python', match_all=false)."
+      verbose: "Terminate one or more running processes. Can target by PID (exact) or name (partial match). Signals: 'SIGTERM' (graceful termination, allows cleanup), 'SIGKILL' (immediate termination, no cleanup), 'SIGINT' (interrupt, like Ctrl+C). When using name matching, can kill first match only or all matches. Example: kill_process(name='zombie_worker', signal='SIGKILL', match_all=true) terminates all matching processes. Note: Processes may take time to terminate with SIGTERM. Warning: Terminating system processes may cause instability. Requires appropriate privileges."
+    parameters:
+      - name: pid
+        type: integer
+        description: "Process ID to terminate"
+        required: false
+      - name: name
+        type: string
+        description: "Process name to terminate"
+        required: false
+      - name: signal
+        type: string
+        description: "Signal to send"
+        required: false
+        default: "SIGTERM"
+        enum: ["SIGTERM", "SIGKILL", "SIGINT"]
+      - name: match_all
+        type: boolean
+        description: "If using name, kill all matches"
+        required: false
+        default: false
+    tags: ["system", "process", "kill", "terminate", "stop", "signal"]
+    test_prompts:
+      single:
+        - "Kill process with PID 1234"
+        - "Terminate all Python processes"
+        - "Stop the hung application"
+        - "Force kill the unresponsive process"

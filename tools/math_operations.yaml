@@ -1,0 +1,327 @@
+category: math_operations
+
+tools:
+  - name: calculate
+    descriptions:
+      minimal: "Calculate expression"
+      short: "Evaluate a mathematical expression"
+      medium: "Evaluate a mathematical expression and return the result. Supports basic arithmetic and common functions."
+      long: "Evaluate a mathematical expression. Supports basic arithmetic (+, -, *, /, ^, %), parentheses, and common functions (sqrt, sin, cos, tan, log, exp, abs, etc.). Example: calculate(expression='(5 + 3) * 2 - sqrt(16)')."
+      verbose: "Evaluate a mathematical expression and return the numerical result. Supports: basic operators (+, -, *, /, ^, %), parentheses for grouping, mathematical constants (pi, e), and functions including: sqrt, pow, abs, ceil, floor, round, sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, log (natural), log10, log2, exp, min, max, factorial. Example: calculate(expression='log(100) + sin(pi/2) * pow(2, 3)') computes log(100) + sin(π/2) * 2³. Note: Trigonometric functions use radians. Warning: Very large numbers or complex expressions may cause precision loss."
+    parameters:
+      - name: expression
+        type: string
+        description: "The mathematical expression to evaluate"
+        required: true
+      - name: precision
+        type: integer
+        description: "Number of decimal places in result"
+        required: false
+        default: 6
+    tags: ["math", "calculate", "expression", "arithmetic", "evaluate"]
+    test_prompts:
+      single:
+        - "Calculate 15 * 7 + 23"
+        - "What is the square root of 144?"
+        - "Evaluate (100 / 4) + 50"
+        - "Compute 2 to the power of 10"
+        - "Calculate sin(45 degrees)"
+
+  - name: convert_units
+    descriptions:
+      minimal: "Convert units"
+      short: "Convert between measurement units"
+      medium: "Convert a value from one unit to another. Supports length, weight, temperature, volume, and more."
+      long: "Convert a numerical value from one unit to another. Supports length (m, km, mi, ft, in), weight (kg, lb, oz, g), temperature (C, F, K), volume (L, gal, ml), time (s, min, hr), and data (B, KB, MB, GB). Example: convert_units(value=100, from_unit='km', to_unit='mi')."
+      verbose: "Convert a numerical value between different units of measurement. Supports comprehensive unit categories: LENGTH (m, km, cm, mm, mi, yd, ft, in, nm), WEIGHT (kg, g, mg, lb, oz, ton), TEMPERATURE (C, F, K), VOLUME (L, mL, gal, qt, pt, cup, fl_oz), AREA (m2, km2, ft2, mi2, acre, hectare), TIME (s, ms, min, hr, day, week), DATA (B, KB, MB, GB, TB, KiB, MiB, GiB), SPEED (m/s, km/h, mph, knot). Example: convert_units(value=72, from_unit='F', to_unit='C') converts Fahrenheit to Celsius. Note: Temperature conversions use proper formulas, not simple multiplication. Warning: Some unit conversions may have minor precision differences."
+    parameters:
+      - name: value
+        type: number
+        description: "The value to convert"
+        required: true
+      - name: from_unit
+        type: string
+        description: "The source unit"
+        required: true
+      - name: to_unit
+        type: string
+        description: "The target unit"
+        required: true
+    tags: ["math", "convert", "units", "measurement", "transform"]
+    test_prompts:
+      single:
+        - "Convert 100 kilometers to miles"
+        - "How many pounds is 50 kilograms?"
+        - "Convert 72 degrees Fahrenheit to Celsius"
+        - "Convert 1 gigabyte to megabytes"
+        - "How many cups in 2 liters?"
+
+  - name: calculate_statistics
+    descriptions:
+      minimal: "Calculate statistics"
+      short: "Calculate statistical measures for a dataset"
+      medium: "Calculate statistical measures (mean, median, mode, std dev, etc.) for a list of numbers."
+      long: "Calculate various statistical measures for a dataset. Returns mean, median, mode, standard deviation, variance, min, max, and range. Example: calculate_statistics(data='[1, 2, 3, 4, 5, 5, 6]')."
+      verbose: "Calculate comprehensive statistical measures for a numerical dataset. Returns: mean (average), median (middle value), mode (most frequent), standard_deviation, variance, min, max, range, sum, count, percentiles (25th, 50th, 75th). The data should be provided as a JSON array of numbers. Example: calculate_statistics(data='[10, 20, 30, 40, 50]', include_percentiles=true) returns {'mean': 30, 'median': 30, 'std': 14.14, ...}. Note: Mode returns the first mode if multiple exist. Warning: Empty arrays or non-numeric values will cause errors."
+    parameters:
+      - name: data
+        type: string
+        description: "JSON array of numbers"
+        required: true
+      - name: include_percentiles
+        type: boolean
+        description: "Include percentile calculations"
+        required: false
+        default: false
+    tags: ["math", "statistics", "mean", "median", "analysis", "data"]
+    test_prompts:
+      single:
+        - "Calculate the mean and standard deviation of [10, 20, 30, 40, 50]"
+        - "What are the statistics for this dataset?"
+        - "Find the median of these numbers"
+        - "Get statistical summary of the values"
+
+  - name: round_number
+    descriptions:
+      minimal: "Round number"
+      short: "Round a number to specified precision"
+      medium: "Round a number to a specified number of decimal places or to the nearest integer."
+      long: "Round a number to a specified precision. Supports different rounding modes: standard (half up), floor (down), ceil (up), truncate (toward zero). Example: round_number(value=3.14159, decimals=2, mode='standard')."
+      verbose: "Round a number to a specified number of decimal places using various rounding modes. Modes: 'standard' (rounds 0.5 up), 'floor' (always rounds down), 'ceil' (always rounds up), 'truncate' (removes decimals without rounding), 'half_even' (banker's rounding, rounds 0.5 to nearest even). Example: round_number(value=2.555, decimals=2, mode='half_even') returns 2.56 (banker's rounding). Note: Negative decimal values round to tens, hundreds, etc. (decimals=-1 rounds to nearest 10). Warning: Floating-point precision may affect results for some values."
+    parameters:
+      - name: value
+        type: number
+        description: "The number to round"
+        required: true
+      - name: decimals
+        type: integer
+        description: "Number of decimal places"
+        required: false
+        default: 0
+      - name: mode
+        type: string
+        description: "Rounding mode"
+        required: false
+        default: "standard"
+        enum: ["standard", "floor", "ceil", "truncate", "half_even"]
+    tags: ["math", "round", "precision", "number", "format"]
+    test_prompts:
+      single:
+        - "Round 3.14159 to 2 decimal places"
+        - "Round up 4.2 to the nearest integer"
+        - "Truncate 9.999 to 1 decimal place"
+        - "Round 1234 to the nearest hundred"
+
+  - name: percentage
+    descriptions:
+      minimal: "Calculate percentage"
+      short: "Calculate percentage or percentage change"
+      medium: "Calculate percentage of a value, percentage change between values, or what percent one value is of another."
+      long: "Perform percentage calculations. Can calculate: what percent A is of B, percentage of a value, percentage change between values. Example: percentage(operation='of', value=25, base=200) calculates what percent 25 is of 200."
+      verbose: "Perform various percentage calculations. Operations: 'of' (what % is value of base), 'calculate' (calculate X% of value), 'change' (% change from old_value to new_value), 'add' (add X% to value), 'subtract' (subtract X% from value). Examples: percentage(operation='of', value=50, base=200) returns 25 (50 is 25% of 200), percentage(operation='change', old_value=100, new_value=125) returns 25 (25% increase). Note: Percentage change can be negative for decreases. Warning: Division by zero occurs if base or old_value is 0."
+    parameters:
+      - name: operation
+        type: string
+        description: "Type of percentage calculation"
+        required: true
+        enum: ["of", "calculate", "change", "add", "subtract"]
+      - name: value
+        type: number
+        description: "Primary value for calculation"
+        required: true
+      - name: percent
+        type: number
+        description: "Percentage value (for calculate/add/subtract)"
+        required: false
+      - name: base
+        type: number
+        description: "Base value (for 'of' operation)"
+        required: false
+      - name: old_value
+        type: number
+        description: "Original value (for 'change' operation)"
+        required: false
+      - name: new_value
+        type: number
+        description: "New value (for 'change' operation)"
+        required: false
+    tags: ["math", "percentage", "percent", "calculate", "ratio"]
+    test_prompts:
+      single:
+        - "What percentage is 25 of 200?"
+        - "Calculate 15% of 500"
+        - "What is the percentage change from 80 to 100?"
+        - "Add 20% to 150"
+        - "Find 10% off the price of 49.99"
+
+  - name: random_number
+    descriptions:
+      minimal: "Generate random number"
+      short: "Generate a random number"
+      medium: "Generate a random number within a specified range. Can generate integers or floating-point numbers."
+      long: "Generate a random number between min and max values. Can generate integers or floating-point numbers with specified precision. Example: random_number(min=1, max=100, integer=true)."
+      verbose: "Generate a cryptographically suitable random number within a specified range. Can generate integers or floating-point numbers. For floats, specify decimal precision. Can optionally provide a seed for reproducible random sequences. Example: random_number(min=0, max=1, integer=false, precision=4) generates a float like 0.7324. Note: When integer=true, both min and max are inclusive. Warning: Using a seed makes the output predictable, which may not be suitable for security purposes."
+    parameters:
+      - name: min
+        type: number
+        description: "Minimum value (inclusive)"
+        required: true
+      - name: max
+        type: number
+        description: "Maximum value (inclusive)"
+        required: true
+      - name: integer
+        type: boolean
+        description: "If true, generate integer only"
+        required: false
+        default: true
+      - name: precision
+        type: integer
+        description: "Decimal places for floats"
+        required: false
+        default: 2
+      - name: seed
+        type: integer
+        description: "Random seed for reproducibility"
+        required: false
+    tags: ["math", "random", "generate", "number", "rng"]
+    test_prompts:
+      single:
+        - "Generate a random number between 1 and 100"
+        - "Pick a random integer from 1 to 10"
+        - "Generate a random decimal between 0 and 1"
+        - "Roll a six-sided die (random 1-6)"
+
+  - name: prime_check
+    descriptions:
+      minimal: "Check if prime"
+      short: "Check if a number is prime"
+      medium: "Check if a given number is a prime number. Can also find nearby primes."
+      long: "Check if a number is prime. Optionally returns the next or previous prime number. Example: prime_check(number=17) returns {'is_prime': true}."
+      verbose: "Check whether a given positive integer is a prime number (divisible only by 1 and itself). Can also find the nearest prime numbers (next and previous). Uses efficient algorithms suitable for numbers up to 10^15. Example: prime_check(number=97, find_nearby=true) returns {'is_prime': true, 'next_prime': 101, 'previous_prime': 89}. Note: 1 is not considered prime. Warning: Very large numbers may take longer to check."
+    parameters:
+      - name: number
+        type: integer
+        description: "The number to check"
+        required: true
+      - name: find_nearby
+        type: boolean
+        description: "Also find next and previous primes"
+        required: false
+        default: false
+    tags: ["math", "prime", "number", "check", "verify"]
+    test_prompts:
+      single:
+        - "Is 17 a prime number?"
+        - "Check if 100 is prime"
+        - "Is 97 prime?"
+        - "Check whether 2 is a prime number"
+
+  - name: factorial
+    descriptions:
+      minimal: "Calculate factorial"
+      short: "Calculate the factorial of a number"
+      medium: "Calculate the factorial (n!) of a non-negative integer."
+      long: "Calculate the factorial of a non-negative integer. n! = n × (n-1) × (n-2) × ... × 1. Example: factorial(n=5) returns 120."
+      verbose: "Calculate the factorial of a non-negative integer, which is the product of all positive integers less than or equal to n. Written as n! (e.g., 5! = 120). Special cases: 0! = 1 and 1! = 1. Can also calculate double factorial (n!!) and subfactorial (!n). Example: factorial(n=10) returns 3628800. Note: Factorials grow very quickly; 20! already exceeds 2 quintillion. Warning: Numbers larger than 170 exceed floating-point range; use arbitrary precision mode for large values."
+    parameters:
+      - name: n
+        type: integer
+        description: "The number to calculate factorial of"
+        required: true
+      - name: type
+        type: string
+        description: "Type of factorial"
+        required: false
+        default: "standard"
+        enum: ["standard", "double", "subfactorial"]
+    tags: ["math", "factorial", "number", "combinatorics", "calculate"]
+    test_prompts:
+      single:
+        - "Calculate 5 factorial"
+        - "What is 10!"
+        - "Compute the factorial of 7"
+        - "Calculate factorial of 0"
+
+  - name: gcd_lcm
+    descriptions:
+      minimal: "Calculate GCD/LCM"
+      short: "Find greatest common divisor or least common multiple"
+      medium: "Calculate the greatest common divisor (GCD) or least common multiple (LCM) of two or more numbers."
+      long: "Calculate the GCD (largest number that divides all inputs) or LCM (smallest number divisible by all inputs) of multiple numbers. Example: gcd_lcm(numbers='[12, 18, 24]', operation='gcd')."
+      verbose: "Calculate the Greatest Common Divisor (GCD) or Least Common Multiple (LCM) of two or more positive integers. GCD is the largest positive integer that divides all numbers without remainder. LCM is the smallest positive integer that is divisible by all numbers. Example: gcd_lcm(numbers='[48, 18]', operation='gcd') returns 6, gcd_lcm(numbers='[4, 6]', operation='lcm') returns 12. Note: For two numbers a and b, GCD(a,b) × LCM(a,b) = a × b. Warning: LCM of many numbers or large numbers can be very large."
+    parameters:
+      - name: numbers
+        type: string
+        description: "JSON array of integers"
+        required: true
+      - name: operation
+        type: string
+        description: "Whether to calculate GCD or LCM"
+        required: true
+        enum: ["gcd", "lcm"]
+    tags: ["math", "gcd", "lcm", "divisor", "multiple", "number"]
+    test_prompts:
+      single:
+        - "Find the GCD of 48 and 18"
+        - "What is the LCM of 4, 6, and 8?"
+        - "Calculate the greatest common divisor of 100 and 75"
+        - "Find the least common multiple of 12 and 15"
+
+  - name: solve_equation
+    descriptions:
+      minimal: "Solve equation"
+      short: "Solve a mathematical equation"
+      medium: "Solve algebraic equations for a specified variable. Supports linear, quadratic, and simple polynomial equations."
+      long: "Solve algebraic equations for a specified variable. Supports linear (ax + b = 0), quadratic (ax² + bx + c = 0), and other polynomial equations. Example: solve_equation(equation='2x + 5 = 15', variable='x')."
+      verbose: "Solve algebraic equations for a specified variable. Supports: LINEAR (ax + b = c), QUADRATIC (ax² + bx + c = 0, returns both solutions), POLYNOMIAL (up to degree 4), SYSTEMS (multiple equations). Returns real solutions and indicates complex solutions when applicable. Example: solve_equation(equation='x^2 - 5x + 6 = 0', variable='x') returns [2, 3]. Note: Higher-degree polynomials may have numerical approximations. Warning: Some equations may have no real solutions or infinite solutions."
+    parameters:
+      - name: equation
+        type: string
+        description: "The equation to solve"
+        required: true
+      - name: variable
+        type: string
+        description: "The variable to solve for"
+        required: true
+    tags: ["math", "equation", "solve", "algebra", "variable"]
+    test_prompts:
+      single:
+        - "Solve 2x + 5 = 15 for x"
+        - "Find x in the equation x^2 - 4 = 0"
+        - "Solve the quadratic equation x^2 - 5x + 6 = 0"
+        - "What is x if 3x - 7 = 14?"
+
+  - name: matrix_operation
+    descriptions:
+      minimal: "Matrix operation"
+      short: "Perform matrix operations"
+      medium: "Perform matrix operations like addition, multiplication, transpose, determinant, and inverse."
+      long: "Perform operations on matrices. Supports addition, subtraction, multiplication, transpose, determinant, inverse, and eigenvalues. Matrices should be provided as 2D JSON arrays. Example: matrix_operation(matrix_a='[[1,2],[3,4]]', operation='determinant')."
+      verbose: "Perform various matrix operations on 1D or 2D arrays. Operations: 'add', 'subtract', 'multiply' (requires matrix_b), 'scalar_multiply' (requires scalar), 'transpose', 'determinant' (square matrices), 'inverse' (square, non-singular), 'trace' (sum of diagonal), 'eigenvalues', 'rank'. Matrices are JSON 2D arrays. Example: matrix_operation(matrix_a='[[1,2],[3,4]]', matrix_b='[[5,6],[7,8]]', operation='multiply') performs matrix multiplication. Note: Matrix dimensions must be compatible for the operation. Warning: Inverse fails for singular matrices (determinant = 0)."
+    parameters:
+      - name: matrix_a
+        type: string
+        description: "First matrix as JSON 2D array"
+        required: true
+      - name: matrix_b
+        type: string
+        description: "Second matrix (for binary operations)"
+        required: false
+      - name: operation
+        type: string
+        description: "The operation to perform"
+        required: true
+        enum: ["add", "subtract", "multiply", "scalar_multiply", "transpose", "determinant", "inverse", "trace", "eigenvalues", "rank"]
+      - name: scalar
+        type: number
+        description: "Scalar value for scalar_multiply"
+        required: false
+    tags: ["math", "matrix", "linear_algebra", "array", "calculate"]
+    test_prompts:
+      single:
+        - "Calculate the determinant of the 2x2 matrix"
+        - "Multiply these two matrices together"
+        - "Find the inverse of the matrix"
+        - "Transpose the given matrix"
+        - "What are the eigenvalues of this matrix?"

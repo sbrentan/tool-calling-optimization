@@ -1,0 +1,356 @@
+category: web_operations
+
+tools:
+  - name: http_get
+    descriptions:
+      minimal: "Make GET request"
+      short: "Make an HTTP GET request to a URL"
+      medium: "Make an HTTP GET request to fetch data from a URL. Returns the response body and status code."
+      long: "Make an HTTP GET request to fetch data from a URL. Supports custom headers and query parameters. Returns response body, status code, and headers. Example: http_get(url='https://api.example.com/users', headers='{\"Authorization\": \"Bearer token123\"}')."
+      verbose: "Make an HTTP GET request to retrieve data from a URL. Supports custom headers for authentication, query parameters, timeout configuration, and SSL verification options. Returns a response object containing status code, response headers, and body. The body is automatically parsed as JSON if Content-Type is application/json. Example: http_get(url='https://api.example.com/users?active=true', headers='{\"Authorization\": \"Bearer abc123\", \"Accept\": \"application/json\"}', timeout=30). Note: Follows redirects by default (max 10). Warning: Be mindful of rate limits and API quotas."
+    parameters:
+      - name: url
+        type: string
+        description: "The URL to request"
+        required: true
+      - name: headers
+        type: string
+        description: "JSON object of HTTP headers"
+        required: false
+      - name: params
+        type: string
+        description: "JSON object of query parameters"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Request timeout in seconds"
+        required: false
+        default: 30
+    tags: ["http", "web", "api", "get", "request", "fetch"]
+    test_prompts:
+      single:
+        - "Fetch data from https://api.github.com/users/octocat"
+        - "Make a GET request to the weather API"
+        - "Retrieve the list of posts from the API"
+        - "Get the user profile from the REST endpoint"
+
+  - name: http_post
+    descriptions:
+      minimal: "Make POST request"
+      short: "Make an HTTP POST request with data"
+      medium: "Make an HTTP POST request to send data to a URL. Supports JSON and form data payloads."
+      long: "Make an HTTP POST request to send data to a server. The request body can be JSON or form data. Returns response body and status code. Example: http_post(url='https://api.example.com/users', body='{\"name\": \"John\"}', content_type='json')."
+      verbose: "Make an HTTP POST request to send data to a server endpoint. Supports multiple content types: JSON (application/json), form data (application/x-www-form-urlencoded), and multipart form data. Custom headers can be added for authentication or other purposes. Returns complete response including status code, headers, and body. Example: http_post(url='https://api.example.com/users', body='{\"name\": \"John Doe\", \"email\": \"john@example.com\"}', headers='{\"Authorization\": \"Bearer token123\"}', content_type='json'). Note: For file uploads, use multipart content type. Warning: Ensure sensitive data is transmitted over HTTPS."
+    parameters:
+      - name: url
+        type: string
+        description: "The URL to send the request to"
+        required: true
+      - name: body
+        type: string
+        description: "Request body (JSON string or form data)"
+        required: true
+      - name: headers
+        type: string
+        description: "JSON object of HTTP headers"
+        required: false
+      - name: content_type
+        type: string
+        description: "Content type of the request"
+        required: false
+        default: "json"
+        enum: ["json", "form", "multipart"]
+      - name: timeout
+        type: integer
+        description: "Request timeout in seconds"
+        required: false
+        default: 30
+    tags: ["http", "web", "api", "post", "request", "send", "create"]
+    test_prompts:
+      single:
+        - "Create a new user by posting to the API"
+        - "Send a POST request with the order data"
+        - "Submit the form data to the registration endpoint"
+        - "Post a new comment to the comments API"
+
+  - name: http_put
+    descriptions:
+      minimal: "Make PUT request"
+      short: "Make an HTTP PUT request to update a resource"
+      medium: "Make an HTTP PUT request to update an existing resource. Replaces the entire resource with the provided data."
+      long: "Make an HTTP PUT request to update a resource at the specified URL. PUT replaces the entire resource with the new data. Example: http_put(url='https://api.example.com/users/123', body='{\"name\": \"Jane\", \"email\": \"jane@example.com\"}')."
+      verbose: "Make an HTTP PUT request to update a resource at the specified URL. PUT semantics mean the entire resource is replaced with the provided data (use PATCH for partial updates). Supports JSON and form data payloads with custom headers. Returns the updated resource and status code. Example: http_put(url='https://api.example.com/products/456', body='{\"name\": \"Widget Pro\", \"price\": 29.99, \"stock\": 100}', headers='{\"Authorization\": \"Bearer token123\"}', content_type='json'). Note: PUT is idempotent - multiple identical requests should have the same effect. Warning: Omitted fields may be set to null or default values."
+    parameters:
+      - name: url
+        type: string
+        description: "The URL of the resource to update"
+        required: true
+      - name: body
+        type: string
+        description: "New resource data (JSON string)"
+        required: true
+      - name: headers
+        type: string
+        description: "JSON object of HTTP headers"
+        required: false
+      - name: content_type
+        type: string
+        description: "Content type of the request"
+        required: false
+        default: "json"
+    tags: ["http", "web", "api", "put", "request", "update", "replace"]
+    test_prompts:
+      single:
+        - "Update the user profile at the API endpoint"
+        - "Replace the product data using a PUT request"
+        - "Update the entire customer record via API"
+
+  - name: http_delete
+    descriptions:
+      minimal: "Make DELETE request"
+      short: "Make an HTTP DELETE request to remove a resource"
+      medium: "Make an HTTP DELETE request to remove a resource from the server."
+      long: "Make an HTTP DELETE request to remove a resource at the specified URL. Returns the status code and any response body. Example: http_delete(url='https://api.example.com/users/123', headers='{\"Authorization\": \"Bearer token\"}')."
+      verbose: "Make an HTTP DELETE request to remove a resource from the server. The resource at the specified URL will be deleted if it exists and the request is authorized. Some APIs return the deleted resource in the response body, others return empty. Returns status code and response. Example: http_delete(url='https://api.example.com/posts/789', headers='{\"Authorization\": \"Bearer abc123\", \"X-Confirm-Delete\": \"true\"}'). Note: DELETE is idempotent - deleting an already-deleted resource should not error. Warning: This operation is usually irreversible."
+    parameters:
+      - name: url
+        type: string
+        description: "The URL of the resource to delete"
+        required: true
+      - name: headers
+        type: string
+        description: "JSON object of HTTP headers"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Request timeout in seconds"
+        required: false
+        default: 30
+    tags: ["http", "web", "api", "delete", "request", "remove", "destructive"]
+    test_prompts:
+      single:
+        - "Delete the user with ID 123 from the API"
+        - "Remove the post using a DELETE request"
+        - "Delete the expired session via the API"
+
+  - name: download_file
+    descriptions:
+      minimal: "Download a file"
+      short: "Download a file from a URL"
+      medium: "Download a file from a URL and save it to the local filesystem."
+      long: "Download a file from a URL to a local path. Supports large files through streaming. Shows progress for large downloads. Example: download_file(url='https://example.com/data.zip', output_path='./downloads/data.zip')."
+      verbose: "Download a file from a URL and save it to the local filesystem. Uses streaming for memory-efficient handling of large files. Supports custom headers for authenticated downloads. Can resume interrupted downloads if the server supports range requests. Example: download_file(url='https://releases.example.com/app-v2.0.zip', output_path='./downloads/app.zip', headers='{\"Authorization\": \"Bearer token\"}', resume=true). Note: Creates parent directories if they don't exist. Warning: Ensure sufficient disk space before downloading large files."
+    parameters:
+      - name: url
+        type: string
+        description: "URL of the file to download"
+        required: true
+      - name: output_path
+        type: string
+        description: "Local path to save the file"
+        required: true
+      - name: headers
+        type: string
+        description: "JSON object of HTTP headers"
+        required: false
+      - name: resume
+        type: boolean
+        description: "Resume interrupted download if possible"
+        required: false
+        default: false
+    tags: ["http", "web", "download", "file", "fetch"]
+    test_prompts:
+      single:
+        - "Download the PDF from the given URL"
+        - "Fetch the image and save it locally"
+        - "Download the dataset file from the server"
+        - "Save the report from the URL to my downloads folder"
+
+  - name: upload_file
+    descriptions:
+      minimal: "Upload a file"
+      short: "Upload a file to a URL"
+      medium: "Upload a local file to a server endpoint using HTTP POST with multipart form data."
+      long: "Upload a file from the local filesystem to a server endpoint. Uses multipart form data encoding. Supports progress tracking for large files. Example: upload_file(file_path='./report.pdf', url='https://api.example.com/upload')."
+      verbose: "Upload a local file to a server endpoint using HTTP POST with multipart/form-data encoding. Supports additional form fields alongside the file upload. Custom headers can be added for authentication. Shows upload progress for large files. Example: upload_file(file_path='./documents/report.pdf', url='https://api.example.com/documents/upload', field_name='document', extra_fields='{\"description\": \"Q4 Report\", \"category\": \"reports\"}', headers='{\"Authorization\": \"Bearer token\"}'). Note: Maximum file size depends on server configuration. Warning: Large uploads may timeout; consider chunked uploads for very large files."
+    parameters:
+      - name: file_path
+        type: string
+        description: "Local path of the file to upload"
+        required: true
+      - name: url
+        type: string
+        description: "URL to upload the file to"
+        required: true
+      - name: field_name
+        type: string
+        description: "Form field name for the file"
+        required: false
+        default: "file"
+      - name: extra_fields
+        type: string
+        description: "JSON object of additional form fields"
+        required: false
+      - name: headers
+        type: string
+        description: "JSON object of HTTP headers"
+        required: false
+    tags: ["http", "web", "upload", "file", "send", "post"]
+    test_prompts:
+      single:
+        - "Upload the image file to the server"
+        - "Send the document to the upload endpoint"
+        - "Upload my report.pdf to the API"
+
+  - name: parse_html
+    descriptions:
+      minimal: "Parse HTML"
+      short: "Parse HTML content and extract data"
+      medium: "Parse HTML content and extract specific elements using CSS selectors or XPath."
+      long: "Parse HTML content and extract data using CSS selectors or XPath expressions. Can extract text, attributes, or raw HTML. Example: parse_html(html='<html>...</html>', selector='div.product-title', extract='text')."
+      verbose: "Parse HTML content and extract specific elements or data using CSS selectors or XPath expressions. Can extract text content, attribute values, inner HTML, or outer HTML from matched elements. Supports selecting multiple elements. Example: parse_html(html=response_body, selector='table.data tr td:nth-child(2)', extract='text') or parse_html(html=page_content, xpath='//a[@class=\"product-link\"]/@href', extract='attr'). Note: Invalid HTML is parsed in a lenient mode. Warning: Complex nested selectors may have performance implications on large documents."
+    parameters:
+      - name: html
+        type: string
+        description: "HTML content to parse"
+        required: true
+      - name: selector
+        type: string
+        description: "CSS selector to find elements"
+        required: false
+      - name: xpath
+        type: string
+        description: "XPath expression (alternative to CSS selector)"
+        required: false
+      - name: extract
+        type: string
+        description: "What to extract from matched elements"
+        required: false
+        default: "text"
+        enum: ["text", "html", "attr"]
+      - name: attribute
+        type: string
+        description: "Attribute name if extract='attr'"
+        required: false
+    tags: ["html", "web", "parse", "scrape", "extract", "dom"]
+    test_prompts:
+      single:
+        - "Extract all links from the HTML page"
+        - "Parse the HTML and get the product titles"
+        - "Find all image URLs in the HTML content"
+        - "Extract the main content from the webpage HTML"
+      multi:
+        - prompt: "Fetch the webpage and extract all product prices"
+          required_tools: ["http_get", "parse_html"]
+
+  - name: scrape_webpage
+    descriptions:
+      minimal: "Scrape webpage"
+      short: "Scrape content from a webpage URL"
+      medium: "Fetch a webpage and extract specific content using CSS selectors. Combines HTTP request and HTML parsing."
+      long: "Fetch a webpage and extract specific content in one operation. Handles the HTTP request and HTML parsing automatically. Example: scrape_webpage(url='https://example.com/products', selector='.product-name', extract='text')."
+      verbose: "Scrape content from a webpage by fetching the URL and extracting data in a single operation. Combines HTTP GET with HTML parsing for convenience. Supports CSS selectors for targeting specific elements. Can handle JavaScript-rendered pages with the render_js option (requires additional setup). Example: scrape_webpage(url='https://shop.example.com/products', selector='div.product-card', extract='html', render_js=false). Note: Respects robots.txt by default. Warning: Always check website terms of service before scraping; consider rate limiting to avoid being blocked."
+    parameters:
+      - name: url
+        type: string
+        description: "URL of the webpage to scrape"
+        required: true
+      - name: selector
+        type: string
+        description: "CSS selector to find elements"
+        required: true
+      - name: extract
+        type: string
+        description: "What to extract from matched elements"
+        required: false
+        default: "text"
+        enum: ["text", "html", "attr"]
+      - name: headers
+        type: string
+        description: "JSON object of HTTP headers"
+        required: false
+      - name: render_js
+        type: boolean
+        description: "Render JavaScript before parsing (slower)"
+        required: false
+        default: false
+    tags: ["http", "web", "scrape", "parse", "html", "fetch"]
+    test_prompts:
+      single:
+        - "Scrape the product names from the e-commerce page"
+        - "Extract article titles from the news website"
+        - "Get all the prices from the product listing page"
+        - "Scrape the headlines from the homepage"
+
+  - name: check_url_status
+    descriptions:
+      minimal: "Check URL"
+      short: "Check if a URL is accessible"
+      medium: "Check if a URL is accessible and get its HTTP status code without downloading the full content."
+      long: "Check if a URL is accessible using an HTTP HEAD request. Returns status code, response time, and basic headers without downloading the body. Example: check_url_status(url='https://example.com/api/health')."
+      verbose: "Check the accessibility of a URL using an HTTP HEAD request. This is efficient because it doesn't download the response body. Returns status code (e.g., 200, 404, 500), response time, content type, content length, and key headers. Useful for link validation and health checks. Example: check_url_status(url='https://api.example.com/health', timeout=10, follow_redirects=true). Note: Some servers don't support HEAD requests; falls back to GET with body ignored. Warning: Rate limits still apply even for HEAD requests."
+    parameters:
+      - name: url
+        type: string
+        description: "The URL to check"
+        required: true
+      - name: timeout
+        type: integer
+        description: "Request timeout in seconds"
+        required: false
+        default: 10
+      - name: follow_redirects
+        type: boolean
+        description: "Whether to follow HTTP redirects"
+        required: false
+        default: true
+    tags: ["http", "web", "url", "status", "check", "health"]
+    test_prompts:
+      single:
+        - "Check if the API endpoint is up"
+        - "Verify that the download link is still valid"
+        - "Test if the website is accessible"
+        - "Check the status of the server health endpoint"
+
+  - name: encode_url
+    descriptions:
+      minimal: "Encode URL"
+      short: "URL-encode a string"
+      medium: "URL-encode a string for safe use in URLs. Converts special characters to percent-encoded format."
+      long: "URL-encode a string to make it safe for use in URLs. Converts special characters (spaces, &, =, etc.) to percent-encoded format. Example: encode_url(text='hello world & more')."
+      verbose: "URL-encode a string for safe inclusion in URLs. Converts special characters to their percent-encoded equivalents (e.g., space becomes %20, & becomes %26). Useful when building query strings or path segments with user input. Can encode the full string or just special characters. Example: encode_url(text='search query: hello world & special=chars', encode_all=false). Note: Already-encoded strings should not be double-encoded. Warning: Different URL components (path vs query) have different encoding requirements."
+    parameters:
+      - name: text
+        type: string
+        description: "The string to URL-encode"
+        required: true
+      - name: encode_all
+        type: boolean
+        description: "If true, encode all characters including safe ones"
+        required: false
+        default: false
+    tags: ["web", "url", "encode", "string", "utility"]
+    test_prompts:
+      single:
+        - "URL encode the search query 'hello world'"
+        - "Encode the string for use in a URL parameter"
+        - "Make this text URL-safe: 'name=John&age=30'"
+
+  - name: decode_url
+    descriptions:
+      minimal: "Decode URL"
+      short: "Decode a URL-encoded string"
+      medium: "Decode a URL-encoded string back to its original form. Converts percent-encoded characters back to normal."
+      long: "Decode a URL-encoded string back to its original form. Converts percent-encoded characters (like %20 to space) back to their original characters. Example: decode_url(text='hello%20world')."
+      verbose: "Decode a URL-encoded string back to its original human-readable form. Converts percent-encoded characters (%20, %26, etc.) back to their original characters. Useful when processing URL parameters or paths from external sources. Example: decode_url(text='search%3Fq%3Dhello%20world%26page%3D1'). Note: Handles both plus-as-space (form encoding) and percent encoding. Warning: May fail on malformed percent sequences."
+    parameters:
+      - name: text
+        type: string
+        description: "The URL-encoded string to decode"
+        required: true
+    tags: ["web", "url", "decode", "string", "utility"]
+    test_prompts:
+      single:
+        - "Decode the URL string '%20%26%3D'"
+        - "Convert the encoded URL back to normal text"
+        - "Decode this URL parameter: 'hello%20world'"

@@ -22,18 +22,17 @@ Usage:
     python scripts/run_experiment.py list-models
 """
 import sys
-import os
+import json
 from pathlib import Path
 from datetime import datetime
-import json
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 import typer
-from dotenv import load_dotenv
 from loguru import logger
+from dotenv import load_dotenv
 
 from src.tools.generator import ToolGenerator
 from src.clients import create_client, get_available_models, get_available_providers
@@ -261,6 +260,52 @@ def list_models():
     print("  GEMINI_API_KEY    - For Gemini models")
     print("  OPENAI_API_KEY    - For OpenAI models")
     print("=" * 60 + "\n")
+
+
+@app.command("list-tools")
+def list_tools(
+    category: str = typer.Option(None, "--category", "-c", help="Filter by category"),
+    verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed info"),
+):
+    """List all available tools from YAML definitions."""
+    generator = ToolGenerator()
+    
+    print("\n" + "=" * 60)
+    print("AVAILABLE TOOLS FROM YAML DEFINITIONS")
+    print("=" * 60)
+    
+    categories = generator.get_categories()
+    total_tools = generator.get_tool_count()
+    
+    print(f"\nTotal: {total_tools} tools across {len(categories)} categories")
+    print(f"Categories: {', '.join(categories)}")
+    print()
+    
+    all_tools = generator.list_all_tools()
+    
+    # Filter by category if specified
+    if category:
+        all_tools = [t for t in all_tools if t["category"] == category]
+    
+    # Group by category for display
+    by_category = {}
+    for tool in all_tools:
+        cat = tool["category"]
+        if cat not in by_category:
+            by_category[cat] = []
+        by_category[cat].append(tool)
+    
+    for cat, tools in sorted(by_category.items()):
+        print(f"\n{cat.upper().replace('_', ' ')} ({len(tools)} tools):")
+        for tool in tools:
+            if verbose:
+                tags = ", ".join(tool["tags"][:5])
+                multi = " [multi-tool]" if tool["has_multi_tool_tests"] else ""
+                print(f"  - {tool['name']} ({tool['param_count']} params) [{tags}]{multi}")
+            else:
+                print(f"  - {tool['name']}")
+    
+    print("\n" + "=" * 60 + "\n")
 
 
 if __name__ == "__main__":

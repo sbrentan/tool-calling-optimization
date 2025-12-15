@@ -1,0 +1,246 @@
+category: file_operations
+
+tools:
+  - name: read_file
+    descriptions:
+      minimal: "Read a file"
+      short: "Read the contents of a file from disk"
+      medium: "Read the contents of a file from the filesystem. Specify the file path and optionally the encoding."
+      long: "Read the contents of a file from the filesystem. Supports text files with various encodings. Returns the file content as a string. Example: read_file(path='/etc/config.json') returns the JSON content."
+      verbose: "Read the contents of a file from the filesystem. This tool opens a file in read mode and returns its contents as a string. Supports various text encodings including UTF-8, ASCII, and Latin-1. The file must exist and be readable. Example usage: read_file(path='config.json', encoding='utf-8'). Note: Binary files should use read_binary_file instead. Warning: Large files may consume significant memory."
+    parameters:
+      - name: file_path
+        type: string
+        description: "The path to the file to read"
+        required: true
+      - name: encoding
+        type: string
+        description: "The file encoding (default: utf-8)"
+        required: false
+        default: "utf-8"
+    tags: ["file", "read", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Read the contents of config.json"
+        - "Show me what's in the README.md file"
+        - "Open and display the content of /var/log/app.log"
+        - "Get the text from document.txt"
+      multi:
+        - prompt: "Read config.json and then write its contents to backup.json"
+          required_tools: ["read_file", "write_file"]
+
+  - name: write_file
+    descriptions:
+      minimal: "Write to a file"
+      short: "Write content to a file on disk"
+      medium: "Write content to a file on the filesystem. Creates the file if it doesn't exist. Can optionally append instead of overwrite."
+      long: "Write content to a file on the filesystem. Creates the file if it doesn't exist, or overwrites existing content by default. Use append mode to add content to the end of existing files. Example: write_file(path='output.txt', content='Hello World')."
+      verbose: "Write content to a file on the filesystem. This tool creates a new file or modifies an existing one. By default, it overwrites existing content, but setting append=true adds content to the end instead. The parent directory must exist. Example: write_file(path='log.txt', content='New entry', append=true). Note: Creates the file if it doesn't exist. Warning: Overwrites existing content unless append mode is enabled."
+    parameters:
+      - name: file_path
+        type: string
+        description: "The path to the file to write"
+        required: true
+      - name: content
+        type: string
+        description: "The content to write to the file"
+        required: true
+      - name: append
+        type: boolean
+        description: "If true, append to file instead of overwriting"
+        required: false
+        default: false
+    tags: ["file", "write", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Write 'Hello World' to output.txt"
+        - "Save the text 'Configuration updated' to config.log"
+        - "Create a file called notes.txt with the content 'Meeting at 3pm'"
+        - "Append 'New line' to the end of log.txt"
+
+  - name: delete_file
+    descriptions:
+      minimal: "Delete a file"
+      short: "Delete a file from the filesystem"
+      medium: "Delete a file from the filesystem permanently. The file must exist. Use force option to skip confirmation."
+      long: "Delete a file from the filesystem permanently. The file path must point to an existing file (not a directory). By default, asks for confirmation. Use force=true to delete without confirmation. Example: delete_file(path='temp.txt', force=true)."
+      verbose: "Delete a file from the filesystem permanently. This operation cannot be undone - the file is permanently removed, not moved to trash. The path must point to a file, not a directory. Use force=true to bypass confirmation prompts. Example: delete_file(path='/tmp/cache.dat', force=true). Note: Does not work on directories, use delete_directory instead. Warning: This action is irreversible."
+    parameters:
+      - name: file_path
+        type: string
+        description: "The path to the file to delete"
+        required: true
+      - name: force
+        type: boolean
+        description: "If true, delete without confirmation"
+        required: false
+        default: false
+    tags: ["file", "delete", "io", "filesystem", "destructive"]
+    test_prompts:
+      single:
+        - "Delete the file temp.txt"
+        - "Remove the old backup file backup.old"
+        - "Delete cache.dat without asking for confirmation"
+
+  - name: copy_file
+    descriptions:
+      minimal: "Copy a file"
+      short: "Copy a file to a new location"
+      medium: "Copy a file from one location to another. The source file must exist. Optionally overwrite if destination exists."
+      long: "Copy a file from a source path to a destination path. The source file must exist and be readable. If the destination already exists, use overwrite=true to replace it. Example: copy_file(source='data.csv', destination='backup/data.csv')."
+      verbose: "Copy a file from a source path to a destination path. Creates an exact duplicate of the source file at the destination. The source must be an existing file. If the destination exists, the operation fails unless overwrite=true is set. The destination directory must exist. Example: copy_file(source='report.pdf', destination='archive/report_2024.pdf', overwrite=false). Note: Does not copy directories, use copy_directory instead. Warning: With overwrite=true, existing destination files are permanently replaced."
+    parameters:
+      - name: source_path
+        type: string
+        description: "The path to the source file"
+        required: true
+      - name: destination_path
+        type: string
+        description: "The path to the destination file"
+        required: true
+      - name: overwrite
+        type: boolean
+        description: "If true, overwrite destination if it exists"
+        required: false
+        default: false
+    tags: ["file", "copy", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Copy config.json to config.backup.json"
+        - "Make a copy of report.pdf in the archive folder"
+        - "Duplicate the data.csv file to backup/data.csv"
+
+  - name: move_file
+    descriptions:
+      minimal: "Move a file"
+      short: "Move a file to a new location"
+      medium: "Move a file from one location to another. This removes the original file. Can also be used to rename files."
+      long: "Move a file from a source path to a destination path, removing it from the original location. Can also be used to rename files within the same directory. Example: move_file(source='old_name.txt', destination='new_name.txt')."
+      verbose: "Move a file from a source path to a destination path. The source file is removed after being copied to the destination. This can be used for both moving files between directories and renaming files. If the destination exists, set overwrite=true to replace it. Example: move_file(source='downloads/file.zip', destination='archive/file.zip'). Note: Atomic operation when on same filesystem. Warning: Source file is deleted after successful move."
+    parameters:
+      - name: source_path
+        type: string
+        description: "The current path of the file"
+        required: true
+      - name: destination_path
+        type: string
+        description: "The new path for the file"
+        required: true
+      - name: overwrite
+        type: boolean
+        description: "If true, overwrite destination if it exists"
+        required: false
+        default: false
+    tags: ["file", "move", "rename", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Move report.pdf to the archive folder"
+        - "Rename old_config.json to new_config.json"
+        - "Move the downloaded file from downloads to documents"
+
+  - name: list_directory
+    descriptions:
+      minimal: "List directory contents"
+      short: "List all files and folders in a directory"
+      medium: "List the contents of a directory, showing all files and subdirectories. Can optionally list recursively and filter by pattern."
+      long: "List the contents of a directory. Returns names of all files and subdirectories. Use recursive=true to include contents of subdirectories. Use pattern to filter results (e.g., '*.txt'). Example: list_directory(path='./src', pattern='*.py')."
+      verbose: "List the contents of a directory. Returns a list of file and subdirectory names. By default, only lists immediate children. Set recursive=true to traverse all subdirectories. Use pattern for glob-style filtering (e.g., '*.log', 'test_*'). Example: list_directory(path='/var/log', recursive=false, pattern='*.log'). Note: Hidden files (starting with .) are included by default. Warning: Recursive listing on large directories may be slow."
+    parameters:
+      - name: directory_path
+        type: string
+        description: "The path to the directory to list"
+        required: true
+      - name: recursive
+        type: boolean
+        description: "If true, list contents recursively"
+        required: false
+        default: false
+      - name: pattern
+        type: string
+        description: "Glob pattern to filter results (e.g., '*.txt')"
+        required: false
+    tags: ["file", "directory", "list", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Show me all files in the src folder"
+        - "List the contents of the current directory"
+        - "Find all Python files in the project directory"
+        - "What files are in /var/log?"
+
+  - name: create_directory
+    descriptions:
+      minimal: "Create a directory"
+      short: "Create a new directory on the filesystem"
+      medium: "Create a new directory at the specified path. Can create parent directories if they don't exist."
+      long: "Create a new directory at the specified path. If parents=true, creates all necessary parent directories (like mkdir -p). Example: create_directory(path='project/src/utils', parents=true)."
+      verbose: "Create a new directory at the specified path. By default, fails if parent directories don't exist. Set parents=true to create the entire directory tree. If the directory already exists and exist_ok=true, no error is raised. Example: create_directory(path='/app/data/cache', parents=true, exist_ok=true). Note: Created with default permissions. Warning: Setting exist_ok=false will raise an error if directory exists."
+    parameters:
+      - name: directory_path
+        type: string
+        description: "The path of the directory to create"
+        required: true
+      - name: parents
+        type: boolean
+        description: "If true, create parent directories as needed"
+        required: false
+        default: false
+      - name: exist_ok
+        type: boolean
+        description: "If true, don't error if directory exists"
+        required: false
+        default: false
+    tags: ["file", "directory", "create", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Create a new folder called 'backup'"
+        - "Make a directory at project/src/components"
+        - "Create the output directory if it doesn't exist"
+
+  - name: get_file_info
+    descriptions:
+      minimal: "Get file information"
+      short: "Get metadata about a file"
+      medium: "Get metadata about a file including size, creation date, modification date, and permissions."
+      long: "Get detailed metadata about a file. Returns information including file size in bytes, creation timestamp, last modification timestamp, and file permissions. Example: get_file_info(path='document.pdf')."
+      verbose: "Get comprehensive metadata about a file. Returns a detailed object containing: size (in bytes), created_at (timestamp), modified_at (timestamp), accessed_at (timestamp), permissions (octal), owner, group, and file type. Example: get_file_info(path='/etc/passwd') returns {size: 2834, permissions: '0644', ...}. Note: Some fields may not be available on all operating systems. Warning: Accessing certain system files may require elevated permissions."
+    parameters:
+      - name: file_path
+        type: string
+        description: "The path to the file"
+        required: true
+    tags: ["file", "info", "metadata", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "What is the size of report.pdf?"
+        - "When was config.json last modified?"
+        - "Get information about the log file"
+        - "Show me the metadata for document.docx"
+
+  - name: search_files
+    descriptions:
+      minimal: "Search for files"
+      short: "Search for files matching a pattern"
+      medium: "Search for files in a directory that match a name pattern. Can search recursively through subdirectories."
+      long: "Search for files matching a pattern within a directory. Uses glob patterns for matching (e.g., '*.py', 'test_*'). Set recursive=true to search in subdirectories. Example: search_files(directory='.', pattern='*.log', recursive=true)."
+      verbose: "Search for files matching a pattern within a directory tree. Supports glob patterns including wildcards (* matches any characters, ? matches single character). By default searches only the specified directory. Set recursive=true to search all subdirectories. Returns a list of matching file paths. Example: search_files(directory='/var/log', pattern='error*.log', recursive=true). Note: Pattern is case-sensitive on Unix systems. Warning: Searching large directory trees recursively may be slow."
+    parameters:
+      - name: directory
+        type: string
+        description: "The directory to search in"
+        required: true
+      - name: pattern
+        type: string
+        description: "The glob pattern to match (e.g., '*.txt')"
+        required: true
+      - name: recursive
+        type: boolean
+        description: "If true, search in subdirectories"
+        required: false
+        default: false
+    tags: ["file", "search", "find", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Find all .log files in the logs directory"
+        - "Search for Python files in the project"
+        - "Find all files named 'config' in the system"
+        - "Look for any JSON files in the data folder"
