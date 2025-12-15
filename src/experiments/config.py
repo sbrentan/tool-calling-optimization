@@ -24,7 +24,8 @@ class ExperimentConfig:
         categories: Tool categories to include
         
         # Model configuration
-        model: Gemini model to use
+        model: Model to use (provider auto-detected from name)
+        provider: Explicit provider (gemini/cerebras/openai)
         temperature: Sampling temperature
         
         # Test configuration
@@ -46,7 +47,8 @@ class ExperimentConfig:
     categories: Optional[list[str]] = None
     
     # Model configuration
-    model: str = "gemini-2.0-flash"
+    model: str = "llama-3.3-70b"  # Default to Cerebras (free tier)
+    provider: Optional[str] = None  # Auto-detect from model if not specified
     temperature: float = 0.0
     
     # Test configuration
@@ -70,6 +72,7 @@ class ExperimentConfig:
             "num_similar_tools": self.num_similar_tools,
             "categories": self.categories,
             "model": self.model,
+            "provider": self.provider,
             "temperature": self.temperature,
             "num_test_samples": self.num_test_samples,
             "seed": self.seed,

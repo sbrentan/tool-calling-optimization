@@ -11,7 +11,8 @@ num_similar_tools: 0
 categories: null  # null = all categories
 
 # Model configuration
-model: gemini-2.0-flash
+model: llama-3.3-70b  # Cerebras model (free tier!)
+provider: cerebras    # Or: gemini, openai
 temperature: 0.0
 
 # Test configuration

@@ -9,42 +9,15 @@ This client handles communication with the Gemini API, including:
 import os
 import time
 from typing import Any, Optional
-from dataclasses import dataclass, field
 
-from google import genai
-from google.genai import types
 from loguru import logger
 
+from .base import BaseLLMClient, CallResult
 from src.tools.base import Tool
 from src.adapters.gemini_adapter import GeminiAdapter
 
 
-@dataclass
-class CallResult:
-    """Result of a tool calling API request."""
-    success: bool
-    called_tool: Optional[str] = None
-    called_args: Optional[dict[str, Any]] = None
-    all_calls: list[dict[str, Any]] = field(default_factory=list)
-    latency_ms: float = 0.0
-    error: Optional[str] = None
-    raw_response: Optional[Any] = None
-    model: str = ""
-    
-    def to_dict(self) -> dict[str, Any]:
-        """Convert to dictionary for serialization."""
-        return {
-            "success": self.success,
-            "called_tool": self.called_tool,
-            "called_args": self.called_args,
-            "all_calls": self.all_calls,
-            "latency_ms": self.latency_ms,
-            "error": self.error,
-            "model": self.model
-        }
-
-
-class GeminiClient:
+class GeminiClient(BaseLLMClient):
     """
     Client for interacting with the Gemini API for tool calling experiments.
     
@@ -53,6 +26,8 @@ class GeminiClient:
     - Tool/function calling
     - Response parsing and extraction
     """
+    
+    PROVIDER_NAME = "gemini"
     
     # Available models for testing
     AVAILABLE_MODELS = [
@@ -84,8 +59,15 @@ class GeminiClient:
         self.model = model
         self.temperature = temperature
         
-        # Initialize client
-        self.client = genai.Client(api_key=self.api_key)
+        # Import and initialize client
+        try:
+            from google import genai
+            self.client = genai.Client(api_key=self.api_key)
+        except ImportError:
+            raise ImportError(
+                "google-genai not installed. "
+                "Install with: pip install google-genai"
+            )
         
         logger.info(f"Initialized Gemini client with model: {model}")
     
@@ -113,6 +95,8 @@ class GeminiClient:
         Returns:
             CallResult with the tool call information
         """
+        from google.genai import types
+        
         start_time = time.time()
         
         try:
@@ -149,7 +133,8 @@ class GeminiClient:
                     all_calls=all_calls,
                     latency_ms=latency_ms,
                     raw_response=response,
-                    model=self.model
+                    model=self.model,
+                    provider=self.PROVIDER_NAME
                 )
             else:
                 # Model didn't call any tool
@@ -159,40 +144,17 @@ class GeminiClient:
                     latency_ms=latency_ms,
                     raw_response=response,
                     model=self.model,
+                    provider=self.PROVIDER_NAME,
                     error="Model did not call any tool"
                 )
                 
         except Exception as e:
             latency_ms = (time.time() - start_time) * 1000
-            logger.error(f"API call failed: {e}")
+            logger.error(f"Gemini API call failed: {e}")
             return CallResult(
                 success=False,
                 error=str(e),
                 latency_ms=latency_ms,
-                model=self.model
+                model=self.model,
+                provider=self.PROVIDER_NAME
             )
-    
-    def batch_call_with_tools(
-        self,
-        prompts: list[str],
-        tools: list[Tool],
-        system_instruction: Optional[str] = None
-    ) -> list[CallResult]:
-        """
-        Send multiple prompts with the same tools.
-        
-        Args:
-            prompts: List of prompts to send
-            tools: List of Tool objects available for calling
-            system_instruction: Optional system instruction
-            
-        Returns:
-            List of CallResult objects
-        """
-        results = []
-        for i, prompt in enumerate(prompts):
-            logger.debug(f"Processing prompt {i+1}/{len(prompts)}")
-            result = self.call_with_tools(prompt, tools, system_instruction)
-            results.append(result)
-        
-        return results

@@ -5,12 +5,21 @@ Main experiment runner script.
 This script orchestrates tool calling experiments:
 1. Loads configuration (from file or CLI args)
 2. Generates tools and test cases
-3. Runs tests against the Gemini API
+3. Runs tests against LLM APIs (Gemini, Cerebras, OpenAI)
 4. Evaluates results and saves metrics
 
 Usage:
-    python scripts/run_experiment.py --config experiments/configs/baseline.yaml
-    python scripts/run_experiment.py --num-tools 10 --doc-length medium --model gemini-2.0-flash
+    # Run with config file
+    python scripts/run_experiment.py run --config experiments/configs/baseline.yaml
+    
+    # Run with CLI options
+    python scripts/run_experiment.py run --num-tools 10 --doc-length medium --model llama-3.3-70b
+    
+    # Run parameter sweep
+    python scripts/run_experiment.py sweep
+    
+    # List available models
+    python scripts/run_experiment.py list-models
 """
 import sys
 import os
@@ -27,14 +36,14 @@ from dotenv import load_dotenv
 from loguru import logger
 
 from src.tools.generator import ToolGenerator
-from src.clients.gemini_client import GeminiClient
+from src.clients import create_client, get_available_models, get_available_providers
 from src.evaluation.metrics import ToolCallEvaluator
 from src.experiments.config import ExperimentConfig
 
 # Load environment variables
 load_dotenv()
 
-app = typer.Typer(help="Run tool calling experiments")
+app = typer.Typer(help="Tool Calling Optimization Experiments")
 
 
 def setup_logging(verbose: bool = False):
@@ -59,7 +68,18 @@ def run_experiment(config: ExperimentConfig) -> dict:
     
     # Initialize components
     generator = ToolGenerator(seed=config.seed)
-    client = GeminiClient(model=config.model, temperature=config.temperature)
+    
+    # Create client using factory (auto-detects provider from model)
+    try:
+        client = create_client(
+            model=config.model,
+            provider=config.provider if hasattr(config, 'provider') else None,
+            temperature=config.temperature
+        )
+    except ValueError as e:
+        logger.error(f"Failed to create client: {e}")
+        raise
+    
     evaluator = ToolCallEvaluator()
     
     # Generate tools
@@ -130,11 +150,12 @@ def save_results(config: ExperimentConfig, metrics):
 
 
 @app.command()
-def main(
+def run(
     config: str = typer.Option(None, "--config", "-c", help="Path to YAML config file"),
     num_tools: int = typer.Option(10, "--num-tools", "-n", help="Number of tools"),
-    doc_length: str = typer.Option("medium", "--doc-length", "-d", help="Documentation length"),
-    model: str = typer.Option("gemini-2.0-flash", "--model", "-m", help="Gemini model to use"),
+    doc_length: str = typer.Option("medium", "--doc-length", "-d", help="Documentation length (minimal/short/medium/long/verbose)"),
+    model: str = typer.Option("llama-3.3-70b", "--model", "-m", help="Model to use (auto-detects provider)"),
+    provider: str = typer.Option(None, "--provider", "-p", help="Provider (gemini/cerebras/openai). Auto-detected if not specified."),
     num_similar: int = typer.Option(0, "--num-similar", "-s", help="Number of similar tools"),
     seed: int = typer.Option(42, "--seed", help="Random seed"),
     name: str = typer.Option("experiment", "--name", help="Experiment name"),
@@ -156,11 +177,9 @@ def main(
             num_similar_tools=num_similar,
             seed=seed
         )
-    
-    # Validate API key
-    if not os.getenv("GEMINI_API_KEY"):
-        logger.error("GEMINI_API_KEY not set. Please set it in .env file or environment.")
-        raise typer.Exit(1)
+        # Store provider if explicitly specified
+        if provider:
+            exp_config.provider = provider
     
     # Run experiment
     try:
@@ -173,42 +192,46 @@ def main(
 @app.command()
 def sweep(
     output_dir: str = typer.Option("experiments/results/sweep", help="Output directory"),
+    provider: str = typer.Option("cerebras", "--provider", "-p", help="Provider to use for sweep"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose logging"),
 ):
     """Run a parameter sweep across multiple configurations."""
     setup_logging(verbose)
     
+    # Get default model for provider
+    models_by_provider = get_available_models(provider)
+    default_model = models_by_provider[provider][0] if models_by_provider[provider] else "llama-3.3-70b"
+    
     # Define sweep parameters
     tool_counts = [5, 10, 15, 20, 25]
     doc_lengths = ["minimal", "short", "medium", "long"]
-    models = ["gemini-2.0-flash"]
     
     results = []
     
     for num_tools in tool_counts:
         for doc_length in doc_lengths:
-            for model in models:
-                config = ExperimentConfig(
-                    name=f"sweep_t{num_tools}_d{doc_length}_{model}",
-                    num_tools=num_tools,
-                    doc_length=doc_length,
-                    model=model,
-                    output_dir=output_dir,
-                    seed=42
-                )
-                
-                try:
-                    result = run_experiment(config)
-                    results.append({
-                        "num_tools": num_tools,
-                        "doc_length": doc_length,
-                        "model": model,
-                        "accuracy": result["accuracy"],
-                        "avg_latency_ms": result["avg_latency_ms"]
-                    })
-                except Exception as e:
-                    logger.error(f"Failed: {e}")
-                    continue
+            config = ExperimentConfig(
+                name=f"sweep_t{num_tools}_d{doc_length}_{default_model}",
+                num_tools=num_tools,
+                doc_length=doc_length,
+                model=default_model,
+                output_dir=output_dir,
+                seed=42
+            )
+            
+            try:
+                result = run_experiment(config)
+                results.append({
+                    "num_tools": num_tools,
+                    "doc_length": doc_length,
+                    "model": default_model,
+                    "provider": provider,
+                    "accuracy": result["accuracy"],
+                    "avg_latency_ms": result["avg_latency_ms"]
+                })
+            except Exception as e:
+                logger.error(f"Failed: {e}")
+                continue
     
     # Save sweep summary
     sweep_path = Path(output_dir) / "sweep_summary.json"
@@ -216,6 +239,28 @@ def sweep(
         json.dump(results, f, indent=2)
     
     logger.info(f"Sweep complete. Results saved to {sweep_path}")
+
+
+@app.command("list-models")
+def list_models():
+    """List all available models by provider."""
+    print("\n" + "=" * 60)
+    print("AVAILABLE MODELS BY PROVIDER")
+    print("=" * 60)
+    
+    all_models = get_available_models()
+    
+    for provider, models in all_models.items():
+        print(f"\n{provider.upper()}:")
+        for model in models:
+            print(f"  - {model}")
+    
+    print("\n" + "=" * 60)
+    print("\nRequired Environment Variables:")
+    print("  CEREBRAS_API_KEY  - For Cerebras models (free tier: 1M tokens/day)")
+    print("  GEMINI_API_KEY    - For Gemini models")
+    print("  OPENAI_API_KEY    - For OpenAI models")
+    print("=" * 60 + "\n")
 
 
 if __name__ == "__main__":
