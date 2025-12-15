@@ -1,0 +1,26 @@
+# Breaking Point Test Configuration
+# Tests with many tools to find where accuracy drops
+
+name: breaking_point
+description: "Test with increasing number of tools to find breaking point"
+
+# Tool configuration
+num_tools: 50
+doc_length: medium
+num_similar_tools: 5
+categories: null
+
+# Model configuration  
+model: gemini-2.0-flash
+temperature: 0.0
+
+# Test configuration
+num_test_samples: 20
+seed: 42
+
+# Output configuration
+output_dir: experiments/results
+save_raw_responses: false
+
+# Methodology
+methodology: mcp

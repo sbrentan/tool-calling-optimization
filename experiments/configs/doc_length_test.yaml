@@ -1,0 +1,26 @@
+# Documentation Length Comparison
+# Tests different documentation verbosity levels
+
+name: doc_length_test
+description: "Compare accuracy across different documentation lengths"
+
+# Tool configuration
+num_tools: 15
+doc_length: verbose  # Change this: minimal, short, medium, long, verbose
+num_similar_tools: 0
+categories: null
+
+# Model configuration
+model: gemini-2.0-flash
+temperature: 0.0
+
+# Test configuration
+num_test_samples: null
+seed: 42
+
+# Output configuration
+output_dir: experiments/results
+save_raw_responses: false
+
+# Methodology
+methodology: mcp

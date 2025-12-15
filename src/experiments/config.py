@@ -1,0 +1,97 @@
+"""
+Experiment configuration dataclass.
+
+Defines all configurable parameters for tool calling experiments.
+"""
+from dataclasses import dataclass, field
+from typing import Any, Optional
+import yaml
+from pathlib import Path
+
+
+@dataclass
+class ExperimentConfig:
+    """
+    Configuration for a tool calling experiment.
+    
+    Attributes:
+        name: Experiment name for identification
+        
+        # Tool configuration
+        num_tools: Number of tools to make available
+        doc_length: Documentation verbosity level
+        num_similar_tools: Number of similar/distractor tools
+        categories: Tool categories to include
+        
+        # Model configuration
+        model: Gemini model to use
+        temperature: Sampling temperature
+        
+        # Test configuration
+        num_test_samples: Number of test cases to run
+        seed: Random seed for reproducibility
+        
+        # Output configuration
+        output_dir: Directory for results
+        save_raw_responses: Whether to save raw API responses
+    """
+    # Experiment identification
+    name: str = "baseline"
+    description: str = ""
+    
+    # Tool configuration
+    num_tools: int = 10
+    doc_length: str = "medium"  # minimal, short, medium, long, verbose
+    num_similar_tools: int = 0
+    categories: Optional[list[str]] = None
+    
+    # Model configuration
+    model: str = "gemini-2.0-flash"
+    temperature: float = 0.0
+    
+    # Test configuration
+    num_test_samples: Optional[int] = None  # None = test all generated tools
+    seed: int = 42
+    
+    # Output configuration
+    output_dir: str = "experiments/results"
+    save_raw_responses: bool = False
+    
+    # Methodology (for future extension)
+    methodology: str = "mcp"  # mcp, rag, batching, etc.
+    
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary."""
+        return {
+            "name": self.name,
+            "description": self.description,
+            "num_tools": self.num_tools,
+            "doc_length": self.doc_length,
+            "num_similar_tools": self.num_similar_tools,
+            "categories": self.categories,
+            "model": self.model,
+            "temperature": self.temperature,
+            "num_test_samples": self.num_test_samples,
+            "seed": self.seed,
+            "output_dir": self.output_dir,
+            "save_raw_responses": self.save_raw_responses,
+            "methodology": self.methodology
+        }
+    
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "ExperimentConfig":
+        """Create from dictionary."""
+        return cls(**{k: v for k, v in data.items() if k in cls.__dataclass_fields__})
+    
+    @classmethod
+    def from_yaml(cls, path: str | Path) -> "ExperimentConfig":
+        """Load configuration from YAML file."""
+        with open(path, "r") as f:
+            data = yaml.safe_load(f)
+        return cls.from_dict(data)
+    
+    def save_yaml(self, path: str | Path) -> None:
+        """Save configuration to YAML file."""
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "w") as f:
+            yaml.dump(self.to_dict(), f, default_flow_style=False)

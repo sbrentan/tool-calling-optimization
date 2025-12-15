@@ -1,0 +1,26 @@
+# Baseline Experiment Configuration
+# Tests basic tool calling with default parameters
+
+name: baseline
+description: "Baseline MCP tool calling test with 10 tools and medium documentation"
+
+# Tool configuration
+num_tools: 10
+doc_length: medium  # minimal, short, medium, long, verbose
+num_similar_tools: 0
+categories: null  # null = all categories
+
+# Model configuration
+model: gemini-2.0-flash
+temperature: 0.0
+
+# Test configuration
+num_test_samples: null  # null = test all generated tools
+seed: 42
+
+# Output configuration
+output_dir: experiments/results
+save_raw_responses: false
+
+# Methodology
+methodology: mcp
