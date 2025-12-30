@@ -1,0 +1,1196 @@
+category: messaging_operations
+
+tools:
+  - name: send_email
+    descriptions:
+      minimal: "Send email"
+      short: "Send an email message"
+      medium: "Send an email to one or more recipients with subject, body, and optional attachments."
+      long: "Send an email message. Supports multiple recipients (to, cc, bcc), HTML content, attachments, and reply-to headers. Example: send_email(to=['user@example.com'], subject='Hello', body='Message content')."
+      verbose: "Send an email message with full customization. Supports: multiple recipients (to, cc, bcc), plain text or HTML body, file attachments, inline images, custom headers, reply-to address, priority settings, and read receipts. Example: send_email(to=['john@company.com'], cc=['manager@company.com'], subject='Weekly Report', body='<h1>Report</h1><p>See attached.</p>', body_type='html', attachments=['/reports/weekly.pdf'], priority='high', reply_to='team@company.com'). Note: Large attachments may be rejected by recipient servers. Warning: Avoid sending to large recipient lists to prevent spam classification."
+    parameters:
+      - name: to
+        type: array
+        description: "Primary recipients"
+        required: true
+      - name: subject
+        type: string
+        description: "Email subject"
+        required: true
+      - name: body
+        type: string
+        description: "Email body content"
+        required: true
+      - name: body_type
+        type: string
+        description: "Content type"
+        required: false
+        default: "plain"
+        enum: ["plain", "html"]
+      - name: cc
+        type: array
+        description: "Carbon copy recipients"
+        required: false
+      - name: bcc
+        type: array
+        description: "Blind carbon copy recipients"
+        required: false
+      - name: attachments
+        type: array
+        description: "File paths to attach"
+        required: false
+      - name: reply_to
+        type: string
+        description: "Reply-to address"
+        required: false
+      - name: priority
+        type: string
+        description: "Message priority"
+        required: false
+        enum: ["low", "normal", "high"]
+    tags: ["email", "send", "message", "communication", "smtp"]
+    test_prompts:
+      single:
+        - "Send an email to john@example.com about the meeting"
+        - "Email the report to the team"
+        - "Send a message to the client with the proposal attached"
+        - "Email the status update to my manager"
+
+  - name: send_sms
+    descriptions:
+      minimal: "Send SMS"
+      short: "Send a text message via SMS"
+      medium: "Send an SMS text message to a phone number. Supports standard SMS and MMS with media."
+      long: "Send an SMS or MMS message to a phone number. Messages over 160 characters are sent as multiple segments. MMS supports images. Example: send_sms(to='+1234567890', message='Hello from the app!')."
+      verbose: "Send SMS or MMS messages to mobile phones. Standard SMS limited to 160 characters (GSM) or 70 characters (Unicode); longer messages auto-split. MMS supports images, audio, and video. Delivery status tracking available. Example: send_sms(to='+1555123456', message='Your order #12345 has shipped!', sender_id='MYAPP', media_url='https://example.com/receipt.png', track_delivery=true). Note: International SMS may have higher costs and delivery restrictions. Warning: Ensure compliance with SMS marketing regulations (TCPA, GDPR)."
+    parameters:
+      - name: to
+        type: string
+        description: "Recipient phone number (E.164 format)"
+        required: true
+      - name: message
+        type: string
+        description: "Message content"
+        required: true
+      - name: sender_id
+        type: string
+        description: "Sender ID or phone number"
+        required: false
+      - name: media_url
+        type: string
+        description: "URL of media for MMS"
+        required: false
+      - name: track_delivery
+        type: boolean
+        description: "Request delivery confirmation"
+        required: false
+        default: false
+    tags: ["sms", "message", "text", "mobile", "communication"]
+    test_prompts:
+      single:
+        - "Send a text message to +1234567890"
+        - "Text the customer about their order status"
+        - "Send an SMS confirmation to the phone number"
+        - "Message the client via text"
+
+  - name: send_slack_message
+    descriptions:
+      minimal: "Send Slack message"
+      short: "Send a message to a Slack channel or user"
+      medium: "Send a message to a Slack workspace, either to a channel or direct message to a user."
+      long: "Post a message to Slack. Can send to channels, private groups, or direct messages. Supports rich formatting and attachments. Example: send_slack_message(channel='#general', message='Hello team!')."
+      verbose: "Send messages to Slack channels or users. Supports: rich text formatting (markdown), Block Kit for interactive elements, file attachments, thread replies, scheduled messages, and ephemeral messages (visible only to one user). Example: send_slack_message(channel='#engineering', message='Build completed successfully!', username='CI Bot', icon_emoji=':rocket:', thread_ts='1234567890.123456', attachments='[{\"color\": \"good\", \"text\": \"All tests passed\"}]'). Note: Bot must be invited to private channels. Warning: Rate limits apply; batch messages for high-volume use cases."
+    parameters:
+      - name: channel
+        type: string
+        description: "Channel name (#channel) or user ID"
+        required: true
+      - name: message
+        type: string
+        description: "Message content"
+        required: true
+      - name: username
+        type: string
+        description: "Display name for bot"
+        required: false
+      - name: icon_emoji
+        type: string
+        description: "Emoji for bot avatar"
+        required: false
+      - name: thread_ts
+        type: string
+        description: "Thread timestamp for replies"
+        required: false
+      - name: attachments
+        type: string
+        description: "JSON array of attachments"
+        required: false
+      - name: unfurl_links
+        type: boolean
+        description: "Unfurl URLs in message"
+        required: false
+        default: true
+    tags: ["slack", "message", "chat", "team", "communication"]
+    test_prompts:
+      single:
+        - "Post a message to the #general channel on Slack"
+        - "Send a Slack DM to John"
+        - "Notify the team on Slack about the deployment"
+        - "Message the engineering channel"
+
+  - name: send_teams_message
+    descriptions:
+      minimal: "Send Teams message"
+      short: "Send a message to Microsoft Teams"
+      medium: "Send a message to a Microsoft Teams channel or chat with optional card formatting."
+      long: "Post a message to Microsoft Teams. Supports channels, group chats, and 1:1 chats. Can include adaptive cards. Example: send_teams_message(channel='Engineering', message='Build completed!')."
+      verbose: "Send messages to Microsoft Teams channels or chats. Supports: plain text, HTML formatting, Adaptive Cards for rich interactive content, file attachments, @mentions, and reactions. Example: send_teams_message(team='Engineering', channel='builds', message='Deployment successful!', card='{\"type\": \"AdaptiveCard\", \"body\": [{\"type\": \"TextBlock\", \"text\": \"Success!\"}]}', mentions=['john@company.com'], importance='high'). Note: Webhook URLs can be used for channel-only posting. Warning: Ensure app has required permissions in Teams admin center."
+    parameters:
+      - name: team
+        type: string
+        description: "Team name"
+        required: false
+      - name: channel
+        type: string
+        description: "Channel name"
+        required: false
+      - name: chat_id
+        type: string
+        description: "Chat ID for direct/group chats"
+        required: false
+      - name: message
+        type: string
+        description: "Message content"
+        required: true
+      - name: card
+        type: string
+        description: "Adaptive Card JSON"
+        required: false
+      - name: mentions
+        type: array
+        description: "Users to @mention"
+        required: false
+      - name: importance
+        type: string
+        description: "Message importance"
+        required: false
+        enum: ["normal", "high", "urgent"]
+    tags: ["teams", "microsoft", "message", "chat", "communication"]
+    test_prompts:
+      single:
+        - "Send a message to the Teams channel"
+        - "Post to the Engineering team on Teams"
+        - "Message the project channel on Microsoft Teams"
+        - "Notify the team via Teams"
+
+  - name: send_push_notification
+    descriptions:
+      minimal: "Send push notification"
+      short: "Send a push notification to devices"
+      medium: "Send a push notification to mobile devices or web browsers with custom title and body."
+      long: "Send push notifications to mobile apps or web browsers. Supports targeting by user ID, topic, or device token. Can include custom data. Example: send_push_notification(user_id='user123', title='New Message', body='You have a new message')."
+      verbose: "Send push notifications to mobile devices (iOS, Android) or web browsers. Targeting options: user_id, device_token, topic/segment. Supports: custom sounds, badges, action buttons, images, deep links, silent notifications for background updates. Example: send_push_notification(user_id='user123', title='Order Shipped', body='Your order is on the way!', data='{\"order_id\": \"12345\"}', image_url='https://example.com/tracking.png', click_action='OPEN_ORDER', sound='notification.wav'). Note: Users must have granted notification permissions. Warning: Excessive notifications may cause users to disable them."
+    parameters:
+      - name: user_id
+        type: string
+        description: "Target user ID"
+        required: false
+      - name: device_token
+        type: string
+        description: "Specific device token"
+        required: false
+      - name: topic
+        type: string
+        description: "Topic for broadcast"
+        required: false
+      - name: title
+        type: string
+        description: "Notification title"
+        required: true
+      - name: body
+        type: string
+        description: "Notification body"
+        required: true
+      - name: data
+        type: string
+        description: "Custom data payload (JSON)"
+        required: false
+      - name: image_url
+        type: string
+        description: "Image URL"
+        required: false
+      - name: click_action
+        type: string
+        description: "Action on click"
+        required: false
+      - name: sound
+        type: string
+        description: "Notification sound"
+        required: false
+    tags: ["push", "notification", "mobile", "alert", "communication"]
+    test_prompts:
+      single:
+        - "Send a push notification to the user"
+        - "Notify all mobile users about the update"
+        - "Send an alert to the customer's phone"
+        - "Push a notification about the new feature"
+
+  - name: send_webhook
+    descriptions:
+      minimal: "Send webhook"
+      short: "Send a webhook notification to a URL"
+      medium: "Send a webhook HTTP request to notify an external service about an event."
+      long: "Send a webhook notification to an external URL. Supports custom payloads and headers for integration with various services. Example: send_webhook(url='https://example.com/webhook', payload='{\"event\": \"user.created\"}')."
+      verbose: "Send webhook HTTP requests to external services. Supports: custom JSON payloads, HTTP headers, signature generation (HMAC), retry logic, and timeout configuration. Common uses: Zapier, IFTTT, custom integrations. Example: send_webhook(url='https://example.com/hooks/events', payload='{\"event\": \"order.completed\", \"order_id\": \"12345\"}', headers='{\"X-Api-Key\": \"secret123\"}', signature_secret='webhook_secret', retry_count=3, timeout=30). Note: Include signature for secure webhook validation. Warning: Never include sensitive credentials in webhook payloads."
+    parameters:
+      - name: url
+        type: string
+        description: "Webhook destination URL"
+        required: true
+      - name: payload
+        type: string
+        description: "JSON payload"
+        required: true
+      - name: headers
+        type: string
+        description: "Custom HTTP headers (JSON)"
+        required: false
+      - name: method
+        type: string
+        description: "HTTP method"
+        required: false
+        default: "POST"
+        enum: ["POST", "PUT", "PATCH"]
+      - name: signature_secret
+        type: string
+        description: "Secret for HMAC signature"
+        required: false
+      - name: retry_count
+        type: integer
+        description: "Number of retries on failure"
+        required: false
+        default: 0
+      - name: timeout
+        type: integer
+        description: "Timeout in seconds"
+        required: false
+        default: 30
+    tags: ["webhook", "http", "integration", "notification", "api"]
+    test_prompts:
+      single:
+        - "Send a webhook to the integration URL"
+        - "Trigger the Zapier webhook"
+        - "Notify the external service via webhook"
+        - "Post event data to the webhook endpoint"
+
+  - name: send_discord_message
+    descriptions:
+      minimal: "Send Discord message"
+      short: "Send a message to a Discord channel"
+      medium: "Send a message to a Discord server channel via webhook or bot with optional embeds."
+      long: "Post a message to a Discord channel. Supports rich embeds, file attachments, and mentions. Example: send_discord_message(channel_id='123456789', message='Hello Discord!')."
+      verbose: "Send messages to Discord channels via bot or webhook. Supports: plain text, rich embeds (with titles, colors, fields, images), file attachments, @mentions (users, roles, everyone), reactions, and message threading. Example: send_discord_message(channel_id='987654321', message='Build Status', embed='{\"title\": \"Deployment Complete\", \"color\": 3066993, \"fields\": [{\"name\": \"Status\", \"value\": \"Success\"}]}', username='Deploy Bot', avatar_url='https://example.com/bot.png'). Note: Webhooks have simpler setup but fewer features than bots. Warning: @everyone and @here mentions should be used sparingly."
+    parameters:
+      - name: channel_id
+        type: string
+        description: "Discord channel ID"
+        required: false
+      - name: webhook_url
+        type: string
+        description: "Discord webhook URL"
+        required: false
+      - name: message
+        type: string
+        description: "Message content"
+        required: true
+      - name: embed
+        type: string
+        description: "Rich embed JSON"
+        required: false
+      - name: username
+        type: string
+        description: "Override username"
+        required: false
+      - name: avatar_url
+        type: string
+        description: "Override avatar URL"
+        required: false
+      - name: tts
+        type: boolean
+        description: "Text-to-speech"
+        required: false
+        default: false
+    tags: ["discord", "message", "chat", "gaming", "communication"]
+    test_prompts:
+      single:
+        - "Send a message to the Discord server"
+        - "Post an announcement to the Discord channel"
+        - "Notify the gaming community on Discord"
+        - "Send a Discord message with an embed"
+
+  - name: send_telegram_message
+    descriptions:
+      minimal: "Send Telegram message"
+      short: "Send a message via Telegram"
+      medium: "Send a message to a Telegram chat, group, or channel via bot API."
+      long: "Send a Telegram message using a bot. Can send to individuals, groups, or channels. Supports text, photos, documents, and inline keyboards. Example: send_telegram_message(chat_id='123456789', message='Hello!')."
+      verbose: "Send messages via Telegram Bot API. Supports: plain text, HTML/Markdown formatting, photos, documents, videos, location, inline keyboards, reply keyboards. Example: send_telegram_message(chat_id='123456789', message='*Order Confirmed*\\nOrder #12345', parse_mode='Markdown', reply_markup='{\"inline_keyboard\": [[{\"text\": \"Track Order\", \"url\": \"https://example.com/track\"}]]}', disable_notification=false). Note: Chat IDs for groups are negative numbers. Warning: Bots cannot initiate conversations; users must /start first."
+    parameters:
+      - name: chat_id
+        type: string
+        description: "Target chat ID"
+        required: true
+      - name: message
+        type: string
+        description: "Message text"
+        required: true
+      - name: parse_mode
+        type: string
+        description: "Text formatting mode"
+        required: false
+        enum: ["Markdown", "HTML", "MarkdownV2"]
+      - name: reply_markup
+        type: string
+        description: "Keyboard markup JSON"
+        required: false
+      - name: disable_notification
+        type: boolean
+        description: "Send silently"
+        required: false
+        default: false
+      - name: reply_to_message_id
+        type: integer
+        description: "Reply to specific message"
+        required: false
+    tags: ["telegram", "message", "chat", "bot", "communication"]
+    test_prompts:
+      single:
+        - "Send a Telegram message to the user"
+        - "Post to the Telegram channel"
+        - "Message the Telegram group"
+        - "Send a notification via Telegram bot"
+
+  - name: create_message_template
+    descriptions:
+      minimal: "Create message template"
+      short: "Create a reusable message template"
+      medium: "Create a message template with variables for sending personalized messages at scale."
+      long: "Create a reusable message template with placeholder variables. Useful for notifications, marketing, and transactional messages. Example: create_message_template(name='welcome', content='Hello {{name}}, welcome to {{company}}!')."
+      verbose: "Create and store message templates with variable placeholders for personalized messaging. Templates support: Mustache/Handlebars syntax ({{variable}}), conditionals, loops, default values. Can be used across email, SMS, and push channels. Example: create_message_template(name='order_confirmation', channel='email', subject='Order #{{order_id}} Confirmed', content='<h1>Thanks {{customer_name}}!</h1><p>Your order of {{item_count}} items totaling ${{total}} is confirmed.</p>', variables=['order_id', 'customer_name', 'item_count', 'total']). Note: Templates are validated for proper variable syntax. Warning: Test templates thoroughly before using in production."
+    parameters:
+      - name: name
+        type: string
+        description: "Template name"
+        required: true
+      - name: channel
+        type: string
+        description: "Target channel"
+        required: true
+        enum: ["email", "sms", "push", "slack", "teams"]
+      - name: subject
+        type: string
+        description: "Subject line (for email)"
+        required: false
+      - name: content
+        type: string
+        description: "Template content with {{variables}}"
+        required: true
+      - name: variables
+        type: array
+        description: "List of variable names"
+        required: false
+      - name: description
+        type: string
+        description: "Template description"
+        required: false
+    tags: ["template", "message", "personalization", "marketing"]
+    test_prompts:
+      single:
+        - "Create an email template for order confirmations"
+        - "Set up a welcome message template"
+        - "Create a template for SMS notifications"
+        - "Make a reusable message template"
+
+  - name: schedule_message
+    descriptions:
+      minimal: "Schedule message"
+      short: "Schedule a message for future delivery"
+      medium: "Schedule a message to be sent at a specified future date and time."
+      long: "Schedule any message type (email, SMS, push, etc.) for delivery at a future time. Supports timezone specification. Example: schedule_message(type='email', to='user@example.com', content='Reminder!', send_at='2024-01-15T10:00:00Z')."
+      verbose: "Schedule messages for future delivery across any channel. Supports: one-time scheduled delivery, recurring schedules, timezone-aware delivery, cancellation before send. Useful for: reminders, drip campaigns, time-sensitive notifications. Example: schedule_message(type='email', to=['user@example.com'], subject='Meeting Reminder', content='Your meeting starts in 1 hour', send_at='2024-01-15T09:00:00', timezone='America/New_York', recurring='weekly', recurrence_count=4). Note: Scheduled time is converted to UTC internally. Warning: Verify timezone to avoid sending at wrong times."
+    parameters:
+      - name: type
+        type: string
+        description: "Message type"
+        required: true
+        enum: ["email", "sms", "push", "slack", "teams"]
+      - name: to
+        type: string
+        description: "Recipient(s)"
+        required: true
+      - name: subject
+        type: string
+        description: "Subject (for email)"
+        required: false
+      - name: content
+        type: string
+        description: "Message content"
+        required: true
+      - name: send_at
+        type: string
+        description: "Scheduled send time (ISO 8601)"
+        required: true
+      - name: timezone
+        type: string
+        description: "Timezone for send_at"
+        required: false
+        default: "UTC"
+      - name: recurring
+        type: string
+        description: "Recurrence pattern"
+        required: false
+        enum: ["none", "daily", "weekly", "monthly"]
+      - name: recurrence_count
+        type: integer
+        description: "Number of recurrences"
+        required: false
+    tags: ["schedule", "message", "automation", "future", "timing"]
+    test_prompts:
+      single:
+        - "Schedule an email for tomorrow at 9am"
+        - "Send a reminder SMS next Monday"
+        - "Schedule the newsletter for next week"
+        - "Set up a recurring weekly email"
+  - name: send_whatsapp_message
+    descriptions:
+      minimal: "Send WhatsApp"
+      short: "Send a WhatsApp message"
+      medium: "Send a WhatsApp message to a phone number using the Business API."
+      long: "Send WhatsApp messages via the Business API. Supports text, media, templates, and interactive messages. Example: send_whatsapp_message(phone='+1234567890', type='text', content='Hello!')."
+      verbose: "Send WhatsApp messages through the WhatsApp Business API. Message types: text, image, document, audio, video, location, contacts, interactive (buttons, lists), template (pre-approved). Requirements: verified business account, phone number opted-in for templates. Example: send_whatsapp_message(phone='+14155551234', type='template', template_name='order_update', template_params='[\"John\", \"ORD-123\", \"shipped\"]', language='en_US'). Note: Template messages required for initiating conversations. Warning: Non-template messages only within 24-hour window."
+    parameters:
+      - name: phone
+        type: string
+        description: "Phone number with country code"
+        required: true
+      - name: type
+        type: string
+        description: "Message type"
+        required: true
+        enum: ["text", "image", "document", "audio", "video", "location", "template", "interactive"]
+      - name: content
+        type: string
+        description: "Text content (for text type)"
+        required: false
+      - name: media_url
+        type: string
+        description: "Media URL (for media types)"
+        required: false
+      - name: template_name
+        type: string
+        description: "Template name"
+        required: false
+      - name: template_params
+        type: string
+        description: "JSON template parameters"
+        required: false
+      - name: language
+        type: string
+        description: "Language code"
+        required: false
+        default: "en_US"
+    tags: ["whatsapp", "message", "mobile", "chat", "business"]
+    test_prompts:
+      single:
+        - "Send a WhatsApp message"
+        - "Message customer on WhatsApp"
+        - "Send WhatsApp order confirmation"
+        - "Send WhatsApp template message"
+
+  - name: broadcast_message
+    descriptions:
+      minimal: "Broadcast message"
+      short: "Broadcast a message to multiple recipients"
+      medium: "Send a broadcast message to a list of recipients or a segment."
+      long: "Broadcast messages to multiple recipients at once. Supports segmentation and personalization. Example: broadcast_message(channel='email', segment='active_users', template='monthly_update')."
+      verbose: "Send broadcast messages to large audiences. Targeting: recipient list, segments, all subscribers. Features: personalization, scheduling, throttling, tracking. Channels: email, SMS, push, in-app. Example: broadcast_message(channel='email', segment='premium_customers', template='new_feature_announcement', personalization='{\"company_name\": \"Acme\"}', send_at='2024-02-01T10:00:00Z', throttle_per_hour=10000). Returns: broadcast_id, estimated_recipients, scheduled_time. Note: Large broadcasts are queued and sent gradually. Warning: Verify segment targeting before sending to avoid unintended recipients."
+    parameters:
+      - name: channel
+        type: string
+        description: "Message channel"
+        required: true
+        enum: ["email", "sms", "push", "in_app"]
+      - name: segment
+        type: string
+        description: "Target segment ID/name"
+        required: false
+      - name: recipient_list
+        type: string
+        description: "JSON array of recipients"
+        required: false
+      - name: template
+        type: string
+        description: "Message template name"
+        required: true
+      - name: personalization
+        type: string
+        description: "JSON personalization data"
+        required: false
+      - name: send_at
+        type: string
+        description: "Scheduled send time"
+        required: false
+      - name: throttle_per_hour
+        type: integer
+        description: "Messages per hour limit"
+        required: false
+    tags: ["broadcast", "bulk", "campaign", "mass", "notification"]
+    test_prompts:
+      single:
+        - "Send broadcast email to all users"
+        - "Blast message to premium segment"
+        - "Send mass notification"
+        - "Broadcast announcement to subscribers"
+
+  - name: create_chat_room
+    descriptions:
+      minimal: "Create chat room"
+      short: "Create a chat room or group"
+      medium: "Create a chat room or group conversation with multiple participants."
+      long: "Create a persistent chat room for group conversations. Add members and configure settings. Example: create_chat_room(name='Project Alpha', members='[\"user1\", \"user2\", \"user3\"]')."
+      verbose: "Create chat rooms for real-time group messaging. Types: public (discoverable), private (invite-only), direct (1:1). Features: member management, roles (admin, moderator, member), persistence, message history. Example: create_chat_room(name='Engineering Team', type='private', members='[\"user123\", \"user456\"]', admins='[\"user123\"]', description='Engineering team discussions', enable_history=true, max_members=50). Note: Room creators are automatically admins. Warning: Public rooms may be discovered by all workspace users."
+    parameters:
+      - name: name
+        type: string
+        description: "Chat room name"
+        required: true
+      - name: type
+        type: string
+        description: "Room type"
+        required: false
+        default: "private"
+        enum: ["public", "private", "direct"]
+      - name: members
+        type: string
+        description: "JSON array of member IDs"
+        required: true
+      - name: admins
+        type: string
+        description: "JSON array of admin IDs"
+        required: false
+      - name: description
+        type: string
+        description: "Room description"
+        required: false
+      - name: enable_history
+        type: boolean
+        description: "Enable message history"
+        required: false
+        default: true
+    tags: ["chat", "room", "group", "conversation", "realtime"]
+    test_prompts:
+      single:
+        - "Create a team chat room"
+        - "Set up group conversation"
+        - "Make a project chat channel"
+        - "Create private chat room"
+
+  - name: send_in_app_message
+    descriptions:
+      minimal: "Send in-app message"
+      short: "Send an in-app message or modal"
+      medium: "Display an in-app message, banner, or modal to users within the application."
+      long: "Send in-app messages to users while they're using the application. Types include banners, modals, and tooltips. Example: send_in_app_message(user_id='u123', type='banner', content='Welcome back!')."
+      verbose: "Deliver contextual in-app messages to users. Types: 'banner' (top bar), 'modal' (popup), 'tooltip' (feature pointer), 'slideout' (side panel), 'fullscreen' (takeover). Targeting: specific user, segment, all active. Features: buttons/CTAs, dismissible, scheduled, frequency caps. Example: send_in_app_message(user_id='user_abc', type='modal', title='New Feature!', content='Check out our new dashboard', cta_text='Try Now', cta_url='/dashboard', dismissible=true, display_once=true). Note: Messages queue until user is active. Warning: Excessive modals degrade user experience."
+    parameters:
+      - name: user_id
+        type: string
+        description: "Target user ID"
+        required: false
+      - name: segment
+        type: string
+        description: "Target segment"
+        required: false
+      - name: type
+        type: string
+        description: "Message type"
+        required: true
+        enum: ["banner", "modal", "tooltip", "slideout", "fullscreen"]
+      - name: title
+        type: string
+        description: "Message title"
+        required: false
+      - name: content
+        type: string
+        description: "Message content"
+        required: true
+      - name: cta_text
+        type: string
+        description: "Call-to-action button text"
+        required: false
+      - name: cta_url
+        type: string
+        description: "CTA destination URL"
+        required: false
+      - name: dismissible
+        type: boolean
+        description: "Can be dismissed"
+        required: false
+        default: true
+    tags: ["in-app", "message", "modal", "notification", "engagement"]
+    test_prompts:
+      single:
+        - "Show in-app message to user"
+        - "Display welcome modal"
+        - "Show feature announcement"
+        - "Send in-app notification"
+
+  - name: manage_message_queue
+    descriptions:
+      minimal: "Manage message queue"
+      short: "Manage the message delivery queue"
+      medium: "View, retry, or purge messages in the delivery queue."
+      long: "Manage message queues for troubleshooting and recovery. View pending, retry failed, or purge stale messages. Example: manage_message_queue(action='retry_failed', channel='email', max_age_hours=24)."
+      verbose: "Manage message delivery queues across channels. Actions: 'view' (list queued), 'retry' (resend failed), 'purge' (delete stale), 'pause' (hold delivery), 'resume'. Filters: channel, status, age, recipient. Example: manage_message_queue(action='retry', channel='sms', status='failed', max_age_hours=48, limit=1000). Returns: queue_depth, messages_affected, queue_health. Note: Retries respect rate limits. Warning: Purging removes messages permanently without delivery."
+    parameters:
+      - name: action
+        type: string
+        description: "Queue action"
+        required: true
+        enum: ["view", "retry", "purge", "pause", "resume", "stats"]
+      - name: channel
+        type: string
+        description: "Message channel filter"
+        required: false
+        enum: ["email", "sms", "push", "slack", "whatsapp", "all"]
+      - name: status
+        type: string
+        description: "Message status filter"
+        required: false
+        enum: ["pending", "failed", "delayed", "all"]
+      - name: max_age_hours
+        type: integer
+        description: "Maximum message age"
+        required: false
+      - name: limit
+        type: integer
+        description: "Max messages to affect"
+        required: false
+        default: 100
+    tags: ["queue", "message", "delivery", "retry", "manage"]
+    test_prompts:
+      single:
+        - "Retry failed messages"
+        - "Check message queue status"
+        - "Purge old pending messages"
+        - "View message queue depth"
+
+  - name: get_message_status
+    descriptions:
+      minimal: "Get message status"
+      short: "Get delivery status of a message"
+      medium: "Check the delivery status and events for a sent message."
+      long: "Get the delivery status of a sent message including all tracking events. Example: get_message_status(message_id='msg_123')."
+      verbose: "Retrieve detailed delivery status and event timeline for messages. Statuses: queued, sent, delivered, opened, clicked, bounced, failed, unsubscribed. Events include timestamps, device info, and geolocation. Example: get_message_status(message_id='msg_ABC123', include_events=true, include_metadata=true). Returns: current_status, event_timeline, error_details (if failed), link_clicks, open_count. Note: Email open tracking requires tracking pixel. Warning: Privacy regulations may limit tracking data."
+    parameters:
+      - name: message_id
+        type: string
+        description: "Message ID to check"
+        required: true
+      - name: include_events
+        type: boolean
+        description: "Include event timeline"
+        required: false
+        default: true
+      - name: include_metadata
+        type: boolean
+        description: "Include message metadata"
+        required: false
+        default: false
+    tags: ["message", "status", "tracking", "delivery", "analytics"]
+    test_prompts:
+      single:
+        - "Check if the email was delivered"
+        - "Get message delivery status"
+        - "Was the SMS sent successfully?"
+        - "Track message open and clicks"
+
+  - name: set_auto_response
+    descriptions:
+      minimal: "Set auto-response"
+      short: "Configure automatic message responses"
+      medium: "Set up automatic responses for incoming messages based on rules."
+      long: "Configure auto-responders for incoming messages. Set conditions, response content, and timing. Example: set_auto_response(channel='email', trigger='new_message', response='Thanks for contacting us!')."
+      verbose: "Configure intelligent auto-responses for incoming messages. Triggers: new message, keyword match, after-hours, first contact. Features: delay, once per sender, expiration, conditional logic. Example: set_auto_response(channel='email', name='after_hours', trigger='new_message', conditions='{\"time_range\": \"18:00-09:00\", \"days\": [\"sat\", \"sun\"]}', response_template='after_hours_reply', response_delay_minutes=0, once_per_sender=true). Note: Auto-responses can trigger conversation flows. Warning: Avoid auto-response loops with other automated systems."
+    parameters:
+      - name: channel
+        type: string
+        description: "Message channel"
+        required: true
+        enum: ["email", "sms", "whatsapp", "chat"]
+      - name: name
+        type: string
+        description: "Auto-response rule name"
+        required: true
+      - name: trigger
+        type: string
+        description: "Trigger type"
+        required: true
+        enum: ["new_message", "keyword_match", "after_hours", "first_contact"]
+      - name: conditions
+        type: string
+        description: "JSON trigger conditions"
+        required: false
+      - name: response_template
+        type: string
+        description: "Response template name"
+        required: false
+      - name: response_content
+        type: string
+        description: "Response text"
+        required: false
+      - name: response_delay_minutes
+        type: integer
+        description: "Delay before responding"
+        required: false
+        default: 0
+      - name: enabled
+        type: boolean
+        description: "Enable auto-response"
+        required: false
+        default: true
+    tags: ["auto-response", "automation", "reply", "bot", "trigger"]
+    test_prompts:
+      single:
+        - "Set up auto-reply for emails"
+        - "Create out-of-office response"
+        - "Configure auto-response for SMS"
+        - "Set up automatic chat responses"
+
+  - name: send_rich_media_message
+    descriptions:
+      minimal: "Send rich media"
+      short: "Send a message with rich media content"
+      medium: "Send messages with images, videos, files, or interactive cards."
+      long: "Send rich media messages across supported channels. Includes images, videos, documents, carousels, and interactive cards. Example: send_rich_media_message(channel='slack', to='#general', type='image', url='https://example.com/chart.png')."
+      verbose: "Send rich media messages beyond plain text. Types: image, video, audio, document, carousel (multiple cards), interactive_card (structured with buttons). Channels: Slack, Teams, WhatsApp, email, push. Example: send_rich_media_message(channel='teams', to='user@company.com', type='card', card='{\"title\": \"New Lead\", \"subtitle\": \"John Doe\", \"image\": \"...\", \"buttons\": [{\"text\": \"View\", \"url\": \"...\"}]}'). Note: Media must be accessible via URL. Warning: File size limits vary by channel (typically 5-25MB)."
+    parameters:
+      - name: channel
+        type: string
+        description: "Message channel"
+        required: true
+        enum: ["slack", "teams", "whatsapp", "email", "push", "telegram"]
+      - name: to
+        type: string
+        description: "Recipient"
+        required: true
+      - name: type
+        type: string
+        description: "Media type"
+        required: true
+        enum: ["image", "video", "audio", "document", "carousel", "card"]
+      - name: url
+        type: string
+        description: "Media URL"
+        required: false
+      - name: card
+        type: string
+        description: "JSON card definition"
+        required: false
+      - name: caption
+        type: string
+        description: "Media caption"
+        required: false
+    tags: ["media", "rich", "image", "video", "interactive"]
+    test_prompts:
+      single:
+        - "Send image to Slack channel"
+        - "Post video message"
+        - "Send interactive card"
+        - "Share document via Teams"
+
+  - name: manage_contact_list
+    descriptions:
+      minimal: "Manage contacts"
+      short: "Manage messaging contact lists"
+      medium: "Create, update, or manage contact lists for messaging campaigns."
+      long: "Manage contact lists for bulk messaging. Add/remove contacts, segment lists, and sync from sources. Example: manage_contact_list(action='create', name='Newsletter Subscribers', source='csv')."
+      verbose: "Comprehensive contact list management for messaging. Actions: 'create' (new list), 'add_contacts', 'remove_contacts', 'segment', 'import', 'export', 'sync'. Features: custom fields, tags, subscription status, engagement scoring. Example: manage_contact_list(action='add_contacts', list_id='list_123', contacts='[{\"email\": \"user@example.com\", \"name\": \"John Doe\", \"tags\": [\"premium\"]}]', update_existing=true). Note: Contacts can belong to multiple lists. Warning: Respect unsubscribe status when adding to lists."
+    parameters:
+      - name: action
+        type: string
+        description: "List action"
+        required: true
+        enum: ["create", "add_contacts", "remove_contacts", "get", "delete", "import", "export", "segment"]
+      - name: list_id
+        type: string
+        description: "List ID (for existing lists)"
+        required: false
+      - name: name
+        type: string
+        description: "List name (for create)"
+        required: false
+      - name: contacts
+        type: string
+        description: "JSON array of contacts"
+        required: false
+      - name: source
+        type: string
+        description: "Import source"
+        required: false
+        enum: ["csv", "json", "crm", "manual"]
+      - name: update_existing
+        type: boolean
+        description: "Update existing contacts"
+        required: false
+        default: true
+    tags: ["contacts", "list", "subscribers", "audience", "manage"]
+    test_prompts:
+      single:
+        - "Create a new mailing list"
+        - "Add contacts to the list"
+        - "Import subscribers from CSV"
+        - "Segment the contact list"
+
+  - name: send_push_notification
+    descriptions:
+      minimal: "Send push"
+      short: "Send push notification"
+      medium: "Send a push notification to mobile or web users."
+      long: "Send push notifications to devices. Example: send_push_notification(user_id='user_123', title='New Message', body='You have a new message')."
+      verbose: "Push notification delivery to mobile and web. Platforms: iOS, Android, Web. Features: rich media, action buttons, deep links, silent push, scheduling. Example: send_push_notification(user_id='user_abc', title='Order Shipped', body='Your order #123 is on the way', data='{\"order_id\": \"123\"}', image='https://...', actions='[{\"id\": \"track\", \"title\": \"Track Order\"}]', ttl=3600). Note: Users must have granted permission. Warning: Excessive notifications cause uninstalls."
+    parameters:
+      - name: user_id
+        type: string
+        description: "Target user ID"
+        required: true
+      - name: title
+        type: string
+        description: "Notification title"
+        required: true
+      - name: body
+        type: string
+        description: "Notification body"
+        required: true
+      - name: data
+        type: string
+        description: "Custom data payload (JSON)"
+        required: false
+      - name: image
+        type: string
+        description: "Image URL"
+        required: false
+      - name: actions
+        type: string
+        description: "JSON array of action buttons"
+        required: false
+      - name: ttl
+        type: integer
+        description: "Time to live (seconds)"
+        required: false
+        default: 86400
+    tags: ["push", "notification", "mobile", "alert", "app"]
+    test_prompts:
+      single:
+        - "Send push notification"
+        - "Notify user on mobile"
+        - "Send app notification"
+        - "Push alert to device"
+
+  - name: create_message_thread
+    descriptions:
+      minimal: "Create thread"
+      short: "Create a message thread"
+      medium: "Create a new conversation thread with one or more participants."
+      long: "Start new message thread. Example: create_message_thread(participants='[\"user1@example.com\", \"user2@example.com\"]', subject='Project Discussion')."
+      verbose: "Create conversation threads. Types: direct (1:1), group, channel. Features: named threads, metadata, initial message. Example: create_message_thread(participants='[\"user1@example.com\", \"user2@example.com\"]', subject='Q1 Planning', type='group', initial_message='Let\\'s discuss Q1 goals', metadata='{\"project_id\": \"proj_123\"}'). Note: Thread IDs are stable references. Warning: Group threads may have participant limits."
+    parameters:
+      - name: participants
+        type: string
+        description: "JSON array of participant IDs"
+        required: true
+      - name: subject
+        type: string
+        description: "Thread subject"
+        required: false
+      - name: type
+        type: string
+        description: "Thread type"
+        required: false
+        default: "direct"
+        enum: ["direct", "group", "channel"]
+      - name: initial_message
+        type: string
+        description: "First message content"
+        required: false
+      - name: metadata
+        type: string
+        description: "Custom metadata (JSON)"
+        required: false
+    tags: ["thread", "conversation", "create", "chat", "group"]
+    test_prompts:
+      single:
+        - "Create message thread"
+        - "Start group conversation"
+        - "Create chat thread"
+        - "Begin new conversation"
+
+  - name: archive_conversation
+    descriptions:
+      minimal: "Archive conversation"
+      short: "Archive a conversation"
+      medium: "Archive a message thread or conversation."
+      long: "Archive conversation to hide from main view. Example: archive_conversation(thread_id='thread_123', retain_searchable=true)."
+      verbose: "Conversation archival management. Options: archive, unarchive, auto-archive rules. Features: retain searchability, compression, export before archive. Example: archive_conversation(thread_id='thread_abc', retain_searchable=true, reason='Project completed', notify_participants=false). Archived threads can be restored. Note: Archived threads don't appear in active list. Warning: Auto-archive rules may affect active conversations."
+    parameters:
+      - name: thread_id
+        type: string
+        description: "Thread to archive"
+        required: true
+      - name: retain_searchable
+        type: boolean
+        description: "Keep in search results"
+        required: false
+        default: true
+      - name: reason
+        type: string
+        description: "Archive reason"
+        required: false
+      - name: notify_participants
+        type: boolean
+        description: "Notify participants"
+        required: false
+        default: false
+    tags: ["archive", "conversation", "thread", "cleanup", "organize"]
+    test_prompts:
+      single:
+        - "Archive this conversation"
+        - "Archive old threads"
+        - "Hide conversation"
+        - "Archive chat thread"
+
+  - name: translate_message
+    descriptions:
+      minimal: "Translate message"
+      short: "Translate a message"
+      medium: "Translate a message to another language."
+      long: "Translate message content. Example: translate_message(message_id='msg_123', target_language='es')."
+      verbose: "Message translation services. Features: auto-detect source, multiple targets, preserve formatting, inline translation. Example: translate_message(text='Hello, how can I help you?', source_language='auto', target_language='es', preserve_html=true, formal=true). Languages: 100+ supported. Returns: {\"translated\": \"Hola, ¿cómo puedo ayudarte?\", \"detected_language\": \"en\"}. Note: Context may affect translation quality. Warning: Automated translation may miss nuances."
+    parameters:
+      - name: message_id
+        type: string
+        description: "Message to translate"
+        required: false
+      - name: text
+        type: string
+        description: "Text to translate"
+        required: false
+      - name: source_language
+        type: string
+        description: "Source language code"
+        required: false
+        default: "auto"
+      - name: target_language
+        type: string
+        description: "Target language code"
+        required: true
+      - name: preserve_html
+        type: boolean
+        description: "Preserve HTML formatting"
+        required: false
+        default: true
+      - name: formal
+        type: boolean
+        description: "Use formal tone"
+        required: false
+        default: false
+    tags: ["translate", "language", "message", "i18n", "localization"]
+    test_prompts:
+      single:
+        - "Translate message to Spanish"
+        - "Translate this text"
+        - "Convert to French"
+        - "Translate conversation"
+
+  - name: pin_message
+    descriptions:
+      minimal: "Pin message"
+      short: "Pin a message"
+      medium: "Pin an important message in a channel or thread."
+      long: "Pin message for visibility. Example: pin_message(message_id='msg_123', channel='#general')."
+      verbose: "Message pinning for important content. Features: pin to channel, pin to thread, expiration, notifications. Example: pin_message(message_id='msg_abc', channel='team-announcements', notify=true, expires_at='2024-02-01'). Pinned messages appear in pinned section. Note: Channels may have pin limits. Warning: Too many pins reduce effectiveness."
+    parameters:
+      - name: message_id
+        type: string
+        description: "Message to pin"
+        required: true
+      - name: channel
+        type: string
+        description: "Channel or thread ID"
+        required: false
+      - name: notify
+        type: boolean
+        description: "Notify channel members"
+        required: false
+        default: false
+      - name: expires_at
+        type: string
+        description: "Pin expiration (ISO 8601)"
+        required: false
+    tags: ["pin", "message", "important", "highlight", "channel"]
+    test_prompts:
+      single:
+        - "Pin this message"
+        - "Pin to channel"
+        - "Mark message as pinned"
+        - "Highlight important message"
+
+  - name: set_presence_status
+    descriptions:
+      minimal: "Set presence"
+      short: "Set presence status"
+      medium: "Set your presence status and custom status message."
+      long: "Update presence status. Example: set_presence_status(status='away', message='In a meeting', expiration='2h')."
+      verbose: "Presence and availability status. Statuses: online, away, dnd (do not disturb), offline, custom. Features: custom message, emoji, expiration, calendar sync. Example: set_presence_status(status='dnd', message='🎯 Deep work until 3pm', emoji=':dart:', expires_at='2024-01-15T15:00:00Z', sync_calendar=true). Note: DND status blocks notifications. Warning: Manual status overrides automatic detection."
+    parameters:
+      - name: status
+        type: string
+        description: "Presence status"
+        required: true
+        enum: ["online", "away", "dnd", "offline"]
+      - name: message
+        type: string
+        description: "Status message"
+        required: false
+      - name: emoji
+        type: string
+        description: "Status emoji"
+        required: false
+      - name: expires_at
+        type: string
+        description: "Status expiration"
+        required: false
+      - name: sync_calendar
+        type: boolean
+        description: "Sync with calendar"
+        required: false
+        default: false
+    tags: ["presence", "status", "availability", "away", "online"]
+    test_prompts:
+      single:
+        - "Set status to away"
+        - "Update my presence"
+        - "Set do not disturb"
+        - "Change availability status"
+
+  - name: search_messages
+    descriptions:
+      minimal: "Search messages"
+      short: "Search message history"
+      medium: "Search through message history across channels and threads."
+      long: "Search messages with filters. Example: search_messages(query='project update', from='user@example.com', date_range='30d')."
+      verbose: "Full-text message search. Filters: sender, channel, date range, has attachments, mentions. Example: search_messages(query='budget approval', channels='[\"#finance\", \"#management\"]', from='cfo@company.com', date_from='2024-01-01', has_attachment=true, limit=50). Operators: exact phrase (\"...\"), exclude (-word), from:, in:, has:. Note: Search respects access permissions. Warning: Very old messages may not be indexed."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query"
+        required: true
+      - name: channels
+        type: string
+        description: "JSON array of channels"
+        required: false
+      - name: from
+        type: string
+        description: "Filter by sender"
+        required: false
+      - name: date_from
+        type: string
+        description: "Start date"
+        required: false
+      - name: date_to
+        type: string
+        description: "End date"
+        required: false
+      - name: has_attachment
+        type: boolean
+        description: "Filter by attachments"
+        required: false
+      - name: limit
+        type: integer
+        description: "Maximum results"
+        required: false
+        default: 50
+    tags: ["search", "messages", "find", "query", "history"]
+    test_prompts:
+      single:
+        - "Search messages"
+        - "Find messages from user"
+        - "Search chat history"
+        - "Look up old messages"
+
+  - name: create_message_reaction
+    descriptions:
+      minimal: "Add reaction"
+      short: "Add a reaction to a message"
+      medium: "Add an emoji reaction to a message."
+      long: "React to message with emoji. Example: create_message_reaction(message_id='msg_123', emoji='👍')."
+      verbose: "Message reactions and emoji responses. Features: standard emoji, custom emoji, reaction analytics. Example: create_message_reaction(message_id='msg_abc', emoji='✅', notify_author=false). Custom emoji require workspace support. Note: Users can add multiple reactions. Warning: Some workspaces limit reaction types."
+    parameters:
+      - name: message_id
+        type: string
+        description: "Message to react to"
+        required: true
+      - name: emoji
+        type: string
+        description: "Emoji or emoji code"
+        required: true
+      - name: notify_author
+        type: boolean
+        description: "Notify message author"
+        required: false
+        default: true
+    tags: ["reaction", "emoji", "message", "respond", "like"]
+    test_prompts:
+      single:
+        - "Add reaction to message"
+        - "React with thumbs up"
+        - "Add emoji reaction"
+        - "Like the message"
+
+  - name: schedule_message
+    descriptions:
+      minimal: "Schedule message"
+      short: "Schedule a message"
+      medium: "Schedule a message to be sent at a specific time."
+      long: "Schedule message for future delivery. Example: schedule_message(channel='#announcements', text='Meeting in 1 hour', send_at='2024-01-15T10:00:00Z')."
+      verbose: "Message scheduling for future delivery. Features: timezone support, recurring, preview, edit before send. Example: schedule_message(channel='#daily-standup', text='Time for standup! 🧍', send_at='09:00', timezone='America/New_York', recurring='weekdays', preview=true). Note: Scheduled messages can be edited or cancelled. Warning: Channel permissions checked at send time."
+    parameters:
+      - name: channel
+        type: string
+        description: "Target channel or user"
+        required: true
+      - name: text
+        type: string
+        description: "Message content"
+        required: true
+      - name: send_at
+        type: string
+        description: "Send time (ISO 8601 or time)"
+        required: true
+      - name: timezone
+        type: string
+        description: "Timezone for send time"
+        required: false
+        default: "UTC"
+      - name: recurring
+        type: string
+        description: "Recurrence pattern"
+        required: false
+        enum: ["once", "daily", "weekdays", "weekly", "monthly"]
+    tags: ["schedule", "message", "future", "timer", "delay"]
+    test_prompts:
+      single:
+        - "Schedule message for later"
+        - "Send message at 9am"
+        - "Schedule announcement"
+        - "Delay message send"

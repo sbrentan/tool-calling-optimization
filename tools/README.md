@@ -4,13 +4,25 @@ This directory contains YAML files defining tools for testing LLM tool-calling a
 
 ## Structure
 
-Each YAML file represents a **category** of related tools:
+Each YAML file represents a **category** of related tools. For example:
 - `file_operations.yaml` - File system operations
 - `data_operations.yaml` - Database and data manipulation
 - `math_operations.yaml` - Calculations and conversions
 - `web_operations.yaml` - HTTP, email, web search
 - `text_operations.yaml` - Text processing and NLP
 - `system_operations.yaml` - System commands and monitoring
+- `audio_operations.yaml` - Audio file processing
+- `image_operations.yaml` - Image manipulation
+- `security_operations.yaml` - Encryption and security
+- `calendar_operations.yaml` - Calendar and scheduling
+- `cloud_storage_operations.yaml` - Cloud storage services (S3, GCS, Azure)
+- `messaging_operations.yaml` - Email, SMS, chat messaging
+- `payment_operations.yaml` - Payment processing and billing
+- `location_operations.yaml` - Geolocation and maps
+- `ai_ml_operations.yaml` - AI/ML model operations
+- `database_operations.yaml` - Database management and queries
+- `video_operations.yaml` - Video processing and editing
+- `document_operations.yaml` - Document processing and conversion
 
 ## Schema
 

@@ -1,0 +1,1233 @@
+category: video_operations
+description: Video processing and editing operations
+tools:
+  - name: convert_video
+    descriptions:
+      minimal: "Convert video"
+      short: "Convert video format"
+      medium: "Convert a video file to a different format or codec."
+      long: "Convert video between formats (MP4, WebM, AVI, MOV, etc.) with codec and quality options. Example: convert_video(input='video.avi', output='video.mp4', codec='h264')."
+      verbose: "Convert video files between formats and codecs. Formats: MP4, WebM, AVI, MOV, MKV, FLV, WMV. Codecs: 'h264' (most compatible), 'h265/hevc' (better compression), 'vp9' (web), 'av1' (newest). Options: quality (CRF), bitrate, resolution, frame rate, audio codec. Example: convert_video(input='raw.mov', output='web.mp4', codec='h264', quality=23, audio_codec='aac', resolution='1920x1080'). Note: H.264 offers best compatibility. Warning: High-quality encoding is CPU-intensive and time-consuming."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: codec
+        type: string
+        description: "Video codec"
+        required: false
+        default: "h264"
+        enum: ["h264", "h265", "vp9", "av1", "copy"]
+      - name: quality
+        type: integer
+        description: "Quality (CRF, lower=better)"
+        required: false
+        default: 23
+      - name: resolution
+        type: string
+        description: "Output resolution (e.g., 1920x1080)"
+        required: false
+      - name: fps
+        type: number
+        description: "Frame rate"
+        required: false
+      - name: audio_codec
+        type: string
+        description: "Audio codec"
+        required: false
+        default: "aac"
+        enum: ["aac", "mp3", "opus", "copy", "none"]
+    tags: ["video", "convert", "format", "codec", "transcode"]
+    test_prompts:
+      single:
+        - "Convert this video to MP4"
+        - "Change the video format to WebM"
+        - "Transcode the video to H.265"
+        - "Convert AVI to MP4"
+
+  - name: trim_video
+    descriptions:
+      minimal: "Trim video"
+      short: "Trim video to specific duration"
+      medium: "Trim a video to a specific start and end time."
+      long: "Trim video to keep only a portion. Specify start and end times or duration. Example: trim_video(input='video.mp4', start='00:01:30', end='00:05:00', output='clip.mp4')."
+      verbose: "Trim video files to extract specific portions. Time formats: 'HH:MM:SS', 'MM:SS', or seconds (e.g., '90.5'). Options: start time, end time, or duration. Mode: 'fast' (uses keyframes, may be imprecise), 'accurate' (re-encodes for exact timing). Example: trim_video(input='long_video.mp4', start='00:10:30', duration='00:02:00', mode='accurate', output='highlight.mp4'). Note: Fast mode is instant but may include extra frames. Warning: Accurate mode requires full re-encoding."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: start
+        type: string
+        description: "Start time"
+        required: true
+      - name: end
+        type: string
+        description: "End time"
+        required: false
+      - name: duration
+        type: string
+        description: "Duration (alternative to end)"
+        required: false
+      - name: mode
+        type: string
+        description: "Trimming mode"
+        required: false
+        default: "fast"
+        enum: ["fast", "accurate"]
+    tags: ["video", "trim", "cut", "clip", "extract"]
+    test_prompts:
+      single:
+        - "Trim the video from 1:30 to 5:00"
+        - "Cut the first 30 seconds"
+        - "Extract a 2-minute clip"
+        - "Trim the video to the highlight"
+
+  - name: merge_videos
+    descriptions:
+      minimal: "Merge videos"
+      short: "Merge multiple videos"
+      medium: "Concatenate multiple video files into a single video."
+      long: "Merge multiple videos into one. Videos are concatenated in order. Example: merge_videos(inputs='[\"part1.mp4\", \"part2.mp4\"]', output='full.mp4')."
+      verbose: "Concatenate multiple video files into a single video. Modes: 'concat' (same codec, fast), 'reencode' (different formats, slower). Options: transition between clips (fade, dissolve), crossfade duration, output format. Example: merge_videos(inputs='[\"intro.mp4\", \"main.mp4\", \"outro.mp4\"]', transition='crossfade', transition_duration=1.0, output='final.mp4'). Note: Same-codec videos can be merged quickly without re-encoding. Warning: Different resolutions/framerates require re-encoding."
+    parameters:
+      - name: inputs
+        type: string
+        description: "JSON array of video paths"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: mode
+        type: string
+        description: "Merge mode"
+        required: false
+        default: "concat"
+        enum: ["concat", "reencode"]
+      - name: transition
+        type: string
+        description: "Transition effect"
+        required: false
+        enum: ["none", "fade", "crossfade", "dissolve"]
+      - name: transition_duration
+        type: number
+        description: "Transition duration in seconds"
+        required: false
+        default: 0.5
+    tags: ["video", "merge", "concat", "join", "combine"]
+    test_prompts:
+      single:
+        - "Merge these video files"
+        - "Concatenate the video parts"
+        - "Join the clips together"
+        - "Combine videos with a crossfade"
+
+  - name: add_subtitles
+    descriptions:
+      minimal: "Add subtitles"
+      short: "Add subtitles to video"
+      medium: "Add subtitles to a video from an SRT, VTT, or ASS file."
+      long: "Burn subtitles into video or add as a selectable track. Supports SRT, VTT, ASS formats. Example: add_subtitles(video='movie.mp4', subtitles='subs.srt', output='movie_subbed.mp4')."
+      verbose: "Add subtitles to video files. Modes: 'burn' (permanent, hardcoded), 'soft' (selectable track). Formats: SRT, VTT, ASS/SSA. Styling (for burn mode): font, size, color, position, outline, shadow. Example: add_subtitles(video='interview.mp4', subtitles='captions.srt', mode='burn', font='Arial', font_size=24, color='#FFFFFF', outline=2, position='bottom', output='captioned.mp4'). Note: Burned subtitles cannot be removed. Warning: Soft subtitles require player support."
+    parameters:
+      - name: video
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: subtitles
+        type: string
+        description: "Subtitles file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: mode
+        type: string
+        description: "Subtitle mode"
+        required: false
+        default: "burn"
+        enum: ["burn", "soft"]
+      - name: font
+        type: string
+        description: "Font name (for burn mode)"
+        required: false
+        default: "Arial"
+      - name: font_size
+        type: integer
+        description: "Font size"
+        required: false
+        default: 24
+      - name: color
+        type: string
+        description: "Subtitle color (hex)"
+        required: false
+        default: "#FFFFFF"
+      - name: position
+        type: string
+        description: "Subtitle position"
+        required: false
+        default: "bottom"
+        enum: ["top", "center", "bottom"]
+    tags: ["video", "subtitles", "captions", "srt", "text"]
+    test_prompts:
+      single:
+        - "Add subtitles to the video"
+        - "Burn these captions into the video"
+        - "Add SRT subtitles"
+        - "Put subtitles on the movie"
+
+  - name: extract_frames
+    descriptions:
+      minimal: "Extract frames"
+      short: "Extract frames from video"
+      medium: "Extract still images/frames from a video at specified intervals."
+      long: "Extract frames from video as images. Extract at intervals, specific times, or all frames. Example: extract_frames(video='clip.mp4', interval=1.0, output_dir='./frames/')."
+      verbose: "Extract still frames from video files. Modes: 'interval' (every N seconds), 'count' (N evenly spaced frames), 'times' (specific timestamps), 'all' (every frame). Output formats: JPEG, PNG, BMP, WebP. Example: extract_frames(video='timelapse.mp4', mode='count', count=100, format='png', quality=95, output_dir='./frames/', naming='frame_%04d.png'). Note: 'all' mode creates many files (fps × duration). Warning: High-resolution videos produce large image files."
+    parameters:
+      - name: video
+        type: string
+        description: "Video file path"
+        required: true
+      - name: output_dir
+        type: string
+        description: "Output directory for frames"
+        required: true
+      - name: mode
+        type: string
+        description: "Extraction mode"
+        required: false
+        default: "interval"
+        enum: ["interval", "count", "times", "all"]
+      - name: interval
+        type: number
+        description: "Interval in seconds (for interval mode)"
+        required: false
+        default: 1.0
+      - name: count
+        type: integer
+        description: "Number of frames (for count mode)"
+        required: false
+      - name: times
+        type: string
+        description: "JSON array of timestamps (for times mode)"
+        required: false
+      - name: format
+        type: string
+        description: "Output image format"
+        required: false
+        default: "jpg"
+        enum: ["jpg", "png", "webp", "bmp"]
+      - name: quality
+        type: integer
+        description: "Image quality (1-100)"
+        required: false
+        default: 90
+    tags: ["video", "frames", "extract", "images", "screenshots"]
+    test_prompts:
+      single:
+        - "Extract frames every 5 seconds"
+        - "Get 10 frames from the video"
+        - "Extract a frame at 1:30"
+        - "Save all frames as images"
+
+  - name: add_watermark
+    descriptions:
+      minimal: "Add watermark"
+      short: "Add watermark to video"
+      medium: "Add an image or text watermark to a video."
+      long: "Add a watermark (image or text) to video. Control position, opacity, and size. Example: add_watermark(video='content.mp4', watermark='logo.png', position='bottom-right', output='branded.mp4')."
+      verbose: "Add image or text watermarks to videos. Types: 'image' (PNG with transparency), 'text' (rendered text). Options: position (corners, center), opacity, scale, margin, animation. Example: add_watermark(video='tutorial.mp4', type='image', watermark='logo.png', position='bottom-right', opacity=0.7, scale=0.15, margin=20, output='tutorial_branded.mp4'). Note: PNG watermarks preserve transparency. Warning: Watermarks affect entire video; use trim first for partial watermarking."
+    parameters:
+      - name: video
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: type
+        type: string
+        description: "Watermark type"
+        required: false
+        default: "image"
+        enum: ["image", "text"]
+      - name: watermark
+        type: string
+        description: "Image path or text content"
+        required: true
+      - name: position
+        type: string
+        description: "Watermark position"
+        required: false
+        default: "bottom-right"
+        enum: ["top-left", "top-right", "bottom-left", "bottom-right", "center"]
+      - name: opacity
+        type: number
+        description: "Opacity (0.0 to 1.0)"
+        required: false
+        default: 0.8
+      - name: scale
+        type: number
+        description: "Scale relative to video width"
+        required: false
+        default: 0.1
+      - name: margin
+        type: integer
+        description: "Margin from edge in pixels"
+        required: false
+        default: 10
+    tags: ["video", "watermark", "logo", "branding", "overlay"]
+    test_prompts:
+      single:
+        - "Add my logo to the video"
+        - "Put a watermark on the video"
+        - "Add branding to the corner"
+        - "Watermark with my company logo"
+
+  - name: resize_video
+    descriptions:
+      minimal: "Resize video"
+      short: "Resize video resolution"
+      medium: "Resize a video to a different resolution."
+      long: "Resize video to new dimensions. Maintains aspect ratio by default. Example: resize_video(input='4k.mp4', width=1920, output='1080p.mp4')."
+      verbose: "Resize video to different resolutions. Modes: 'fit' (maintain aspect ratio, fit within dimensions), 'fill' (crop to fill dimensions), 'stretch' (distort to exact size), 'width' (scale by width), 'height' (scale by height). Presets: '4k', '1080p', '720p', '480p'. Example: resize_video(input='source.mp4', preset='1080p', mode='fit', output='hd.mp4') or resize_video(input='source.mp4', width=1280, height=720, mode='fit', output='720p.mp4'). Note: Upscaling doesn't improve quality. Warning: Non-standard aspect ratios may cause letterboxing."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: width
+        type: integer
+        description: "Target width in pixels"
+        required: false
+      - name: height
+        type: integer
+        description: "Target height in pixels"
+        required: false
+      - name: preset
+        type: string
+        description: "Resolution preset"
+        required: false
+        enum: ["4k", "1080p", "720p", "480p", "360p"]
+      - name: mode
+        type: string
+        description: "Resize mode"
+        required: false
+        default: "fit"
+        enum: ["fit", "fill", "stretch"]
+    tags: ["video", "resize", "scale", "resolution", "dimensions"]
+    test_prompts:
+      single:
+        - "Resize the video to 720p"
+        - "Scale down to 1080p"
+        - "Make the video smaller"
+        - "Convert to HD resolution"
+
+  - name: adjust_video_speed
+    descriptions:
+      minimal: "Adjust speed"
+      short: "Change video playback speed"
+      medium: "Speed up or slow down video playback."
+      long: "Adjust video playback speed. Create slow-motion or timelapse effects. Example: adjust_video_speed(input='clip.mp4', speed=2.0, output='fast.mp4')."
+      verbose: "Adjust video playback speed for slow-motion or timelapse effects. Speed factor: 0.25 (4x slower) to 10.0 (10x faster). Audio options: 'preserve' (pitch-corrected), 'adjust' (chipmunk/slow), 'remove'. Frame interpolation available for smooth slow-motion. Example: adjust_video_speed(input='action.mp4', speed=0.5, audio='preserve', interpolate=true, output='slowmo.mp4'). Note: Extreme slow-motion benefits from high-fps source. Warning: Speed changes affect total duration and file size."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: speed
+        type: number
+        description: "Speed multiplier (0.25 to 10.0)"
+        required: true
+      - name: audio
+        type: string
+        description: "Audio handling"
+        required: false
+        default: "preserve"
+        enum: ["preserve", "adjust", "remove"]
+      - name: interpolate
+        type: boolean
+        description: "Frame interpolation for smooth slow-mo"
+        required: false
+        default: false
+    tags: ["video", "speed", "slowmo", "timelapse", "tempo"]
+    test_prompts:
+      single:
+        - "Speed up the video 2x"
+        - "Create slow motion"
+        - "Make a timelapse"
+        - "Slow down the video"
+
+  - name: rotate_video
+    descriptions:
+      minimal: "Rotate video"
+      short: "Rotate video orientation"
+      medium: "Rotate a video by 90, 180, or 270 degrees."
+      long: "Rotate video by specified degrees. Also supports horizontal and vertical flipping. Example: rotate_video(input='sideways.mp4', rotation=90, output='upright.mp4')."
+      verbose: "Rotate and flip videos. Rotations: 90 (clockwise), 180, 270 (or -90 counterclockwise). Flip: 'horizontal' (mirror), 'vertical'. Mode: 'metadata' (fast, only sets flag), 'reencode' (actual rotation). Example: rotate_video(input='phone_video.mp4', rotation=90, mode='metadata', output='corrected.mp4'). Note: Metadata rotation requires player support. Warning: Some players ignore rotation metadata; use reencode for compatibility."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: rotation
+        type: integer
+        description: "Rotation in degrees"
+        required: false
+        enum: [90, 180, 270]
+      - name: flip
+        type: string
+        description: "Flip direction"
+        required: false
+        enum: ["horizontal", "vertical"]
+      - name: mode
+        type: string
+        description: "Rotation mode"
+        required: false
+        default: "metadata"
+        enum: ["metadata", "reencode"]
+    tags: ["video", "rotate", "flip", "orientation", "transform"]
+    test_prompts:
+      single:
+        - "Rotate the video 90 degrees"
+        - "Flip the video horizontally"
+        - "Fix the video orientation"
+        - "Turn the video upside down"
+
+  - name: compress_video
+    descriptions:
+      minimal: "Compress video"
+      short: "Compress video file size"
+      medium: "Compress a video to reduce file size while maintaining quality."
+      long: "Compress video to reduce file size. Balance between size and quality. Example: compress_video(input='raw.mp4', target_size='100MB', output='compressed.mp4')."
+      verbose: "Compress video files for smaller size. Methods: 'target_size' (aim for specific file size), 'target_bitrate' (specify bitrate), 'crf' (constant quality). Two-pass encoding for better quality at target size. Options: audio bitrate, resolution downscale. Example: compress_video(input='presentation.mp4', method='target_size', target='50MB', two_pass=true, output='small.mp4'). Note: Two-pass is slower but more accurate for size targets. Warning: Aggressive compression causes visible quality loss."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: method
+        type: string
+        description: "Compression method"
+        required: false
+        default: "crf"
+        enum: ["target_size", "target_bitrate", "crf"]
+      - name: target
+        type: string
+        description: "Target size (e.g., '100MB') or bitrate (e.g., '2M')"
+        required: false
+      - name: crf
+        type: integer
+        description: "CRF value (18-28, lower=better)"
+        required: false
+        default: 23
+      - name: two_pass
+        type: boolean
+        description: "Use two-pass encoding"
+        required: false
+        default: false
+      - name: audio_bitrate
+        type: string
+        description: "Audio bitrate (e.g., '128k')"
+        required: false
+        default: "128k"
+    tags: ["video", "compress", "reduce", "size", "optimize"]
+    test_prompts:
+      single:
+        - "Compress this video to under 100MB"
+        - "Reduce the video file size"
+        - "Make the video smaller for sharing"
+        - "Optimize the video for web"
+  - name: add_video_overlay
+    descriptions:
+      minimal: "Add overlay"
+      short: "Add overlay to video"
+      medium: "Add image, logo, or video overlay on top of a video."
+      long: "Add overlay elements to video. Position logos, watermarks, or picture-in-picture. Example: add_video_overlay(input='video.mp4', overlay='logo.png', position='top-right')."
+      verbose: "Add overlays to videos. Types: image (logo, watermark), video (picture-in-picture). Positioning: corner presets, custom coordinates, animated motion. Example: add_video_overlay(input='tutorial.mp4', overlay='company_logo.png', position='bottom-right', margin=20, opacity=0.8, start_time=0, end_time=null, output='branded.mp4'). Note: Use PNG with transparency for logos. Warning: Large overlays may obscure important content."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: overlay
+        type: string
+        description: "Overlay image or video path"
+        required: true
+      - name: position
+        type: string
+        description: "Overlay position"
+        required: false
+        default: "bottom-right"
+        enum: ["top-left", "top-right", "bottom-left", "bottom-right", "center", "custom"]
+      - name: margin
+        type: integer
+        description: "Margin from edge (pixels)"
+        required: false
+        default: 10
+      - name: opacity
+        type: number
+        description: "Overlay opacity (0-1)"
+        required: false
+        default: 1.0
+      - name: start_time
+        type: number
+        description: "Overlay start time (seconds)"
+        required: false
+      - name: end_time
+        type: number
+        description: "Overlay end time (seconds)"
+        required: false
+    tags: ["video", "overlay", "watermark", "logo", "pip"]
+    test_prompts:
+      single:
+        - "Add logo to video"
+        - "Watermark the video"
+        - "Add picture-in-picture"
+        - "Overlay image on video"
+
+  - name: create_video_montage
+    descriptions:
+      minimal: "Create montage"
+      short: "Create video montage"
+      medium: "Combine multiple videos or images into a grid montage."
+      long: "Create a grid montage from multiple videos or images. Split-screen layouts. Example: create_video_montage(inputs='[\"vid1.mp4\", \"vid2.mp4\"]', layout='2x1', output='montage.mp4')."
+      verbose: "Create video montages and split-screen layouts. Layouts: grid (2x2, 3x3), side-by-side (2x1), stacked (1x2), custom. Example: create_video_montage(inputs='[\"interview.mp4\", \"broll.mp4\", \"slides.mp4\", \"reaction.mp4\"]', layout='2x2', gap=2, background='#000000', output='quad_view.mp4'). Note: All videos should have same duration for best results. Warning: Complex layouts may require significant processing time."
+    parameters:
+      - name: inputs
+        type: string
+        description: "JSON array of input file paths"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: layout
+        type: string
+        description: "Grid layout"
+        required: true
+        enum: ["2x1", "1x2", "2x2", "3x3", "custom"]
+      - name: gap
+        type: integer
+        description: "Gap between videos (pixels)"
+        required: false
+        default: 0
+      - name: background
+        type: string
+        description: "Background color"
+        required: false
+        default: "#000000"
+      - name: resolution
+        type: string
+        description: "Output resolution"
+        required: false
+        default: "1920x1080"
+    tags: ["video", "montage", "grid", "split-screen", "combine"]
+    test_prompts:
+      single:
+        - "Create split-screen video"
+        - "Make video montage"
+        - "Combine videos in grid"
+        - "Create 2x2 video layout"
+
+  - name: stabilize_video
+    descriptions:
+      minimal: "Stabilize video"
+      short: "Stabilize shaky video"
+      medium: "Apply video stabilization to reduce camera shake."
+      long: "Stabilize shaky video footage. Smooths camera movement. Example: stabilize_video(input='handheld.mp4', strength='medium', output='stable.mp4')."
+      verbose: "Video stabilization for smoother footage. Algorithms: 2D (translation/rotation), 3D (perspective). Settings: 'light' (subtle), 'medium' (balanced), 'strong' (aggressive). Example: stabilize_video(input='action_cam.mp4', strength='medium', smoothing=10, crop='auto', tripod=false, output='stabilized.mp4'). Note: Strong stabilization may crop edges. Warning: Very shaky footage may not be fully correctable."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: strength
+        type: string
+        description: "Stabilization strength"
+        required: false
+        default: "medium"
+        enum: ["light", "medium", "strong"]
+      - name: smoothing
+        type: integer
+        description: "Smoothing factor (1-30)"
+        required: false
+        default: 10
+      - name: crop
+        type: string
+        description: "Edge crop handling"
+        required: false
+        default: "auto"
+        enum: ["auto", "keep", "black"]
+      - name: tripod
+        type: boolean
+        description: "Tripod mode (removes all motion)"
+        required: false
+        default: false
+    tags: ["video", "stabilize", "shake", "smooth", "deshake"]
+    test_prompts:
+      single:
+        - "Stabilize shaky footage"
+        - "Fix camera shake"
+        - "Smooth out video"
+        - "Remove video shake"
+
+  - name: generate_video_chapters
+    descriptions:
+      minimal: "Add chapters"
+      short: "Generate video chapters"
+      medium: "Add chapters and navigation points to a video."
+      long: "Add chapter markers for video navigation. Useful for long videos. Example: generate_video_chapters(input='lecture.mp4', chapters='[{\"time\": 0, \"title\": \"Intro\"}]')."
+      verbose: "Add chapter markers for video navigation. Sources: manual (provide timestamps), auto (detect scene changes), transcript (from subtitles). Example: generate_video_chapters(input='tutorial.mp4', mode='manual', chapters='[{\"time\": 0, \"title\": \"Introduction\"}, {\"time\": 300, \"title\": \"Setup\"}, {\"time\": 900, \"title\": \"Main Content\"}]', output='chaptered.mp4'). Note: Chapters supported in MP4, WebM, MKV. Warning: Some players don't display chapters."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: mode
+        type: string
+        description: "Chapter generation mode"
+        required: false
+        default: "manual"
+        enum: ["manual", "auto", "transcript"]
+      - name: chapters
+        type: string
+        description: "JSON array of chapters"
+        required: false
+      - name: min_chapter_length
+        type: integer
+        description: "Min chapter length (seconds)"
+        required: false
+        default: 60
+    tags: ["video", "chapters", "navigation", "segments", "markers"]
+    test_prompts:
+      single:
+        - "Add chapters to video"
+        - "Create video navigation"
+        - "Mark video sections"
+        - "Generate chapter markers"
+
+  - name: apply_video_filter
+    descriptions:
+      minimal: "Apply filter"
+      short: "Apply video filter"
+      medium: "Apply color filters and effects to video."
+      long: "Apply color grading, filters, or effects to video. Example: apply_video_filter(input='raw.mp4', filter='cinematic', output='graded.mp4')."
+      verbose: "Video color grading and filter effects. Filters: cinematic, vintage, black_and_white, sepia, vivid, cool, warm. Custom: brightness, contrast, saturation, hue, LUT files. Example: apply_video_filter(input='footage.mp4', filter='cinematic', adjustments='{\"brightness\": 0.1, \"contrast\": 1.2, \"saturation\": 0.9}', lut='film_lut.cube', output='color_graded.mp4'). Note: Preview filters before applying to long videos. Warning: Heavy color grading can introduce banding."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: filter
+        type: string
+        description: "Filter preset"
+        required: false
+        enum: ["cinematic", "vintage", "black_and_white", "sepia", "vivid", "cool", "warm"]
+      - name: adjustments
+        type: string
+        description: "JSON color adjustments"
+        required: false
+      - name: lut
+        type: string
+        description: "LUT file path"
+        required: false
+    tags: ["video", "filter", "color", "grading", "effects"]
+    test_prompts:
+      single:
+        - "Apply cinematic look"
+        - "Make video black and white"
+        - "Color grade the footage"
+        - "Add vintage filter"
+
+  - name: loop_video
+    descriptions:
+      minimal: "Loop video"
+      short: "Loop video content"
+      medium: "Create a looping video from a clip."
+      long: "Create seamlessly looping video. Repeat content smoothly. Example: loop_video(input='animation.mp4', loops=3, output='looped.mp4')."
+      verbose: "Create looping videos. Options: repeat count, seamless crossfade, boomerang (forward-reverse). Example: loop_video(input='background.mp4', loops=5, seamless=true, crossfade_duration=0.5, boomerang=false, output='loop_5x.mp4'). Note: Seamless loops require matching start/end frames. Warning: Many loops create large files."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: loops
+        type: integer
+        description: "Number of loops"
+        required: true
+      - name: seamless
+        type: boolean
+        description: "Create seamless loop"
+        required: false
+        default: false
+      - name: crossfade_duration
+        type: number
+        description: "Crossfade for seamless (seconds)"
+        required: false
+        default: 0.5
+      - name: boomerang
+        type: boolean
+        description: "Boomerang effect (forward-reverse)"
+        required: false
+        default: false
+    tags: ["video", "loop", "repeat", "seamless", "boomerang"]
+    test_prompts:
+      single:
+        - "Loop video 5 times"
+        - "Create seamless loop"
+        - "Make boomerang video"
+        - "Repeat video clip"
+
+  - name: create_video_slideshow
+    descriptions:
+      minimal: "Create slideshow"
+      short: "Create video slideshow"
+      medium: "Create a video slideshow from images with transitions."
+      long: "Create video slideshows from images. Add transitions and music. Example: create_video_slideshow(images='[\"img1.jpg\", \"img2.jpg\"]', duration=5, transition='fade')."
+      verbose: "Create video slideshows from images. Features: image duration, transitions, Ken Burns effect, background music, text overlays. Example: create_video_slideshow(images='photos/*.jpg', duration_per_image=4, transition='fade', transition_duration=1, ken_burns=true, audio='music.mp3', resolution='1920x1080', output='slideshow.mp4'). Note: Images are automatically scaled to fit. Warning: Many images or long durations create large files."
+    parameters:
+      - name: images
+        type: string
+        description: "JSON array of image paths or glob"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: duration_per_image
+        type: number
+        description: "Duration per image (seconds)"
+        required: false
+        default: 5
+      - name: transition
+        type: string
+        description: "Transition effect"
+        required: false
+        default: "fade"
+        enum: ["none", "fade", "slide", "wipe", "zoom"]
+      - name: transition_duration
+        type: number
+        description: "Transition duration (seconds)"
+        required: false
+        default: 1
+      - name: audio
+        type: string
+        description: "Background audio file"
+        required: false
+      - name: resolution
+        type: string
+        description: "Output resolution"
+        required: false
+        default: "1920x1080"
+    tags: ["video", "slideshow", "images", "photo", "presentation"]
+    test_prompts:
+      single:
+        - "Create photo slideshow"
+        - "Make video from images"
+        - "Build image presentation"
+        - "Create slideshow with music"
+
+  - name: reverse_video
+    descriptions:
+      minimal: "Reverse video"
+      short: "Reverse video playback"
+      medium: "Reverse a video so it plays backwards."
+      long: "Reverse video playback direction. Create backwards videos. Example: reverse_video(input='forward.mp4', audio='reverse', output='backward.mp4')."
+      verbose: "Reverse video playback for creative effects. Audio options: reverse (play backwards), mute (remove), keep (original timing preserved). Example: reverse_video(input='action.mp4', audio='reverse', preserve_quality=true, output='reversed.mp4'). Note: Reversed audio sounds unusual; consider muting. Warning: Large videos may take time to reverse."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: audio
+        type: string
+        description: "Audio handling"
+        required: false
+        default: "mute"
+        enum: ["reverse", "mute", "keep"]
+      - name: preserve_quality
+        type: boolean
+        description: "Preserve original quality"
+        required: false
+        default: true
+    tags: ["video", "reverse", "backwards", "rewind", "effect"]
+    test_prompts:
+      single:
+        - "Reverse the video"
+        - "Play video backwards"
+        - "Create rewind effect"
+        - "Flip video direction"
+
+  - name: add_chapter_markers
+    descriptions:
+      minimal: "Add chapters"
+      short: "Add chapter markers to video"
+      medium: "Add chapter markers and timestamps to a video for navigation."
+      long: "Add chapter markers to help viewers navigate long videos. Example: add_chapter_markers(input='tutorial.mp4', chapters='[{\"time\": \"0:00\", \"title\": \"Intro\"}]')."
+      verbose: "Add chapter markers for video navigation. Uses: YouTube chapters, DVD-style navigation, educational content. Formats: MP4 chapter metadata, WebVTT chapters, YouTube timestamps. Example: add_chapter_markers(input='webinar.mp4', chapters='[{\"time\": \"00:00\", \"title\": \"Introduction\"}, {\"time\": \"05:30\", \"title\": \"Main Topic\"}, {\"time\": \"45:00\", \"title\": \"Q&A\"}]', format='mp4_metadata', generate_thumbnail=true, output='webinar_chapters.mp4'). Note: YouTube requires minimum 10-second chapters. Warning: Some players may not display chapter markers."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: chapters
+        type: string
+        description: "JSON array of chapter markers"
+        required: true
+      - name: format
+        type: string
+        description: "Chapter format"
+        required: false
+        default: "mp4_metadata"
+        enum: ["mp4_metadata", "webvtt", "youtube"]
+      - name: generate_thumbnail
+        type: boolean
+        description: "Generate chapter thumbnails"
+        required: false
+        default: false
+    tags: ["video", "chapters", "markers", "navigation", "timestamps"]
+    test_prompts:
+      single:
+        - "Add chapters to the video"
+        - "Create chapter markers"
+        - "Add timestamps to video"
+        - "Mark sections in video"
+
+  - name: detect_scene_changes
+    descriptions:
+      minimal: "Detect scenes"
+      short: "Detect scene changes in video"
+      medium: "Automatically detect scene changes and cuts in a video."
+      long: "Analyze video to detect scene changes. Get timestamps of all cuts. Example: detect_scene_changes(input='movie.mp4', threshold=0.4, output_format='json')."
+      verbose: "Automatic scene change detection using visual analysis. Uses: video editing, content indexing, highlight extraction. Detection methods: threshold-based (pixel difference), content-aware (AI-based). Output: timestamps, thumbnails, scene duration. Example: detect_scene_changes(input='documentary.mp4', threshold=0.35, min_scene_length=2.0, extract_thumbnails=true, output_format='json'). Note: Lower threshold = more sensitive detection. Warning: Fast-paced content may produce many scene detections."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: threshold
+        type: number
+        description: "Detection threshold (0-1)"
+        required: false
+        default: 0.4
+      - name: min_scene_length
+        type: number
+        description: "Minimum scene length in seconds"
+        required: false
+        default: 1.0
+      - name: extract_thumbnails
+        type: boolean
+        description: "Extract thumbnail for each scene"
+        required: false
+        default: false
+      - name: output_format
+        type: string
+        description: "Output format"
+        required: false
+        default: "json"
+        enum: ["json", "csv", "edl", "xml"]
+    tags: ["video", "scene", "detection", "analysis", "cuts"]
+    test_prompts:
+      single:
+        - "Detect scene changes"
+        - "Find all cuts in the video"
+        - "Analyze video scenes"
+        - "Get scene timestamps"
+
+  - name: apply_color_grading
+    descriptions:
+      minimal: "Color grade"
+      short: "Apply color grading to video"
+      medium: "Apply color grading and color correction to enhance video appearance."
+      long: "Apply professional color grading with LUTs or manual adjustments. Example: apply_color_grading(input='raw.mp4', lut='cinematic.cube', intensity=0.8)."
+      verbose: "Professional color grading and correction. Options: LUT files (3D color lookup tables), manual adjustments (brightness, contrast, saturation, temperature), presets (cinematic, vintage, teal-orange). Example: apply_color_grading(input='footage.mp4', lut='film_emulation.cube', intensity=0.75, adjustments='{\"brightness\": 0.1, \"contrast\": 1.1, \"saturation\": 1.05}', output='graded.mp4'). Note: LUTs are designed for specific source footage. Warning: Over-grading can cause banding and color artifacts."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: lut
+        type: string
+        description: "LUT file path"
+        required: false
+      - name: preset
+        type: string
+        description: "Color grading preset"
+        required: false
+        enum: ["cinematic", "vintage", "teal_orange", "black_white", "desaturated", "vibrant"]
+      - name: intensity
+        type: number
+        description: "Effect intensity (0-1)"
+        required: false
+        default: 1.0
+      - name: adjustments
+        type: string
+        description: "JSON manual adjustments"
+        required: false
+    tags: ["video", "color", "grading", "correction", "lut"]
+    test_prompts:
+      single:
+        - "Apply color grading"
+        - "Add cinematic look to video"
+        - "Color correct the footage"
+        - "Apply LUT to video"
+
+  - name: create_video_thumbnail
+    descriptions:
+      minimal: "Create thumbnail"
+      short: "Create video thumbnail"
+      medium: "Generate or extract thumbnail images from a video."
+      long: "Create thumbnails for videos at specific times or auto-detect best frames. Example: create_video_thumbnail(input='video.mp4', time='01:30', output='thumb.jpg')."
+      verbose: "Generate video thumbnails for platforms. Methods: extract frame at time, auto-detect best frame (face detection, sharpness, composition), generate montage. Customization: text overlay, branding, borders. Example: create_video_thumbnail(input='tutorial.mp4', method='auto', count=5, add_text='Tutorial Title', add_branding='logo.png', output='thumbnails/'). Note: YouTube recommends 1280x720 resolution. Warning: Clickbait thumbnails may violate platform policies."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output thumbnail path"
+        required: true
+      - name: time
+        type: string
+        description: "Time to extract frame"
+        required: false
+      - name: method
+        type: string
+        description: "Thumbnail generation method"
+        required: false
+        default: "extract"
+        enum: ["extract", "auto", "montage"]
+      - name: count
+        type: integer
+        description: "Number of thumbnails to generate"
+        required: false
+        default: 1
+      - name: add_text
+        type: string
+        description: "Text to overlay"
+        required: false
+      - name: add_branding
+        type: string
+        description: "Logo/branding image path"
+        required: false
+    tags: ["video", "thumbnail", "image", "preview", "extract"]
+    test_prompts:
+      single:
+        - "Create video thumbnail"
+        - "Extract best frame for thumbnail"
+        - "Generate YouTube thumbnail"
+        - "Make preview image"
+
+  - name: add_picture_in_picture
+    descriptions:
+      minimal: "Add PiP"
+      short: "Add picture-in-picture overlay"
+      medium: "Add a picture-in-picture overlay from another video or camera feed."
+      long: "Overlay a smaller video on top of main video. Example: add_picture_in_picture(main='gameplay.mp4', overlay='webcam.mp4', position='top_right')."
+      verbose: "Add picture-in-picture (PiP) video overlay. Uses: gaming videos, tutorials, reaction videos. Options: position, size, shape (rectangle, circle), border, shadow, opacity. Animation: fade in/out, slide in. Example: add_picture_in_picture(main='screen_recording.mp4', overlay='facecam.mp4', position='bottom_right', size=0.25, shape='circle', border_width=3, border_color='white', opacity=1.0, output='combined.mp4'). Note: Ensure overlay video matches main video duration. Warning: Large PiP windows may obscure important content."
+    parameters:
+      - name: main
+        type: string
+        description: "Main video file path"
+        required: true
+      - name: overlay
+        type: string
+        description: "Overlay video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: position
+        type: string
+        description: "Overlay position"
+        required: false
+        default: "bottom_right"
+        enum: ["top_left", "top_right", "bottom_left", "bottom_right", "center", "custom"]
+      - name: size
+        type: number
+        description: "Overlay size ratio (0-1)"
+        required: false
+        default: 0.25
+      - name: shape
+        type: string
+        description: "Overlay shape"
+        required: false
+        default: "rectangle"
+        enum: ["rectangle", "circle", "rounded"]
+      - name: opacity
+        type: number
+        description: "Overlay opacity (0-1)"
+        required: false
+        default: 1.0
+    tags: ["video", "pip", "overlay", "picture_in_picture", "composite"]
+    test_prompts:
+      single:
+        - "Add webcam overlay to video"
+        - "Create picture-in-picture"
+        - "Overlay facecam on gameplay"
+        - "Add PiP to screen recording"
+
+  - name: generate_video_preview
+    descriptions:
+      minimal: "Generate preview"
+      short: "Generate video preview clip"
+      medium: "Automatically generate a preview or trailer from a longer video."
+      long: "Create a short preview by extracting highlights. Example: generate_video_preview(input='movie.mp4', duration=30, output='trailer.mp4')."
+      verbose: "Automatic video preview generation. Methods: highlight extraction (AI-detected), evenly-spaced clips, scene peaks, audio peaks. Customization: target duration, transition style, background music. Example: generate_video_preview(input='documentary.mp4', method='highlights', duration=60, transitions='crossfade', add_music='upbeat.mp3', include_text='Coming Soon', output='trailer.mp4'). Note: AI detection works best on varied content. Warning: Generated previews may miss important context."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output preview file path"
+        required: true
+      - name: duration
+        type: integer
+        description: "Target duration in seconds"
+        required: false
+        default: 30
+      - name: method
+        type: string
+        description: "Preview generation method"
+        required: false
+        default: "highlights"
+        enum: ["highlights", "evenly_spaced", "scene_peaks", "audio_peaks"]
+      - name: transitions
+        type: string
+        description: "Transition style"
+        required: false
+        default: "cut"
+        enum: ["cut", "crossfade", "fade_black", "wipe"]
+      - name: add_music
+        type: string
+        description: "Background music file"
+        required: false
+    tags: ["video", "preview", "trailer", "highlights", "generate"]
+    test_prompts:
+      single:
+        - "Create video preview"
+        - "Generate trailer from video"
+        - "Make highlight reel"
+        - "Extract video highlights"
+
+  - name: remove_background
+    descriptions:
+      minimal: "Remove background"
+      short: "Remove video background"
+      medium: "Remove or replace the background from video using green screen or AI."
+      long: "Remove background from video for compositing. Works with green screen or AI. Example: remove_background(input='greenscreen.mp4', method='chroma', key_color='green')."
+      verbose: "Video background removal and replacement. Methods: chroma key (green/blue screen), AI segmentation (no green screen needed). Options: background replacement (image, video, color), edge feathering, spill suppression. Example: remove_background(input='presenter.mp4', method='ai', replacement='office_bg.mp4', edge_blur=2, spill_suppress=true, output='composite.mp4'). Note: AI method works without green screen but may have edge artifacts. Warning: Complex edges (hair, transparency) are challenging."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: method
+        type: string
+        description: "Background removal method"
+        required: true
+        enum: ["chroma", "ai"]
+      - name: key_color
+        type: string
+        description: "Chroma key color"
+        required: false
+        default: "green"
+        enum: ["green", "blue", "custom"]
+      - name: replacement
+        type: string
+        description: "Replacement background (file or color)"
+        required: false
+      - name: edge_blur
+        type: integer
+        description: "Edge blur amount"
+        required: false
+        default: 1
+      - name: spill_suppress
+        type: boolean
+        description: "Suppress color spill"
+        required: false
+        default: true
+    tags: ["video", "background", "removal", "chroma", "greenscreen"]
+    test_prompts:
+      single:
+        - "Remove green screen background"
+        - "Replace video background"
+        - "Apply chroma key"
+        - "Remove background with AI"
+
+  - name: detect_faces_in_video
+    descriptions:
+      minimal: "Detect faces"
+      short: "Detect faces in video"
+      medium: "Detect and track faces throughout a video."
+      long: "Find and track faces in video with optional blur or effects. Example: detect_faces_in_video(input='crowd.mp4', action='blur', output='anonymized.mp4')."
+      verbose: "Face detection and tracking in video. Actions: detect (get coordinates), blur (anonymize), track (follow faces), recognize (identify known faces). Uses: privacy protection, auto-framing, analytics. Example: detect_faces_in_video(input='interview.mp4', action='track', min_confidence=0.8, output_data='faces.json', auto_frame=true, output='cropped.mp4'). Note: Detection accuracy varies with lighting and angle. Warning: Face recognition requires consent in many jurisdictions."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: false
+      - name: action
+        type: string
+        description: "Action to perform"
+        required: true
+        enum: ["detect", "blur", "track", "pixelate", "auto_frame"]
+      - name: min_confidence
+        type: number
+        description: "Minimum detection confidence"
+        required: false
+        default: 0.7
+      - name: output_data
+        type: string
+        description: "Output data file path (JSON)"
+        required: false
+      - name: blur_intensity
+        type: integer
+        description: "Blur intensity for anonymization"
+        required: false
+        default: 20
+    tags: ["video", "face", "detection", "tracking", "privacy"]
+    test_prompts:
+      single:
+        - "Detect faces in video"
+        - "Blur all faces"
+        - "Track face throughout video"
+        - "Anonymize people in video"
+
+  - name: add_animated_title
+    descriptions:
+      minimal: "Add title"
+      short: "Add animated title to video"
+      medium: "Add animated text titles and lower thirds to video."
+      long: "Add professional animated titles with various effects. Example: add_animated_title(input='video.mp4', text='Welcome', animation='fade_in', position='center')."
+      verbose: "Add animated text overlays to video. Types: title card, lower third, credits, callout. Animations: fade, slide, typewriter, bounce, glitch. Customization: font, color, size, shadow, background, duration. Example: add_animated_title(input='interview.mp4', text='John Smith - CEO', type='lower_third', animation='slide_left', font='Helvetica', color='white', bg_color='rgba(0,0,0,0.7)', start=5.0, duration=5.0, output='titled.mp4'). Note: Keep text readable at all video sizes. Warning: Too many text animations can be distracting."
+    parameters:
+      - name: input
+        type: string
+        description: "Input video file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output video file path"
+        required: true
+      - name: text
+        type: string
+        description: "Title text"
+        required: true
+      - name: type
+        type: string
+        description: "Title type"
+        required: false
+        default: "title"
+        enum: ["title", "lower_third", "credits", "callout", "watermark"]
+      - name: animation
+        type: string
+        description: "Animation style"
+        required: false
+        default: "fade_in"
+        enum: ["fade_in", "slide_left", "slide_up", "typewriter", "bounce", "none"]
+      - name: position
+        type: string
+        description: "Text position"
+        required: false
+        default: "center"
+        enum: ["center", "top", "bottom", "lower_left", "lower_right"]
+      - name: start
+        type: number
+        description: "Start time in seconds"
+        required: false
+        default: 0
+      - name: duration
+        type: number
+        description: "Duration in seconds"
+        required: false
+        default: 5.0
+      - name: font
+        type: string
+        description: "Font name"
+        required: false
+      - name: color
+        type: string
+        description: "Text color"
+        required: false
+        default: "white"
+    tags: ["video", "title", "text", "animation", "overlay"]
+    test_prompts:
+      single:
+        - "Add title to video"
+        - "Create animated lower third"
+        - "Add text overlay with animation"
+        - "Insert credits at end"

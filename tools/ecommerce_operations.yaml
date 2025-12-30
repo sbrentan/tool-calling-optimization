@@ -1,0 +1,1212 @@
+category: ecommerce_operations
+description: E-commerce and shopping operations
+tools:
+  - name: create_product
+    descriptions:
+      minimal: "Create product"
+      short: "Create a new product listing"
+      medium: "Create a new product in the e-commerce catalog with details and pricing."
+      long: "Create a product listing with name, description, price, images, and inventory. Example: create_product(name='T-Shirt', price=29.99, sku='TSH-001', category='Apparel')."
+      verbose: "Create a new product in the e-commerce catalog. Fields: name, description, price, compare_at_price (for sales), SKU, barcode, category, tags, images, variants (size/color), inventory, weight, dimensions. Example: create_product(name='Classic T-Shirt', description='100% cotton tee', price=29.99, compare_at_price=39.99, sku='TSH-BLK-M', category='Apparel', variants='[{\"size\": \"M\", \"color\": \"Black\", \"inventory\": 50}]', images='[\"tshirt1.jpg\"]'). Note: SKU must be unique. Warning: Publishing makes product immediately visible to customers."
+    parameters:
+      - name: name
+        type: string
+        description: "Product name"
+        required: true
+      - name: description
+        type: string
+        description: "Product description"
+        required: false
+      - name: price
+        type: number
+        description: "Product price"
+        required: true
+      - name: sku
+        type: string
+        description: "Stock keeping unit"
+        required: true
+      - name: category
+        type: string
+        description: "Product category"
+        required: false
+      - name: inventory
+        type: integer
+        description: "Initial inventory count"
+        required: false
+        default: 0
+      - name: images
+        type: string
+        description: "JSON array of image URLs"
+        required: false
+      - name: published
+        type: boolean
+        description: "Publish immediately"
+        required: false
+        default: false
+    tags: ["ecommerce", "product", "create", "catalog", "listing"]
+    test_prompts:
+      single:
+        - "Create a new product"
+        - "Add a product to the catalog"
+        - "List a new item for sale"
+        - "Create a product listing"
+
+  - name: update_inventory
+    descriptions:
+      minimal: "Update inventory"
+      short: "Update product inventory"
+      medium: "Update the inventory quantity for a product or variant."
+      long: "Update inventory levels for products. Supports absolute set or relative adjustment. Example: update_inventory(sku='TSH-001', quantity=100) or update_inventory(sku='TSH-001', adjustment=-5)."
+      verbose: "Update product inventory quantities. Modes: 'set' (absolute value), 'adjust' (relative +/-). Supports: multiple locations, variant-level inventory, reason tracking. Example: update_inventory(sku='TSH-BLK-M', quantity=100, location='warehouse_1', reason='restock') or update_inventory(sku='TSH-BLK-M', adjustment=-1, reason='sale'). Note: Negative inventory allowed if overselling enabled. Warning: Inventory changes affect availability immediately."
+    parameters:
+      - name: sku
+        type: string
+        description: "Product SKU"
+        required: true
+      - name: quantity
+        type: integer
+        description: "New quantity (for set mode)"
+        required: false
+      - name: adjustment
+        type: integer
+        description: "Quantity adjustment (+/-)"
+        required: false
+      - name: location
+        type: string
+        description: "Inventory location"
+        required: false
+        default: "default"
+      - name: reason
+        type: string
+        description: "Reason for change"
+        required: false
+    tags: ["ecommerce", "inventory", "stock", "update", "quantity"]
+    test_prompts:
+      single:
+        - "Update the inventory count"
+        - "Add 50 units to stock"
+        - "Reduce inventory by 10"
+        - "Set stock level to 100"
+
+  - name: create_order
+    descriptions:
+      minimal: "Create order"
+      short: "Create a new order"
+      medium: "Create a new customer order with products and shipping details."
+      long: "Create an order with line items, customer info, and shipping. Example: create_order(customer_id='cust123', items='[{\"sku\": \"TSH-001\", \"quantity\": 2}]', shipping_address='{...}')."
+      verbose: "Create a new e-commerce order. Components: line items (products, quantities, prices), customer, shipping address, billing address, shipping method, payment, discounts. Example: create_order(customer_id='cust_abc', items='[{\"sku\": \"TSH-BLK-M\", \"quantity\": 2, \"price\": 29.99}]', shipping_address='{\"street\": \"123 Main St\", \"city\": \"NYC\", \"zip\": \"10001\"}', shipping_method='standard', discount_code='SAVE10'). Note: Inventory is reserved upon order creation. Warning: Payment must be captured separately or order may expire."
+    parameters:
+      - name: customer_id
+        type: string
+        description: "Customer identifier"
+        required: true
+      - name: items
+        type: string
+        description: "JSON array of line items"
+        required: true
+      - name: shipping_address
+        type: string
+        description: "JSON shipping address"
+        required: true
+      - name: billing_address
+        type: string
+        description: "JSON billing address (if different)"
+        required: false
+      - name: shipping_method
+        type: string
+        description: "Shipping method"
+        required: false
+        default: "standard"
+      - name: discount_code
+        type: string
+        description: "Discount/coupon code"
+        required: false
+      - name: notes
+        type: string
+        description: "Order notes"
+        required: false
+    tags: ["ecommerce", "order", "create", "purchase", "checkout"]
+    test_prompts:
+      single:
+        - "Create a new order"
+        - "Place an order for this customer"
+        - "Process the checkout"
+        - "Create a purchase order"
+
+  - name: update_order_status
+    descriptions:
+      minimal: "Update order"
+      short: "Update order status"
+      medium: "Update the status of an existing order."
+      long: "Update order status through the fulfillment lifecycle. Example: update_order_status(order_id='ORD-123', status='shipped', tracking='1Z999...')."
+      verbose: "Update order status and fulfillment information. Statuses: 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'. Shipping updates: carrier, tracking number, estimated delivery. Example: update_order_status(order_id='ORD-123', status='shipped', carrier='UPS', tracking='1Z999AA10123456784', notify_customer=true). Note: Status changes may trigger customer notifications. Warning: Cancellation after shipment requires return process."
+    parameters:
+      - name: order_id
+        type: string
+        description: "Order identifier"
+        required: true
+      - name: status
+        type: string
+        description: "New order status"
+        required: true
+        enum: ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "refunded"]
+      - name: carrier
+        type: string
+        description: "Shipping carrier"
+        required: false
+      - name: tracking
+        type: string
+        description: "Tracking number"
+        required: false
+      - name: notify_customer
+        type: boolean
+        description: "Send notification to customer"
+        required: false
+        default: true
+    tags: ["ecommerce", "order", "status", "update", "fulfillment"]
+    test_prompts:
+      single:
+        - "Mark the order as shipped"
+        - "Update order status to delivered"
+        - "Cancel the order"
+        - "Add tracking to the order"
+
+  - name: apply_discount
+    descriptions:
+      minimal: "Apply discount"
+      short: "Apply a discount code"
+      medium: "Apply a discount or coupon code to a cart or order."
+      long: "Apply discount codes to carts or orders. Validates code and calculates discount. Example: apply_discount(cart_id='cart123', code='SAVE20')."
+      verbose: "Apply discount codes to shopping carts or orders. Discount types: percentage, fixed amount, free shipping, buy X get Y. Validates: code existence, expiration, usage limits, minimum order, eligible products. Example: apply_discount(cart_id='cart_abc', code='SUMMER25') returns {valid: true, discount_type: 'percentage', value: 25, savings: 50.00}. Note: Some discounts cannot stack. Warning: Invalid or expired codes return error."
+    parameters:
+      - name: cart_id
+        type: string
+        description: "Cart identifier"
+        required: false
+      - name: order_id
+        type: string
+        description: "Order identifier"
+        required: false
+      - name: code
+        type: string
+        description: "Discount/coupon code"
+        required: true
+    tags: ["ecommerce", "discount", "coupon", "promo", "savings"]
+    test_prompts:
+      single:
+        - "Apply discount code SAVE20"
+        - "Use this coupon"
+        - "Add a promo code"
+        - "Apply the discount"
+
+  - name: create_discount
+    descriptions:
+      minimal: "Create discount"
+      short: "Create a discount code"
+      medium: "Create a new discount or coupon code with rules and limits."
+      long: "Create discount codes for promotions. Define type, value, conditions, and usage limits. Example: create_discount(code='SUMMER25', type='percentage', value=25, min_order=50)."
+      verbose: "Create promotional discount codes. Types: 'percentage', 'fixed', 'free_shipping', 'bogo' (buy one get one). Conditions: minimum order, eligible products/categories, customer segments, first order only. Limits: total uses, per-customer uses, date range. Example: create_discount(code='VIP30', type='percentage', value=30, min_order=100, eligible_categories='[\"premium\"]', max_uses=100, starts_at='2024-01-01', ends_at='2024-01-31'). Note: Codes are case-insensitive by default. Warning: Generous discounts may impact margins."
+    parameters:
+      - name: code
+        type: string
+        description: "Discount code"
+        required: true
+      - name: type
+        type: string
+        description: "Discount type"
+        required: true
+        enum: ["percentage", "fixed", "free_shipping", "bogo"]
+      - name: value
+        type: number
+        description: "Discount value (percent or amount)"
+        required: true
+      - name: min_order
+        type: number
+        description: "Minimum order amount"
+        required: false
+      - name: max_uses
+        type: integer
+        description: "Maximum total uses"
+        required: false
+      - name: starts_at
+        type: string
+        description: "Start date (ISO format)"
+        required: false
+      - name: ends_at
+        type: string
+        description: "End date (ISO format)"
+        required: false
+    tags: ["ecommerce", "discount", "create", "coupon", "promotion"]
+    test_prompts:
+      single:
+        - "Create a 20% off coupon"
+        - "Make a discount code"
+        - "Set up a free shipping promo"
+        - "Create a buy-one-get-one deal"
+
+  - name: manage_cart
+    descriptions:
+      minimal: "Manage cart"
+      short: "Manage shopping cart"
+      medium: "Add, remove, or update items in a shopping cart."
+      long: "Manage shopping cart contents. Add items, update quantities, remove items, or clear cart. Example: manage_cart(cart_id='cart123', action='add', sku='TSH-001', quantity=2)."
+      verbose: "Manage shopping cart operations. Actions: 'add' (add item), 'update' (change quantity), 'remove' (remove item), 'clear' (empty cart), 'get' (retrieve cart). Supports: product variants, quantity limits, saved for later. Example: manage_cart(cart_id='cart_abc', action='add', sku='TSH-BLK-M', quantity=2) returns updated cart with totals. Note: Cart persists across sessions. Warning: Out-of-stock items may be removed during checkout."
+    parameters:
+      - name: cart_id
+        type: string
+        description: "Cart identifier"
+        required: true
+      - name: action
+        type: string
+        description: "Cart action"
+        required: true
+        enum: ["add", "update", "remove", "clear", "get"]
+      - name: sku
+        type: string
+        description: "Product SKU"
+        required: false
+      - name: quantity
+        type: integer
+        description: "Quantity"
+        required: false
+    tags: ["ecommerce", "cart", "shopping", "add", "remove"]
+    test_prompts:
+      single:
+        - "Add this item to cart"
+        - "Update cart quantity"
+        - "Remove item from cart"
+        - "Clear the shopping cart"
+
+  - name: calculate_shipping
+    descriptions:
+      minimal: "Calculate shipping"
+      short: "Calculate shipping rates"
+      medium: "Calculate available shipping options and rates for an order."
+      long: "Calculate shipping rates based on destination, weight, and carrier options. Example: calculate_shipping(cart_id='cart123', destination='{\"zip\": \"10001\", \"country\": \"US\"}')."
+      verbose: "Calculate shipping rates and delivery estimates. Inputs: cart/order items, destination address, weight, dimensions. Returns: available carriers, service levels, rates, estimated delivery dates. Example: calculate_shipping(cart_id='cart_abc', destination='{\"zip\": \"10001\", \"country\": \"US\"}') returns [{carrier: 'USPS', service: 'Priority', rate: 7.99, days: '2-3'}, {carrier: 'UPS', service: 'Ground', rate: 5.99, days: '5-7'}]. Note: Rates may vary by time and carrier availability. Warning: Actual rates charged may differ from estimates."
+    parameters:
+      - name: cart_id
+        type: string
+        description: "Cart identifier"
+        required: false
+      - name: items
+        type: string
+        description: "JSON array of items with weights"
+        required: false
+      - name: destination
+        type: string
+        description: "JSON destination address"
+        required: true
+      - name: origin
+        type: string
+        description: "JSON origin address"
+        required: false
+    tags: ["ecommerce", "shipping", "rates", "calculate", "delivery"]
+    test_prompts:
+      single:
+        - "Calculate shipping costs"
+        - "What are the shipping options?"
+        - "Get shipping rates for this order"
+        - "How much is delivery?"
+
+  - name: process_return
+    descriptions:
+      minimal: "Process return"
+      short: "Process a product return"
+      medium: "Initiate or process a product return and refund."
+      long: "Process customer returns. Create return authorization, track return shipment, and issue refunds. Example: process_return(order_id='ORD-123', items='[{\"sku\": \"TSH-001\", \"quantity\": 1, \"reason\": \"wrong_size\"}]')."
+      verbose: "Process product returns and refunds. Steps: create RMA (return authorization), generate return label, receive items, inspect, process refund. Return types: refund, exchange, store credit. Example: process_return(order_id='ORD-123', items='[{\"sku\": \"TSH-BLK-M\", \"quantity\": 1, \"reason\": \"wrong_size\"}]', refund_method='original_payment', restock=true). Note: Return policies may restrict eligible items. Warning: Refunds to original payment may take 5-10 business days."
+    parameters:
+      - name: order_id
+        type: string
+        description: "Original order ID"
+        required: true
+      - name: items
+        type: string
+        description: "JSON array of items to return"
+        required: true
+      - name: reason
+        type: string
+        description: "Return reason"
+        required: false
+      - name: refund_method
+        type: string
+        description: "Refund method"
+        required: false
+        default: "original_payment"
+        enum: ["original_payment", "store_credit", "exchange"]
+      - name: restock
+        type: boolean
+        description: "Restock returned items"
+        required: false
+        default: true
+    tags: ["ecommerce", "return", "refund", "rma", "exchange"]
+    test_prompts:
+      single:
+        - "Process a return for this order"
+        - "Initiate a refund"
+        - "Start a return request"
+        - "Exchange this item"
+
+  - name: search_products
+    descriptions:
+      minimal: "Search products"
+      short: "Search the product catalog"
+      medium: "Search for products by keyword, category, or filters."
+      long: "Search the product catalog with filters and sorting. Returns matching products with pagination. Example: search_products(query='t-shirt', category='apparel', max_price=50)."
+      verbose: "Search and filter the product catalog. Filters: keyword, category, price range, attributes, availability, ratings. Sorting: relevance, price (asc/desc), newest, best-selling, rating. Features: faceted search, autocomplete, spell correction. Example: search_products(query='wireless headphones', category='electronics', min_price=50, max_price=200, in_stock=true, sort='rating', limit=20). Note: Full-text search supports stemming and synonyms. Warning: Large result sets should use pagination."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query"
+        required: false
+      - name: category
+        type: string
+        description: "Product category"
+        required: false
+      - name: min_price
+        type: number
+        description: "Minimum price"
+        required: false
+      - name: max_price
+        type: number
+        description: "Maximum price"
+        required: false
+      - name: in_stock
+        type: boolean
+        description: "Only show in-stock items"
+        required: false
+        default: true
+      - name: sort
+        type: string
+        description: "Sort order"
+        required: false
+        default: "relevance"
+        enum: ["relevance", "price_asc", "price_desc", "newest", "rating"]
+      - name: limit
+        type: integer
+        description: "Results per page"
+        required: false
+        default: 20
+    tags: ["ecommerce", "search", "products", "catalog", "filter"]
+    test_prompts:
+      single:
+        - "Search for t-shirts under $30"
+        - "Find products in electronics"
+        - "Show me wireless headphones"
+        - "Search the catalog"
+  - name: create_discount_code
+    descriptions:
+      minimal: "Create discount"
+      short: "Create a discount code or coupon"
+      medium: "Create a discount code with percentage or fixed amount off for customers."
+      long: "Create a promotional discount code. Configure discount type, amount, conditions, and expiration. Example: create_discount_code(code='SAVE20', type='percentage', value=20, expires='2024-12-31')."
+      verbose: "Create discount codes for promotions. Types: 'percentage' (% off), 'fixed_amount' ($ off), 'free_shipping', 'buy_x_get_y'. Conditions: minimum purchase, specific products/categories, customer segments, first-order only, single/multi-use. Example: create_discount_code(code='WELCOME15', type='percentage', value=15, min_purchase=50, first_order_only=true, usage_limit=1000, expires='2024-03-31', applies_to='[\"category:apparel\"]'). Note: Codes are case-insensitive by default. Warning: No usage limit means unlimited redemptions."
+    parameters:
+      - name: code
+        type: string
+        description: "Discount code string"
+        required: true
+      - name: type
+        type: string
+        description: "Discount type"
+        required: true
+        enum: ["percentage", "fixed_amount", "free_shipping", "buy_x_get_y"]
+      - name: value
+        type: number
+        description: "Discount value (% or amount)"
+        required: true
+      - name: min_purchase
+        type: number
+        description: "Minimum order amount"
+        required: false
+      - name: usage_limit
+        type: integer
+        description: "Total redemption limit"
+        required: false
+      - name: per_customer_limit
+        type: integer
+        description: "Uses per customer"
+        required: false
+        default: 1
+      - name: expires
+        type: string
+        description: "Expiration date"
+        required: false
+      - name: applies_to
+        type: string
+        description: "JSON array of applicable items"
+        required: false
+    tags: ["ecommerce", "discount", "coupon", "promotion", "code"]
+    test_prompts:
+      single:
+        - "Create a 20% off discount code"
+        - "Make a coupon for free shipping"
+        - "Create a promo code for new customers"
+        - "Set up a $10 off coupon"
+
+  - name: process_return
+    descriptions:
+      minimal: "Process return"
+      short: "Process a product return"
+      medium: "Process a return or exchange for an order item."
+      long: "Process a return request. Approve, create shipping label, and handle refund or exchange. Example: process_return(order_id='ORD-123', items='[{\"sku\": \"TSH-001\", \"quantity\": 1}]', reason='wrong_size')."
+      verbose: "Handle product returns and exchanges. Actions: initiate return, approve/reject, generate return label, receive item, process refund/exchange. Return reasons: defective, wrong_size, not_as_described, changed_mind, damaged, other. Example: process_return(order_id='ORD-456', items='[{\"sku\": \"TSH-BLK-M\", \"quantity\": 1, \"reason\": \"wrong_size\"}]', action='approve', generate_label=true, refund_method='original_payment', restock=true). Note: Return window typically 30 days. Warning: Refunds may take 5-10 business days to process."
+    parameters:
+      - name: order_id
+        type: string
+        description: "Original order ID"
+        required: true
+      - name: items
+        type: string
+        description: "JSON array of items to return"
+        required: true
+      - name: reason
+        type: string
+        description: "Return reason"
+        required: true
+        enum: ["defective", "wrong_size", "not_as_described", "changed_mind", "damaged", "other"]
+      - name: action
+        type: string
+        description: "Return action"
+        required: false
+        default: "initiate"
+        enum: ["initiate", "approve", "reject", "receive", "complete"]
+      - name: generate_label
+        type: boolean
+        description: "Generate return shipping label"
+        required: false
+        default: true
+      - name: refund_method
+        type: string
+        description: "Refund method"
+        required: false
+        enum: ["original_payment", "store_credit", "exchange"]
+      - name: restock
+        type: boolean
+        description: "Add returned items back to inventory"
+        required: false
+        default: true
+    tags: ["ecommerce", "return", "refund", "exchange", "rma"]
+    test_prompts:
+      single:
+        - "Process a return for order 12345"
+        - "Initiate a refund for wrong size"
+        - "Generate return label for customer"
+        - "Handle product return request"
+
+  - name: calculate_shipping
+    descriptions:
+      minimal: "Calculate shipping"
+      short: "Calculate shipping costs and options"
+      medium: "Calculate shipping rates for an order based on destination and items."
+      long: "Calculate available shipping options and rates. Returns carriers, methods, costs, and delivery estimates. Example: calculate_shipping(items='[{\"sku\": \"TSH-001\", \"quantity\": 2}]', destination='{\"zip\": \"10001\", \"country\": \"US\"}')."
+      verbose: "Calculate shipping rates and delivery options. Inputs: items (with weights/dimensions), origin, destination, preferences. Returns: available carriers, service levels, costs, estimated delivery dates. Features: real-time carrier rates, insurance options, signature requirements. Example: calculate_shipping(items='[{\"sku\": \"LAPTOP-1\", \"quantity\": 1, \"weight\": 5, \"value\": 999}]', destination='{\"street\": \"123 Main St\", \"city\": \"NYC\", \"state\": \"NY\", \"zip\": \"10001\", \"country\": \"US\"}', insurance=true, signature_required=true). Note: Rates may vary by carrier availability. Warning: Displayed rates are estimates; final rates calculated at fulfillment."
+    parameters:
+      - name: items
+        type: string
+        description: "JSON array of items with quantities"
+        required: true
+      - name: destination
+        type: string
+        description: "JSON shipping destination"
+        required: true
+      - name: origin
+        type: string
+        description: "JSON shipping origin"
+        required: false
+      - name: insurance
+        type: boolean
+        description: "Include shipping insurance"
+        required: false
+        default: false
+      - name: signature_required
+        type: boolean
+        description: "Require delivery signature"
+        required: false
+        default: false
+    tags: ["ecommerce", "shipping", "rates", "delivery", "calculate"]
+    test_prompts:
+      single:
+        - "Calculate shipping to New York"
+        - "Get shipping rates for my order"
+        - "How much is shipping to California?"
+        - "Show shipping options and costs"
+
+  - name: manage_wishlist
+    descriptions:
+      minimal: "Manage wishlist"
+      short: "Add or remove items from wishlist"
+      medium: "Manage a customer's wishlist by adding, removing, or retrieving saved items."
+      long: "Manage customer wishlists. Add or remove products, view wishlist, check availability, move to cart. Example: manage_wishlist(customer_id='cust123', action='add', product_id='PROD-456')."
+      verbose: "Manage customer wishlists for saved items. Actions: 'add' (save item), 'remove' (delete item), 'get' (retrieve list), 'clear' (empty wishlist), 'move_to_cart' (convert to cart items), 'check_availability' (stock status). Features: multiple wishlists, sharing, price drop alerts. Example: manage_wishlist(customer_id='cust_abc', action='add', product_id='PROD-789', list_name='Birthday', notify_price_drop=true). Note: Wishlists don't reserve inventory. Warning: Out-of-stock items remain on wishlist until removed."
+    parameters:
+      - name: customer_id
+        type: string
+        description: "Customer ID"
+        required: true
+      - name: action
+        type: string
+        description: "Wishlist action"
+        required: true
+        enum: ["add", "remove", "get", "clear", "move_to_cart", "check_availability"]
+      - name: product_id
+        type: string
+        description: "Product ID (for add/remove)"
+        required: false
+      - name: list_name
+        type: string
+        description: "Wishlist name"
+        required: false
+        default: "default"
+      - name: notify_price_drop
+        type: boolean
+        description: "Alert on price drop"
+        required: false
+        default: false
+    tags: ["ecommerce", "wishlist", "saved", "favorites", "customer"]
+    test_prompts:
+      single:
+        - "Add product to wishlist"
+        - "Show my saved items"
+        - "Move wishlist items to cart"
+        - "Remove from favorites"
+
+  - name: generate_sales_report
+    descriptions:
+      minimal: "Generate sales report"
+      short: "Generate a sales analytics report"
+      medium: "Generate a sales report with revenue, orders, and product performance metrics."
+      long: "Generate comprehensive sales reports. Filter by date range, products, categories, or channels. Returns revenue, orders, and trends. Example: generate_sales_report(start_date='2024-01-01', end_date='2024-01-31', group_by='product')."
+      verbose: "Generate detailed sales analytics reports. Metrics: total revenue, order count, average order value, units sold, top products, conversion rate, return rate. Dimensions: date, product, category, channel, region, customer segment. Features: comparisons, trends, forecasting. Example: generate_sales_report(start_date='2024-01-01', end_date='2024-03-31', group_by='category', compare_to='previous_period', include_returns=true, export_format='csv'). Note: Data updates may have 24-hour delay. Warning: Large date ranges may take longer to process."
+    parameters:
+      - name: start_date
+        type: string
+        description: "Report start date"
+        required: true
+      - name: end_date
+        type: string
+        description: "Report end date"
+        required: true
+      - name: group_by
+        type: string
+        description: "Grouping dimension"
+        required: false
+        default: "day"
+        enum: ["day", "week", "month", "product", "category", "channel"]
+      - name: compare_to
+        type: string
+        description: "Comparison period"
+        required: false
+        enum: ["previous_period", "previous_year", "none"]
+      - name: include_returns
+        type: boolean
+        description: "Include return data"
+        required: false
+        default: true
+      - name: export_format
+        type: string
+        description: "Export file format"
+        required: false
+        enum: ["json", "csv", "pdf"]
+    tags: ["ecommerce", "sales", "report", "analytics", "revenue"]
+    test_prompts:
+      single:
+        - "Generate a sales report for January"
+        - "Show me revenue by product"
+        - "Get sales analytics for last quarter"
+        - "Export monthly sales data"
+
+  - name: manage_cart
+    descriptions:
+      minimal: "Manage cart"
+      short: "Manage shopping cart items"
+      medium: "Add, remove, or update items in a customer's shopping cart."
+      long: "Manage shopping cart operations. Add products, update quantities, remove items, apply discounts. Example: manage_cart(cart_id='cart_123', action='add', product_id='PROD-456', quantity=2)."
+      verbose: "Complete shopping cart management. Actions: 'add' (add item), 'remove' (delete item), 'update' (change quantity), 'get' (retrieve cart), 'clear' (empty cart), 'apply_discount' (add code), 'estimate_total' (calculate with tax/shipping). Example: manage_cart(cart_id='cart_abc', action='add', product_id='PROD-789', quantity=2, variant_id='var_blue_m'). Features: variant support, stock validation, price locking, abandonment recovery. Note: Carts expire after 30 days of inactivity. Warning: Prices may change between cart add and checkout."
+    parameters:
+      - name: cart_id
+        type: string
+        description: "Shopping cart ID"
+        required: true
+      - name: action
+        type: string
+        description: "Cart action"
+        required: true
+        enum: ["add", "remove", "update", "get", "clear", "apply_discount", "estimate_total"]
+      - name: product_id
+        type: string
+        description: "Product ID"
+        required: false
+      - name: quantity
+        type: integer
+        description: "Item quantity"
+        required: false
+      - name: variant_id
+        type: string
+        description: "Product variant ID"
+        required: false
+      - name: discount_code
+        type: string
+        description: "Discount code to apply"
+        required: false
+    tags: ["ecommerce", "cart", "shopping", "add", "checkout"]
+    test_prompts:
+      single:
+        - "Add item to shopping cart"
+        - "Update cart quantity"
+        - "Remove product from cart"
+        - "Apply discount code to cart"
+
+  - name: manage_product_reviews
+    descriptions:
+      minimal: "Manage reviews"
+      short: "Manage product reviews and ratings"
+      medium: "Create, moderate, or retrieve product reviews and ratings."
+      long: "Manage product reviews. Submit, approve, reject, or retrieve customer reviews with ratings. Example: manage_product_reviews(product_id='PROD-123', action='get', include_ratings=true)."
+      verbose: "Complete review management system. Actions: 'submit' (new review), 'approve' (publish), 'reject' (remove), 'get' (retrieve), 'respond' (merchant reply), 'report' (flag inappropriate). Features: star ratings, verified purchase badge, photos, helpful votes. Example: manage_product_reviews(product_id='PROD-456', action='submit', customer_id='cust_abc', rating=5, title='Great product!', content='Exactly as described...', photos='[\"review1.jpg\"]'). Note: Reviews from verified purchases are prioritized. Warning: Fake reviews violate terms of service."
+    parameters:
+      - name: product_id
+        type: string
+        description: "Product ID"
+        required: true
+      - name: action
+        type: string
+        description: "Review action"
+        required: true
+        enum: ["submit", "approve", "reject", "get", "respond", "report"]
+      - name: customer_id
+        type: string
+        description: "Customer ID (for submit)"
+        required: false
+      - name: rating
+        type: integer
+        description: "Star rating (1-5)"
+        required: false
+      - name: title
+        type: string
+        description: "Review title"
+        required: false
+      - name: content
+        type: string
+        description: "Review content"
+        required: false
+      - name: response
+        type: string
+        description: "Merchant response"
+        required: false
+    tags: ["ecommerce", "reviews", "ratings", "feedback", "moderation"]
+    test_prompts:
+      single:
+        - "Get reviews for product"
+        - "Submit a product review"
+        - "Approve pending reviews"
+        - "Respond to customer review"
+
+  - name: create_subscription
+    descriptions:
+      minimal: "Create subscription"
+      short: "Create a recurring subscription order"
+      medium: "Set up a subscription for recurring product delivery and billing."
+      long: "Create a subscription for recurring orders. Configure product, frequency, payment, and delivery. Example: create_subscription(customer_id='cust123', product_id='PROD-456', frequency='monthly', payment_method='pm_abc')."
+      verbose: "Create recurring product subscriptions. Configuration: products, quantities, frequency (weekly/monthly/custom), billing cycle, shipping schedule, payment method. Features: skip/pause, swap products, quantity changes, delivery scheduling. Example: create_subscription(customer_id='cust_abc', items='[{\"product_id\": \"COFFEE-BLEND\", \"quantity\": 2}]', frequency='monthly', billing_day=1, shipping_day=5, payment_method='card_xyz', apply_discount=true, discount_percent=10). Note: Customers can manage subscriptions via portal. Warning: Failed payments trigger retry sequence."
+    parameters:
+      - name: customer_id
+        type: string
+        description: "Customer ID"
+        required: true
+      - name: items
+        type: string
+        description: "JSON array of subscription items"
+        required: true
+      - name: frequency
+        type: string
+        description: "Delivery frequency"
+        required: true
+        enum: ["weekly", "biweekly", "monthly", "bimonthly", "quarterly"]
+      - name: billing_day
+        type: integer
+        description: "Day of month for billing"
+        required: false
+      - name: payment_method
+        type: string
+        description: "Payment method ID"
+        required: true
+      - name: discount_percent
+        type: number
+        description: "Subscription discount %"
+        required: false
+        default: 0
+      - name: start_date
+        type: string
+        description: "Subscription start date"
+        required: false
+    tags: ["ecommerce", "subscription", "recurring", "billing", "autoship"]
+    test_prompts:
+      single:
+        - "Create a monthly subscription"
+        - "Set up recurring delivery"
+        - "Start a product subscription"
+        - "Enable auto-ship for customer"
+
+  - name: check_fraud_risk
+    descriptions:
+      minimal: "Check fraud risk"
+      short: "Assess fraud risk for an order"
+      medium: "Analyze an order for potential fraud indicators and risk score."
+      long: "Evaluate fraud risk for orders. Returns risk score, flags, and recommendations. Example: check_fraud_risk(order_id='ORD-123') or check_fraud_risk(customer_ip='1.2.3.4', email='user@example.com')."
+      verbose: "Comprehensive fraud detection and risk analysis. Signals: IP geolocation, device fingerprint, email validity, address verification, velocity checks, payment patterns, account age. Returns: risk_score (0-100), risk_level (low/medium/high), flags (VPN, proxy, mismatched addresses), recommendation (approve/review/decline). Example: check_fraud_risk(order_id='ORD-789', customer_ip='1.2.3.4', device_fingerprint='fp_abc', run_address_verification=true). Note: High-risk orders should be manually reviewed. Warning: False positives possible; don't auto-decline without review policy."
+    parameters:
+      - name: order_id
+        type: string
+        description: "Order ID to analyze"
+        required: false
+      - name: customer_ip
+        type: string
+        description: "Customer IP address"
+        required: false
+      - name: email
+        type: string
+        description: "Customer email"
+        required: false
+      - name: device_fingerprint
+        type: string
+        description: "Device fingerprint ID"
+        required: false
+      - name: run_address_verification
+        type: boolean
+        description: "Run AVS check"
+        required: false
+        default: true
+      - name: threshold
+        type: string
+        description: "Risk threshold"
+        required: false
+        default: "medium"
+        enum: ["low", "medium", "high"]
+    tags: ["ecommerce", "fraud", "risk", "security", "order"]
+    test_prompts:
+      single:
+        - "Check order for fraud"
+        - "Analyze fraud risk score"
+        - "Verify order is not fraudulent"
+        - "Run fraud detection on order"
+
+  - name: manage_product_reviews
+    descriptions:
+      minimal: "Manage reviews"
+      short: "Manage product reviews"
+      medium: "Manage product reviews including moderation and responses."
+      long: "Moderate, respond to, and analyze product reviews. Example: manage_product_reviews(product_id='PROD-123', action='list', filter='pending')."
+      verbose: "Product review management system. Actions: list, approve, reject, respond, flag, analyze. Moderation: auto-filter profanity, spam detection, sentiment analysis. Analytics: average rating, review trends, common topics. Example: manage_product_reviews(product_id='PROD-123', action='respond', review_id='REV-456', response='Thank you for your feedback!', public=true). Bulk moderation: manage_product_reviews(action='bulk_approve', filter='{\"rating\": {\"gte\": 4}, \"status\": \"pending\"}'). Note: Respond to negative reviews promptly. Warning: Deleting legitimate reviews may violate consumer protection laws."
+    parameters:
+      - name: action
+        type: string
+        description: "Review action"
+        required: true
+        enum: ["list", "approve", "reject", "respond", "flag", "analyze", "bulk_approve"]
+      - name: product_id
+        type: string
+        description: "Product ID"
+        required: false
+      - name: review_id
+        type: string
+        description: "Specific review ID"
+        required: false
+      - name: response
+        type: string
+        description: "Response text"
+        required: false
+      - name: filter
+        type: string
+        description: "Filter criteria"
+        required: false
+      - name: public
+        type: boolean
+        description: "Public response"
+        required: false
+        default: true
+    tags: ["ecommerce", "reviews", "ratings", "moderation", "customer"]
+    test_prompts:
+      single:
+        - "Show pending reviews"
+        - "Respond to customer review"
+        - "Approve product reviews"
+        - "Analyze review sentiment"
+
+  - name: configure_shipping_rules
+    descriptions:
+      minimal: "Configure shipping"
+      short: "Configure shipping rules"
+      medium: "Set up shipping rules, rates, and zones for orders."
+      long: "Configure shipping methods, rates, and delivery zones. Example: configure_shipping_rules(action='create', name='Free Shipping', conditions='{\"min_order\": 50}')."
+      verbose: "Shipping rules and rate configuration. Rule types: flat rate, weight-based, price-based, zone-based, real-time carrier. Conditions: order minimum, weight, destination, product category. Features: free shipping thresholds, handling fees, shipping classes. Example: configure_shipping_rules(action='create', name='Standard Shipping', type='zone_based', zones='[{\"countries\": [\"US\"], \"rate\": 5.99}, {\"countries\": [\"CA\", \"MX\"], \"rate\": 12.99}]', free_threshold=75, handling_fee=1.50). Note: Test shipping calculations before going live. Warning: Incorrect rates may cause losses or cart abandonment."
+    parameters:
+      - name: action
+        type: string
+        description: "Configuration action"
+        required: true
+        enum: ["create", "update", "delete", "list", "test"]
+      - name: rule_id
+        type: string
+        description: "Rule ID for update/delete"
+        required: false
+      - name: name
+        type: string
+        description: "Shipping rule name"
+        required: false
+      - name: type
+        type: string
+        description: "Rule type"
+        required: false
+        enum: ["flat_rate", "weight_based", "price_based", "zone_based", "carrier"]
+      - name: zones
+        type: string
+        description: "JSON zone configuration"
+        required: false
+      - name: conditions
+        type: string
+        description: "JSON conditions"
+        required: false
+      - name: free_threshold
+        type: number
+        description: "Free shipping minimum"
+        required: false
+    tags: ["ecommerce", "shipping", "rates", "delivery", "configuration"]
+    test_prompts:
+      single:
+        - "Set up shipping rates"
+        - "Add free shipping rule"
+        - "Configure shipping zones"
+        - "Create weight-based shipping"
+
+  - name: manage_abandoned_carts
+    descriptions:
+      minimal: "Manage abandoned carts"
+      short: "Manage abandoned shopping carts"
+      medium: "Track and recover abandoned shopping carts."
+      long: "View abandoned carts and trigger recovery campaigns. Example: manage_abandoned_carts(action='list', abandoned_hours=24, value_threshold=50)."
+      verbose: "Abandoned cart tracking and recovery. Actions: list, analyze, send_reminder, recover. Recovery methods: email sequences, SMS, exit-intent popups, retargeting. Analytics: abandonment rate, recovery rate, cart value. Example: manage_abandoned_carts(action='send_reminder', filter='{\"hours_since\": 2, \"min_value\": 25}', template='cart_reminder_1', discount_code='COMEBACK10', channel='email'). Note: Optimal reminder timing varies by industry. Warning: Too many reminders may annoy customers."
+    parameters:
+      - name: action
+        type: string
+        description: "Cart action"
+        required: true
+        enum: ["list", "analyze", "send_reminder", "delete", "recover"]
+      - name: filter
+        type: string
+        description: "JSON filter criteria"
+        required: false
+      - name: abandoned_hours
+        type: integer
+        description: "Minimum hours abandoned"
+        required: false
+        default: 1
+      - name: value_threshold
+        type: number
+        description: "Minimum cart value"
+        required: false
+      - name: template
+        type: string
+        description: "Recovery email template"
+        required: false
+      - name: discount_code
+        type: string
+        description: "Discount code to include"
+        required: false
+      - name: channel
+        type: string
+        description: "Recovery channel"
+        required: false
+        default: "email"
+        enum: ["email", "sms", "push"]
+    tags: ["ecommerce", "cart", "abandoned", "recovery", "conversion"]
+    test_prompts:
+      single:
+        - "Show abandoned carts"
+        - "Send cart recovery email"
+        - "Analyze cart abandonment"
+        - "Recover abandoned checkouts"
+
+  - name: configure_tax_rules
+    descriptions:
+      minimal: "Configure taxes"
+      short: "Configure tax rules"
+      medium: "Set up tax calculation rules and rates for different regions."
+      long: "Configure sales tax, VAT, and GST rules by location. Example: configure_tax_rules(action='create', region='US-CA', rate=7.25, type='sales_tax')."
+      verbose: "Tax rule configuration for ecommerce. Tax types: sales tax, VAT, GST, HST. Settings: region-based rates, product exemptions, tax-inclusive pricing. Automation: integration with Avalara, TaxJar. Example: configure_tax_rules(action='create', region='EU', type='vat', rates='{\"DE\": 19, \"FR\": 20, \"NL\": 21}', tax_inclusive=true, digital_goods_rate=23). Product exemptions: configure_tax_rules(action='add_exemption', product_category='groceries', regions='[\"US-CA\", \"US-NY\"]'). Note: Tax laws vary by jurisdiction. Warning: Incorrect tax calculation may result in legal issues."
+    parameters:
+      - name: action
+        type: string
+        description: "Tax configuration action"
+        required: true
+        enum: ["create", "update", "delete", "list", "add_exemption", "validate"]
+      - name: rule_id
+        type: string
+        description: "Rule ID for update/delete"
+        required: false
+      - name: region
+        type: string
+        description: "Region code (e.g., US-CA, EU)"
+        required: false
+      - name: type
+        type: string
+        description: "Tax type"
+        required: false
+        enum: ["sales_tax", "vat", "gst", "hst"]
+      - name: rate
+        type: number
+        description: "Tax rate percentage"
+        required: false
+      - name: rates
+        type: string
+        description: "JSON rates by sub-region"
+        required: false
+      - name: tax_inclusive
+        type: boolean
+        description: "Prices include tax"
+        required: false
+        default: false
+    tags: ["ecommerce", "tax", "vat", "sales_tax", "compliance"]
+    test_prompts:
+      single:
+        - "Set up sales tax"
+        - "Configure VAT rates"
+        - "Add tax exemption"
+        - "Update tax rules"
+
+  - name: manage_gift_cards
+    descriptions:
+      minimal: "Manage gift cards"
+      short: "Manage gift cards"
+      medium: "Create, manage, and redeem gift cards."
+      long: "Issue and manage gift cards with balance tracking. Example: manage_gift_cards(action='create', amount=50, recipient_email='friend@email.com')."
+      verbose: "Gift card management system. Actions: create, check_balance, redeem, deactivate, list, reload. Features: custom amounts, scheduled delivery, custom designs, partial redemption. Analytics: gift card revenue, redemption rate, breakage. Example: manage_gift_cards(action='create', amount=100, recipient_email='friend@email.com', sender_name='John', message='Happy Birthday!', design='birthday', delivery_date='2024-02-14'). Redemption: manage_gift_cards(action='redeem', code='GC-ABC123', amount=25, order_id='ORD-789'). Note: Gift cards may have tax implications. Warning: Ensure compliance with gift card expiration laws."
+    parameters:
+      - name: action
+        type: string
+        description: "Gift card action"
+        required: true
+        enum: ["create", "check_balance", "redeem", "deactivate", "list", "reload"]
+      - name: code
+        type: string
+        description: "Gift card code"
+        required: false
+      - name: amount
+        type: number
+        description: "Amount for create/reload/redeem"
+        required: false
+      - name: recipient_email
+        type: string
+        description: "Recipient email"
+        required: false
+      - name: sender_name
+        type: string
+        description: "Sender name"
+        required: false
+      - name: message
+        type: string
+        description: "Gift message"
+        required: false
+      - name: delivery_date
+        type: string
+        description: "Scheduled delivery date"
+        required: false
+      - name: order_id
+        type: string
+        description: "Order ID for redemption"
+        required: false
+    tags: ["ecommerce", "gift_card", "voucher", "payment", "gift"]
+    test_prompts:
+      single:
+        - "Create a gift card"
+        - "Check gift card balance"
+        - "Redeem gift card"
+        - "Send gift card by email"
+
+  - name: manage_product_bundles
+    descriptions:
+      minimal: "Manage bundles"
+      short: "Manage product bundles"
+      medium: "Create and manage product bundles with pricing."
+      long: "Create product bundles with special pricing. Example: manage_product_bundles(action='create', name='Starter Kit', products='[\"PROD-1\", \"PROD-2\"]', price=79.99)."
+      verbose: "Product bundling and kitting. Bundle types: fixed (specific products), mix-and-match, build-your-own, subscription boxes. Pricing: fixed price, percentage discount, BOGO. Inventory: bundle-level or component-level tracking. Example: manage_product_bundles(action='create', name='Gaming Setup Bundle', products='[{\"id\": \"PROD-1\", \"quantity\": 1}, {\"id\": \"PROD-2\", \"quantity\": 2}]', price=199.99, compare_at=249.99, inventory_mode='component', max_quantity=100). Note: Bundle pricing should provide clear value. Warning: Component inventory tracking requires careful stock management."
+    parameters:
+      - name: action
+        type: string
+        description: "Bundle action"
+        required: true
+        enum: ["create", "update", "delete", "list", "add_product", "remove_product"]
+      - name: bundle_id
+        type: string
+        description: "Bundle ID"
+        required: false
+      - name: name
+        type: string
+        description: "Bundle name"
+        required: false
+      - name: products
+        type: string
+        description: "JSON array of products"
+        required: false
+      - name: price
+        type: number
+        description: "Bundle price"
+        required: false
+      - name: compare_at
+        type: number
+        description: "Compare-at price"
+        required: false
+      - name: inventory_mode
+        type: string
+        description: "Inventory tracking mode"
+        required: false
+        default: "bundle"
+        enum: ["bundle", "component"]
+    tags: ["ecommerce", "bundle", "kit", "products", "pricing"]
+    test_prompts:
+      single:
+        - "Create product bundle"
+        - "Set up kit pricing"
+        - "Add products to bundle"
+        - "List product bundles"
+
+  - name: manage_loyalty_program
+    descriptions:
+      minimal: "Manage loyalty"
+      short: "Manage loyalty program"
+      medium: "Configure and manage customer loyalty and rewards programs."
+      long: "Set up loyalty points, tiers, and rewards. Example: manage_loyalty_program(action='configure', points_per_dollar=10, redemption_rate=100)."
+      verbose: "Loyalty program management. Features: point accrual, tier levels, rewards catalog, referral bonuses, birthday rewards. Actions: configure, add_points, redeem, list_members, create_reward. Tiers: based on spend or points, with multipliers and perks. Example: manage_loyalty_program(action='configure', points_per_dollar=10, redemption_rate=100, tiers='[{\"name\": \"Silver\", \"min_points\": 0}, {\"name\": \"Gold\", \"min_points\": 1000, \"multiplier\": 1.5}, {\"name\": \"Platinum\", \"min_points\": 5000, \"multiplier\": 2}]'). Note: Points expiration encourages engagement. Warning: Program changes may affect existing member expectations."
+    parameters:
+      - name: action
+        type: string
+        description: "Loyalty action"
+        required: true
+        enum: ["configure", "add_points", "deduct_points", "redeem", "list_members", "create_reward", "get_balance"]
+      - name: customer_id
+        type: string
+        description: "Customer ID"
+        required: false
+      - name: points
+        type: integer
+        description: "Points to add/deduct"
+        required: false
+      - name: points_per_dollar
+        type: integer
+        description: "Points earned per dollar"
+        required: false
+      - name: redemption_rate
+        type: integer
+        description: "Points needed per dollar redemption"
+        required: false
+      - name: tiers
+        type: string
+        description: "JSON tier configuration"
+        required: false
+      - name: reward_id
+        type: string
+        description: "Reward ID for redemption"
+        required: false
+    tags: ["ecommerce", "loyalty", "rewards", "points", "customer"]
+    test_prompts:
+      single:
+        - "Set up loyalty program"
+        - "Add points to customer"
+        - "Configure reward tiers"
+        - "Check loyalty balance"
+
+  - name: generate_product_feed
+    descriptions:
+      minimal: "Generate feed"
+      short: "Generate product feed"
+      medium: "Generate product feeds for marketplaces and advertising platforms."
+      long: "Create product feeds for Google Shopping, Facebook, Amazon, etc. Example: generate_product_feed(platform='google_shopping', format='xml')."
+      verbose: "Product feed generation for marketplaces. Platforms: Google Shopping, Facebook/Instagram, Amazon, Pinterest, Bing. Formats: XML, CSV, TSV, JSON. Features: attribute mapping, category mapping, custom labels, feed optimization. Example: generate_product_feed(platform='google_shopping', format='xml', filter='{\"in_stock\": true, \"price_gt\": 10}', optimize_titles=true, include_variants=true, output='google_feed.xml'). Scheduled: generate_product_feed(platform='facebook', schedule='daily', upload_url='ftp://...'). Note: Feed requirements vary by platform. Warning: Incorrect feeds may cause product disapprovals."
+    parameters:
+      - name: platform
+        type: string
+        description: "Target platform"
+        required: true
+        enum: ["google_shopping", "facebook", "amazon", "pinterest", "bing", "custom"]
+      - name: format
+        type: string
+        description: "Feed format"
+        required: false
+        default: "xml"
+        enum: ["xml", "csv", "tsv", "json"]
+      - name: filter
+        type: string
+        description: "JSON product filter"
+        required: false
+      - name: optimize_titles
+        type: boolean
+        description: "Optimize product titles"
+        required: false
+        default: false
+      - name: include_variants
+        type: boolean
+        description: "Include product variants"
+        required: false
+        default: true
+      - name: output
+        type: string
+        description: "Output file path"
+        required: false
+      - name: schedule
+        type: string
+        description: "Generation schedule"
+        required: false
+    tags: ["ecommerce", "feed", "marketplace", "google_shopping", "export"]
+    test_prompts:
+      single:
+        - "Generate Google Shopping feed"
+        - "Create Facebook product catalog"
+        - "Export products for Amazon"
+        - "Build product feed"
+
+  - name: manage_subscriptions
+    descriptions:
+      minimal: "Manage subscriptions"
+      short: "Manage product subscriptions"
+      medium: "Create and manage recurring product subscriptions."
+      long: "Handle subscription products with recurring billing. Example: manage_subscriptions(action='create', customer_id='CUST-123', product_id='PROD-456', frequency='monthly')."
+      verbose: "Subscription and recurring order management. Actions: create, update, pause, resume, cancel, list, skip_next. Features: flexible frequencies, discount for subscribers, swap products, prepaid options. Example: manage_subscriptions(action='create', customer_id='CUST-123', products='[{\"id\": \"PROD-456\", \"quantity\": 2}]', frequency='monthly', discount_percent=15, billing_day=1, prepaid_months=3). Management: manage_subscriptions(action='swap', subscription_id='SUB-789', old_product='PROD-456', new_product='PROD-789'). Note: Clear cancellation process improves trust. Warning: Subscription changes should notify customers."
+    parameters:
+      - name: action
+        type: string
+        description: "Subscription action"
+        required: true
+        enum: ["create", "update", "pause", "resume", "cancel", "list", "skip_next", "swap"]
+      - name: subscription_id
+        type: string
+        description: "Subscription ID"
+        required: false
+      - name: customer_id
+        type: string
+        description: "Customer ID"
+        required: false
+      - name: products
+        type: string
+        description: "JSON array of products"
+        required: false
+      - name: frequency
+        type: string
+        description: "Delivery frequency"
+        required: false
+        enum: ["weekly", "biweekly", "monthly", "quarterly", "annually"]
+      - name: discount_percent
+        type: number
+        description: "Subscriber discount"
+        required: false
+      - name: billing_day
+        type: integer
+        description: "Day of month for billing"
+        required: false
+    tags: ["ecommerce", "subscription", "recurring", "billing", "products"]
+    test_prompts:
+      single:
+        - "Create subscription"
+        - "Pause subscription"
+        - "Cancel recurring order"
+        - "Skip next delivery"

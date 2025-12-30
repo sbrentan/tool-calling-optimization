@@ -1,0 +1,1177 @@
+category: cloud_storage_operations
+
+tools:
+  - name: upload_to_cloud
+    descriptions:
+      minimal: "Upload file to cloud"
+      short: "Upload a file to cloud storage"
+      medium: "Upload a local file to a cloud storage service like S3, GCS, or Azure Blob with optional metadata."
+      long: "Upload a file to cloud storage. Supports AWS S3, Google Cloud Storage, Azure Blob Storage. Configure bucket/container and path. Example: upload_to_cloud(file='/local/file.pdf', bucket='my-bucket', path='documents/file.pdf')."
+      verbose: "Upload a file to cloud storage services. Supported providers: 's3' (AWS), 'gcs' (Google Cloud), 'azure' (Azure Blob), 'dropbox', 'onedrive'. Options include: public/private access, metadata, content-type, storage class, encryption. For large files, multipart upload is used automatically. Example: upload_to_cloud(file='/data/report.pdf', provider='s3', bucket='company-files', path='reports/2024/q1.pdf', acl='private', metadata='{\"author\": \"John\", \"department\": \"Sales\"}', storage_class='STANDARD'). Note: Large files are uploaded in chunks for reliability. Warning: Ensure proper IAM permissions are configured."
+    parameters:
+      - name: file
+        type: string
+        description: "Local file path to upload"
+        required: true
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure", "dropbox", "onedrive"]
+      - name: bucket
+        type: string
+        description: "Bucket or container name"
+        required: true
+      - name: path
+        type: string
+        description: "Destination path in cloud storage"
+        required: true
+      - name: acl
+        type: string
+        description: "Access control setting"
+        required: false
+        default: "private"
+        enum: ["private", "public-read", "authenticated-read"]
+      - name: metadata
+        type: string
+        description: "JSON object of custom metadata"
+        required: false
+      - name: storage_class
+        type: string
+        description: "Storage class/tier"
+        required: false
+    tags: ["cloud", "storage", "upload", "s3", "gcs", "azure"]
+    test_prompts:
+      single:
+        - "Upload report.pdf to my S3 bucket"
+        - "Save the file to Google Cloud Storage"
+        - "Upload the backup to Azure blob storage"
+        - "Put this file in my Dropbox"
+
+  - name: download_from_cloud
+    descriptions:
+      minimal: "Download from cloud"
+      short: "Download a file from cloud storage"
+      medium: "Download a file from cloud storage services like S3, GCS, or Azure Blob to a local path."
+      long: "Download a file from cloud storage to a local path. Supports range requests for partial downloads. Example: download_from_cloud(bucket='my-bucket', path='documents/file.pdf', destination='/local/file.pdf')."
+      verbose: "Download a file from cloud storage to local filesystem. Supports AWS S3, Google Cloud Storage, Azure Blob, Dropbox, OneDrive. Features: resume interrupted downloads, parallel chunk download for large files, version-specific download. Example: download_from_cloud(provider='s3', bucket='company-files', path='reports/annual.pdf', destination='/downloads/annual_report.pdf', version_id='abc123', verify_checksum=true). Note: Large files are downloaded in parallel chunks for speed. Warning: Ensure sufficient local disk space before downloading large files."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure", "dropbox", "onedrive"]
+      - name: bucket
+        type: string
+        description: "Bucket or container name"
+        required: true
+      - name: path
+        type: string
+        description: "File path in cloud storage"
+        required: true
+      - name: destination
+        type: string
+        description: "Local destination path"
+        required: true
+      - name: version_id
+        type: string
+        description: "Specific version to download"
+        required: false
+      - name: verify_checksum
+        type: boolean
+        description: "Verify file integrity after download"
+        required: false
+        default: true
+    tags: ["cloud", "storage", "download", "s3", "gcs", "azure"]
+    test_prompts:
+      single:
+        - "Download the report from S3"
+        - "Get the file from Google Cloud Storage"
+        - "Download backup.zip from Azure"
+        - "Fetch the document from my cloud storage"
+
+  - name: list_cloud_files
+    descriptions:
+      minimal: "List cloud files"
+      short: "List files in a cloud storage bucket"
+      medium: "List files and folders in a cloud storage bucket or container with optional prefix filtering."
+      long: "List objects in a cloud storage location. Filter by prefix and limit results. Returns file names, sizes, and last modified dates. Example: list_cloud_files(bucket='my-bucket', prefix='documents/', max_results=100)."
+      verbose: "List objects in a cloud storage bucket/container. Returns metadata including: key/name, size, last modified, storage class, owner. Supports pagination for large listings, prefix filtering for virtual directory navigation. Example: list_cloud_files(provider='s3', bucket='company-files', prefix='reports/2024/', delimiter='/', recursive=false, max_results=1000, continuation_token='abc123'). Note: Use delimiter='/' to list virtual directories. Warning: Listing very large buckets may take time; use prefix to narrow results."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure", "dropbox", "onedrive"]
+      - name: bucket
+        type: string
+        description: "Bucket or container name"
+        required: true
+      - name: prefix
+        type: string
+        description: "Filter by path prefix"
+        required: false
+      - name: delimiter
+        type: string
+        description: "Hierarchy delimiter (usually '/')"
+        required: false
+      - name: recursive
+        type: boolean
+        description: "List recursively"
+        required: false
+        default: false
+      - name: max_results
+        type: integer
+        description: "Maximum files to return"
+        required: false
+        default: 1000
+      - name: continuation_token
+        type: string
+        description: "Token for pagination"
+        required: false
+    tags: ["cloud", "storage", "list", "browse", "files"]
+    test_prompts:
+      single:
+        - "List all files in my S3 bucket"
+        - "Show the contents of the reports folder in cloud storage"
+        - "What files are in the backup container?"
+        - "List PDFs in the documents folder"
+
+  - name: delete_cloud_file
+    descriptions:
+      minimal: "Delete cloud file"
+      short: "Delete a file from cloud storage"
+      medium: "Permanently delete a file from cloud storage. Use with caution as this may be irreversible."
+      long: "Delete a file from cloud storage. Can delete specific version or all versions. Example: delete_cloud_file(bucket='my-bucket', path='documents/old-file.pdf')."
+      verbose: "Permanently delete an object from cloud storage. For versioned buckets: delete specific version or add delete marker (making object inaccessible while keeping history). Can delete multiple files matching a prefix. Example: delete_cloud_file(provider='s3', bucket='company-files', path='temp/old-report.pdf', version_id='v123', permanent=true). Note: In versioned buckets, delete without version_id only adds a delete marker. Warning: Permanent deletion cannot be undone; enable MFA delete for critical data."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure", "dropbox", "onedrive"]
+      - name: bucket
+        type: string
+        description: "Bucket or container name"
+        required: true
+      - name: path
+        type: string
+        description: "File path to delete"
+        required: true
+      - name: version_id
+        type: string
+        description: "Specific version to delete"
+        required: false
+      - name: permanent
+        type: boolean
+        description: "Permanently delete (bypass versioning)"
+        required: false
+        default: false
+    tags: ["cloud", "storage", "delete", "remove", "cleanup"]
+    test_prompts:
+      single:
+        - "Delete the old backup from S3"
+        - "Remove temp files from cloud storage"
+        - "Delete file.pdf from the bucket"
+        - "Remove the outdated report from Azure"
+
+  - name: copy_cloud_file
+    descriptions:
+      minimal: "Copy cloud file"
+      short: "Copy a file within or between cloud buckets"
+      medium: "Copy a file to another location within the same bucket or to a different bucket/container."
+      long: "Copy a file within cloud storage. Can copy within same bucket or to different bucket. Preserves metadata or allows overriding. Example: copy_cloud_file(source_bucket='bucket1', source_path='file.pdf', dest_bucket='bucket2', dest_path='archive/file.pdf')."
+      verbose: "Copy an object within or between cloud storage buckets. Supports same-region and cross-region copies. Can preserve or replace metadata, change storage class during copy. For large files (>5GB on S3), uses multipart copy. Example: copy_cloud_file(provider='s3', source_bucket='active-files', source_path='report.pdf', dest_bucket='archive-bucket', dest_path='2024/reports/report.pdf', storage_class='GLACIER', preserve_metadata=true). Note: Cross-region copies may incur additional data transfer costs. Warning: Large file copies can take significant time."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: source_bucket
+        type: string
+        description: "Source bucket name"
+        required: true
+      - name: source_path
+        type: string
+        description: "Source file path"
+        required: true
+      - name: dest_bucket
+        type: string
+        description: "Destination bucket name"
+        required: true
+      - name: dest_path
+        type: string
+        description: "Destination file path"
+        required: true
+      - name: storage_class
+        type: string
+        description: "Storage class for destination"
+        required: false
+      - name: preserve_metadata
+        type: boolean
+        description: "Preserve source metadata"
+        required: false
+        default: true
+    tags: ["cloud", "storage", "copy", "duplicate", "move"]
+    test_prompts:
+      single:
+        - "Copy the report to the archive bucket"
+        - "Duplicate the file to another folder"
+        - "Copy file.pdf from bucket1 to bucket2"
+        - "Move the backup to cold storage"
+
+  - name: generate_presigned_url
+    descriptions:
+      minimal: "Generate presigned URL"
+      short: "Generate a temporary URL for file access"
+      medium: "Generate a presigned URL that allows temporary access to a private file without authentication."
+      long: "Generate a time-limited presigned URL for accessing a private file. URL expires after specified duration. Example: generate_presigned_url(bucket='my-bucket', path='private/file.pdf', expires_in=3600)."
+      verbose: "Generate a presigned URL that provides temporary access to private cloud storage objects. Recipients can download (or upload for PUT URLs) without needing cloud credentials. Configurable expiration time and allowed HTTP methods. Example: generate_presigned_url(provider='s3', bucket='private-files', path='reports/confidential.pdf', expires_in=3600, method='GET', content_type='application/pdf'). Note: URL expiration is enforced server-side. Warning: Anyone with the URL can access the file until expiration; share securely."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: path
+        type: string
+        description: "File path"
+        required: true
+      - name: expires_in
+        type: integer
+        description: "Expiration time in seconds"
+        required: false
+        default: 3600
+      - name: method
+        type: string
+        description: "Allowed HTTP method"
+        required: false
+        default: "GET"
+        enum: ["GET", "PUT"]
+      - name: content_type
+        type: string
+        description: "Required content-type for PUT"
+        required: false
+    tags: ["cloud", "storage", "url", "presigned", "share", "temporary"]
+    test_prompts:
+      single:
+        - "Generate a download link for the private file"
+        - "Create a temporary URL to share the report"
+        - "Get a presigned URL valid for 1 hour"
+        - "Generate an upload URL for the client"
+
+  - name: get_cloud_file_info
+    descriptions:
+      minimal: "Get cloud file info"
+      short: "Get metadata about a cloud file"
+      medium: "Retrieve metadata about a file in cloud storage including size, type, and last modified date."
+      long: "Get detailed metadata about a file without downloading it. Returns size, content-type, last modified, ETag, and custom metadata. Example: get_cloud_file_info(bucket='my-bucket', path='documents/report.pdf')."
+      verbose: "Retrieve comprehensive metadata about a cloud storage object. Returns: size (bytes), content-type, last-modified date, ETag/checksum, storage class, encryption status, custom metadata, version ID, and cache settings. Example: get_cloud_file_info(provider='s3', bucket='company-files', path='reports/annual.pdf', version_id='abc123'). Note: HEAD request is used, so no data transfer charges. Warning: Metadata retrieval may fail if object doesn't exist."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure", "dropbox", "onedrive"]
+      - name: bucket
+        type: string
+        description: "Bucket or container name"
+        required: true
+      - name: path
+        type: string
+        description: "File path"
+        required: true
+      - name: version_id
+        type: string
+        description: "Specific version"
+        required: false
+    tags: ["cloud", "storage", "metadata", "info", "details"]
+    test_prompts:
+      single:
+        - "What is the size of the file in S3?"
+        - "Get metadata for report.pdf in cloud storage"
+        - "When was the backup last modified?"
+        - "Show info about the uploaded document"
+
+  - name: sync_to_cloud
+    descriptions:
+      minimal: "Sync folder to cloud"
+      short: "Synchronize a local folder with cloud storage"
+      medium: "Sync a local directory to cloud storage, uploading new/modified files and optionally deleting removed files."
+      long: "Synchronize a local folder with a cloud storage location. Uploads new and modified files. Can optionally delete files from cloud that don't exist locally. Example: sync_to_cloud(local_path='/backups', bucket='backup-bucket', cloud_path='daily/')."
+      verbose: "Synchronize a local directory with cloud storage. Compares files using size and modification time (or checksums). Actions: upload new files, upload modified files, optionally delete cloud files not present locally. Supports exclude patterns. Example: sync_to_cloud(local_path='/data/reports', provider='s3', bucket='company-data', cloud_path='reports/', delete=true, exclude=['*.tmp', '.git/*'], dry_run=true, size_only=false). Note: Use dry_run=true to preview changes without applying. Warning: delete=true will remove cloud files not in local folder."
+    parameters:
+      - name: local_path
+        type: string
+        description: "Local directory to sync"
+        required: true
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: bucket
+        type: string
+        description: "Target bucket"
+        required: true
+      - name: cloud_path
+        type: string
+        description: "Target path prefix in bucket"
+        required: false
+        default: ""
+      - name: delete
+        type: boolean
+        description: "Delete cloud files not in local"
+        required: false
+        default: false
+      - name: exclude
+        type: array
+        description: "Patterns to exclude"
+        required: false
+      - name: dry_run
+        type: boolean
+        description: "Preview without making changes"
+        required: false
+        default: false
+    tags: ["cloud", "storage", "sync", "backup", "upload"]
+    test_prompts:
+      single:
+        - "Sync my documents folder to S3"
+        - "Backup the project directory to cloud storage"
+        - "Synchronize local files with the cloud bucket"
+        - "Upload all new files to GCS"
+
+  - name: create_bucket
+    descriptions:
+      minimal: "Create bucket"
+      short: "Create a new cloud storage bucket"
+      medium: "Create a new bucket or container in cloud storage with specified region and settings."
+      long: "Create a new bucket/container in cloud storage. Specify region, access settings, and versioning. Example: create_bucket(name='my-new-bucket', region='us-east-1', versioning=true)."
+      verbose: "Create a new storage bucket/container. Options: region/location, versioning, default encryption, lifecycle policies, access logging, public access settings. Bucket names must be globally unique (for S3/GCS) and follow naming rules. Example: create_bucket(provider='s3', name='company-data-2024', region='eu-west-1', versioning=true, encryption='AES256', public_access_block=true, lifecycle='{\"expiration_days\": 365}'). Note: Bucket names are globally unique and cannot be reused after deletion. Warning: Misconfigured public access can expose sensitive data."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: name
+        type: string
+        description: "Bucket name (globally unique)"
+        required: true
+      - name: region
+        type: string
+        description: "Geographic region"
+        required: true
+      - name: versioning
+        type: boolean
+        description: "Enable versioning"
+        required: false
+        default: false
+      - name: encryption
+        type: string
+        description: "Default encryption type"
+        required: false
+        enum: ["none", "AES256", "aws:kms", "google:kms"]
+      - name: public_access_block
+        type: boolean
+        description: "Block all public access"
+        required: false
+        default: true
+    tags: ["cloud", "storage", "bucket", "create", "container"]
+    test_prompts:
+      single:
+        - "Create a new S3 bucket called 'my-data'"
+        - "Set up a new storage container in Azure"
+        - "Create a bucket in Google Cloud Storage"
+        - "Make a new bucket with versioning enabled"
+
+  - name: set_bucket_policy
+    descriptions:
+      minimal: "Set bucket policy"
+      short: "Configure access policy for a bucket"
+      medium: "Set or update the access control policy for a cloud storage bucket defining who can access what."
+      long: "Configure the access policy for a bucket. Define permissions for users, groups, or public access. Supports IAM-style policies. Example: set_bucket_policy(bucket='my-bucket', policy='{\"allow\": [\"read\"], \"principal\": \"user@example.com\"}')."
+      verbose: "Set or update the access control policy for a cloud storage bucket. Policies define who can perform which actions. Supports: IAM policies (S3/GCS), RBAC (Azure), ACLs. Can set bucket-level or prefix-level permissions. Example: set_bucket_policy(provider='s3', bucket='company-files', policy='{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Principal\": {\"AWS\": \"arn:aws:iam::123456789:user/app\"}, \"Action\": [\"s3:GetObject\"], \"Resource\": \"arn:aws:s3:::company-files/*\"}]}', public_access='deny'). Note: Policy changes take effect immediately. Warning: Incorrect policies can lock you out or expose data; test in non-production first."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: policy
+        type: string
+        description: "JSON policy document"
+        required: true
+      - name: public_access
+        type: string
+        description: "Public access setting"
+        required: false
+        enum: ["allow", "deny"]
+    tags: ["cloud", "storage", "policy", "permissions", "access", "security"]
+    test_prompts:
+      single:
+        - "Make the bucket publicly readable"
+        - "Restrict bucket access to specific users"
+        - "Update the bucket policy for S3"
+        - "Set read-only access for the analytics role"
+  - name: enable_bucket_versioning
+    descriptions:
+      minimal: "Enable versioning"
+      short: "Enable bucket versioning"
+      medium: "Enable object versioning to keep multiple versions of objects in a bucket."
+      long: "Enable versioning on a bucket to preserve and recover previous object versions. Example: enable_bucket_versioning(bucket='my-bucket', mfa_delete=false)."
+      verbose: "Enable versioning to preserve all object versions for recovery and compliance. Options: MFA delete protection, lifecycle rules for old versions. Example: enable_bucket_versioning(provider='s3', bucket='critical-data', mfa_delete=true, noncurrent_expiration_days=90). Returns: versioning status, configuration applied. Note: Versioning cannot be disabled once enabled (only suspended). Warning: Versioning increases storage costs; use lifecycle rules to manage old versions."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: mfa_delete
+        type: boolean
+        description: "Require MFA for deletions"
+        required: false
+        default: false
+      - name: noncurrent_expiration_days
+        type: integer
+        description: "Days to keep old versions"
+        required: false
+    tags: ["cloud", "storage", "versioning", "backup", "recovery"]
+    test_prompts:
+      single:
+        - "Enable versioning on bucket"
+        - "Turn on object versioning"
+        - "Enable version history"
+        - "Activate bucket versioning"
+
+  - name: configure_lifecycle_rules
+    descriptions:
+      minimal: "Set lifecycle"
+      short: "Configure lifecycle rules"
+      medium: "Set lifecycle rules to automatically transition or expire objects."
+      long: "Configure lifecycle rules for automatic object management. Transition to cheaper storage or delete old objects. Example: configure_lifecycle_rules(bucket='logs', rules='[{\"prefix\": \"logs/\", \"expiration_days\": 90}]')."
+      verbose: "Automate object lifecycle management. Actions: transition (move to cheaper storage class), expiration (delete), abort multipart uploads. Example: configure_lifecycle_rules(provider='s3', bucket='data-archive', rules='[{\"name\": \"archive_old\", \"prefix\": \"data/\", \"transitions\": [{\"days\": 30, \"storage_class\": \"STANDARD_IA\"}, {\"days\": 90, \"storage_class\": \"GLACIER\"}], \"expiration_days\": 365}]'). Note: Rules apply to new and existing objects. Warning: Deleted objects cannot be recovered unless versioning is enabled."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: rules
+        type: string
+        description: "JSON array of lifecycle rules"
+        required: true
+      - name: enabled
+        type: boolean
+        description: "Enable the rules"
+        required: false
+        default: true
+    tags: ["cloud", "storage", "lifecycle", "automation", "cost"]
+    test_prompts:
+      single:
+        - "Set up lifecycle rules"
+        - "Auto-delete old files"
+        - "Move old data to archive"
+        - "Configure storage lifecycle"
+
+  - name: setup_replication
+    descriptions:
+      minimal: "Setup replication"
+      short: "Configure bucket replication"
+      medium: "Set up cross-region or same-region replication for disaster recovery."
+      long: "Configure bucket replication for redundancy and disaster recovery. Copy objects to another bucket automatically. Example: setup_replication(source='primary-bucket', destination='backup-bucket', destination_region='eu-west-1')."
+      verbose: "Configure automatic object replication between buckets. Types: cross-region (disaster recovery), same-region (compliance, aggregation). Options: filter by prefix/tags, replicate deletions, change storage class. Example: setup_replication(provider='s3', source='us-primary', destination='eu-backup', destination_region='eu-west-1', replicate_deletes=true, storage_class='STANDARD_IA', filter_prefix='critical/'). Note: Replication is asynchronous. Warning: Increases storage costs; ensure compliance with data residency requirements."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: source
+        type: string
+        description: "Source bucket name"
+        required: true
+      - name: destination
+        type: string
+        description: "Destination bucket name"
+        required: true
+      - name: destination_region
+        type: string
+        description: "Destination region"
+        required: true
+      - name: replicate_deletes
+        type: boolean
+        description: "Replicate delete markers"
+        required: false
+        default: false
+      - name: filter_prefix
+        type: string
+        description: "Only replicate objects with prefix"
+        required: false
+    tags: ["cloud", "storage", "replication", "disaster_recovery", "backup"]
+    test_prompts:
+      single:
+        - "Set up cross-region replication"
+        - "Replicate bucket to backup region"
+        - "Configure disaster recovery replication"
+        - "Enable bucket replication"
+
+  - name: restore_archived_object
+    descriptions:
+      minimal: "Restore object"
+      short: "Restore archived object"
+      medium: "Restore an object from archive storage to make it accessible."
+      long: "Restore an object from Glacier or archive tier. Makes archived data temporarily accessible. Example: restore_archived_object(bucket='archive', key='data/2023/backup.tar', days=7)."
+      verbose: "Restore objects from archive storage tiers (Glacier, Archive). Retrieval options: expedited (1-5 min), standard (3-5 hours), bulk (5-12 hours). Example: restore_archived_object(provider='s3', bucket='cold-storage', key='backups/db-2023.sql.gz', tier='standard', days=14, notify_email='admin@company.com'). Returns: restoration status, estimated completion time. Note: Expedited retrieval is more expensive. Warning: Restored objects return to archive after specified days."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: key
+        type: string
+        description: "Object key/path"
+        required: true
+      - name: tier
+        type: string
+        description: "Retrieval tier"
+        required: false
+        default: "standard"
+        enum: ["expedited", "standard", "bulk"]
+      - name: days
+        type: integer
+        description: "Days to keep restored"
+        required: true
+      - name: notify_email
+        type: string
+        description: "Email for completion notification"
+        required: false
+    tags: ["cloud", "storage", "archive", "restore", "glacier"]
+    test_prompts:
+      single:
+        - "Restore file from Glacier"
+        - "Retrieve archived data"
+        - "Unarchive old backup"
+        - "Restore from cold storage"
+
+  - name: sync_buckets
+    descriptions:
+      minimal: "Sync buckets"
+      short: "Sync between buckets"
+      medium: "Synchronize contents between two buckets or local directory and bucket."
+      long: "Sync files between buckets or local storage. Only copies changed files. Example: sync_buckets(source='s3://source-bucket', destination='s3://dest-bucket', delete=true)."
+      verbose: "Efficient synchronization between storage locations. Sources/destinations: S3, GCS, Azure, local filesystem. Options: delete removed files, filter by pattern, size-only comparison, preserve metadata. Example: sync_buckets(source='s3://production-assets', destination='s3://cdn-origin', delete=true, exclude='[\"*.tmp\", \".git/*\"]', include='[\"*.jpg\", \"*.png\", \"*.css\", \"*.js\"]', dry_run=false). Note: Large syncs may take significant time. Warning: Delete option will remove files from destination not in source."
+    parameters:
+      - name: source
+        type: string
+        description: "Source path (s3://bucket or local)"
+        required: true
+      - name: destination
+        type: string
+        description: "Destination path"
+        required: true
+      - name: delete
+        type: boolean
+        description: "Delete files not in source"
+        required: false
+        default: false
+      - name: exclude
+        type: string
+        description: "JSON patterns to exclude"
+        required: false
+      - name: include
+        type: string
+        description: "JSON patterns to include"
+        required: false
+      - name: dry_run
+        type: boolean
+        description: "Preview without copying"
+        required: false
+        default: false
+    tags: ["cloud", "storage", "sync", "copy", "migration"]
+    test_prompts:
+      single:
+        - "Sync two S3 buckets"
+        - "Copy local folder to bucket"
+        - "Synchronize storage"
+        - "Mirror bucket contents"
+
+  - name: enable_access_logging
+    descriptions:
+      minimal: "Enable logging"
+      short: "Enable access logging"
+      medium: "Enable access logging to track all requests to a bucket."
+      long: "Enable server access logging for audit and security. Logs all requests to the bucket. Example: enable_access_logging(bucket='data-bucket', log_bucket='log-bucket', log_prefix='access-logs/')."
+      verbose: "Enable detailed access logging for security and compliance. Captures: requester, bucket, key, operation, response status, timing. Example: enable_access_logging(provider='s3', bucket='sensitive-data', log_bucket='central-logs', log_prefix='s3-access/sensitive-data/', log_format='json'). Note: Logging adds storage costs for log files. Warning: Log buckets should have strict access controls to prevent tampering."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: bucket
+        type: string
+        description: "Bucket to log"
+        required: true
+      - name: log_bucket
+        type: string
+        description: "Destination bucket for logs"
+        required: true
+      - name: log_prefix
+        type: string
+        description: "Prefix for log files"
+        required: false
+      - name: log_format
+        type: string
+        description: "Log format"
+        required: false
+        default: "standard"
+        enum: ["standard", "json", "parquet"]
+    tags: ["cloud", "storage", "logging", "audit", "security"]
+    test_prompts:
+      single:
+        - "Enable bucket access logging"
+        - "Turn on request logging"
+        - "Set up audit logging"
+        - "Log all bucket access"
+
+  - name: calculate_storage_cost
+    descriptions:
+      minimal: "Calculate cost"
+      short: "Calculate storage costs"
+      medium: "Estimate or analyze storage costs for buckets and usage patterns."
+      long: "Calculate storage costs based on usage. Analyze by storage class, operations, and data transfer. Example: calculate_storage_cost(bucket='data-lake', include_transfer=true)."
+      verbose: "Analyze and forecast cloud storage costs. Breakdown: storage by class, API operations, data transfer, retrieval fees. Example: calculate_storage_cost(provider='s3', bucket='all', period='last_month', group_by='storage_class', include_transfer=true, forecast_months=3). Returns: cost breakdown, trends, optimization recommendations. Note: Costs vary by region and storage class. Warning: Data transfer costs can exceed storage costs for high-egress workloads."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: bucket
+        type: string
+        description: "Bucket name or 'all'"
+        required: true
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: false
+        default: "last_month"
+      - name: group_by
+        type: string
+        description: "Cost grouping"
+        required: false
+        enum: ["bucket", "storage_class", "region"]
+      - name: include_transfer
+        type: boolean
+        description: "Include data transfer costs"
+        required: false
+        default: true
+      - name: forecast_months
+        type: integer
+        description: "Months to forecast"
+        required: false
+    tags: ["cloud", "storage", "cost", "billing", "analysis"]
+    test_prompts:
+      single:
+        - "Calculate S3 costs"
+        - "Analyze storage spending"
+        - "Estimate bucket costs"
+        - "Show storage cost breakdown"
+
+  - name: set_object_lock
+    descriptions:
+      minimal: "Set object lock"
+      short: "Configure object lock"
+      medium: "Set object lock to prevent deletion or modification for compliance."
+      long: "Enable object lock for WORM (write-once-read-many) compliance. Prevent modifications for specified retention. Example: set_object_lock(bucket='compliance-data', mode='governance', days=365)."
+      verbose: "Configure object lock for regulatory compliance (SEC, FINRA, HIPAA). Modes: governance (admin can override), compliance (no one can delete). Example: set_object_lock(provider='s3', bucket='financial-records', mode='compliance', days=2555, legal_hold=false, default_retention=true). Note: Compliance mode locks cannot be shortened. Warning: Objects cannot be deleted until retention expires; plan storage capacity accordingly."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: mode
+        type: string
+        description: "Retention mode"
+        required: true
+        enum: ["governance", "compliance"]
+      - name: days
+        type: integer
+        description: "Retention period in days"
+        required: true
+      - name: legal_hold
+        type: boolean
+        description: "Enable legal hold"
+        required: false
+        default: false
+      - name: default_retention
+        type: boolean
+        description: "Apply as default for new objects"
+        required: false
+        default: true
+    tags: ["cloud", "storage", "lock", "compliance", "worm"]
+    test_prompts:
+      single:
+        - "Enable compliance lock"
+        - "Set retention policy"
+        - "Configure WORM storage"
+        - "Prevent object deletion"
+
+  - name: manage_multipart_upload
+    descriptions:
+      minimal: "Manage multipart"
+      short: "Manage multipart uploads"
+      medium: "List, abort, or clean up incomplete multipart uploads."
+      long: "Manage multipart uploads for large files. List in-progress or abort stale uploads. Example: manage_multipart_upload(bucket='uploads', action='cleanup', older_than_days=7)."
+      verbose: "Manage multipart uploads to recover storage from incomplete uploads. Actions: list (show in-progress), abort (cancel specific), cleanup (abort old). Example: manage_multipart_upload(provider='s3', bucket='large-files', action='cleanup', older_than_days=7, prefix='uploads/'). Returns: list of uploads, space recovered. Note: Incomplete multipart uploads consume storage until aborted. Warning: Aborting active uploads will cause upload failures."
+    parameters:
+      - name: provider
+        type: string
+        description: "Cloud storage provider"
+        required: true
+        enum: ["s3", "gcs", "azure"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: action
+        type: string
+        description: "Action to perform"
+        required: true
+        enum: ["list", "abort", "cleanup"]
+      - name: upload_id
+        type: string
+        description: "Specific upload ID to abort"
+        required: false
+      - name: older_than_days
+        type: integer
+        description: "Clean up uploads older than days"
+        required: false
+        default: 7
+      - name: prefix
+        type: string
+        description: "Filter by key prefix"
+        required: false
+    tags: ["cloud", "storage", "multipart", "upload", "cleanup"]
+    test_prompts:
+      single:
+        - "List incomplete uploads"
+        - "Clean up failed uploads"
+        - "Abort stale multipart uploads"
+
+  - name: configure_storage_cors
+    descriptions:
+      minimal: "Configure CORS"
+      short: "Configure storage CORS"
+      medium: "Configure Cross-Origin Resource Sharing rules for storage buckets."
+      long: "Set CORS policies for web browser access to storage. Example: configure_storage_cors(bucket='assets', allowed_origins='[\"https://app.com\"]', allowed_methods='[\"GET\", \"PUT\"]')."
+      verbose: "CORS configuration for cloud storage buckets. Settings: origins, methods, headers, expose headers, max age. Example: configure_storage_cors(bucket='user-uploads', rules='[{\"origins\": [\"https://app.example.com\"], \"methods\": [\"GET\", \"PUT\", \"POST\", \"DELETE\"], \"headers\": [\"Content-Type\", \"Authorization\"], \"expose_headers\": [\"ETag\"], \"max_age_seconds\": 3600}]'). Remove: configure_storage_cors(bucket='internal-only', rules='[]'). Note: Be specific with origins in production. Warning: Wildcard origins pose security risks."
+    parameters:
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: rules
+        type: string
+        description: "JSON CORS rules array"
+        required: true
+      - name: allowed_origins
+        type: string
+        description: "JSON array of allowed origins"
+        required: false
+      - name: allowed_methods
+        type: string
+        description: "JSON array of HTTP methods"
+        required: false
+      - name: allowed_headers
+        type: string
+        description: "JSON array of headers"
+        required: false
+      - name: max_age_seconds
+        type: integer
+        description: "Preflight cache duration"
+        required: false
+        default: 3600
+    tags: ["cloud", "storage", "cors", "security", "web"]
+    test_prompts:
+      single:
+        - "Configure bucket CORS"
+        - "Allow cross-origin access"
+        - "Set CORS policy"
+        - "Enable browser access"
+
+  - name: manage_storage_notifications
+    descriptions:
+      minimal: "Manage notifications"
+      short: "Manage storage notifications"
+      medium: "Configure event notifications for storage bucket changes."
+      long: "Set up notifications when objects are created, deleted, or modified. Example: manage_storage_notifications(action='create', bucket='uploads', events='[\"created\"]', destination='sns-arn')."
+      verbose: "Storage event notification configuration. Events: object:created, object:deleted, object:archived, object:restored. Destinations: SNS, SQS, Lambda, Pub/Sub, Event Grid, webhooks. Example: manage_storage_notifications(action='create', bucket='uploads', notification_id='new-image-notify', events='[\"s3:ObjectCreated:*\"]', destination='{\"type\": \"lambda\", \"arn\": \"arn:aws:lambda:...:process-image\"}', filter='{\"prefix\": \"images/\", \"suffix\": \".jpg\"}'). Note: Notifications may have slight delay. Warning: High-volume buckets can trigger many events."
+    parameters:
+      - name: action
+        type: string
+        description: "Notification action"
+        required: true
+        enum: ["create", "delete", "list", "test"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: notification_id
+        type: string
+        description: "Notification identifier"
+        required: false
+      - name: events
+        type: string
+        description: "JSON array of event types"
+        required: false
+      - name: destination
+        type: string
+        description: "JSON destination config"
+        required: false
+      - name: filter
+        type: string
+        description: "JSON object filter"
+        required: false
+    tags: ["cloud", "storage", "notifications", "events", "triggers"]
+    test_prompts:
+      single:
+        - "Set up upload notifications"
+        - "Notify on object creation"
+        - "Configure bucket events"
+        - "List storage notifications"
+
+  - name: configure_storage_inventory
+    descriptions:
+      minimal: "Configure inventory"
+      short: "Configure storage inventory"
+      medium: "Set up automated inventory reports for bucket contents."
+      long: "Generate periodic inventory reports of all objects. Example: configure_storage_inventory(action='create', bucket='data-lake', destination='inventory-bucket', frequency='weekly')."
+      verbose: "Storage inventory configuration for object auditing. Features: scheduled reports, object metadata, storage class, encryption status, replication status. Formats: CSV, ORC, Parquet. Example: configure_storage_inventory(action='create', bucket='enterprise-data', name='full-inventory', destination='{\"bucket\": \"audit-reports\", \"prefix\": \"inventory/\"}', frequency='daily', included_fields='[\"Size\", \"LastModifiedDate\", \"StorageClass\", \"EncryptionStatus\", \"ReplicationStatus\"]', format='parquet'). Note: Large buckets may take hours to complete. Warning: Inventory costs apply based on object count."
+    parameters:
+      - name: action
+        type: string
+        description: "Inventory action"
+        required: true
+        enum: ["create", "delete", "list", "status"]
+      - name: bucket
+        type: string
+        description: "Source bucket"
+        required: true
+      - name: name
+        type: string
+        description: "Inventory configuration name"
+        required: false
+      - name: destination
+        type: string
+        description: "JSON destination config"
+        required: false
+      - name: frequency
+        type: string
+        description: "Report frequency"
+        required: false
+        default: "weekly"
+        enum: ["daily", "weekly"]
+      - name: included_fields
+        type: string
+        description: "JSON fields to include"
+        required: false
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "csv"
+        enum: ["csv", "orc", "parquet"]
+    tags: ["cloud", "storage", "inventory", "audit", "reporting"]
+    test_prompts:
+      single:
+        - "Set up bucket inventory"
+        - "Generate storage report"
+        - "Configure object inventory"
+        - "List inventory configs"
+
+  - name: manage_storage_analytics
+    descriptions:
+      minimal: "Manage analytics"
+      short: "Manage storage analytics"
+      medium: "Configure and retrieve storage usage analytics."
+      long: "Enable analytics to track access patterns and optimize storage. Example: manage_storage_analytics(action='enable', bucket='content', metrics='[\"access\", \"size\"]')."
+      verbose: "Storage analytics for usage insights and optimization. Metrics: request counts, data transfer, access patterns, latency. Reports: daily aggregates, request breakdown by type. Example: manage_storage_analytics(action='enable', bucket='web-assets', config='{\"metrics\": [\"all\"], \"storage_class_analysis\": true, \"access_logging\": true}'). Query: manage_storage_analytics(action='query', bucket='web-assets', period='30d', metrics='[\"requests\", \"bandwidth\"]', group_by='day'). Use analytics to identify candidates for archival or caching. Note: Analytics may take 24h to start. Warning: Analytics add minimal cost."
+    parameters:
+      - name: action
+        type: string
+        description: "Analytics action"
+        required: true
+        enum: ["enable", "disable", "query", "export"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: config
+        type: string
+        description: "JSON analytics config"
+        required: false
+      - name: period
+        type: string
+        description: "Query time period"
+        required: false
+        default: "30d"
+      - name: metrics
+        type: string
+        description: "JSON array of metrics"
+        required: false
+      - name: group_by
+        type: string
+        description: "Aggregation grouping"
+        required: false
+        enum: ["hour", "day", "week", "month"]
+    tags: ["cloud", "storage", "analytics", "metrics", "optimization"]
+    test_prompts:
+      single:
+        - "Enable bucket analytics"
+        - "Query storage metrics"
+        - "Analyze access patterns"
+        - "Export storage usage data"
+
+  - name: configure_object_lock
+    descriptions:
+      minimal: "Configure object lock"
+      short: "Configure object lock"
+      medium: "Set up object lock for immutable storage compliance."
+      long: "Enable WORM (Write Once Read Many) protection on objects. Example: configure_object_lock(bucket='compliance', mode='governance', retention_days=365)."
+      verbose: "Object lock for regulatory compliance and data protection. Modes: governance (admin can override), compliance (no override). Retention: fixed period, legal hold. Example: configure_object_lock(action='enable', bucket='financial-records', mode='compliance', default_retention='{\"mode\": \"COMPLIANCE\", \"years\": 7}'). Per-object: configure_object_lock(action='set', bucket='legal', key='contract-123.pdf', retain_until='2030-12-31', legal_hold=true). Note: Cannot disable object lock after enabling. Warning: Compliance mode prevents deletion until retention expires."
+    parameters:
+      - name: action
+        type: string
+        description: "Lock action"
+        required: true
+        enum: ["enable", "set", "get", "extend", "legal_hold"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: key
+        type: string
+        description: "Object key for per-object lock"
+        required: false
+      - name: mode
+        type: string
+        description: "Lock mode"
+        required: false
+        enum: ["governance", "compliance"]
+      - name: default_retention
+        type: string
+        description: "JSON default retention policy"
+        required: false
+      - name: retain_until
+        type: string
+        description: "Retention end date"
+        required: false
+      - name: legal_hold
+        type: boolean
+        description: "Enable legal hold"
+        required: false
+    tags: ["cloud", "storage", "lock", "compliance", "worm"]
+    test_prompts:
+      single:
+        - "Enable object lock"
+        - "Set retention period"
+        - "Apply legal hold"
+        - "Configure WORM storage"
+
+  - name: manage_storage_batch_operations
+    descriptions:
+      minimal: "Manage batch ops"
+      short: "Manage batch operations"
+      medium: "Execute bulk operations across many storage objects."
+      long: "Run batch jobs on millions of objects like copy, delete, or tag. Example: manage_storage_batch_operations(action='create', operation='copy', manifest='s3://manifests/objects.csv', target='backup-bucket')."
+      verbose: "Batch operations for large-scale object management. Operations: copy, delete, tag, restore, invoke lambda. Manifest: inventory report or CSV list. Example: manage_storage_batch_operations(action='create', operation='copy', manifest='{\"bucket\": \"inventories\", \"key\": \"daily/manifest.json\"}', config='{\"target_bucket\": \"backup\", \"storage_class\": \"GLACIER\", \"acl\": \"private\"}', report='{\"bucket\": \"reports\", \"prefix\": \"batch-results/\"}'). Status: manage_storage_batch_operations(action='status', job_id='job-12345'). Note: Large jobs may take hours. Warning: Test with small manifest first."
+    parameters:
+      - name: action
+        type: string
+        description: "Batch action"
+        required: true
+        enum: ["create", "status", "cancel", "list", "describe"]
+      - name: operation
+        type: string
+        description: "Operation type"
+        required: false
+        enum: ["copy", "delete", "tag", "restore", "invoke_lambda"]
+      - name: manifest
+        type: string
+        description: "JSON manifest location"
+        required: false
+      - name: config
+        type: string
+        description: "JSON operation config"
+        required: false
+      - name: report
+        type: string
+        description: "JSON report destination"
+        required: false
+      - name: job_id
+        type: string
+        description: "Job identifier"
+        required: false
+      - name: priority
+        type: integer
+        description: "Job priority (0-10)"
+        required: false
+        default: 5
+    tags: ["cloud", "storage", "batch", "bulk", "operations"]
+    test_prompts:
+      single:
+        - "Create batch copy job"
+        - "Delete objects in bulk"
+        - "Check batch job status"
+        - "Tag objects in batch"
+
+  - name: configure_storage_website
+    descriptions:
+      minimal: "Configure website"
+      short: "Configure static website"
+      medium: "Configure bucket as a static website hosting endpoint."
+      long: "Enable static website hosting with index and error documents. Example: configure_storage_website(action='enable', bucket='mysite', index='index.html', error='404.html')."
+      verbose: "Static website hosting configuration. Features: index document, error document, redirects, routing rules. Example: configure_storage_website(action='enable', bucket='company-website', index='index.html', error='error.html', routing_rules='[{\"condition\": {\"prefix\": \"docs/\"}, \"redirect\": {\"protocol\": \"https\", \"hostname\": \"docs.company.com\"}}]'). Get endpoint: configure_storage_website(action='get', bucket='company-website'). Disable: configure_storage_website(action='disable', bucket='old-site'). Note: Objects must be publicly readable. Warning: Ensure bucket policy allows public access for website content."
+    parameters:
+      - name: action
+        type: string
+        description: "Website action"
+        required: true
+        enum: ["enable", "disable", "get", "update"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: index
+        type: string
+        description: "Index document"
+        required: false
+        default: "index.html"
+      - name: error
+        type: string
+        description: "Error document"
+        required: false
+        default: "error.html"
+      - name: routing_rules
+        type: string
+        description: "JSON routing/redirect rules"
+        required: false
+    tags: ["cloud", "storage", "website", "hosting", "static"]
+    test_prompts:
+      single:
+        - "Enable static website"
+        - "Configure bucket hosting"
+        - "Set up website routing"
+        - "Get website endpoint"
+
+  - name: manage_storage_intelligent_tiering
+    descriptions:
+      minimal: "Manage tiering"
+      short: "Manage intelligent tiering"
+      medium: "Configure automatic storage class optimization."
+      long: "Enable intelligent tiering to automatically move objects between access tiers. Example: manage_storage_intelligent_tiering(action='enable', bucket='data', archive_days=90)."
+      verbose: "Intelligent tiering for automatic cost optimization. Tiers: frequent access, infrequent access, archive instant, archive, deep archive. Configuration: access time thresholds, object size filters. Example: manage_storage_intelligent_tiering(action='configure', bucket='media-library', config='{\"archive_access\": {\"days\": 90}, \"deep_archive_access\": {\"days\": 180}, \"min_object_size\": 131072}'). Monitor: manage_storage_intelligent_tiering(action='report', bucket='media-library', period='30d'). Note: Best for unpredictable access patterns. Warning: Small objects may cost more in tiering overhead."
+    parameters:
+      - name: action
+        type: string
+        description: "Tiering action"
+        required: true
+        enum: ["configure", "disable", "status", "report"]
+      - name: bucket
+        type: string
+        description: "Bucket name"
+        required: true
+      - name: config
+        type: string
+        description: "JSON tiering configuration"
+        required: false
+      - name: prefix
+        type: string
+        description: "Apply to prefix only"
+        required: false
+      - name: period
+        type: string
+        description: "Report time period"
+        required: false
+    tags: ["cloud", "storage", "tiering", "optimization", "cost"]
+    test_prompts:
+      single:
+        - "Enable intelligent tiering"
+        - "Configure auto archiving"
+        - "Check tiering status"
+        - "Optimize storage costs"
+
+  - name: configure_storage_transfer
+    descriptions:
+      minimal: "Configure transfer"
+      short: "Configure storage transfer"
+      medium: "Set up data transfer jobs between storage locations."
+      long: "Configure scheduled or one-time transfers between buckets or providers. Example: configure_storage_transfer(action='create', source='s3://source', destination='gs://dest', schedule='daily')."
+      verbose: "Storage transfer service for moving data at scale. Features: cross-region, cross-cloud, on-prem to cloud, incremental sync. Options: bandwidth limits, filters, scheduling. Example: configure_storage_transfer(action='create', name='nightly-backup', source='{\"type\": \"s3\", \"bucket\": \"production\", \"region\": \"us-east-1\"}', destination='{\"type\": \"gcs\", \"bucket\": \"backup\", \"project\": \"myproject\"}', schedule='{\"frequency\": \"daily\", \"time\": \"02:00\", \"timezone\": \"UTC\"}', options='{\"delete_from_source\": false, \"overwrite\": \"if_different\"}'). Note: Large transfers may take hours. Warning: Egress costs apply for cross-region/cloud transfers."
+    parameters:
+      - name: action
+        type: string
+        description: "Transfer action"
+        required: true
+        enum: ["create", "run", "pause", "resume", "delete", "status", "list"]
+      - name: name
+        type: string
+        description: "Transfer job name"
+        required: false
+      - name: source
+        type: string
+        description: "JSON source configuration"
+        required: false
+      - name: destination
+        type: string
+        description: "JSON destination configuration"
+        required: false
+      - name: schedule
+        type: string
+        description: "JSON schedule configuration"
+        required: false
+      - name: options
+        type: string
+        description: "JSON transfer options"
+        required: false
+      - name: job_id
+        type: string
+        description: "Transfer job identifier"
+        required: false
+    tags: ["cloud", "storage", "transfer", "migration", "sync"]
+    test_prompts:
+      single:
+        - "Create transfer job"
+        - "Schedule bucket sync"
+        - "Migrate to cloud storage"
+        - "Check transfer status"
+        - "Manage large file uploads"

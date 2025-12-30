@@ -1,0 +1,1186 @@
+category: notification_operations
+description: Notification and alerting operations
+tools:
+  - name: send_notification
+    descriptions:
+      minimal: "Send notification"
+      short: "Send a notification to users"
+      medium: "Send a notification through various channels to users or systems."
+      long: "Send notifications via push, email, SMS, or in-app channels. Supports templates and targeting. Example: send_notification(channel='push', title='Alert', message='Server is down', recipients='[\"user1\"]')."
+      verbose: "Send notifications through multiple channels. Channels: 'push' (mobile/browser), 'email', 'sms', 'in_app', 'slack', 'webhook'. Options: templates, scheduling, targeting (user IDs, segments, topics), priority levels, TTL. Example: send_notification(channel='push', title='Order Shipped', message='Your order #123 has shipped', recipients='[\"user_abc\"]', data='{\"order_id\": 123}', priority='high'). Note: Push requires device tokens. Warning: SMS and email have rate limits and costs."
+    parameters:
+      - name: channel
+        type: string
+        description: "Notification channel"
+        required: true
+        enum: ["push", "email", "sms", "in_app", "slack", "webhook"]
+      - name: title
+        type: string
+        description: "Notification title"
+        required: true
+      - name: message
+        type: string
+        description: "Notification body"
+        required: true
+      - name: recipients
+        type: string
+        description: "JSON array of recipient IDs"
+        required: true
+      - name: data
+        type: string
+        description: "JSON payload data"
+        required: false
+      - name: priority
+        type: string
+        description: "Notification priority"
+        required: false
+        default: "normal"
+        enum: ["low", "normal", "high", "critical"]
+    tags: ["notification", "push", "alert", "send", "message"]
+    test_prompts:
+      single:
+        - "Send a push notification"
+        - "Notify the user about the update"
+        - "Send an alert to all users"
+        - "Push a notification to mobile"
+
+  - name: create_alert_rule
+    descriptions:
+      minimal: "Create alert"
+      short: "Create an alerting rule"
+      medium: "Create a rule to trigger alerts based on conditions or thresholds."
+      long: "Create alerting rules for monitoring. Define conditions, thresholds, and notification channels. Example: create_alert_rule(name='high_cpu', metric='cpu_usage', condition='>', threshold=90, channel='slack')."
+      verbose: "Create alerting rules for automated monitoring. Components: metric source, condition (>, <, ==, !=), threshold, aggregation window, notification channels, cooldown period. Supports: metric alerts, log-based alerts, anomaly detection. Example: create_alert_rule(name='api_errors', metric='error_rate', condition='>', threshold=5, window='5m', channels='[\"pagerduty\", \"slack\"]', severity='critical', cooldown=300). Note: Window aggregates values before comparison. Warning: Too sensitive thresholds cause alert fatigue."
+    parameters:
+      - name: name
+        type: string
+        description: "Alert rule name"
+        required: true
+      - name: metric
+        type: string
+        description: "Metric to monitor"
+        required: true
+      - name: condition
+        type: string
+        description: "Comparison operator"
+        required: true
+        enum: [">", "<", ">=", "<=", "==", "!="]
+      - name: threshold
+        type: number
+        description: "Threshold value"
+        required: true
+      - name: window
+        type: string
+        description: "Aggregation window (e.g., '5m')"
+        required: false
+        default: "5m"
+      - name: channels
+        type: string
+        description: "JSON array of notification channels"
+        required: true
+      - name: severity
+        type: string
+        description: "Alert severity"
+        required: false
+        default: "warning"
+        enum: ["info", "warning", "error", "critical"]
+      - name: cooldown
+        type: integer
+        description: "Cooldown between alerts (seconds)"
+        required: false
+        default: 300
+    tags: ["notification", "alert", "rule", "monitor", "threshold"]
+    test_prompts:
+      single:
+        - "Create an alert for high CPU usage"
+        - "Set up monitoring alerts"
+        - "Alert me when errors exceed 10"
+        - "Create a threshold alert"
+
+  - name: manage_subscription
+    descriptions:
+      minimal: "Manage subscription"
+      short: "Manage notification subscriptions"
+      medium: "Subscribe or unsubscribe users from notification topics or channels."
+      long: "Manage user subscriptions to notification topics. Subscribe, unsubscribe, or list subscriptions. Example: manage_subscription(user_id='user123', topic='marketing', action='unsubscribe')."
+      verbose: "Manage notification subscriptions for users. Actions: 'subscribe', 'unsubscribe', 'list', 'update_preferences'. Topics: category-based groupings for notifications. Channels: email, push, sms per topic. Example: manage_subscription(user_id='user_abc', topic='order_updates', action='subscribe', channels='[\"push\", \"email\"]'). Note: Respects global opt-out settings. Warning: Some transactional notifications cannot be unsubscribed."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User identifier"
+        required: true
+      - name: action
+        type: string
+        description: "Subscription action"
+        required: true
+        enum: ["subscribe", "unsubscribe", "list", "update_preferences"]
+      - name: topic
+        type: string
+        description: "Notification topic"
+        required: false
+      - name: channels
+        type: string
+        description: "JSON array of channels"
+        required: false
+    tags: ["notification", "subscription", "topic", "preference", "manage"]
+    test_prompts:
+      single:
+        - "Unsubscribe user from marketing emails"
+        - "Subscribe to order notifications"
+        - "List my notification subscriptions"
+        - "Update notification preferences"
+
+  - name: schedule_notification
+    descriptions:
+      minimal: "Schedule notification"
+      short: "Schedule a notification for later"
+      medium: "Schedule a notification to be sent at a specific time."
+      long: "Schedule notifications for future delivery. Supports one-time and recurring schedules. Example: schedule_notification(notification_id='notif123', send_at='2024-12-25T09:00:00Z')."
+      verbose: "Schedule notifications for future delivery. Modes: 'once' (specific datetime), 'recurring' (cron expression), 'delay' (relative time). Options: timezone, user's local time, optimal send time (ML-based). Example: schedule_notification(channel='email', title='Weekly Digest', message='Your weekly summary', recipients='[\"all_users\"]', schedule='0 9 * * 1', timezone='user_local'). Note: Use ISO 8601 for datetime. Warning: Scheduled notifications may be delayed during high load."
+    parameters:
+      - name: channel
+        type: string
+        description: "Notification channel"
+        required: true
+      - name: title
+        type: string
+        description: "Notification title"
+        required: true
+      - name: message
+        type: string
+        description: "Notification message"
+        required: true
+      - name: recipients
+        type: string
+        description: "JSON array of recipients"
+        required: true
+      - name: send_at
+        type: string
+        description: "ISO datetime or cron expression"
+        required: true
+      - name: timezone
+        type: string
+        description: "Timezone for scheduling"
+        required: false
+        default: "UTC"
+    tags: ["notification", "schedule", "delay", "timer", "future"]
+    test_prompts:
+      single:
+        - "Schedule this notification for tomorrow"
+        - "Send the alert at 9 AM"
+        - "Set up a weekly notification"
+        - "Delay the notification by 1 hour"
+
+  - name: create_notification_template
+    descriptions:
+      minimal: "Create template"
+      short: "Create a notification template"
+      medium: "Create a reusable notification template with variables."
+      long: "Create notification templates for consistent messaging. Supports variable substitution and multiple channels. Example: create_notification_template(name='welcome', title='Welcome {{name}}', body='Thanks for joining!')."
+      verbose: "Create reusable notification templates. Features: variable placeholders ({{variable}}), conditionals, channel-specific variants, localization. Template types: transactional, marketing, system. Example: create_notification_template(name='order_shipped', title='Order {{order_id}} Shipped', body='Hi {{name}}, your order is on the way! Track: {{tracking_url}}', channels='[\"email\", \"push\"]', category='transactional'). Note: Variables are replaced at send time. Warning: Test templates before production use."
+    parameters:
+      - name: name
+        type: string
+        description: "Template name/identifier"
+        required: true
+      - name: title
+        type: string
+        description: "Template title (with variables)"
+        required: true
+      - name: body
+        type: string
+        description: "Template body (with variables)"
+        required: true
+      - name: channels
+        type: string
+        description: "JSON array of supported channels"
+        required: false
+        default: "[\"email\", \"push\"]"
+      - name: category
+        type: string
+        description: "Template category"
+        required: false
+        default: "transactional"
+        enum: ["transactional", "marketing", "system"]
+    tags: ["notification", "template", "create", "message", "reusable"]
+    test_prompts:
+      single:
+        - "Create a welcome email template"
+        - "Make a notification template"
+        - "Set up a reusable message template"
+        - "Create an order confirmation template"
+
+  - name: get_notification_status
+    descriptions:
+      minimal: "Get status"
+      short: "Get notification delivery status"
+      medium: "Check the delivery status of a sent notification."
+      long: "Get the delivery status of a notification. Shows sent, delivered, read, and failed states. Example: get_notification_status(notification_id='notif_abc123')."
+      verbose: "Check notification delivery status and analytics. Status types: 'pending', 'sent', 'delivered', 'read', 'clicked', 'failed', 'bounced'. Returns: status, timestamps, error details (if failed), engagement metrics. Example: get_notification_status(notification_id='notif_abc123') returns {status: 'delivered', sent_at: '...', delivered_at: '...', read: false}. Note: Delivery confirmation depends on channel capabilities. Warning: Read status requires tracking pixel (email) or app callback."
+    parameters:
+      - name: notification_id
+        type: string
+        description: "Notification identifier"
+        required: true
+      - name: include_history
+        type: boolean
+        description: "Include status history"
+        required: false
+        default: false
+    tags: ["notification", "status", "delivery", "track", "check"]
+    test_prompts:
+      single:
+        - "Check if the notification was delivered"
+        - "Get notification status"
+        - "Was the email read?"
+        - "Track the push notification"
+
+  - name: cancel_notification
+    descriptions:
+      minimal: "Cancel notification"
+      short: "Cancel a scheduled notification"
+      medium: "Cancel a scheduled or pending notification before it's sent."
+      long: "Cancel a notification that hasn't been sent yet. Works for scheduled and queued notifications. Example: cancel_notification(notification_id='notif_abc123')."
+      verbose: "Cancel pending or scheduled notifications. Cancellable states: 'scheduled', 'pending', 'queued'. Returns: success/failure, notification state at cancellation. Can cancel by ID or batch by criteria. Example: cancel_notification(notification_id='notif_abc123') or cancel_notification(batch_criteria='{\"campaign\": \"promo_2024\", \"status\": \"scheduled\"}'). Note: Already sent notifications cannot be cancelled. Warning: Race conditions may occur for notifications about to send."
+    parameters:
+      - name: notification_id
+        type: string
+        description: "Notification ID to cancel"
+        required: false
+      - name: batch_criteria
+        type: string
+        description: "JSON criteria for batch cancel"
+        required: false
+    tags: ["notification", "cancel", "stop", "scheduled", "pending"]
+    test_prompts:
+      single:
+        - "Cancel the scheduled notification"
+        - "Stop the pending email"
+        - "Cancel all scheduled promos"
+        - "Remove the queued notification"
+
+  - name: set_quiet_hours
+    descriptions:
+      minimal: "Set quiet hours"
+      short: "Set notification quiet hours"
+      medium: "Configure quiet hours during which notifications are not delivered."
+      long: "Set quiet hours for a user or globally. Notifications are held until quiet hours end. Example: set_quiet_hours(user_id='user123', start='22:00', end='08:00')."
+      verbose: "Configure notification quiet hours (Do Not Disturb). Scope: user-level or global. Options: time range, days of week, timezone, exception for critical alerts. Behavior during quiet hours: 'hold' (deliver after), 'drop' (discard), 'silent' (deliver without sound). Example: set_quiet_hours(user_id='user_abc', start='22:00', end='07:00', days='[\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\"]', timezone='America/New_York', allow_critical=true). Note: Critical notifications may bypass quiet hours. Warning: Held notifications may arrive in bulk after quiet hours."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User identifier (or 'global')"
+        required: true
+      - name: start
+        type: string
+        description: "Quiet hours start time (HH:MM)"
+        required: true
+      - name: end
+        type: string
+        description: "Quiet hours end time (HH:MM)"
+        required: true
+      - name: days
+        type: string
+        description: "JSON array of days"
+        required: false
+        default: "[\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]"
+      - name: timezone
+        type: string
+        description: "User timezone"
+        required: false
+        default: "UTC"
+      - name: allow_critical
+        type: boolean
+        description: "Allow critical alerts during quiet hours"
+        required: false
+        default: true
+    tags: ["notification", "quiet", "dnd", "schedule", "preference"]
+    test_prompts:
+      single:
+        - "Set quiet hours from 10pm to 7am"
+        - "Enable do not disturb"
+        - "Block notifications at night"
+        - "Set up quiet hours for weekends"
+
+  - name: register_device
+    descriptions:
+      minimal: "Register device"
+      short: "Register a device for push notifications"
+      medium: "Register a device token for receiving push notifications."
+      long: "Register a device for push notifications. Store device tokens for iOS, Android, or web. Example: register_device(user_id='user123', token='device_token_abc', platform='ios')."
+      verbose: "Register devices for push notification delivery. Platforms: 'ios' (APNs), 'android' (FCM), 'web' (Web Push). Stores: device token, platform, app version, last active. Operations: 'register' (new device), 'update' (refresh token), 'unregister' (remove). Example: register_device(user_id='user_abc', token='fcm_token_xyz', platform='android', app_version='2.1.0', action='register'). Note: Tokens expire and must be refreshed. Warning: Invalid tokens cause delivery failures; handle token refresh callbacks."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User identifier"
+        required: true
+      - name: token
+        type: string
+        description: "Device push token"
+        required: true
+      - name: platform
+        type: string
+        description: "Device platform"
+        required: true
+        enum: ["ios", "android", "web"]
+      - name: action
+        type: string
+        description: "Registration action"
+        required: false
+        default: "register"
+        enum: ["register", "update", "unregister"]
+      - name: app_version
+        type: string
+        description: "App version"
+        required: false
+    tags: ["notification", "device", "push", "token", "register"]
+    test_prompts:
+      single:
+        - "Register this device for push"
+        - "Save the push notification token"
+        - "Update the device token"
+        - "Unregister the device"
+
+  - name: get_notification_analytics
+    descriptions:
+      minimal: "Get analytics"
+      short: "Get notification analytics"
+      medium: "Get analytics and metrics for notification campaigns."
+      long: "Retrieve analytics for notifications including delivery rates, open rates, and engagement. Example: get_notification_analytics(campaign='welcome_series', period='7d')."
+      verbose: "Get notification analytics and performance metrics. Metrics: sent count, delivery rate, open rate, click rate, unsubscribe rate, bounce rate. Groupings: by campaign, channel, template, time period. Example: get_notification_analytics(campaign='black_friday', period='7d', group_by='channel') returns {email: {sent: 10000, delivered: 9500, opened: 3200, clicked: 800}, push: {...}}. Note: Open tracking requires pixels/callbacks. Warning: Privacy regulations may affect tracking capabilities."
+    parameters:
+      - name: campaign
+        type: string
+        description: "Campaign identifier"
+        required: false
+      - name: channel
+        type: string
+        description: "Filter by channel"
+        required: false
+      - name: period
+        type: string
+        description: "Time period (e.g., '7d', '30d')"
+        required: false
+        default: "7d"
+      - name: group_by
+        type: string
+        description: "Group results by"
+        required: false
+        enum: ["channel", "template", "day", "hour"]
+    tags: ["notification", "analytics", "metrics", "statistics", "report"]
+    test_prompts:
+      single:
+        - "Show notification analytics"
+        - "What's the email open rate?"
+        - "Get campaign performance metrics"
+        - "How many notifications were delivered?"
+  - name: create_notification_campaign
+    descriptions:
+      minimal: "Create campaign"
+      short: "Create a notification campaign"
+      medium: "Create a multi-channel notification campaign with scheduling and targeting."
+      long: "Create a coordinated notification campaign across multiple channels. Configure audience, content, and timing. Example: create_notification_campaign(name='Product Launch', channels='[\"email\", \"push\"]', segment='active_users')."
+      verbose: "Create comprehensive notification campaigns. Features: multi-channel (email, push, SMS, in-app), audience segmentation, A/B testing, scheduling, throttling, personalization. Campaign types: one-time blast, drip sequence, triggered. Example: create_notification_campaign(name='Holiday Sale 2024', type='scheduled', channels='[\"email\", \"push\", \"sms\"]', segment='customers', schedule='2024-12-20T08:00:00Z', content='{\"email\": \"template_holiday\", \"push\": \"template_push_sale\"}', ab_test=true, ab_variants=2). Note: A/B tests require sufficient audience size. Warning: Coordinate across channels to avoid notification fatigue."
+    parameters:
+      - name: name
+        type: string
+        description: "Campaign name"
+        required: true
+      - name: type
+        type: string
+        description: "Campaign type"
+        required: true
+        enum: ["scheduled", "triggered", "drip"]
+      - name: channels
+        type: string
+        description: "JSON array of channels"
+        required: true
+      - name: segment
+        type: string
+        description: "Target audience segment"
+        required: true
+      - name: content
+        type: string
+        description: "JSON content per channel"
+        required: true
+      - name: schedule
+        type: string
+        description: "Send date/time"
+        required: false
+      - name: ab_test
+        type: boolean
+        description: "Enable A/B testing"
+        required: false
+        default: false
+    tags: ["notification", "campaign", "marketing", "multi-channel", "automation"]
+    test_prompts:
+      single:
+        - "Create a notification campaign"
+        - "Set up product launch notifications"
+        - "Create multi-channel campaign"
+        - "Launch email and push campaign"
+
+  - name: set_notification_rules
+    descriptions:
+      minimal: "Set rules"
+      short: "Configure notification rules"
+      medium: "Set up rules for automatic notifications based on triggers and conditions."
+      long: "Configure event-driven notification rules. Define triggers, conditions, and actions. Example: set_notification_rules(name='low_stock_alert', trigger='inventory_below', threshold=10)."
+      verbose: "Create automated notification rules with triggers and conditions. Triggers: event-based, threshold-based, time-based, user action. Conditions: filters, time windows, frequency limits. Actions: send notification, update record, call webhook. Example: set_notification_rules(name='abandoned_cart', trigger='cart_abandoned', conditions='{\"min_cart_value\": 50, \"wait_hours\": 2}', action='send', template='abandoned_cart_reminder', channels='[\"email\", \"push\"]', enabled=true). Note: Rules are evaluated in priority order. Warning: Test rules in staging to avoid unintended notifications."
+    parameters:
+      - name: name
+        type: string
+        description: "Rule name"
+        required: true
+      - name: trigger
+        type: string
+        description: "Trigger event type"
+        required: true
+      - name: conditions
+        type: string
+        description: "JSON conditions object"
+        required: false
+      - name: action
+        type: string
+        description: "Action to perform"
+        required: true
+        enum: ["send", "queue", "webhook", "update"]
+      - name: template
+        type: string
+        description: "Notification template"
+        required: false
+      - name: channels
+        type: string
+        description: "JSON target channels"
+        required: true
+      - name: priority
+        type: integer
+        description: "Rule priority"
+        required: false
+        default: 10
+      - name: enabled
+        type: boolean
+        description: "Enable rule"
+        required: false
+        default: true
+    tags: ["notification", "rules", "automation", "trigger", "event"]
+    test_prompts:
+      single:
+        - "Set up notification rules"
+        - "Create abandoned cart reminder"
+        - "Configure low stock alerts"
+        - "Automate welcome notifications"
+
+  - name: manage_notification_preferences
+    descriptions:
+      minimal: "Manage preferences"
+      short: "Manage user notification preferences"
+      medium: "Get or update a user's notification preferences and subscription settings."
+      long: "Manage user notification preferences per channel and category. Handle opt-ins, opt-outs, and frequency settings. Example: manage_notification_preferences(user_id='u123', action='update', preferences='{\"email_marketing\": false}')."
+      verbose: "Manage user notification preferences and consent. Categories: transactional, marketing, product_updates, security_alerts, digest. Channels: email, push, sms, in_app. Settings: enabled/disabled, frequency (immediate, daily_digest, weekly), quiet hours. Example: manage_notification_preferences(user_id='user_abc', action='update', preferences='{\"marketing\": {\"email\": false, \"push\": true}, \"quiet_hours\": {\"start\": \"22:00\", \"end\": \"08:00\"}}', respect_gdpr=true). Note: Transactional notifications typically can't be disabled. Warning: Honor preferences to comply with regulations."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User ID"
+        required: true
+      - name: action
+        type: string
+        description: "Preference action"
+        required: true
+        enum: ["get", "update", "reset"]
+      - name: preferences
+        type: string
+        description: "JSON preferences object"
+        required: false
+      - name: channel
+        type: string
+        description: "Specific channel"
+        required: false
+      - name: category
+        type: string
+        description: "Notification category"
+        required: false
+    tags: ["notification", "preferences", "settings", "opt-out", "consent"]
+    test_prompts:
+      single:
+        - "Update user notification settings"
+        - "Opt out of marketing emails"
+        - "Get notification preferences"
+        - "Set quiet hours for notifications"
+
+  - name: send_digest_notification
+    descriptions:
+      minimal: "Send digest"
+      short: "Send a digest notification"
+      medium: "Compile and send a digest of multiple notifications or updates."
+      long: "Create and send digest notifications that bundle multiple updates. Configure frequency and content. Example: send_digest_notification(user_id='u123', type='daily', include='[\"orders\", \"messages\"]')."
+      verbose: "Send consolidated digest notifications. Types: activity digest, content digest, summary reports. Frequencies: hourly, daily, weekly. Content: aggregated events, summaries, highlights. Example: send_digest_notification(user_ids='[\"user1\", \"user2\"]', type='daily_activity', include='[\"new_messages\", \"task_updates\", \"mentions\"]', since='24h', max_items=10, channel='email', template='daily_digest'). Note: Empty digests can be skipped or sent with placeholder. Warning: Time zones affect delivery timing."
+    parameters:
+      - name: user_ids
+        type: string
+        description: "JSON array of user IDs"
+        required: true
+      - name: type
+        type: string
+        description: "Digest type"
+        required: true
+        enum: ["daily_activity", "weekly_summary", "content_digest", "custom"]
+      - name: include
+        type: string
+        description: "JSON array of content types"
+        required: true
+      - name: since
+        type: string
+        description: "Time period to summarize"
+        required: false
+        default: "24h"
+      - name: channel
+        type: string
+        description: "Delivery channel"
+        required: false
+        default: "email"
+      - name: max_items
+        type: integer
+        description: "Max items per section"
+        required: false
+        default: 10
+    tags: ["notification", "digest", "summary", "bundled", "aggregate"]
+    test_prompts:
+      single:
+        - "Send daily digest email"
+        - "Create weekly activity summary"
+        - "Send notification digest"
+        - "Bundle updates into digest"
+
+  - name: create_notification_template
+    descriptions:
+      minimal: "Create template"
+      short: "Create a notification template"
+      medium: "Create a reusable notification template for consistent messaging."
+      long: "Create templates for notifications with placeholders and styling. Supports multiple channels. Example: create_notification_template(name='order_shipped', channel='email', subject='Your order has shipped!')."
+      verbose: "Create reusable notification templates. Supports: multi-channel versions, variable placeholders ({{name}}), conditional blocks, rich formatting. Channels: email (HTML/text), push (title/body), SMS, in-app. Example: create_notification_template(name='password_reset', channel='email', subject='Reset your password', html_body='<h1>Hi {{name}}</h1><p>Click <a href=\"{{reset_url}}\">here</a> to reset...</p>', text_body='Hi {{name}}, visit {{reset_url}} to reset...', variables='[\"name\", \"reset_url\"]'). Note: Templates can be versioned. Warning: Test across email clients for HTML templates."
+    parameters:
+      - name: name
+        type: string
+        description: "Template name"
+        required: true
+      - name: channel
+        type: string
+        description: "Target channel"
+        required: true
+        enum: ["email", "push", "sms", "in_app", "slack"]
+      - name: subject
+        type: string
+        description: "Subject line"
+        required: false
+      - name: html_body
+        type: string
+        description: "HTML content"
+        required: false
+      - name: text_body
+        type: string
+        description: "Plain text content"
+        required: false
+      - name: variables
+        type: string
+        description: "JSON array of variables"
+        required: false
+      - name: category
+        type: string
+        description: "Template category"
+        required: false
+        enum: ["transactional", "marketing", "system", "custom"]
+    tags: ["notification", "template", "content", "design", "reusable"]
+    test_prompts:
+      single:
+        - "Create email notification template"
+        - "Make a push notification template"
+        - "Design order confirmation template"
+        - "Create reusable notification"
+
+  - name: schedule_notification
+    descriptions:
+      minimal: "Schedule notification"
+      short: "Schedule a notification for later"
+      medium: "Schedule a notification to be sent at a specific future time."
+      long: "Schedule notifications for future delivery. Supports one-time and recurring schedules. Example: schedule_notification(type='push', to='u123', content='Reminder!', send_at='2024-02-01T09:00:00Z')."
+      verbose: "Schedule notifications for future delivery with precision timing. Features: timezone-aware, recurring, optimal time delivery, queue management. Scheduling options: specific datetime, relative delay, recurring (daily/weekly/monthly), smart timing (user timezone, engagement-based). Example: schedule_notification(type='email', to='user@example.com', template='weekly_tips', send_at='2024-02-01T10:00:00', timezone='America/New_York', recurring='weekly', end_date='2024-12-31', optimal_time=true). Note: Scheduled notifications can be cancelled. Warning: Verify timezone handling for global users."
+    parameters:
+      - name: type
+        type: string
+        description: "Notification type"
+        required: true
+        enum: ["email", "push", "sms", "in_app"]
+      - name: to
+        type: string
+        description: "Recipient ID or address"
+        required: true
+      - name: template
+        type: string
+        description: "Template name"
+        required: false
+      - name: content
+        type: string
+        description: "Notification content"
+        required: false
+      - name: send_at
+        type: string
+        description: "Scheduled time (ISO 8601)"
+        required: true
+      - name: timezone
+        type: string
+        description: "Recipient timezone"
+        required: false
+        default: "UTC"
+      - name: recurring
+        type: string
+        description: "Recurrence pattern"
+        required: false
+        enum: ["none", "daily", "weekly", "monthly"]
+    tags: ["notification", "schedule", "future", "timing", "queue"]
+    test_prompts:
+      single:
+        - "Schedule notification for tomorrow"
+        - "Send reminder at 9am"
+        - "Schedule weekly notification"
+        - "Queue notification for next week"
+
+  - name: test_notification
+    descriptions:
+      minimal: "Test notification"
+      short: "Send a test notification"
+      medium: "Send a test notification to verify template and delivery."
+      long: "Send test notifications to verify configuration before going live. Example: test_notification(template='welcome_email', test_recipient='test@example.com')."
+      verbose: "Send test notifications for verification and QA. Uses: template preview, delivery testing, rendering check, link validation. Modes: single test recipient, test group, self-send. Features: sample data injection, render preview, delivery simulation. Example: test_notification(template='order_confirmation', channel='email', test_recipient='qa@company.com', sample_data='{\"customer_name\": \"Test User\", \"order_id\": \"TEST-123\", \"items\": [...]}', check_links=true, check_rendering=true). Note: Test sends don't count toward analytics. Warning: Use test addresses to avoid confusion with production."
+    parameters:
+      - name: template
+        type: string
+        description: "Template to test"
+        required: true
+      - name: channel
+        type: string
+        description: "Notification channel"
+        required: true
+        enum: ["email", "push", "sms", "in_app"]
+      - name: test_recipient
+        type: string
+        description: "Test recipient address"
+        required: true
+      - name: sample_data
+        type: string
+        description: "JSON sample data for placeholders"
+        required: false
+      - name: check_links
+        type: boolean
+        description: "Validate all links"
+        required: false
+        default: true
+      - name: check_rendering
+        type: boolean
+        description: "Preview rendering"
+        required: false
+        default: true
+    tags: ["notification", "test", "preview", "qa", "verify"]
+    test_prompts:
+      single:
+        - "Send a test email"
+        - "Preview the notification template"
+        - "Test push notification"
+        - "Verify email template"
+
+  - name: manage_notification_channel
+    descriptions:
+      minimal: "Manage channel"
+      short: "Manage notification channels"
+      medium: "Configure and manage notification delivery channels and their settings."
+      long: "Configure notification channels including credentials, settings, and limits. Example: manage_notification_channel(action='configure', channel='email', provider='sendgrid', api_key='...')."
+      verbose: "Manage notification channel configurations. Channels: email (SMTP, API providers), push (FCM, APNs), SMS (Twilio, etc), webhook. Settings: credentials, rate limits, failover, retry policies. Providers: SendGrid, Mailgun, Twilio, Firebase, OneSignal, custom. Example: manage_notification_channel(action='configure', channel='email', provider='sendgrid', settings='{\"api_key\": \"...\", \"from_email\": \"noreply@company.com\", \"from_name\": \"Company\"}', rate_limit=100, failover_channel='smtp'). Note: Multiple providers can be configured per channel. Warning: Secure API keys appropriately."
+    parameters:
+      - name: action
+        type: string
+        description: "Channel action"
+        required: true
+        enum: ["configure", "get", "test", "disable", "enable", "list"]
+      - name: channel
+        type: string
+        description: "Notification channel"
+        required: true
+        enum: ["email", "push", "sms", "webhook", "slack"]
+      - name: provider
+        type: string
+        description: "Provider name"
+        required: false
+      - name: settings
+        type: string
+        description: "JSON settings object"
+        required: false
+      - name: rate_limit
+        type: integer
+        description: "Messages per second"
+        required: false
+      - name: failover_channel
+        type: string
+        description: "Failover provider"
+        required: false
+    tags: ["notification", "channel", "configure", "provider", "settings"]
+    test_prompts:
+      single:
+        - "Configure email provider"
+        - "Set up push notification channel"
+        - "Add SMS provider credentials"
+        - "Test notification channel"
+
+  - name: track_notification_engagement
+    descriptions:
+      minimal: "Track engagement"
+      short: "Track notification engagement events"
+      medium: "Track and analyze user engagement with notifications."
+      long: "Track engagement events for notifications including opens, clicks, and conversions. Example: track_notification_engagement(notification_id='n123', event='click', metadata='{\"link\": \"cta_button\"}')."
+      verbose: "Track user engagement with notifications. Events: delivered, opened, clicked, dismissed, converted, unsubscribed. Attribution: track conversions back to notifications, measure campaign effectiveness. Features: link tracking, heatmaps, engagement scoring. Example: track_notification_engagement(notification_id='notif_abc', user_id='user_123', event='clicked', metadata='{\"link_id\": \"cta_shop_now\", \"destination\": \"/products\"}', conversion_value=49.99). Returns: event recorded, user engagement score update. Note: Some events auto-tracked via SDKs. Warning: Respect privacy settings when tracking."
+    parameters:
+      - name: notification_id
+        type: string
+        description: "Notification ID"
+        required: true
+      - name: user_id
+        type: string
+        description: "User ID"
+        required: false
+      - name: event
+        type: string
+        description: "Engagement event"
+        required: true
+        enum: ["delivered", "opened", "clicked", "dismissed", "converted", "unsubscribed"]
+      - name: metadata
+        type: string
+        description: "JSON event metadata"
+        required: false
+      - name: conversion_value
+        type: number
+        description: "Conversion value"
+        required: false
+      - name: timestamp
+        type: string
+        description: "Event timestamp"
+        required: false
+    tags: ["notification", "engagement", "tracking", "analytics", "conversion"]
+    test_prompts:
+      single:
+        - "Track email open"
+        - "Record notification click"
+        - "Log conversion from notification"
+        - "Track push notification engagement"
+
+  - name: manage_notification_templates
+    descriptions:
+      minimal: "Manage templates"
+      short: "Manage notification templates"
+      medium: "Create and manage reusable notification templates."
+      long: "Create, update, and version notification templates. Example: manage_notification_templates(action='create', name='welcome', channel='email', content='{\"subject\": \"Welcome!\"}')."
+      verbose: "Notification template management. Actions: create, update, delete, list, preview, clone. Template features: variables, conditionals, localization, A/B variants. Channels: email, push, SMS, in-app. Example: manage_notification_templates(action='create', name='order-confirmation', channel='email', content='{\"subject\": \"Order {{order_id}} Confirmed\", \"body\": \"...\"}', variables='[\"order_id\", \"customer_name\", \"items\"]', localizations='[\"en\", \"es\", \"fr\"]'). Note: Test templates before production use. Warning: Template changes affect all future notifications."
+    parameters:
+      - name: action
+        type: string
+        description: "Template action"
+        required: true
+        enum: ["create", "update", "delete", "list", "preview", "clone", "publish"]
+      - name: template_id
+        type: string
+        description: "Template identifier"
+        required: false
+      - name: name
+        type: string
+        description: "Template name"
+        required: false
+      - name: channel
+        type: string
+        description: "Notification channel"
+        required: false
+        enum: ["email", "push", "sms", "in_app", "slack", "webhook"]
+      - name: content
+        type: string
+        description: "JSON template content"
+        required: false
+      - name: variables
+        type: string
+        description: "JSON array of variables"
+        required: false
+      - name: localizations
+        type: string
+        description: "JSON array of locales"
+        required: false
+    tags: ["notification", "templates", "content", "management", "localization"]
+    test_prompts:
+      single:
+        - "Create notification template"
+        - "Update email template"
+        - "Preview template"
+        - "List all templates"
+
+  - name: configure_notification_channel
+    descriptions:
+      minimal: "Configure channel"
+      short: "Configure notification channel"
+      medium: "Configure notification delivery channels and providers."
+      long: "Set up email, SMS, push, and webhook notification channels. Example: configure_notification_channel(channel='email', provider='sendgrid', api_key='SG.xxx')."
+      verbose: "Notification channel configuration. Channels: email (SendGrid, SES, Mailgun), SMS (Twilio, SNS), push (FCM, APNS), webhook. Settings: provider credentials, sender info, rate limits, fallbacks. Example: configure_notification_channel(channel='email', provider='sendgrid', credentials='{\"api_key\": \"SG.xxx\"}', from_email='noreply@company.com', from_name='Company', rate_limit=100, fallback='ses'). Push: configure_notification_channel(channel='push', provider='fcm', credentials='{\"project_id\": \"...\", \"private_key\": \"...\"}', default_icon='notification_icon'). Note: Test with sandbox/staging before production. Warning: Invalid credentials will fail silently."
+    parameters:
+      - name: channel
+        type: string
+        description: "Channel type"
+        required: true
+        enum: ["email", "sms", "push", "webhook", "slack", "teams"]
+      - name: provider
+        type: string
+        description: "Channel provider"
+        required: true
+      - name: credentials
+        type: string
+        description: "JSON provider credentials"
+        required: true
+      - name: from_email
+        type: string
+        description: "Sender email"
+        required: false
+      - name: from_name
+        type: string
+        description: "Sender name"
+        required: false
+      - name: rate_limit
+        type: integer
+        description: "Messages per second"
+        required: false
+      - name: fallback
+        type: string
+        description: "Fallback provider"
+        required: false
+    tags: ["notification", "channel", "provider", "configuration", "email"]
+    test_prompts:
+      single:
+        - "Configure SendGrid"
+        - "Set up Twilio SMS"
+        - "Configure push notifications"
+        - "Add webhook channel"
+
+  - name: create_notification_workflow
+    descriptions:
+      minimal: "Create workflow"
+      short: "Create notification workflow"
+      medium: "Create automated notification workflows with triggers and conditions."
+      long: "Build notification workflows with multiple steps and conditions. Example: create_notification_workflow(name='onboarding', trigger='user_signup', steps='[{\"delay\": \"1d\", \"send\": \"welcome\"}]')."
+      verbose: "Notification workflow automation. Components: triggers, conditions, delays, actions, branches. Triggers: events, schedules, webhooks. Actions: send notification, wait, branch, update user. Example: create_notification_workflow(name='cart-abandonment', trigger='{\"event\": \"cart_abandoned\", \"delay\": \"1h\"}', steps='[{\"condition\": \"cart_value > 50\", \"actions\": [{\"send\": \"cart_reminder_email\"}]}, {\"wait\": \"24h\"}, {\"condition\": \"!purchased\", \"actions\": [{\"send\": \"cart_discount_email\"}]}]'). Note: Test workflows with small segments first. Warning: Complex workflows can send excessive notifications."
+    parameters:
+      - name: name
+        type: string
+        description: "Workflow name"
+        required: true
+      - name: trigger
+        type: string
+        description: "JSON trigger configuration"
+        required: true
+      - name: steps
+        type: string
+        description: "JSON array of workflow steps"
+        required: true
+      - name: entry_condition
+        type: string
+        description: "Entry condition expression"
+        required: false
+      - name: exit_condition
+        type: string
+        description: "Exit condition expression"
+        required: false
+      - name: enabled
+        type: boolean
+        description: "Enable workflow"
+        required: false
+        default: false
+      - name: goals
+        type: string
+        description: "JSON conversion goals"
+        required: false
+    tags: ["notification", "workflow", "automation", "drip", "sequence"]
+    test_prompts:
+      single:
+        - "Create onboarding sequence"
+        - "Build cart abandonment flow"
+        - "Set up drip campaign"
+        - "Create notification workflow"
+
+  - name: manage_notification_segments
+    descriptions:
+      minimal: "Manage segments"
+      short: "Manage notification segments"
+      medium: "Create and manage user segments for targeted notifications."
+      long: "Define user segments based on attributes and behavior. Example: manage_notification_segments(action='create', name='active_users', criteria='{\"last_active\": \"7d\"}')."
+      verbose: "Notification segment management for targeting. Actions: create, update, delete, list, estimate, export. Segment types: static (list), dynamic (criteria-based). Criteria: user attributes, behavior, events, tags. Example: manage_notification_segments(action='create', name='premium-churning', criteria='{\"and\": [{\"plan\": \"premium\"}, {\"last_active_days_ago\": {\"gte\": 14}}, {\"subscription_ends_within\": \"7d\"}]}', refresh='daily'). Estimate: manage_notification_segments(action='estimate', criteria='{\"country\": \"US\", \"age\": {\"gte\": 25}}'). Note: Dynamic segments update automatically. Warning: Large segments may slow notification sending."
+    parameters:
+      - name: action
+        type: string
+        description: "Segment action"
+        required: true
+        enum: ["create", "update", "delete", "list", "estimate", "export", "refresh"]
+      - name: segment_id
+        type: string
+        description: "Segment identifier"
+        required: false
+      - name: name
+        type: string
+        description: "Segment name"
+        required: false
+      - name: criteria
+        type: string
+        description: "JSON segment criteria"
+        required: false
+      - name: type
+        type: string
+        description: "Segment type"
+        required: false
+        default: "dynamic"
+        enum: ["static", "dynamic"]
+      - name: refresh
+        type: string
+        description: "Refresh frequency for dynamic"
+        required: false
+        default: "daily"
+    tags: ["notification", "segment", "targeting", "audience", "users"]
+    test_prompts:
+      single:
+        - "Create user segment"
+        - "Estimate segment size"
+        - "Build targeting criteria"
+        - "List notification segments"
+
+  - name: configure_quiet_hours
+    descriptions:
+      minimal: "Configure quiet hours"
+      short: "Configure quiet hours"
+      medium: "Set up quiet hours to prevent notifications during certain times."
+      long: "Configure time windows when notifications should not be sent. Example: configure_quiet_hours(enabled=true, start='22:00', end='08:00', timezone='user')."
+      verbose: "Quiet hours configuration for notification timing. Settings: global, per-user, per-channel. Time handling: fixed times, user timezone, adaptive. Actions during quiet hours: queue (send later), drop, urgent only. Example: configure_quiet_hours(enabled=true, start='22:00', end='08:00', timezone='user', action='queue', channels='[\"push\", \"sms\"]', allow_urgent=true). Per-channel: configure_quiet_hours(channel='push', start='21:00', end='09:00', weekends='{\"start\": \"22:00\", \"end\": \"10:00\"}'). Note: User preferences should override global settings. Warning: Queued notifications may become stale."
+    parameters:
+      - name: enabled
+        type: boolean
+        description: "Enable quiet hours"
+        required: true
+      - name: start
+        type: string
+        description: "Start time (HH:MM)"
+        required: false
+      - name: end
+        type: string
+        description: "End time (HH:MM)"
+        required: false
+      - name: timezone
+        type: string
+        description: "Timezone handling"
+        required: false
+        default: "user"
+        enum: ["user", "utc", "fixed"]
+      - name: action
+        type: string
+        description: "Action during quiet hours"
+        required: false
+        default: "queue"
+        enum: ["queue", "drop", "urgent_only"]
+      - name: channels
+        type: string
+        description: "JSON array of channels"
+        required: false
+      - name: allow_urgent
+        type: boolean
+        description: "Allow urgent notifications"
+        required: false
+        default: true
+    tags: ["notification", "quiet_hours", "timing", "preferences", "dnd"]
+    test_prompts:
+      single:
+        - "Set up quiet hours"
+        - "Configure do not disturb"
+        - "Block nighttime notifications"
+        - "Set notification timing"
+
+  - name: manage_notification_digest
+    descriptions:
+      minimal: "Manage digest"
+      short: "Manage notification digest"
+      medium: "Configure notification digests to batch multiple notifications."
+      long: "Set up digest notifications to combine multiple updates. Example: manage_notification_digest(action='configure', frequency='daily', time='09:00')."
+      verbose: "Notification digest configuration. Features: frequency settings, content aggregation, smart batching. Frequencies: immediate, hourly, daily, weekly. Content: summary, full messages, highlights. Example: manage_notification_digest(action='configure', category='social', frequency='daily', time='18:00', timezone='user', template='daily_social_digest', min_items=3, max_items=20). Trigger: manage_notification_digest(action='send', user_id='user-123', categories='[\"updates\", \"mentions\"]'). Note: Digests reduce notification fatigue. Warning: Important notifications should bypass digest."
+    parameters:
+      - name: action
+        type: string
+        description: "Digest action"
+        required: true
+        enum: ["configure", "disable", "send", "preview", "status"]
+      - name: category
+        type: string
+        description: "Notification category"
+        required: false
+      - name: frequency
+        type: string
+        description: "Digest frequency"
+        required: false
+        default: "daily"
+        enum: ["hourly", "daily", "weekly", "smart"]
+      - name: time
+        type: string
+        description: "Delivery time (HH:MM)"
+        required: false
+      - name: timezone
+        type: string
+        description: "Timezone"
+        required: false
+        default: "user"
+      - name: template
+        type: string
+        description: "Digest template"
+        required: false
+      - name: min_items
+        type: integer
+        description: "Minimum items to trigger"
+        required: false
+        default: 1
+    tags: ["notification", "digest", "batch", "aggregation", "email"]
+    test_prompts:
+      single:
+        - "Configure daily digest"
+        - "Set up weekly summary"
+        - "Batch notifications together"
+        - "Send notification digest"
+
+  - name: analyze_notification_performance
+    descriptions:
+      minimal: "Analyze performance"
+      short: "Analyze notification performance"
+      medium: "Analyze notification delivery and engagement metrics."
+      long: "Get analytics on notification delivery rates, opens, and clicks. Example: analyze_notification_performance(period='30d', metrics='[\"delivery_rate\", \"open_rate\"]')."
+      verbose: "Notification analytics and performance reporting. Metrics: delivery rate, open rate, click rate, conversion rate, unsubscribe rate. Dimensions: channel, template, segment, time. Features: trend analysis, A/B test results, cohort comparison. Example: analyze_notification_performance(period='30d', metrics='[\"delivery_rate\", \"open_rate\", \"click_rate\", \"conversion_rate\"]', group_by='template', compare_to='previous_period', export='csv'). Funnel: analyze_notification_performance(type='funnel', notification_id='notif-123', stages='[\"sent\", \"delivered\", \"opened\", \"clicked\", \"converted\"]'). Note: Open rates are estimates for email. Warning: Privacy features affect tracking accuracy."
+    parameters:
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: false
+        default: "30d"
+      - name: metrics
+        type: string
+        description: "JSON array of metrics"
+        required: false
+      - name: group_by
+        type: string
+        description: "Grouping dimension"
+        required: false
+        enum: ["channel", "template", "segment", "day", "hour"]
+      - name: compare_to
+        type: string
+        description: "Comparison period"
+        required: false
+      - name: notification_id
+        type: string
+        description: "Specific notification ID"
+        required: false
+      - name: type
+        type: string
+        description: "Analysis type"
+        required: false
+        default: "summary"
+        enum: ["summary", "funnel", "trends", "cohort"]
+      - name: export
+        type: string
+        description: "Export format"
+        required: false
+    tags: ["notification", "analytics", "performance", "metrics", "reporting"]
+    test_prompts:
+      single:
+        - "Show notification analytics"
+        - "Analyze email performance"
+        - "Get open and click rates"
+        - "Compare notification performance"
+
+  - name: configure_notification_throttling
+    descriptions:
+      minimal: "Configure throttling"
+      short: "Configure notification throttling"
+      medium: "Set up rate limiting and throttling for notifications."
+      long: "Configure limits on notification frequency per user and globally. Example: configure_notification_throttling(max_per_day=5, channels='[\"push\", \"sms\"]')."
+      verbose: "Notification throttling and rate limiting. Levels: global, per-channel, per-user, per-category. Settings: max count, time window, priority handling. Features: burst limits, gradual backoff, overflow handling. Example: configure_notification_throttling(global_limit='{\"max_per_hour\": 1000000}', per_user='{\"max_per_day\": 10, \"max_per_hour\": 3}', channel_limits='{\"sms\": {\"max_per_day\": 2}, \"push\": {\"max_per_hour\": 5}}', priority_bypass='[\"critical\", \"security\"]'). Note: Start with higher limits and tighten as needed. Warning: Aggressive throttling may suppress important notifications."
+    parameters:
+      - name: global_limit
+        type: string
+        description: "JSON global rate limits"
+        required: false
+      - name: per_user
+        type: string
+        description: "JSON per-user limits"
+        required: false
+      - name: channel_limits
+        type: string
+        description: "JSON per-channel limits"
+        required: false
+      - name: category_limits
+        type: string
+        description: "JSON per-category limits"
+        required: false
+      - name: priority_bypass
+        type: string
+        description: "JSON priorities that bypass limits"
+        required: false
+      - name: overflow_action
+        type: string
+        description: "Action when limit reached"
+        required: false
+        default: "queue"
+        enum: ["drop", "queue", "digest"]
+    tags: ["notification", "throttling", "rate_limit", "frequency", "control"]
+    test_prompts:
+      single:
+        - "Set notification rate limits"
+        - "Configure daily notification cap"
+        - "Limit SMS frequency"
+        - "Set up throttling rules"
+
+  - name: manage_push_subscriptions
+    descriptions:
+      minimal: "Manage push subscriptions"
+      short: "Manage push subscriptions"
+      medium: "Manage push notification subscriptions and device tokens."
+      long: "Handle push notification device registration and management. Example: manage_push_subscriptions(action='register', user_id='user-123', token='device-token', platform='ios')."
+      verbose: "Push notification subscription management. Actions: register, unregister, list, cleanup, migrate. Platforms: iOS (APNS), Android (FCM), Web (VAPID). Features: multi-device, token refresh, subscription cleanup. Example: manage_push_subscriptions(action='register', user_id='user-123', token='abc123...', platform='ios', device_id='device-456', app_version='2.0.1', preferences='{\"marketing\": true, \"transactional\": true}'). Cleanup: manage_push_subscriptions(action='cleanup', inactive_days=90, invalid_tokens=true). Note: Handle token refresh on each app launch. Warning: Invalid tokens waste API calls and slow delivery."
+    parameters:
+      - name: action
+        type: string
+        description: "Subscription action"
+        required: true
+        enum: ["register", "unregister", "list", "update", "cleanup", "migrate"]
+      - name: user_id
+        type: string
+        description: "User identifier"
+        required: false
+      - name: token
+        type: string
+        description: "Device push token"
+        required: false
+      - name: platform
+        type: string
+        description: "Platform"
+        required: false
+        enum: ["ios", "android", "web", "huawei"]
+      - name: device_id
+        type: string
+        description: "Device identifier"
+        required: false
+      - name: preferences
+        type: string
+        description: "JSON notification preferences"
+        required: false
+      - name: inactive_days
+        type: integer
+        description: "Days for cleanup threshold"
+        required: false
+    tags: ["notification", "push", "subscription", "device", "token"]
+    test_prompts:
+      single:
+        - "Register push token"
+        - "List user devices"
+        - "Clean up invalid tokens"
+        - "Update push preferences"

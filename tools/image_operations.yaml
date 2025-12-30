@@ -1,0 +1,1098 @@
+category: image_operations
+
+tools:
+  - name: resize_image
+    descriptions:
+      minimal: "Resize image"
+      short: "Resize an image to new dimensions"
+      medium: "Resize an image to specified width and height, with options for maintaining aspect ratio."
+      long: "Resize an image to new dimensions. Can maintain aspect ratio or force exact dimensions. Supports various resampling algorithms. Example: resize_image(input='photo.jpg', width=800, height=600, keep_aspect=true)."
+      verbose: "Resize an image to specified dimensions with flexible options. Methods: 'fit' (fit within bounds, maintain aspect), 'fill' (cover bounds, may crop), 'exact' (stretch to exact dimensions). Resampling algorithms: 'lanczos' (best quality), 'bilinear' (good quality), 'bicubic' (smooth), 'nearest' (fastest, pixelated). Example: resize_image(input='photo.jpg', width=1920, height=1080, method='fit', resampling='lanczos', output='photo_resized.jpg'). Note: Upscaling may reduce quality. Warning: Very large images may require significant memory."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output image"
+        required: false
+      - name: width
+        type: integer
+        description: "Target width in pixels"
+        required: true
+      - name: height
+        type: integer
+        description: "Target height in pixels"
+        required: true
+      - name: method
+        type: string
+        description: "Resize method"
+        required: false
+        default: "fit"
+        enum: ["fit", "fill", "exact"]
+      - name: resampling
+        type: string
+        description: "Resampling algorithm"
+        required: false
+        default: "lanczos"
+        enum: ["lanczos", "bilinear", "bicubic", "nearest"]
+    tags: ["image", "resize", "scale", "dimensions", "transform"]
+    test_prompts:
+      single:
+        - "Resize the image to 800x600"
+        - "Scale down the photo to fit within 1920x1080"
+        - "Make the image 50% smaller"
+        - "Resize the picture while keeping aspect ratio"
+
+  - name: crop_image
+    descriptions:
+      minimal: "Crop image"
+      short: "Crop an image to a specific region"
+      medium: "Crop an image to a rectangular region defined by coordinates or aspect ratio."
+      long: "Crop an image to a specific rectangular region. Define by coordinates or by aspect ratio with optional alignment. Example: crop_image(input='photo.jpg', x=100, y=100, width=500, height=500)."
+      verbose: "Crop an image to a rectangular region. Methods: 'coordinates' (exact x, y, width, height), 'aspect_ratio' (crop to ratio with alignment), 'center' (crop to size from center). Can auto-detect subject and smart crop. Example: crop_image(input='photo.jpg', aspect_ratio='16:9', gravity='center', smart_crop=true). Note: Coordinates are in pixels from top-left. Warning: Cropping removes image data permanently."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output image"
+        required: false
+      - name: x
+        type: integer
+        description: "X coordinate of top-left corner"
+        required: false
+      - name: y
+        type: integer
+        description: "Y coordinate of top-left corner"
+        required: false
+      - name: width
+        type: integer
+        description: "Width of crop region"
+        required: false
+      - name: height
+        type: integer
+        description: "Height of crop region"
+        required: false
+      - name: aspect_ratio
+        type: string
+        description: "Aspect ratio (e.g., '16:9')"
+        required: false
+      - name: gravity
+        type: string
+        description: "Alignment for aspect ratio crop"
+        required: false
+        default: "center"
+        enum: ["center", "north", "south", "east", "west", "smart"]
+    tags: ["image", "crop", "cut", "region", "transform"]
+    test_prompts:
+      single:
+        - "Crop the image to a 1:1 square"
+        - "Cut out the center 500x500 pixels"
+        - "Crop the photo to 16:9 aspect ratio"
+        - "Remove the edges of the image"
+
+  - name: rotate_image
+    descriptions:
+      minimal: "Rotate image"
+      short: "Rotate an image by a specified angle"
+      medium: "Rotate an image by degrees, with options for background fill and auto-cropping."
+      long: "Rotate an image by a specified angle. Can expand canvas to fit or crop to original size. Example: rotate_image(input='photo.jpg', angle=90)."
+      verbose: "Rotate an image by any angle. Options: expand canvas to fit rotated image, crop to original dimensions, fill background color. Positive angles rotate counter-clockwise. Example: rotate_image(input='photo.jpg', angle=45, expand=true, background='#FFFFFF', output='photo_rotated.jpg'). Note: Rotation by angles not divisible by 90° may introduce interpolation artifacts. Warning: Auto-rotating based on EXIF data may give unexpected results."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output image"
+        required: false
+      - name: angle
+        type: number
+        description: "Rotation angle in degrees"
+        required: true
+      - name: expand
+        type: boolean
+        description: "Expand canvas to fit rotated image"
+        required: false
+        default: false
+      - name: background
+        type: string
+        description: "Background color for expanded areas"
+        required: false
+        default: "#FFFFFF"
+    tags: ["image", "rotate", "turn", "angle", "transform"]
+    test_prompts:
+      single:
+        - "Rotate the image 90 degrees clockwise"
+        - "Turn the photo 45 degrees"
+        - "Flip the image upside down (rotate 180)"
+        - "Rotate the image by 15 degrees"
+
+  - name: flip_image
+    descriptions:
+      minimal: "Flip image"
+      short: "Flip an image horizontally or vertically"
+      medium: "Mirror an image horizontally (left-right) or vertically (top-bottom)."
+      long: "Flip an image along an axis. Horizontal flip creates a mirror image, vertical flip creates an upside-down mirror. Example: flip_image(input='photo.jpg', direction='horizontal')."
+      verbose: "Flip (mirror) an image along an axis. Directions: 'horizontal' (left becomes right), 'vertical' (top becomes bottom), 'both' (180° rotation equivalent). Common uses: correcting selfie cameras, creating mirror effects. Example: flip_image(input='selfie.jpg', direction='horizontal', output='selfie_fixed.jpg'). Note: Flipping text in images makes it unreadable. Warning: Flipping may break visual coherence in some images."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output image"
+        required: false
+      - name: direction
+        type: string
+        description: "Flip direction"
+        required: true
+        enum: ["horizontal", "vertical", "both"]
+    tags: ["image", "flip", "mirror", "transform"]
+    test_prompts:
+      single:
+        - "Flip the image horizontally"
+        - "Mirror the photo"
+        - "Flip the image upside down"
+        - "Create a mirror image"
+
+  - name: convert_image_format
+    descriptions:
+      minimal: "Convert image format"
+      short: "Convert an image to a different format"
+      medium: "Convert an image from one format to another (PNG, JPEG, WebP, GIF, etc.)."
+      long: "Convert an image to a different file format. Supports PNG, JPEG, WebP, GIF, BMP, TIFF, and more. Can adjust quality for lossy formats. Example: convert_image_format(input='photo.png', format='jpeg', quality=85)."
+      verbose: "Convert images between formats with optimization options. Formats: 'png' (lossless, transparency), 'jpeg' (lossy, smaller), 'webp' (modern, best compression), 'gif' (animation, limited colors), 'bmp' (uncompressed), 'tiff' (high quality). Quality (1-100) applies to lossy formats. Example: convert_image_format(input='photo.png', format='webp', quality=80, optimize=true). Note: Converting from lossy to lossless doesn't restore quality. Warning: Transparency is lost when converting to JPEG."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output image"
+        required: false
+      - name: format
+        type: string
+        description: "Target format"
+        required: true
+        enum: ["png", "jpeg", "webp", "gif", "bmp", "tiff"]
+      - name: quality
+        type: integer
+        description: "Quality for lossy formats (1-100)"
+        required: false
+        default: 85
+      - name: optimize
+        type: boolean
+        description: "Optimize output file size"
+        required: false
+        default: true
+    tags: ["image", "convert", "format", "jpeg", "png", "webp"]
+    test_prompts:
+      single:
+        - "Convert the PNG to JPEG"
+        - "Change the image format to WebP"
+        - "Save the image as a GIF"
+        - "Convert the photo to PNG format"
+
+  - name: compress_image
+    descriptions:
+      minimal: "Compress image"
+      short: "Compress an image to reduce file size"
+      medium: "Compress an image to reduce file size while maintaining acceptable quality."
+      long: "Compress an image to reduce file size. Adjusts quality, removes metadata, and optimizes encoding. Example: compress_image(input='photo.jpg', quality=70, output='photo_compressed.jpg')."
+      verbose: "Compress images to reduce file size for web or storage. Methods include quality reduction, chroma subsampling, progressive encoding, and metadata stripping. Can target a specific file size or compression ratio. Example: compress_image(input='photo.jpg', target_size='500KB', strip_metadata=true, progressive=true). Note: Higher compression = lower quality. Warning: Very high compression causes visible artifacts."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output image"
+        required: false
+      - name: quality
+        type: integer
+        description: "Compression quality (1-100)"
+        required: false
+        default: 80
+      - name: target_size
+        type: string
+        description: "Target file size (e.g., '500KB')"
+        required: false
+      - name: strip_metadata
+        type: boolean
+        description: "Remove EXIF and other metadata"
+        required: false
+        default: true
+      - name: progressive
+        type: boolean
+        description: "Use progressive encoding"
+        required: false
+        default: true
+    tags: ["image", "compress", "optimize", "reduce", "size"]
+    test_prompts:
+      single:
+        - "Compress the image to reduce file size"
+        - "Optimize the photo for web"
+        - "Reduce the image size to under 500KB"
+        - "Compress all images in the folder"
+
+  - name: apply_filter
+    descriptions:
+      minimal: "Apply filter"
+      short: "Apply a filter or effect to an image"
+      medium: "Apply visual filters like blur, sharpen, grayscale, sepia, or artistic effects."
+      long: "Apply visual filters and effects to an image. Includes blur, sharpen, grayscale, sepia, brightness, contrast, saturation adjustments. Example: apply_filter(input='photo.jpg', filter='grayscale')."
+      verbose: "Apply visual filters and adjustments to images. Filters: 'blur', 'sharpen', 'grayscale', 'sepia', 'negative', 'emboss', 'edge_detect'. Adjustments (with intensity): 'brightness', 'contrast', 'saturation', 'hue', 'gamma'. Can chain multiple filters. Example: apply_filter(input='photo.jpg', filter='sharpen', intensity=1.5, adjustments='{\"brightness\": 10, \"contrast\": 20}'). Note: Filter order matters when chaining. Warning: Some filters are computationally intensive on large images."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output image"
+        required: false
+      - name: filter
+        type: string
+        description: "Filter to apply"
+        required: true
+        enum: ["blur", "sharpen", "grayscale", "sepia", "negative", "emboss", "edge_detect"]
+      - name: intensity
+        type: number
+        description: "Filter intensity (0.0-3.0)"
+        required: false
+        default: 1.0
+      - name: adjustments
+        type: string
+        description: "JSON object of additional adjustments"
+        required: false
+    tags: ["image", "filter", "effect", "adjust", "enhance"]
+    test_prompts:
+      single:
+        - "Convert the image to grayscale"
+        - "Apply a sepia filter to the photo"
+        - "Blur the image slightly"
+        - "Sharpen the photo"
+
+  - name: add_watermark
+    descriptions:
+      minimal: "Add watermark"
+      short: "Add a watermark to an image"
+      medium: "Add a text or image watermark to a photo with position and opacity controls."
+      long: "Add a watermark to an image. Supports text watermarks with customizable font, or image watermarks. Control position, opacity, and size. Example: add_watermark(input='photo.jpg', text='© 2024', position='bottom-right', opacity=0.5)."
+      verbose: "Add text or image watermarks to protect or brand images. Text options: font, size, color, shadow. Image watermark options: scale, blend mode. Positions: 'center', 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'tile' (repeat across image). Example: add_watermark(input='photo.jpg', text='CONFIDENTIAL', font_size=48, color='#FF0000', position='center', opacity=0.3, angle=45). Note: Tile mode covers entire image with repeating watermark. Warning: Watermarks can be removed; not a substitute for DRM."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output image"
+        required: false
+      - name: text
+        type: string
+        description: "Watermark text"
+        required: false
+      - name: watermark_image
+        type: string
+        description: "Path to watermark image"
+        required: false
+      - name: position
+        type: string
+        description: "Watermark position"
+        required: false
+        default: "bottom-right"
+        enum: ["center", "top-left", "top-right", "bottom-left", "bottom-right", "tile"]
+      - name: opacity
+        type: number
+        description: "Watermark opacity (0.0-1.0)"
+        required: false
+        default: 0.5
+      - name: font_size
+        type: integer
+        description: "Font size for text watermark"
+        required: false
+        default: 24
+      - name: color
+        type: string
+        description: "Text color (hex)"
+        required: false
+        default: "#FFFFFF"
+      - name: angle
+        type: number
+        description: "Rotation angle for watermark"
+        required: false
+        default: 0
+    tags: ["image", "watermark", "text", "brand", "protect"]
+    test_prompts:
+      single:
+        - "Add a copyright watermark to the photo"
+        - "Put my logo on the image"
+        - "Add 'DRAFT' watermark to the document image"
+        - "Watermark the image with my website"
+
+  - name: get_image_info
+    descriptions:
+      minimal: "Get image info"
+      short: "Get metadata and properties of an image"
+      medium: "Retrieve image metadata including dimensions, format, color mode, and EXIF data."
+      long: "Get detailed information about an image file. Returns dimensions, format, color mode, file size, and EXIF metadata. Example: get_image_info(input='photo.jpg') returns {width: 1920, height: 1080, format: 'JPEG', ...}."
+      verbose: "Retrieve comprehensive metadata about an image. Properties: dimensions (width, height), format, color mode (RGB, RGBA, CMYK), bit depth, file size, DPI. EXIF data includes: camera model, date taken, exposure settings, GPS coordinates. Example: get_image_info(input='photo.jpg', include_exif=true, include_histogram=true). Note: EXIF data may not be present in all images. Warning: EXIF may contain sensitive location information."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: include_exif
+        type: boolean
+        description: "Include EXIF metadata"
+        required: false
+        default: true
+      - name: include_histogram
+        type: boolean
+        description: "Include color histogram data"
+        required: false
+        default: false
+    tags: ["image", "info", "metadata", "exif", "properties"]
+    test_prompts:
+      single:
+        - "Get the dimensions of the image"
+        - "What format is this image?"
+        - "Show me the EXIF data for the photo"
+        - "Get the image resolution and color mode"
+
+  - name: create_thumbnail
+    descriptions:
+      minimal: "Create thumbnail"
+      short: "Create a thumbnail of an image"
+      medium: "Generate a small thumbnail preview of an image with consistent sizing."
+      long: "Create a thumbnail of an image. Generates a small preview maintaining aspect ratio, optionally with exact dimensions using cropping. Example: create_thumbnail(input='photo.jpg', size=150)."
+      verbose: "Generate thumbnail images for previews and galleries. Modes: 'contain' (fit within size, maintain aspect), 'cover' (fill size, crop excess), 'stretch' (exact size, may distort). Quality options for file size optimization. Example: create_thumbnail(input='photo.jpg', size=200, mode='cover', quality=80, output='photo_thumb.jpg'). Note: Square thumbnails use cover mode by default. Warning: Very small thumbnails lose significant detail."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: output
+        type: string
+        description: "Path for thumbnail"
+        required: false
+      - name: size
+        type: integer
+        description: "Thumbnail size in pixels"
+        required: false
+        default: 150
+      - name: mode
+        type: string
+        description: "Thumbnail generation mode"
+        required: false
+        default: "contain"
+        enum: ["contain", "cover", "stretch"]
+      - name: quality
+        type: integer
+        description: "Output quality (1-100)"
+        required: false
+        default: 85
+    tags: ["image", "thumbnail", "preview", "resize", "gallery"]
+    test_prompts:
+      single:
+        - "Create a thumbnail of the photo"
+        - "Generate 150px thumbnails for all images"
+        - "Make a small preview image"
+        - "Create a square thumbnail for the gallery"
+
+  - name: overlay_images
+    descriptions:
+      minimal: "Overlay images"
+      short: "Overlay one image on top of another"
+      medium: "Composite multiple images by overlaying them with position and blend mode controls."
+      long: "Overlay one image on top of another (compositing). Control position, opacity, and blending mode. Example: overlay_images(base='background.jpg', overlay='logo.png', position='center', opacity=0.8)."
+      verbose: "Composite images by overlaying one on another. Blend modes: 'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten', 'difference'. Position can be coordinates or named positions. Scale overlay relative to base. Example: overlay_images(base='photo.jpg', overlay='frame.png', position='center', blend_mode='overlay', scale=1.0, opacity=1.0). Note: Overlay images with transparency work best in PNG format. Warning: Large overlays may significantly impact performance."
+    parameters:
+      - name: base
+        type: string
+        description: "Path to base image"
+        required: true
+      - name: overlay
+        type: string
+        description: "Path to overlay image"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output image"
+        required: false
+      - name: position
+        type: string
+        description: "Position (e.g., 'center', '100,50')"
+        required: false
+        default: "center"
+      - name: opacity
+        type: number
+        description: "Overlay opacity (0.0-1.0)"
+        required: false
+        default: 1.0
+      - name: blend_mode
+        type: string
+        description: "Blending mode"
+        required: false
+        default: "normal"
+        enum: ["normal", "multiply", "screen", "overlay", "darken", "lighten", "difference"]
+      - name: scale
+        type: number
+        description: "Scale factor for overlay"
+        required: false
+        default: 1.0
+    tags: ["image", "overlay", "composite", "blend", "combine"]
+    test_prompts:
+      single:
+        - "Put the logo on top of the photo"
+        - "Overlay the frame on the image"
+        - "Combine the two images"
+        - "Add the overlay with 50% opacity"
+
+  - name: extract_colors
+    descriptions:
+      minimal: "Extract colors"
+      short: "Extract dominant colors from an image"
+      medium: "Analyze an image and extract the most dominant colors, returning their hex values."
+      long: "Extract the dominant colors from an image. Uses clustering algorithms to identify the main colors. Returns hex values and percentages. Example: extract_colors(input='photo.jpg', count=5)."
+      verbose: "Extract dominant colors from an image using color quantization. Returns colors as hex codes with their percentage of the image and optional names. Algorithms: 'kmeans' (accurate), 'median_cut' (fast), 'octree' (memory efficient). Can exclude background or specific color ranges. Example: extract_colors(input='product.jpg', count=5, algorithm='kmeans', exclude_white=true). Note: Results may vary slightly between runs with kmeans. Warning: Complex images may not have clearly dominant colors."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: count
+        type: integer
+        description: "Number of colors to extract"
+        required: false
+        default: 5
+      - name: algorithm
+        type: string
+        description: "Color extraction algorithm"
+        required: false
+        default: "kmeans"
+        enum: ["kmeans", "median_cut", "octree"]
+      - name: exclude_white
+        type: boolean
+        description: "Exclude near-white colors"
+        required: false
+        default: false
+      - name: exclude_black
+        type: boolean
+        description: "Exclude near-black colors"
+        required: false
+        default: false
+    tags: ["image", "color", "extract", "palette", "analyze"]
+    test_prompts:
+      single:
+        - "Get the main colors from the image"
+        - "Extract the color palette from the photo"
+        - "What are the dominant colors in this image?"
+        - "Find the 5 most common colors"
+
+  - name: ocr_image
+    descriptions:
+      minimal: "OCR image"
+      short: "Extract text from an image using OCR"
+      medium: "Use Optical Character Recognition to extract text content from an image."
+      long: "Perform OCR to extract text from images. Supports multiple languages and outputs plain text or structured data with positions. Example: ocr_image(input='document.jpg', language='en')."
+      verbose: "Extract text from images using Optical Character Recognition. Supports 100+ languages and scripts. Output formats: 'text' (plain text), 'words' (with positions), 'lines', 'paragraphs'. Can detect language automatically. Pre-processing options for better accuracy. Example: ocr_image(input='receipt.jpg', language='en', output_format='lines', preprocess=true, dpi=300). Note: Accuracy depends on image quality and font clarity. Warning: Handwritten text recognition is less accurate."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: language
+        type: string
+        description: "Language code(s), comma-separated"
+        required: false
+        default: "en"
+      - name: output_format
+        type: string
+        description: "Output format"
+        required: false
+        default: "text"
+        enum: ["text", "words", "lines", "paragraphs"]
+      - name: preprocess
+        type: boolean
+        description: "Apply preprocessing for better accuracy"
+        required: false
+        default: true
+      - name: dpi
+        type: integer
+        description: "DPI for processing (affects accuracy)"
+        required: false
+        default: 300
+    tags: ["image", "ocr", "text", "extract", "recognize"]
+    test_prompts:
+      single:
+        - "Extract text from the screenshot"
+        - "Read the text in this image"
+        - "OCR the scanned document"
+        - "Get the text from the photo of the sign"
+
+  - name: generate_qr_code
+    descriptions:
+      minimal: "Generate QR code"
+      short: "Generate a QR code image"
+      medium: "Generate a QR code image from text, URL, or other data with customization options."
+      long: "Generate a QR code image. Encode text, URLs, contact info, or other data. Customize size, colors, and error correction level. Example: generate_qr_code(data='https://example.com', size=300, output='qrcode.png')."
+      verbose: "Generate customizable QR code images. Data types: plain text, URLs, vCard contacts, Wi-Fi credentials, calendar events. Customization: size, foreground/background colors, logo overlay, rounded corners. Error correction levels: 'L' (7%), 'M' (15%), 'Q' (25%), 'H' (30% - best for logos). Example: generate_qr_code(data='WIFI:S:MyNetwork;T:WPA;P:password123;;', size=400, fg_color='#000000', bg_color='#FFFFFF', error_correction='H', logo='logo.png'). Note: Higher error correction allows more damage tolerance. Warning: Very long data may require larger QR codes."
+    parameters:
+      - name: data
+        type: string
+        description: "Data to encode in QR code"
+        required: true
+      - name: output
+        type: string
+        description: "Output file path"
+        required: true
+      - name: size
+        type: integer
+        description: "Size in pixels"
+        required: false
+        default: 300
+      - name: fg_color
+        type: string
+        description: "Foreground color (hex)"
+        required: false
+        default: "#000000"
+      - name: bg_color
+        type: string
+        description: "Background color (hex)"
+        required: false
+        default: "#FFFFFF"
+      - name: error_correction
+        type: string
+        description: "Error correction level"
+        required: false
+        default: "M"
+        enum: ["L", "M", "Q", "H"]
+      - name: logo
+        type: string
+        description: "Path to logo to embed in center"
+        required: false
+    tags: ["image", "qr", "code", "generate", "barcode"]
+    test_prompts:
+      single:
+        - "Generate a QR code for my website URL"
+        - "Create a QR code with the Wi-Fi password"
+        - "Make a QR code for this text"
+        - "Generate a QR code with my logo"
+
+  - name: read_barcode
+    descriptions:
+      minimal: "Read barcode"
+      short: "Decode barcodes and QR codes from an image"
+      medium: "Scan and decode barcodes (1D and 2D) from an image including QR codes, UPC, EAN."
+      long: "Decode barcodes and QR codes from images. Supports many formats: QR, UPC-A, UPC-E, EAN-8, EAN-13, Code 39, Code 128, PDF417, DataMatrix. Example: read_barcode(input='product.jpg')."
+      verbose: "Decode 1D and 2D barcodes from images. Supported formats: QR Code, Micro QR, Data Matrix, PDF417, Aztec, UPC-A, UPC-E, EAN-8, EAN-13, Code 39, Code 93, Code 128, ITF, Codabar, MSI. Returns decoded data, barcode type, and position in image. Can detect multiple barcodes. Example: read_barcode(input='labels.jpg', formats='[\"QR\", \"EAN-13\"]', multi=true). Note: Image quality significantly affects detection. Warning: Damaged or partial barcodes may not decode."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: formats
+        type: string
+        description: "JSON array of formats to detect"
+        required: false
+      - name: multi
+        type: boolean
+        description: "Detect multiple barcodes"
+        required: false
+        default: false
+    tags: ["image", "barcode", "qr", "decode", "scan"]
+    test_prompts:
+      single:
+        - "Scan the barcode in the image"
+        - "Read the QR code from the photo"
+        - "Decode all barcodes in the image"
+        - "Get the UPC code from the product photo"
+
+  - name: create_collage
+    descriptions:
+      minimal: "Create collage"
+      short: "Create a collage from multiple images"
+      medium: "Combine multiple images into a single collage with various layout options."
+      long: "Create a collage from multiple images. Choose layout patterns, spacing, and output size. Example: create_collage(images='[\"img1.jpg\", \"img2.jpg\", \"img3.jpg\"]', layout='grid', output='collage.jpg')."
+      verbose: "Combine multiple images into a single collage. Layouts: 'grid' (equal-sized cells), 'masonry' (Pinterest-style), 'horizontal' (side by side), 'vertical' (stacked), 'custom' (specify template). Options for spacing, background color, borders, and image fitting. Example: create_collage(images='[\"a.jpg\", \"b.jpg\", \"c.jpg\", \"d.jpg\"]', layout='grid', columns=2, spacing=10, background='#FFFFFF', output='collage.jpg'). Note: Images are automatically resized to fit cells. Warning: Very many images may result in small individual previews."
+    parameters:
+      - name: images
+        type: string
+        description: "JSON array of image paths"
+        required: true
+      - name: output
+        type: string
+        description: "Output file path"
+        required: true
+      - name: layout
+        type: string
+        description: "Collage layout"
+        required: false
+        default: "grid"
+        enum: ["grid", "masonry", "horizontal", "vertical"]
+      - name: columns
+        type: integer
+        description: "Number of columns for grid"
+        required: false
+        default: 2
+      - name: spacing
+        type: integer
+        description: "Spacing between images in pixels"
+        required: false
+        default: 5
+      - name: background
+        type: string
+        description: "Background color (hex)"
+        required: false
+        default: "#FFFFFF"
+      - name: width
+        type: integer
+        description: "Output width in pixels"
+        required: false
+        default: 1200
+    tags: ["image", "collage", "combine", "grid", "layout"]
+    test_prompts:
+      single:
+        - "Create a collage from these 4 photos"
+        - "Combine the images into a grid"
+        - "Make a photo collage with 3 columns"
+        - "Create a horizontal collage of the pictures"
+
+  - name: compare_images
+    descriptions:
+      minimal: "Compare images"
+      short: "Compare two images for differences"
+      medium: "Compare two images to find differences, calculate similarity, or create diff visualizations."
+      long: "Compare two images to detect differences. Calculate similarity percentage, generate diff images, or find specific changes. Example: compare_images(image1='before.jpg', image2='after.jpg', method='diff')."
+      verbose: "Compare two images using various methods. Methods: 'pixel' (pixel-by-pixel difference), 'ssim' (structural similarity), 'hash' (perceptual hashing), 'histogram' (color distribution). Outputs: similarity percentage, diff image (highlighting changes), or detailed change regions. Example: compare_images(image1='original.png', image2='modified.png', method='ssim', generate_diff=true, diff_color='#FF0000'). Note: Images should be same size for pixel comparison. Warning: Small camera movements between shots may show as large differences."
+    parameters:
+      - name: image1
+        type: string
+        description: "Path to first image"
+        required: true
+      - name: image2
+        type: string
+        description: "Path to second image"
+        required: true
+      - name: method
+        type: string
+        description: "Comparison method"
+        required: false
+        default: "ssim"
+        enum: ["pixel", "ssim", "hash", "histogram"]
+      - name: generate_diff
+        type: boolean
+        description: "Generate diff visualization image"
+        required: false
+        default: false
+      - name: diff_output
+        type: string
+        description: "Path for diff image output"
+        required: false
+      - name: threshold
+        type: number
+        description: "Difference threshold for detection"
+        required: false
+        default: 0.1
+    tags: ["image", "compare", "diff", "similarity", "match"]
+    test_prompts:
+      single:
+        - "Compare these two screenshots"
+        - "Find the differences between the images"
+        - "Calculate the similarity of the two photos"
+        - "Create a diff image showing changes"
+
+  - name: detect_faces
+    descriptions:
+      minimal: "Detect faces"
+      short: "Detect faces in an image"
+      medium: "Detect human faces in an image and return their locations."
+      long: "Detect faces in an image using computer vision. Returns bounding boxes and optionally facial landmarks. Example: detect_faces(image='group_photo.jpg')."
+      verbose: "Detect human faces in images using machine learning. Returns: face bounding boxes, confidence scores, facial landmarks (eyes, nose, mouth), estimated attributes (age, gender, emotion). Models: 'fast' (lightweight), 'accurate' (deep learning), 'landmarks' (with 68-point detection). Example: detect_faces(image='family.jpg', model='accurate', include_landmarks=true, include_attributes=true) returns detailed face data. Note: Works best with frontal faces. Warning: Profile or occluded faces may have lower detection rates."
+    parameters:
+      - name: image
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: model
+        type: string
+        description: "Detection model"
+        required: false
+        default: "fast"
+        enum: ["fast", "accurate", "landmarks"]
+      - name: include_landmarks
+        type: boolean
+        description: "Include facial landmarks"
+        required: false
+        default: false
+      - name: include_attributes
+        type: boolean
+        description: "Include face attributes"
+        required: false
+        default: false
+      - name: min_confidence
+        type: number
+        description: "Minimum confidence threshold"
+        required: false
+        default: 0.5
+    tags: ["image", "face", "detect", "recognition", "ai"]
+    test_prompts:
+      single:
+        - "Find all faces in this photo"
+        - "Detect faces in the group picture"
+        - "How many people are in this image?"
+        - "Locate the faces and their positions"
+
+  - name: remove_background
+    descriptions:
+      minimal: "Remove background"
+      short: "Remove image background"
+      medium: "Automatically remove the background from an image, keeping the main subject."
+      long: "Remove background from images using AI segmentation. Creates transparent PNG or replaces with color/image. Example: remove_background(input='portrait.jpg', output='portrait_transparent.png')."
+      verbose: "Automatically remove image backgrounds using AI-powered segmentation. Supports: people, products, animals, objects. Output options: transparent PNG, solid color, custom background image. Models: 'general' (all subjects), 'portrait' (optimized for people), 'product' (e-commerce). Example: remove_background(input='product.jpg', output='product_nobg.png', model='product', refine_edges=true, replace_color='#FFFFFF'). Note: Edge quality depends on subject contrast. Warning: Complex backgrounds or hair may require edge refinement."
+    parameters:
+      - name: input
+        type: string
+        description: "Input image path"
+        required: true
+      - name: output
+        type: string
+        description: "Output image path"
+        required: true
+      - name: model
+        type: string
+        description: "Segmentation model"
+        required: false
+        default: "general"
+        enum: ["general", "portrait", "product"]
+      - name: refine_edges
+        type: boolean
+        description: "Apply edge refinement"
+        required: false
+        default: true
+      - name: replace_color
+        type: string
+        description: "Replacement background color (or 'transparent')"
+        required: false
+        default: "transparent"
+      - name: replace_image
+        type: string
+        description: "Path to replacement background image"
+        required: false
+    tags: ["image", "background", "remove", "transparent", "cutout"]
+    test_prompts:
+      single:
+        - "Remove the background from this photo"
+        - "Make the background transparent"
+        - "Cut out the person from the image"
+        - "Create a product image with no background"
+
+  - name: apply_filter
+    descriptions:
+      minimal: "Apply filter"
+      short: "Apply an image filter"
+      medium: "Apply visual filters like sepia, vintage, or Instagram-style effects."
+      long: "Apply predefined filters to images like sepia, vintage, black and white, etc. Example: apply_filter(input='photo.jpg', filter='vintage', output='photo_vintage.jpg')."
+      verbose: "Apply aesthetic filters to images. Filters: 'grayscale', 'sepia' (old photo), 'vintage' (faded colors), 'noir' (high contrast B&W), 'warm' (orange tint), 'cool' (blue tint), 'dramatic' (enhanced contrast), 'soft' (blur/glow), 'retro' (70s look), 'vivid' (saturated). Intensity controls filter strength. Example: apply_filter(input='portrait.jpg', filter='vintage', intensity=0.7, output='portrait_vintage.jpg'). Note: Filters can be combined by applying sequentially. Warning: High intensity may cause color clipping."
+    parameters:
+      - name: input
+        type: string
+        description: "Input image path"
+        required: true
+      - name: output
+        type: string
+        description: "Output image path"
+        required: true
+      - name: filter
+        type: string
+        description: "Filter to apply"
+        required: true
+        enum: ["grayscale", "sepia", "vintage", "noir", "warm", "cool", "dramatic", "soft", "retro", "vivid"]
+      - name: intensity
+        type: number
+        description: "Filter intensity (0.0 to 1.0)"
+        required: false
+        default: 1.0
+    tags: ["image", "filter", "effect", "style", "instagram"]
+    test_prompts:
+      single:
+        - "Make this photo sepia"
+        - "Apply a vintage filter"
+        - "Add a warm filter to the image"
+        - "Make the photo black and white"
+
+  - name: create_collage
+    descriptions:
+      minimal: "Create collage"
+      short: "Create an image collage"
+      medium: "Combine multiple images into a single collage with various layouts."
+      long: "Create a photo collage from multiple images. Choose from grid, mosaic, or custom layouts. Example: create_collage(images='[\"img1.jpg\", \"img2.jpg\", \"img3.jpg\"]', layout='grid', output='collage.jpg')."
+      verbose: "Create photo collages from multiple images. Layouts: 'grid' (equal-sized cells), 'pinterest' (variable heights), 'mosaic' (mixed sizes), 'horizontal' (row), 'vertical' (column), 'custom' (specified template). Options: padding between images, background color, border style, labels. Example: create_collage(images='[\"a.jpg\", \"b.jpg\", \"c.jpg\", \"d.jpg\"]', layout='grid', columns=2, padding=10, background='#FFFFFF', output='grid.jpg'). Note: Images are automatically resized to fit. Warning: Many images may require significant memory."
+    parameters:
+      - name: images
+        type: string
+        description: "JSON array of image paths"
+        required: true
+      - name: output
+        type: string
+        description: "Output image path"
+        required: true
+      - name: layout
+        type: string
+        description: "Collage layout"
+        required: false
+        default: "grid"
+        enum: ["grid", "pinterest", "mosaic", "horizontal", "vertical"]
+      - name: columns
+        type: integer
+        description: "Number of columns (for grid)"
+        required: false
+        default: 3
+      - name: padding
+        type: integer
+        description: "Padding between images in pixels"
+        required: false
+        default: 5
+      - name: background
+        type: string
+        description: "Background color"
+        required: false
+        default: "#FFFFFF"
+    tags: ["image", "collage", "combine", "grid", "layout"]
+    test_prompts:
+      single:
+        - "Create a collage from these photos"
+        - "Combine images in a grid"
+        - "Make a photo mosaic"
+        - "Arrange these pictures in a collage"
+
+  - name: create_gif
+    descriptions:
+      minimal: "Create GIF"
+      short: "Create an animated GIF"
+      medium: "Create an animated GIF from multiple images or video."
+      long: "Create an animated GIF from image sequence or video clip. Control frame rate and looping. Example: create_gif(images='[\"frame1.png\", \"frame2.png\", \"frame3.png\"]', output='animation.gif', fps=10)."
+      verbose: "Create animated GIFs from images or video. Sources: image sequence, video file, screen recording. Options: frame rate, size, color palette, dithering, looping, optimization. Example: create_gif(source='video.mp4', start=10, duration=5, fps=15, width=480, optimize=true, output='clip.gif') extracts 5 seconds starting at 10s. Note: GIF is limited to 256 colors per frame. Warning: Large GIFs consume significant file size; optimize aggressively."
+    parameters:
+      - name: images
+        type: string
+        description: "JSON array of image paths (for image sequence)"
+        required: false
+      - name: source
+        type: string
+        description: "Video source path"
+        required: false
+      - name: output
+        type: string
+        description: "Output GIF path"
+        required: true
+      - name: fps
+        type: number
+        description: "Frames per second"
+        required: false
+        default: 10
+      - name: width
+        type: integer
+        description: "Output width in pixels"
+        required: false
+      - name: loop
+        type: integer
+        description: "Loop count (0 = infinite)"
+        required: false
+        default: 0
+      - name: optimize
+        type: boolean
+        description: "Optimize GIF size"
+        required: false
+        default: true
+    tags: ["image", "gif", "animation", "video", "convert"]
+    test_prompts:
+      single:
+        - "Create a GIF from these images"
+        - "Convert this video to GIF"
+        - "Make an animated GIF"
+        - "Create a looping GIF animation"
+
+  - name: upscale_image
+    descriptions:
+      minimal: "Upscale image"
+      short: "Upscale image resolution"
+      medium: "Increase image resolution using AI-powered upscaling."
+      long: "Upscale images to higher resolution using AI super-resolution. Better than traditional interpolation. Example: upscale_image(input='small.jpg', scale=4, output='large.jpg')."
+      verbose: "Increase image resolution using AI super-resolution models. Models: 'general' (photos), 'anime' (animation/drawings), 'face' (portrait enhancement), 'text' (documents). Scales: 2x, 4x, or custom. Includes: noise reduction, sharpening, artifact removal. Example: upscale_image(input='old_photo.jpg', scale=4, model='general', denoise=0.5, sharpen=0.3, output='restored.jpg'). Note: Results depend on original image quality. Warning: Large upscales may create AI artifacts; 2x-4x recommended."
+    parameters:
+      - name: input
+        type: string
+        description: "Input image path"
+        required: true
+      - name: output
+        type: string
+        description: "Output image path"
+        required: true
+      - name: scale
+        type: number
+        description: "Upscale factor (e.g., 2, 4)"
+        required: false
+        default: 2
+      - name: model
+        type: string
+        description: "Upscaling model"
+        required: false
+        default: "general"
+        enum: ["general", "anime", "face", "text"]
+      - name: denoise
+        type: number
+        description: "Denoising strength (0.0 to 1.0)"
+        required: false
+        default: 0
+      - name: sharpen
+        type: number
+        description: "Sharpening strength (0.0 to 1.0)"
+        required: false
+        default: 0
+    tags: ["image", "upscale", "resolution", "enhance", "ai"]
+    test_prompts:
+      single:
+        - "Upscale this image to 4x"
+        - "Increase the resolution"
+        - "Enhance this low-res photo"
+        - "Make the image bigger without losing quality"
+
+  - name: add_border
+    descriptions:
+      minimal: "Add border"
+      short: "Add a border to an image"
+      medium: "Add a decorative border or frame to an image."
+      long: "Add borders or frames to images. Support solid colors, gradients, patterns, and decorative frames. Example: add_border(input='photo.jpg', width=20, color='#000000', output='photo_bordered.jpg')."
+      verbose: "Add borders and frames to images. Types: 'solid' (single color), 'gradient' (color transition), 'pattern' (repeating image), 'frame' (decorative preset), 'polaroid' (instant photo style). Options: width, corner radius, shadow, inner glow. Example: add_border(input='portrait.jpg', type='polaroid', padding=40, caption='Summer 2024', output='framed.jpg'). Note: Border is added outside original dimensions. Warning: Decorative frames may significantly increase file size."
+    parameters:
+      - name: input
+        type: string
+        description: "Input image path"
+        required: true
+      - name: output
+        type: string
+        description: "Output image path"
+        required: true
+      - name: width
+        type: integer
+        description: "Border width in pixels"
+        required: false
+        default: 10
+      - name: color
+        type: string
+        description: "Border color (hex or name)"
+        required: false
+        default: "#000000"
+      - name: type
+        type: string
+        description: "Border type"
+        required: false
+        default: "solid"
+        enum: ["solid", "gradient", "polaroid", "shadow", "rounded"]
+      - name: radius
+        type: integer
+        description: "Corner radius for rounded borders"
+        required: false
+        default: 0
+    tags: ["image", "border", "frame", "decoration", "style"]
+    test_prompts:
+      single:
+        - "Add a black border to this image"
+        - "Put a frame around the photo"
+        - "Add a polaroid-style border"
+        - "Create a rounded border"
+
+  - name: extract_colors
+    descriptions:
+      minimal: "Extract colors"
+      short: "Extract dominant colors"
+      medium: "Extract the dominant colors from an image to create a color palette."
+      long: "Extract dominant colors from an image. Creates a color palette with hex values and percentages. Example: extract_colors(image='photo.jpg', count=5)."
+      verbose: "Extract dominant colors from images using color quantization. Returns: hex codes, RGB values, HSL values, color names, percentage coverage. Algorithms: 'kmeans' (clustering), 'median_cut' (fast), 'octree' (memory efficient). Example: extract_colors(image='sunset.jpg', count=8, algorithm='kmeans', exclude_background=true) returns [{hex: '#FF6B35', name: 'Orange', percent: 25}, ...]. Note: Background exclusion uses edge detection. Warning: K-means may give slightly different results each run."
+    parameters:
+      - name: image
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: count
+        type: integer
+        description: "Number of colors to extract"
+        required: false
+        default: 5
+      - name: algorithm
+        type: string
+        description: "Extraction algorithm"
+        required: false
+        default: "kmeans"
+        enum: ["kmeans", "median_cut", "octree"]
+      - name: exclude_background
+        type: boolean
+        description: "Exclude background colors"
+        required: false
+        default: false
+      - name: output_format
+        type: string
+        description: "Output format for palette"
+        required: false
+        default: "json"
+        enum: ["json", "css", "scss", "image"]
+    tags: ["image", "color", "palette", "extract", "design"]
+    test_prompts:
+      single:
+        - "Extract the main colors from this image"
+        - "Get the color palette"
+        - "What are the dominant colors?"
+        - "Create a color scheme from this photo"
+
+  - name: detect_objects
+    descriptions:
+      minimal: "Detect objects"
+      short: "Detect objects in an image"
+      medium: "Detect and identify objects in an image using computer vision."
+      long: "Detect objects in images using AI. Returns object labels, bounding boxes, and confidence scores. Example: detect_objects(image='street_scene.jpg')."
+      verbose: "Detect and classify objects in images using deep learning. Returns: object labels, bounding boxes, confidence scores, segmentation masks (optional). Models: 'general' (80+ common objects), 'traffic' (vehicles, signs), 'retail' (products), 'custom' (user-trained). Example: detect_objects(image='parking.jpg', model='traffic', min_confidence=0.6, include_masks=true) returns detected vehicles with pixel-level masks. Note: Confidence threshold affects detection sensitivity. Warning: Small or occluded objects may have lower detection rates."
+    parameters:
+      - name: image
+        type: string
+        description: "Path to input image"
+        required: true
+      - name: model
+        type: string
+        description: "Detection model"
+        required: false
+        default: "general"
+        enum: ["general", "traffic", "retail", "custom"]
+      - name: min_confidence
+        type: number
+        description: "Minimum confidence threshold"
+        required: false
+        default: 0.5
+      - name: include_masks
+        type: boolean
+        description: "Include segmentation masks"
+        required: false
+        default: false
+      - name: max_objects
+        type: integer
+        description: "Maximum objects to detect"
+        required: false
+        default: 100
+    tags: ["image", "object", "detect", "ai", "recognition", "yolo"]
+    test_prompts:
+      single:
+        - "What objects are in this image?"
+        - "Detect all objects in the photo"
+        - "Find and label the objects"
+        - "Identify items in this picture"

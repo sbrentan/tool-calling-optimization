@@ -325,3 +325,937 @@ tools:
         - "Find the inverse of the matrix"
         - "Transpose the given matrix"
         - "What are the eigenvalues of this matrix?"
+
+  - name: trigonometry
+    descriptions:
+      minimal: "Trigonometry"
+      short: "Calculate trigonometric functions"
+      medium: "Calculate trigonometric functions including sin, cos, tan, and their inverses."
+      long: "Calculate trigonometric functions. Supports sin, cos, tan, cot, sec, csc and their inverse (arc) functions. Can use degrees or radians. Example: trigonometry(function='sin', value=45, unit='degrees')."
+      verbose: "Calculate trigonometric functions with flexible angle units. Functions: 'sin', 'cos', 'tan', 'cot', 'sec', 'csc' and inverses 'asin', 'acos', 'atan', 'acot', 'asec', 'acsc'. Also supports 'atan2' for two-argument arctangent. Hyperbolic versions: 'sinh', 'cosh', 'tanh'. Example: trigonometry(function='atan2', value=1, value2=1, unit='degrees') returns 45. Note: Inverse functions return angles in the specified unit. Warning: tan(90°) and similar edge cases return infinity."
+    parameters:
+      - name: function
+        type: string
+        description: "Trigonometric function"
+        required: true
+        enum: ["sin", "cos", "tan", "cot", "sec", "csc", "asin", "acos", "atan", "atan2", "sinh", "cosh", "tanh"]
+      - name: value
+        type: number
+        description: "Input value (angle for direct, ratio for inverse)"
+        required: true
+      - name: value2
+        type: number
+        description: "Second value for atan2"
+        required: false
+      - name: unit
+        type: string
+        description: "Angle unit"
+        required: false
+        default: "radians"
+        enum: ["radians", "degrees"]
+    tags: ["math", "trigonometry", "sin", "cos", "tan", "angle"]
+    test_prompts:
+      single:
+        - "Calculate sin of 45 degrees"
+        - "What is the cosine of 60 degrees?"
+        - "Find the arctangent of 1"
+        - "Calculate tan(30 degrees)"
+        - "What is sin(pi/2)?"
+
+  - name: logarithm
+    descriptions:
+      minimal: "Logarithm"
+      short: "Calculate logarithms"
+      medium: "Calculate logarithms with various bases including natural log, log10, and custom bases."
+      long: "Calculate logarithms with different bases. Supports natural log (ln), base 10, base 2, and custom bases. Example: logarithm(value=100, base=10) returns 2."
+      verbose: "Calculate logarithms with any base. Common bases: 'e' (natural log), 10 (common log), 2 (binary log), or any custom positive number. Also calculates antilog (exponentiation). Example: logarithm(value=1000, base=10) returns 3, logarithm(value=8, base=2) returns 3. Note: Value must be positive for real results. Warning: Log of zero or negative numbers is undefined in real numbers."
+    parameters:
+      - name: value
+        type: number
+        description: "Number to take logarithm of"
+        required: true
+      - name: base
+        type: string
+        description: "Logarithm base (e, 10, 2, or number)"
+        required: false
+        default: "e"
+    tags: ["math", "logarithm", "log", "ln", "calculate"]
+    test_prompts:
+      single:
+        - "Calculate the natural log of 10"
+        - "What is log base 10 of 1000?"
+        - "Find log base 2 of 256"
+        - "Calculate ln(e)"
+
+  - name: exponentiation
+    descriptions:
+      minimal: "Exponentiation"
+      short: "Calculate powers and exponentials"
+      medium: "Calculate powers (x^y), exponentials (e^x), and nth roots."
+      long: "Calculate powers and roots. Supports x^y, e^x, square root, cube root, and nth root. Example: exponentiation(base=2, exponent=10) returns 1024."
+      verbose: "Calculate powers, exponentials, and roots. Operations: 'power' (base^exponent), 'exp' (e^exponent), 'sqrt' (square root), 'cbrt' (cube root), 'root' (nth root, requires n). Handles negative bases with integer exponents. Example: exponentiation(operation='power', base=2, exponent=0.5) returns sqrt(2) ≈ 1.414. Note: Fractional exponents of negative numbers return complex results. Warning: Very large exponents may overflow."
+    parameters:
+      - name: operation
+        type: string
+        description: "Type of operation"
+        required: true
+        enum: ["power", "exp", "sqrt", "cbrt", "root"]
+      - name: base
+        type: number
+        description: "Base value"
+        required: true
+      - name: exponent
+        type: number
+        description: "Exponent value (for power, exp)"
+        required: false
+      - name: n
+        type: integer
+        description: "Root degree (for nth root)"
+        required: false
+    tags: ["math", "power", "exponent", "root", "sqrt", "calculate"]
+    test_prompts:
+      single:
+        - "Calculate 2 to the power of 10"
+        - "What is the square root of 144?"
+        - "Find the cube root of 27"
+        - "Calculate e^2"
+        - "What is the 4th root of 81?"
+
+  - name: number_base_convert
+    descriptions:
+      minimal: "Convert number base"
+      short: "Convert between number bases"
+      medium: "Convert numbers between different bases like decimal, binary, octal, and hexadecimal."
+      long: "Convert a number from one base to another. Supports decimal, binary, octal, hexadecimal, and custom bases 2-36. Example: number_base_convert(value='255', from_base=10, to_base=16) returns 'FF'."
+      verbose: "Convert numbers between different numeral bases. Common bases: 2 (binary), 8 (octal), 10 (decimal), 16 (hexadecimal). Supports bases 2-36. For bases > 10, uses letters A-Z for digits 10-35. Example: number_base_convert(value='1010', from_base=2, to_base=10) returns '10', number_base_convert(value='255', from_base=10, to_base=16) returns 'FF'. Note: Input is treated as string to preserve leading zeros. Warning: Very large numbers may lose precision."
+    parameters:
+      - name: value
+        type: string
+        description: "Number to convert (as string)"
+        required: true
+      - name: from_base
+        type: integer
+        description: "Source base (2-36)"
+        required: true
+      - name: to_base
+        type: integer
+        description: "Target base (2-36)"
+        required: true
+    tags: ["math", "convert", "base", "binary", "hex", "decimal"]
+    test_prompts:
+      single:
+        - "Convert 255 to binary"
+        - "What is 1010 binary in decimal?"
+        - "Convert hexadecimal FF to decimal"
+        - "Convert decimal 100 to octal"
+        - "Change the number from base 2 to base 16"
+
+  - name: complex_number
+    descriptions:
+      minimal: "Complex number"
+      short: "Perform complex number operations"
+      medium: "Perform operations on complex numbers including addition, multiplication, and conversions."
+      long: "Perform operations on complex numbers. Supports arithmetic, magnitude, phase, conjugate, and conversions between rectangular and polar forms. Example: complex_number(real=3, imaginary=4, operation='magnitude') returns 5."
+      verbose: "Perform operations on complex numbers in rectangular (a + bi) or polar (r∠θ) form. Operations: 'add', 'subtract', 'multiply', 'divide', 'magnitude' (|z|), 'phase' (angle), 'conjugate', 'to_polar', 'to_rectangular', 'power', 'sqrt'. Example: complex_number(real=3, imaginary=4, operation='to_polar') returns {r: 5, theta: 53.13°}. Note: Phase is returned in degrees by default. Warning: Division by zero complex number is undefined."
+    parameters:
+      - name: real
+        type: number
+        description: "Real part of first complex number"
+        required: true
+      - name: imaginary
+        type: number
+        description: "Imaginary part of first complex number"
+        required: true
+      - name: real2
+        type: number
+        description: "Real part of second number (for binary ops)"
+        required: false
+      - name: imaginary2
+        type: number
+        description: "Imaginary part of second number"
+        required: false
+      - name: operation
+        type: string
+        description: "Operation to perform"
+        required: true
+        enum: ["add", "subtract", "multiply", "divide", "magnitude", "phase", "conjugate", "to_polar", "to_rectangular", "power", "sqrt"]
+    tags: ["math", "complex", "imaginary", "number", "calculate"]
+    test_prompts:
+      single:
+        - "Calculate the magnitude of 3 + 4i"
+        - "Multiply two complex numbers"
+        - "Convert the complex number to polar form"
+        - "Find the conjugate of 2 + 3i"
+
+  - name: fibonacci
+    descriptions:
+      minimal: "Fibonacci"
+      short: "Calculate Fibonacci numbers"
+      medium: "Calculate Fibonacci numbers, sequences, or check if a number is in the Fibonacci sequence."
+      long: "Work with Fibonacci numbers. Get the nth Fibonacci number, generate a sequence, or check if a number is Fibonacci. Example: fibonacci(n=10) returns 55 (the 10th Fibonacci number)."
+      verbose: "Work with the Fibonacci sequence. Operations: 'nth' (get nth number), 'sequence' (get first n numbers), 'check' (is number Fibonacci?), 'index' (find position of Fibonacci number). Uses fast doubling algorithm for large n. Example: fibonacci(operation='sequence', n=10) returns [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]. Note: Uses 0-based indexing (F(0)=0, F(1)=1). Warning: Very large n may cause performance issues."
+    parameters:
+      - name: operation
+        type: string
+        description: "Operation to perform"
+        required: false
+        default: "nth"
+        enum: ["nth", "sequence", "check", "index"]
+      - name: n
+        type: integer
+        description: "Index or count depending on operation"
+        required: false
+      - name: value
+        type: integer
+        description: "Number to check (for check/index operations)"
+        required: false
+    tags: ["math", "fibonacci", "sequence", "number"]
+    test_prompts:
+      single:
+        - "What is the 10th Fibonacci number?"
+        - "Generate the first 15 Fibonacci numbers"
+        - "Is 144 a Fibonacci number?"
+        - "Find the Fibonacci number at position 20"
+
+  - name: permutation_combination
+    descriptions:
+      minimal: "Permutations/Combinations"
+      short: "Calculate permutations and combinations"
+      medium: "Calculate permutations (nPr) and combinations (nCr) for combinatorics problems."
+      long: "Calculate permutations and combinations. Permutation: arrangements where order matters. Combination: selections where order doesn't matter. Example: permutation_combination(n=10, r=3, type='combination') returns 120."
+      verbose: "Calculate permutations and combinations for combinatorics. Permutation nPr = n!/(n-r)! - ordered arrangements. Combination nCr = n!/(r!(n-r)!) - unordered selections. Options for repetition allowed. Example: permutation_combination(n=52, r=5, type='combination') calculates poker hands = 2598960. Note: n must be >= r for standard calculations. Warning: Large values may exceed numeric limits."
+    parameters:
+      - name: n
+        type: integer
+        description: "Total number of items"
+        required: true
+      - name: r
+        type: integer
+        description: "Number to choose/arrange"
+        required: true
+      - name: type
+        type: string
+        description: "Permutation or combination"
+        required: true
+        enum: ["permutation", "combination"]
+      - name: repetition
+        type: boolean
+        description: "Allow repetition"
+        required: false
+        default: false
+    tags: ["math", "permutation", "combination", "combinatorics", "probability"]
+    test_prompts:
+      single:
+        - "How many ways to arrange 5 items from 10?"
+        - "Calculate 52 choose 5"
+        - "How many permutations of 3 letters from 26?"
+        - "Calculate the number of combinations of 10 items taken 4 at a time"
+
+  - name: probability
+    descriptions:
+      minimal: "Probability"
+      short: "Calculate probabilities"
+      medium: "Calculate probabilities for various distributions and scenarios."
+      long: "Calculate probabilities for different scenarios. Supports basic probability, binomial, normal, and Poisson distributions. Example: probability(distribution='binomial', n=10, k=3, p=0.5)."
+      verbose: "Calculate probabilities for various distributions. Distributions: 'basic' (simple probability), 'binomial' (fixed trials), 'normal' (bell curve), 'poisson' (rare events), 'geometric' (first success), 'hypergeometric' (without replacement). Example: probability(distribution='binomial', n=10, k=3, p=0.5) calculates P(X=3) for 10 coin flips. Supports cumulative probabilities with cumulative=true. Note: Normal distribution uses z-scores. Warning: Check parameter requirements for each distribution."
+    parameters:
+      - name: distribution
+        type: string
+        description: "Probability distribution"
+        required: true
+        enum: ["basic", "binomial", "normal", "poisson", "geometric", "hypergeometric"]
+      - name: n
+        type: integer
+        description: "Number of trials"
+        required: false
+      - name: k
+        type: integer
+        description: "Number of successes"
+        required: false
+      - name: p
+        type: number
+        description: "Probability of success"
+        required: false
+      - name: mean
+        type: number
+        description: "Mean for normal/Poisson"
+        required: false
+      - name: std_dev
+        type: number
+        description: "Standard deviation for normal"
+        required: false
+      - name: x
+        type: number
+        description: "Value for probability calculation"
+        required: false
+      - name: cumulative
+        type: boolean
+        description: "Calculate cumulative probability"
+        required: false
+        default: false
+    tags: ["math", "probability", "statistics", "distribution", "binomial"]
+    test_prompts:
+      single:
+        - "What is the probability of getting 3 heads in 10 coin flips?"
+        - "Calculate the binomial probability"
+        - "Find the probability for the normal distribution"
+        - "What is the Poisson probability with lambda=5?"
+
+  - name: geometry
+    descriptions:
+      minimal: "Geometry"
+      short: "Calculate geometric properties"
+      medium: "Calculate area, perimeter, volume, and other properties of geometric shapes."
+      long: "Calculate geometric properties of 2D and 3D shapes. Supports circles, rectangles, triangles, spheres, cylinders, and more. Example: geometry(shape='circle', property='area', radius=5) returns 78.54."
+      verbose: "Calculate geometric properties for various shapes. 2D shapes: 'circle', 'rectangle', 'triangle', 'ellipse', 'polygon'. 3D shapes: 'sphere', 'cylinder', 'cone', 'cube', 'box'. Properties: 'area', 'perimeter', 'circumference', 'volume', 'surface_area', 'diagonal'. Example: geometry(shape='sphere', property='volume', radius=3) returns 113.1. For triangles, can use sides, base/height, or coordinates. Note: Polygon requires vertices as coordinate array. Warning: Ensure consistent units for all measurements."
+    parameters:
+      - name: shape
+        type: string
+        description: "Geometric shape"
+        required: true
+        enum: ["circle", "rectangle", "triangle", "ellipse", "polygon", "sphere", "cylinder", "cone", "cube", "box"]
+      - name: property
+        type: string
+        description: "Property to calculate"
+        required: true
+        enum: ["area", "perimeter", "circumference", "volume", "surface_area", "diagonal"]
+      - name: radius
+        type: number
+        description: "Radius for circles, spheres, etc."
+        required: false
+      - name: width
+        type: number
+        description: "Width for rectangles, boxes"
+        required: false
+      - name: height
+        type: number
+        description: "Height for rectangles, triangles, cylinders"
+        required: false
+      - name: length
+        type: number
+        description: "Length for boxes"
+        required: false
+      - name: base
+        type: number
+        description: "Base for triangles"
+        required: false
+      - name: sides
+        type: string
+        description: "JSON array of side lengths"
+        required: false
+    tags: ["math", "geometry", "area", "volume", "shape", "calculate"]
+    test_prompts:
+      single:
+        - "Calculate the area of a circle with radius 5"
+        - "What is the volume of a sphere with radius 3?"
+        - "Find the perimeter of a rectangle 10x5"
+        - "Calculate the surface area of a cylinder"
+        - "What is the area of a triangle with base 10 and height 5?"
+
+  - name: financial_calculation
+    descriptions:
+      minimal: "Financial calculation"
+      short: "Perform financial calculations"
+      medium: "Calculate financial metrics like compound interest, loan payments, NPV, and ROI."
+      long: "Perform financial calculations including compound interest, loan payments, present/future value, NPV, IRR, and ROI. Example: financial_calculation(type='compound_interest', principal=1000, rate=0.05, time=10)."
+      verbose: "Perform comprehensive financial calculations. Types: 'compound_interest' (growth with compounding), 'simple_interest', 'loan_payment' (monthly payment), 'present_value', 'future_value', 'npv' (net present value), 'irr' (internal rate of return), 'roi' (return on investment), 'break_even', 'depreciation'. Example: financial_calculation(type='loan_payment', principal=200000, rate=0.06, time=30, payments_per_year=12) calculates monthly mortgage payment. Note: Rate should be annual decimal (5% = 0.05). Warning: Does not account for taxes or fees."
+    parameters:
+      - name: type
+        type: string
+        description: "Type of calculation"
+        required: true
+        enum: ["compound_interest", "simple_interest", "loan_payment", "present_value", "future_value", "npv", "irr", "roi", "break_even", "depreciation"]
+      - name: principal
+        type: number
+        description: "Principal amount"
+        required: false
+      - name: rate
+        type: number
+        description: "Annual interest rate (decimal)"
+        required: false
+      - name: time
+        type: number
+        description: "Time period in years"
+        required: false
+      - name: payments_per_year
+        type: integer
+        description: "Number of payments per year"
+        required: false
+        default: 12
+      - name: cash_flows
+        type: string
+        description: "JSON array of cash flows (for NPV/IRR)"
+        required: false
+    tags: ["math", "finance", "interest", "loan", "investment", "money"]
+    test_prompts:
+      single:
+        - "Calculate compound interest on $1000 at 5% for 10 years"
+        - "What is my monthly mortgage payment for a $200,000 loan?"
+        - "Calculate the NPV of these cash flows"
+        - "What is the ROI for this investment?"
+        - "Calculate the future value of $5000 at 7% for 20 years"
+
+  - name: derivative
+    descriptions:
+      minimal: "Derivative"
+      short: "Calculate derivatives"
+      medium: "Calculate the derivative of a mathematical function at a point or symbolically."
+      long: "Calculate the derivative of a function. Can compute numerical derivatives at a point or symbolic derivatives for common functions. Example: derivative(function='x^2 + 3x', variable='x', at_point=2)."
+      verbose: "Calculate derivatives of mathematical functions. Supports numerical differentiation at a point and symbolic derivatives for polynomial, trigonometric, exponential, and logarithmic functions. Can compute nth derivatives. Example: derivative(function='sin(x) * x^2', variable='x', order=2, symbolic=true) returns the second derivative symbolically. Note: Numerical derivatives use finite difference approximation. Warning: Symbolic differentiation has limited function support."
+    parameters:
+      - name: function
+        type: string
+        description: "Mathematical function as string"
+        required: true
+      - name: variable
+        type: string
+        description: "Variable to differentiate with respect to"
+        required: false
+        default: "x"
+      - name: at_point
+        type: number
+        description: "Point for numerical derivative"
+        required: false
+      - name: order
+        type: integer
+        description: "Order of derivative"
+        required: false
+        default: 1
+      - name: symbolic
+        type: boolean
+        description: "Return symbolic result"
+        required: false
+        default: false
+    tags: ["math", "calculus", "derivative", "differentiate", "function"]
+    test_prompts:
+      single:
+        - "Find the derivative of x^2 + 3x"
+        - "Calculate the derivative of sin(x) at x=0"
+        - "What is the second derivative of x^3?"
+        - "Differentiate e^x"
+
+  - name: integral
+    descriptions:
+      minimal: "Integral"
+      short: "Calculate integrals"
+      medium: "Calculate definite or indefinite integrals of mathematical functions."
+      long: "Calculate integrals of functions. Supports definite integrals (with limits) and indefinite integrals for common functions. Example: integral(function='x^2', lower=0, upper=1) returns 0.333."
+      verbose: "Calculate integrals of mathematical functions. For definite integrals, specify lower and upper bounds. Indefinite integrals return antiderivatives for common functions. Numerical integration uses adaptive quadrature for accuracy. Example: integral(function='sin(x)', lower=0, upper='pi', method='adaptive') integrates sin(x) from 0 to π. Methods: 'adaptive' (accurate), 'simpson' (fast), 'trapezoidal' (simple). Note: Symbolic integration limited to common functions. Warning: Improper integrals may not converge."
+    parameters:
+      - name: function
+        type: string
+        description: "Mathematical function as string"
+        required: true
+      - name: variable
+        type: string
+        description: "Variable of integration"
+        required: false
+        default: "x"
+      - name: lower
+        type: string
+        description: "Lower bound (for definite integral)"
+        required: false
+      - name: upper
+        type: string
+        description: "Upper bound (for definite integral)"
+        required: false
+      - name: method
+        type: string
+        description: "Integration method"
+        required: false
+        default: "adaptive"
+        enum: ["adaptive", "simpson", "trapezoidal"]
+    tags: ["math", "calculus", "integral", "integrate", "area", "function"]
+    test_prompts:
+      single:
+        - "Integrate x^2 from 0 to 1"
+        - "Find the integral of sin(x) from 0 to pi"
+        - "Calculate the definite integral"
+        - "What is the antiderivative of 2x?"
+
+  - name: modular_arithmetic
+    descriptions:
+      minimal: "Modular arithmetic"
+      short: "Perform modular arithmetic operations"
+      medium: "Perform modular arithmetic including mod, modular exponentiation, and modular inverse."
+      long: "Perform modular arithmetic operations. Supports modulus, modular exponentiation, modular inverse, and Chinese Remainder Theorem. Example: modular_arithmetic(operation='mod', a=17, b=5) returns 2."
+      verbose: "Perform modular arithmetic operations for cryptography and number theory. Operations: 'mod' (a mod b), 'mod_exp' (a^b mod m), 'mod_inverse' (a^-1 mod m), 'gcd_extended' (extended Euclidean algorithm), 'crt' (Chinese Remainder Theorem). Example: modular_arithmetic(operation='mod_exp', a=2, b=10, m=1000) calculates 2^10 mod 1000 = 24. Note: Modular inverse only exists if gcd(a, m) = 1. Warning: Large numbers use arbitrary precision but may be slow."
+    parameters:
+      - name: operation
+        type: string
+        description: "Modular operation"
+        required: true
+        enum: ["mod", "mod_exp", "mod_inverse", "gcd_extended", "crt"]
+      - name: a
+        type: integer
+        description: "First operand"
+        required: true
+      - name: b
+        type: integer
+        description: "Second operand (exponent for mod_exp)"
+        required: false
+      - name: m
+        type: integer
+        description: "Modulus"
+        required: true
+    tags: ["math", "modular", "mod", "cryptography", "number_theory"]
+    test_prompts:
+      single:
+        - "Calculate 17 mod 5"
+        - "What is 2^100 mod 1000?"
+        - "Find the modular inverse of 3 mod 11"
+        - "Calculate modular exponentiation"
+
+  - name: vector_operation
+    descriptions:
+      minimal: "Vector operation"
+      short: "Perform vector operations"
+      medium: "Perform vector operations including dot product, cross product, magnitude, and angle."
+      long: "Perform operations on vectors. Supports addition, subtraction, dot product, cross product, magnitude, normalization, and angle between vectors. Example: vector_operation(vector_a='[1, 2, 3]', vector_b='[4, 5, 6]', operation='dot_product')."
+      verbose: "Perform vector operations in n-dimensional space. Operations: 'add', 'subtract', 'dot_product' (scalar result), 'cross_product' (3D only), 'magnitude' (length), 'normalize' (unit vector), 'angle' (between vectors), 'scalar_multiply', 'projection' (a onto b). Example: vector_operation(vector_a='[3, 4]', operation='magnitude') returns 5. Note: Cross product only defined for 3D vectors. Warning: Division by zero in normalization if magnitude is 0."
+    parameters:
+      - name: vector_a
+        type: string
+        description: "First vector as JSON array"
+        required: true
+      - name: vector_b
+        type: string
+        description: "Second vector (for binary operations)"
+        required: false
+      - name: operation
+        type: string
+        description: "Operation to perform"
+        required: true
+        enum: ["add", "subtract", "dot_product", "cross_product", "magnitude", "normalize", "angle", "scalar_multiply", "projection"]
+      - name: scalar
+        type: number
+        description: "Scalar for scalar_multiply"
+        required: false
+    tags: ["math", "vector", "linear_algebra", "dot_product", "cross_product"]
+    test_prompts:
+      single:
+        - "Calculate the dot product of two vectors"
+        - "Find the cross product of [1,2,3] and [4,5,6]"
+        - "What is the magnitude of the vector [3, 4]?"
+        - "Normalize the vector [1, 2, 2]"
+        - "Find the angle between two vectors"
+
+  - name: set_operation
+    descriptions:
+      minimal: "Set operation"
+      short: "Perform set operations"
+      medium: "Perform set operations including union, intersection, difference, and symmetric difference."
+      long: "Perform set theory operations on collections. Supports union, intersection, difference, symmetric difference, and subset checking. Example: set_operation(set_a='[1, 2, 3]', set_b='[2, 3, 4]', operation='intersection') returns [2, 3]."
+      verbose: "Perform set theory operations on arrays. Operations: 'union' (A ∪ B), 'intersection' (A ∩ B), 'difference' (A - B), 'symmetric_difference' (A △ B), 'is_subset' (A ⊆ B), 'is_superset' (A ⊇ B), 'cartesian_product' (A × B), 'power_set' (all subsets). Example: set_operation(set_a='[1, 2, 3]', set_b='[2, 3, 4]', operation='symmetric_difference') returns [1, 4]. Note: Elements are deduplicated. Warning: Power set and cartesian product can be very large."
+    parameters:
+      - name: set_a
+        type: string
+        description: "First set as JSON array"
+        required: true
+      - name: set_b
+        type: string
+        description: "Second set (for binary operations)"
+        required: false
+      - name: operation
+        type: string
+        description: "Set operation"
+        required: true
+        enum: ["union", "intersection", "difference", "symmetric_difference", "is_subset", "is_superset", "cartesian_product", "power_set"]
+    tags: ["math", "set", "union", "intersection", "collection"]
+    test_prompts:
+      single:
+        - "Find the union of [1,2,3] and [3,4,5]"
+        - "What is the intersection of the two sets?"
+        - "Calculate the set difference A minus B"
+        - "Is [1, 2] a subset of [1, 2, 3, 4]?"
+
+  - name: expression_simplify
+    descriptions:
+      minimal: "Simplify expression"
+      short: "Simplify a mathematical expression"
+      medium: "Simplify algebraic expressions by combining like terms and reducing fractions."
+      long: "Simplify mathematical expressions. Combines like terms, reduces fractions, and applies algebraic identities. Example: expression_simplify(expression='2x + 3x - x + 5 - 2') returns '4x + 3'."
+      verbose: "Simplify mathematical expressions algebraically. Performs: combining like terms, reducing fractions, applying distributive property, factoring common terms, simplifying radicals, applying trigonometric identities. Example: expression_simplify(expression='(x^2 - 4)/(x - 2)', factor=true) returns 'x + 2'. Note: Assumes real numbers unless complex mode enabled. Warning: Some expressions may not simplify to expected forms."
+    parameters:
+      - name: expression
+        type: string
+        description: "Expression to simplify"
+        required: true
+      - name: factor
+        type: boolean
+        description: "Factor the expression"
+        required: false
+        default: false
+      - name: expand
+        type: boolean
+        description: "Expand the expression"
+        required: false
+        default: false
+    tags: ["math", "simplify", "algebra", "expression", "reduce"]
+    test_prompts:
+      single:
+        - "Simplify 2x + 3x - x"
+        - "Reduce the fraction (x^2 - 4)/(x - 2)"
+        - "Simplify the expression"
+        - "Factor x^2 + 5x + 6"
+
+  - name: ratio_proportion
+    descriptions:
+      minimal: "Ratio/Proportion"
+      short: "Work with ratios and proportions"
+      medium: "Calculate ratios, proportions, and solve for unknown values in proportions."
+      long: "Work with ratios and proportions. Calculate ratios, simplify them, and solve for unknowns. Example: ratio_proportion(operation='solve', a=3, b=4, c=6, d='x') solves 3:4 = 6:x, returning x=8."
+      verbose: "Work with ratios and proportions. Operations: 'simplify' (reduce ratio to lowest terms), 'ratio' (calculate a:b), 'solve' (find unknown in proportion a:b = c:d), 'divide' (divide amount in given ratio), 'compare' (compare two ratios). Example: ratio_proportion(operation='divide', total=100, ratio='[2, 3, 5]') divides 100 in ratio 2:3:5 = [20, 30, 50]. Note: Ratios are expressed in lowest terms. Warning: Division may result in non-integer values."
+    parameters:
+      - name: operation
+        type: string
+        description: "Operation to perform"
+        required: true
+        enum: ["simplify", "ratio", "solve", "divide", "compare"]
+      - name: a
+        type: number
+        description: "First value"
+        required: false
+      - name: b
+        type: number
+        description: "Second value"
+        required: false
+      - name: c
+        type: number
+        description: "Third value (for proportions)"
+        required: false
+      - name: d
+        type: number
+        description: "Fourth value (for proportions)"
+        required: false
+      - name: total
+        type: number
+        description: "Total to divide (for divide operation)"
+        required: false
+      - name: ratio
+        type: string
+        description: "Ratio as JSON array (for divide)"
+        required: false
+    tags: ["math", "ratio", "proportion", "fraction", "divide"]
+    test_prompts:
+      single:
+        - "Simplify the ratio 24:36"
+        - "Solve the proportion 3:4 = 6:x"
+        - "Divide 100 in the ratio 2:3:5"
+        - "What is the ratio of 15 to 25?"
+
+  - name: modular_arithmetic
+    descriptions:
+      minimal: "Modular math"
+      short: "Perform modular arithmetic"
+      medium: "Perform modular arithmetic operations including modular exponentiation and inverse."
+      long: "Perform modular arithmetic operations: mod, modular addition, multiplication, exponentiation, and modular inverse. Example: modular_arithmetic(a=5, b=3, modulus=7, operation='power')."
+      verbose: "Perform modular arithmetic (clock arithmetic) operations. Operations: 'mod' (a mod n), 'add' (a+b mod n), 'subtract' (a-b mod n), 'multiply' (a*b mod n), 'power' (a^b mod n using fast exponentiation), 'inverse' (modular multiplicative inverse). Example: modular_arithmetic(a=2, b=10, modulus=1000000007, operation='power') returns 1024. Note: Modular inverse exists only if a and n are coprime. Warning: Large modular exponentiation is efficiently computed using repeated squaring."
+    parameters:
+      - name: a
+        type: integer
+        description: "First operand"
+        required: true
+      - name: b
+        type: integer
+        description: "Second operand (for binary operations)"
+        required: false
+      - name: modulus
+        type: integer
+        description: "The modulus (n)"
+        required: true
+      - name: operation
+        type: string
+        description: "Operation to perform"
+        required: true
+        enum: ["mod", "add", "subtract", "multiply", "power", "inverse"]
+    tags: ["math", "modular", "mod", "cryptography", "number_theory"]
+    test_prompts:
+      single:
+        - "Calculate 17 mod 5"
+        - "What is 2^10 mod 1000?"
+        - "Find the modular inverse of 3 mod 11"
+        - "Compute 7 * 8 mod 13"
+
+  - name: number_base_convert
+    descriptions:
+      minimal: "Convert base"
+      short: "Convert between number bases"
+      medium: "Convert a number between different bases (binary, decimal, hexadecimal, etc.)."
+      long: "Convert numbers between bases (2-36). Supports binary, octal, decimal, hexadecimal and custom bases. Example: number_base_convert(number='255', from_base=10, to_base=16) returns 'FF'."
+      verbose: "Convert numbers between any bases from 2 to 36. Common bases: binary (2), octal (8), decimal (10), hexadecimal (16). Letters A-Z represent digits 10-35 for bases > 10. Example: number_base_convert(number='11111111', from_base=2, to_base=16) returns 'FF', number_base_convert(number='CAFE', from_base=16, to_base=10) returns '51966'. Note: Input is case-insensitive; output uses uppercase. Warning: Very large numbers may lose precision."
+    parameters:
+      - name: number
+        type: string
+        description: "Number to convert (as string)"
+        required: true
+      - name: from_base
+        type: integer
+        description: "Source base (2-36)"
+        required: true
+      - name: to_base
+        type: integer
+        description: "Target base (2-36)"
+        required: true
+    tags: ["math", "base", "binary", "hex", "convert", "number"]
+    test_prompts:
+      single:
+        - "Convert 255 to binary"
+        - "What is FF in decimal?"
+        - "Convert 101010 from binary to hex"
+        - "Change 777 from octal to decimal"
+
+  - name: fibonacci
+    descriptions:
+      minimal: "Fibonacci"
+      short: "Get Fibonacci numbers"
+      medium: "Calculate Fibonacci numbers or check if a number is in the sequence."
+      long: "Calculate the nth Fibonacci number, generate a sequence, or check if a number is a Fibonacci number. Example: fibonacci(n=10) returns 55."
+      verbose: "Work with the Fibonacci sequence (0, 1, 1, 2, 3, 5, 8, 13, ...) where each number is the sum of the two preceding ones. Operations: 'nth' (get nth Fibonacci number), 'sequence' (generate first n numbers), 'check' (is this a Fibonacci number?), 'index' (find position of Fibonacci number). Example: fibonacci(n=50, operation='nth') returns 12586269025. Note: F(0)=0, F(1)=1 by convention. Warning: Fibonacci numbers grow exponentially; use arbitrary precision for large n."
+    parameters:
+      - name: n
+        type: integer
+        description: "The index or count"
+        required: true
+      - name: operation
+        type: string
+        description: "Operation to perform"
+        required: false
+        default: "nth"
+        enum: ["nth", "sequence", "check", "index"]
+    tags: ["math", "fibonacci", "sequence", "number", "pattern"]
+    test_prompts:
+      single:
+        - "What is the 20th Fibonacci number?"
+        - "Generate the first 15 Fibonacci numbers"
+        - "Is 144 a Fibonacci number?"
+        - "Calculate Fibonacci of 10"
+
+  - name: permutation_combination
+    descriptions:
+      minimal: "Permutations/Combinations"
+      short: "Calculate permutations or combinations"
+      medium: "Calculate permutations (nPr) or combinations (nCr) for counting arrangements."
+      long: "Calculate permutations (ordered) or combinations (unordered) of n items taken r at a time. Example: permutation_combination(n=10, r=3, type='combination') returns 120."
+      verbose: "Calculate permutations (P) or combinations (C). Permutation: ordered arrangements, P(n,r) = n!/(n-r)!. Combination: unordered selections, C(n,r) = n!/[r!(n-r)!]. Also supports permutations with repetition (n^r) and combinations with repetition. Example: permutation_combination(n=52, r=5, type='combination') returns 2598960 (poker hands). Note: C(n,r) = C(n, n-r). Warning: Results can be extremely large for big n."
+    parameters:
+      - name: n
+        type: integer
+        description: "Total items"
+        required: true
+      - name: r
+        type: integer
+        description: "Items to select"
+        required: true
+      - name: type
+        type: string
+        description: "Type of calculation"
+        required: true
+        enum: ["permutation", "combination", "permutation_repeat", "combination_repeat"]
+    tags: ["math", "permutation", "combination", "counting", "combinatorics"]
+    test_prompts:
+      single:
+        - "Calculate 10 choose 3"
+        - "How many permutations of 5 items taken 2 at a time?"
+        - "Calculate 52C5 for poker hands"
+        - "Find 10P4"
+
+  - name: matrix_operations
+    descriptions:
+      minimal: "Matrix math"
+      short: "Perform matrix operations"
+      medium: "Perform matrix operations like multiplication, determinant, inverse, and transpose."
+      long: "Perform matrix operations including addition, multiplication, transpose, determinant, inverse, and eigenvalues. Example: matrix_operations(a='[[1,2],[3,4]]', operation='determinant')."
+      verbose: "Perform operations on matrices (2D arrays of numbers). Operations: 'add', 'subtract', 'multiply' (matrix product), 'scalar_multiply', 'transpose', 'determinant', 'inverse', 'eigenvalues', 'rank', 'trace'. Example: matrix_operations(a='[[1,2],[3,4]]', b='[[5,6],[7,8]]', operation='multiply') returns [[19,22],[43,50]]. Note: Matrix dimensions must be compatible for operations. Warning: Inverse exists only for square matrices with non-zero determinant."
+    parameters:
+      - name: a
+        type: string
+        description: "First matrix as JSON 2D array"
+        required: true
+      - name: b
+        type: string
+        description: "Second matrix (for binary operations)"
+        required: false
+      - name: operation
+        type: string
+        description: "Operation to perform"
+        required: true
+        enum: ["add", "subtract", "multiply", "scalar_multiply", "transpose", "determinant", "inverse", "eigenvalues", "rank", "trace"]
+      - name: scalar
+        type: number
+        description: "Scalar value (for scalar operations)"
+        required: false
+    tags: ["math", "matrix", "linear_algebra", "array", "calculate"]
+    test_prompts:
+      single:
+        - "Multiply these two matrices"
+        - "Find the determinant of the matrix"
+        - "Calculate the inverse matrix"
+        - "Transpose this matrix"
+
+  - name: solve_system
+    descriptions:
+      minimal: "Solve equations"
+      short: "Solve system of linear equations"
+      medium: "Solve a system of linear equations with multiple variables."
+      long: "Solve systems of linear equations using various methods. Input as augmented matrix or coefficient matrix with constants. Example: solve_system(equations='[[2,1,10],[1,3,15]]')."
+      verbose: "Solve systems of linear equations (Ax = b). Input formats: augmented matrix, separate coefficient matrix and constants, or equation strings. Methods: Gaussian elimination, LU decomposition, Cramer's rule. Returns: solution vector, or indicates if no solution/infinite solutions exist. Example: solve_system(equations='2x + y = 10, x + 3y = 15', format='string') returns {x: 3, y: 4}. Note: Unique solution exists when determinant ≠ 0. Warning: Ill-conditioned matrices may have numerical precision issues."
+    parameters:
+      - name: equations
+        type: string
+        description: "Equations as JSON matrix or string"
+        required: true
+      - name: format
+        type: string
+        description: "Input format"
+        required: false
+        default: "matrix"
+        enum: ["matrix", "augmented", "string"]
+      - name: method
+        type: string
+        description: "Solution method"
+        required: false
+        default: "gaussian"
+        enum: ["gaussian", "lu", "cramer"]
+    tags: ["math", "equation", "system", "linear", "solve", "algebra"]
+    test_prompts:
+      single:
+        - "Solve: 2x + y = 10, x + 3y = 15"
+        - "Find x, y, z in this system of equations"
+        - "Solve the system of linear equations"
+        - "Solve 3x + 2y = 12 and x - y = 1"
+
+  - name: complex_number
+    descriptions:
+      minimal: "Complex numbers"
+      short: "Perform complex number operations"
+      medium: "Perform operations on complex numbers including arithmetic and conversions."
+      long: "Work with complex numbers (a + bi). Perform arithmetic, conversion between rectangular and polar forms, and other operations. Example: complex_number(a='3+4i', operation='magnitude') returns 5."
+      verbose: "Perform operations on complex numbers. Operations: 'add', 'subtract', 'multiply', 'divide', 'magnitude' (|z|), 'conjugate', 'argument' (angle), 'to_polar', 'to_rectangular', 'power', 'sqrt', 'exp'. Input format: '3+4i' or [3, 4]. Example: complex_number(a='3+4i', operation='to_polar') returns {r: 5, theta: 0.927}. Note: Argument is in radians by default. Warning: Complex logarithm and roots have multiple values (branches)."
+    parameters:
+      - name: a
+        type: string
+        description: "First complex number"
+        required: true
+      - name: b
+        type: string
+        description: "Second complex number (for binary operations)"
+        required: false
+      - name: operation
+        type: string
+        description: "Operation to perform"
+        required: true
+        enum: ["add", "subtract", "multiply", "divide", "magnitude", "conjugate", "argument", "to_polar", "to_rectangular", "power", "sqrt", "exp"]
+      - name: power
+        type: number
+        description: "Power for exponentiation"
+        required: false
+    tags: ["math", "complex", "imaginary", "number", "calculate"]
+    test_prompts:
+      single:
+        - "Multiply (3+4i) and (1-2i)"
+        - "Find the magnitude of 3+4i"
+        - "Convert 5+12i to polar form"
+        - "Calculate (2+3i)^2"
+
+  - name: numerical_integration
+    descriptions:
+      minimal: "Integrate"
+      short: "Numerical integration"
+      medium: "Compute definite integrals numerically using various methods."
+      long: "Compute definite integrals numerically. Supports various quadrature methods. Example: numerical_integration(expression='x^2', lower=0, upper=1) returns ~0.333."
+      verbose: "Compute definite integrals numerically (approximate area under curve). Methods: 'trapezoidal', 'simpson' (more accurate for smooth functions), 'romberg', 'adaptive' (adjusts precision automatically). Example: numerical_integration(expression='sin(x)/x', lower=0.001, upper=10, method='adaptive', tolerance=1e-8) returns numerical approximation of Si(10). Note: Improper integrals (infinite bounds) require special handling. Warning: Functions with singularities may require splitting the interval."
+    parameters:
+      - name: expression
+        type: string
+        description: "Mathematical expression (function of x)"
+        required: true
+      - name: lower
+        type: number
+        description: "Lower bound"
+        required: true
+      - name: upper
+        type: number
+        description: "Upper bound"
+        required: true
+      - name: method
+        type: string
+        description: "Integration method"
+        required: false
+        default: "simpson"
+        enum: ["trapezoidal", "simpson", "romberg", "adaptive"]
+      - name: tolerance
+        type: number
+        description: "Error tolerance"
+        required: false
+        default: 0.000001
+    tags: ["math", "integral", "calculus", "numerical", "area"]
+    test_prompts:
+      single:
+        - "Integrate x^2 from 0 to 1"
+        - "Calculate the area under sin(x) from 0 to pi"
+        - "Compute the integral of e^(-x^2) from 0 to 1"
+        - "Find the definite integral of 1/x from 1 to 10"
+
+  - name: prime_factorization
+    descriptions:
+      minimal: "Factor number"
+      short: "Find prime factors"
+      medium: "Find the prime factorization of an integer."
+      long: "Find the prime factorization of a positive integer, expressing it as a product of prime powers. Example: prime_factorization(number=60) returns {2: 2, 3: 1, 5: 1}."
+      verbose: "Find the unique prime factorization of a positive integer (Fundamental Theorem of Arithmetic). Returns prime factors with their exponents. Also computes: number of divisors, sum of divisors, Euler's totient, and list of all divisors. Example: prime_factorization(number=360, include_divisors=true) returns {factors: {2: 3, 3: 2, 5: 1}, divisor_count: 24, divisor_sum: 1170, totient: 96, divisors: [1, 2, 3, ...]}. Note: Every positive integer > 1 has a unique factorization. Warning: Large numbers with large prime factors are computationally expensive to factor."
+    parameters:
+      - name: number
+        type: integer
+        description: "Number to factorize"
+        required: true
+      - name: include_divisors
+        type: boolean
+        description: "Include list of all divisors"
+        required: false
+        default: false
+      - name: include_totient
+        type: boolean
+        description: "Include Euler's totient"
+        required: false
+        default: false
+    tags: ["math", "prime", "factor", "number_theory", "divisor"]
+    test_prompts:
+      single:
+        - "Find the prime factors of 360"
+        - "Factorize 1000"
+        - "What are the prime factors of 84?"
+        - "Get the prime factorization of 2310"
+
+  - name: polynomial_operations
+    descriptions:
+      minimal: "Polynomial math"
+      short: "Perform polynomial operations"
+      medium: "Perform operations on polynomials including evaluation, roots, and arithmetic."
+      long: "Work with polynomials: evaluate, add, multiply, divide, find roots, and differentiate. Polynomials given as coefficient arrays. Example: polynomial_operations(coefficients='[1, -5, 6]', operation='roots')."
+      verbose: "Perform polynomial operations. Input as coefficient array [a_n, a_{n-1}, ..., a_1, a_0] representing a_n*x^n + ... + a_0. Operations: 'evaluate' (at point x), 'add', 'subtract', 'multiply', 'divide' (with remainder), 'roots', 'derivative', 'integral', 'gcd'. Example: polynomial_operations(coefficients='[1, -5, 6]', operation='roots') returns [2, 3] for x²-5x+6. Note: Coefficients from highest to lowest degree. Warning: Finding roots of high-degree polynomials may be numerically unstable."
+    parameters:
+      - name: coefficients
+        type: string
+        description: "First polynomial as JSON array"
+        required: true
+      - name: coefficients_b
+        type: string
+        description: "Second polynomial (for binary operations)"
+        required: false
+      - name: operation
+        type: string
+        description: "Operation to perform"
+        required: true
+        enum: ["evaluate", "add", "subtract", "multiply", "divide", "roots", "derivative", "integral", "gcd"]
+      - name: x
+        type: number
+        description: "Point for evaluation"
+        required: false
+    tags: ["math", "polynomial", "algebra", "roots", "calculate"]
+    test_prompts:
+      single:
+        - "Find the roots of x^2 - 5x + 6"
+        - "Evaluate 2x^2 + 3x + 1 at x=5"
+        - "Multiply these two polynomials"
+        - "Find the derivative of x^3 - 2x + 1"

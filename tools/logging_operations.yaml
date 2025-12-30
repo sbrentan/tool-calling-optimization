@@ -1,0 +1,396 @@
+category: logging_operations
+description: Logging, log management, and log analysis operations
+tools:
+  - name: write_log
+    descriptions:
+      minimal: "Write log"
+      short: "Write a log entry"
+      medium: "Write a log message with a specified level and context."
+      long: "Write log entry with level, message, and metadata. Example: write_log(level='info', message='User logged in', context='{\"user_id\": \"123\"}')."
+      verbose: "Write structured log entries. Levels: debug, info, warning, error, critical. Features: structured context, correlation IDs, timestamps, source tracking. Example: write_log(level='error', message='Payment failed', context='{\"order_id\": \"ord_123\", \"error_code\": \"card_declined\"}', correlation_id='req_abc', source='payment_service'). Note: Use appropriate log levels for filtering. Warning: Avoid logging sensitive data like passwords or full card numbers."
+    parameters:
+      - name: level
+        type: string
+        description: "Log level"
+        required: true
+        enum: ["debug", "info", "warning", "error", "critical"]
+      - name: message
+        type: string
+        description: "Log message"
+        required: true
+      - name: context
+        type: string
+        description: "Additional context (JSON)"
+        required: false
+      - name: correlation_id
+        type: string
+        description: "Request/trace correlation ID"
+        required: false
+      - name: source
+        type: string
+        description: "Log source/service name"
+        required: false
+    tags: ["log", "write", "entry", "message", "structured"]
+    test_prompts:
+      single:
+        - "Write a log entry"
+        - "Log this message"
+        - "Add to the log"
+        - "Record log event"
+
+  - name: search_logs
+    descriptions:
+      minimal: "Search logs"
+      short: "Search log entries"
+      medium: "Search logs with filters for time range, level, and keywords."
+      long: "Search and filter log entries. Example: search_logs(query='error', level='error', start_time='2024-01-01T00:00:00Z')."
+      verbose: "Advanced log search with multiple filters. Filters: time range, log level, source, correlation ID, full-text search, regex patterns. Example: search_logs(query='payment.*failed', is_regex=true, level='error', start_time='2024-01-01T00:00:00Z', end_time='2024-01-02T00:00:00Z', source='payment_service', limit=100). Returns matching log entries with context. Note: Large time ranges may be slow. Warning: Results are limited; narrow your search for better results."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query or pattern"
+        required: true
+      - name: is_regex
+        type: boolean
+        description: "Treat query as regex"
+        required: false
+        default: false
+      - name: level
+        type: string
+        description: "Filter by log level"
+        required: false
+        enum: ["debug", "info", "warning", "error", "critical"]
+      - name: start_time
+        type: string
+        description: "Start of time range (ISO 8601)"
+        required: false
+      - name: end_time
+        type: string
+        description: "End of time range (ISO 8601)"
+        required: false
+      - name: source
+        type: string
+        description: "Filter by source"
+        required: false
+      - name: limit
+        type: integer
+        description: "Maximum results"
+        required: false
+        default: 100
+    tags: ["log", "search", "query", "filter", "find"]
+    test_prompts:
+      single:
+        - "Search the logs"
+        - "Find log entries"
+        - "Query logs for errors"
+        - "Look up in logs"
+
+  - name: tail_logs
+    descriptions:
+      minimal: "Tail logs"
+      short: "Stream live logs"
+      medium: "Stream live log entries in real-time."
+      long: "Stream logs in real-time like tail -f. Example: tail_logs(source='api-server', level='error')."
+      verbose: "Real-time log streaming. Features: source filtering, level filtering, pattern matching, multiple sources. Example: tail_logs(sources='[\"api-server\", \"worker\"]', level='warning', filter_pattern='timeout|connection', format='json'). Use for: debugging, monitoring deployments, watching for issues. Note: Streams until cancelled. Warning: High-volume logs may overwhelm the stream."
+    parameters:
+      - name: sources
+        type: string
+        description: "JSON array of sources to tail"
+        required: false
+      - name: level
+        type: string
+        description: "Minimum log level"
+        required: false
+        default: "info"
+        enum: ["debug", "info", "warning", "error", "critical"]
+      - name: filter_pattern
+        type: string
+        description: "Regex pattern to filter"
+        required: false
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "text"
+        enum: ["text", "json", "compact"]
+    tags: ["log", "tail", "stream", "realtime", "live"]
+    test_prompts:
+      single:
+        - "Tail the logs"
+        - "Stream live logs"
+        - "Watch logs in real-time"
+        - "Follow log output"
+
+  - name: create_log_alert
+    descriptions:
+      minimal: "Create log alert"
+      short: "Create a log-based alert"
+      medium: "Set up alerts when logs match specified conditions."
+      long: "Create alerts triggered by log patterns. Example: create_log_alert(name='Error Spike', condition='count(level=error) > 100', window='5m')."
+      verbose: "Configure alerts based on log conditions. Condition types: pattern match, count threshold, rate of change, absence detection. Example: create_log_alert(name='Payment Failures', condition='count(level=error AND message~\"payment\") > 10', window='5m', notification_channels='[\"slack\", \"pagerduty\"]', severity='high', cooldown='15m'). Actions: send notification, create incident, execute webhook. Note: Set appropriate thresholds to avoid alert fatigue. Warning: Too sensitive alerts may cause noise."
+    parameters:
+      - name: name
+        type: string
+        description: "Alert name"
+        required: true
+      - name: condition
+        type: string
+        description: "Alert condition expression"
+        required: true
+      - name: window
+        type: string
+        description: "Time window (e.g., 5m, 1h)"
+        required: true
+      - name: notification_channels
+        type: string
+        description: "JSON array of channels"
+        required: true
+      - name: severity
+        type: string
+        description: "Alert severity"
+        required: false
+        default: "medium"
+        enum: ["low", "medium", "high", "critical"]
+      - name: cooldown
+        type: string
+        description: "Minimum time between alerts"
+        required: false
+        default: "5m"
+    tags: ["log", "alert", "monitor", "threshold", "notification"]
+    test_prompts:
+      single:
+        - "Create log alert"
+        - "Set up error notification"
+        - "Alert on log pattern"
+        - "Monitor logs for errors"
+
+  - name: aggregate_logs
+    descriptions:
+      minimal: "Aggregate logs"
+      short: "Aggregate log statistics"
+      medium: "Compute aggregations over log data like counts, averages, and groupings."
+      long: "Aggregate logs by time, source, level, or custom fields. Example: aggregate_logs(metric='count', group_by='level', time_bucket='1h')."
+      verbose: "Statistical aggregations over log data. Metrics: count, unique count, percentiles, average, min, max. Grouping: time buckets, log level, source, custom fields. Example: aggregate_logs(metric='count', group_by='source,level', time_bucket='15m', start_time='2024-01-01T00:00:00Z', end_time='2024-01-02T00:00:00Z', filter='level IN (error, critical)'). Use for: trend analysis, capacity planning, error rate monitoring. Note: Large aggregations may take time. Warning: High cardinality groupings may be slow."
+    parameters:
+      - name: metric
+        type: string
+        description: "Aggregation metric"
+        required: true
+        enum: ["count", "unique", "avg", "min", "max", "p50", "p95", "p99"]
+      - name: group_by
+        type: string
+        description: "Fields to group by"
+        required: false
+      - name: time_bucket
+        type: string
+        description: "Time bucket size"
+        required: false
+        default: "1h"
+      - name: start_time
+        type: string
+        description: "Start time (ISO 8601)"
+        required: true
+      - name: end_time
+        type: string
+        description: "End time (ISO 8601)"
+        required: true
+      - name: filter
+        type: string
+        description: "Filter expression"
+        required: false
+    tags: ["log", "aggregate", "statistics", "metrics", "analysis"]
+    test_prompts:
+      single:
+        - "Aggregate log data"
+        - "Count errors by source"
+        - "Get log statistics"
+        - "Summarize log levels"
+
+  - name: export_logs
+    descriptions:
+      minimal: "Export logs"
+      short: "Export logs to file"
+      medium: "Export log entries to various file formats."
+      long: "Export logs to CSV, JSON, or other formats. Example: export_logs(start_time='2024-01-01', end_time='2024-01-31', format='csv', output_path='logs.csv')."
+      verbose: "Bulk export logs for analysis or archival. Formats: CSV, JSON, JSONL (newline-delimited), Parquet. Features: compression, field selection, time filtering. Example: export_logs(start_time='2024-01-01T00:00:00Z', end_time='2024-01-31T23:59:59Z', format='jsonl', output_path='s3://bucket/logs/january.jsonl.gz', compress=true, fields='[\"timestamp\", \"level\", \"message\", \"source\"]'). Note: Large exports run asynchronously. Warning: Exported logs may contain sensitive information."
+    parameters:
+      - name: start_time
+        type: string
+        description: "Export start time"
+        required: true
+      - name: end_time
+        type: string
+        description: "Export end time"
+        required: true
+      - name: format
+        type: string
+        description: "Export format"
+        required: true
+        enum: ["csv", "json", "jsonl", "parquet"]
+      - name: output_path
+        type: string
+        description: "Output file path or S3 URI"
+        required: true
+      - name: compress
+        type: boolean
+        description: "Compress output"
+        required: false
+        default: false
+      - name: fields
+        type: string
+        description: "JSON array of fields to include"
+        required: false
+    tags: ["log", "export", "backup", "archive", "download"]
+    test_prompts:
+      single:
+        - "Export logs to file"
+        - "Download log data"
+        - "Backup logs to S3"
+        - "Save logs as CSV"
+
+  - name: set_log_retention
+    descriptions:
+      minimal: "Set retention"
+      short: "Set log retention policy"
+      medium: "Configure how long logs are retained before deletion."
+      long: "Set log retention period by source or level. Example: set_log_retention(source='debug-logs', retention_days=7)."
+      verbose: "Configure log retention policies. Options: by source, by level, by log group. Features: tiered storage (hot/warm/cold), archive before delete. Example: set_log_retention(source='application-logs', retention_days=30, archive_to='s3://logs-archive', archive_after_days=7, delete_debug_after=3). Note: Shorter retention reduces storage costs. Warning: Deleted logs cannot be recovered; ensure compliance requirements are met."
+    parameters:
+      - name: source
+        type: string
+        description: "Log source or group"
+        required: true
+      - name: retention_days
+        type: integer
+        description: "Days to retain logs"
+        required: true
+      - name: archive_to
+        type: string
+        description: "Archive destination"
+        required: false
+      - name: archive_after_days
+        type: integer
+        description: "Days before archiving"
+        required: false
+      - name: delete_debug_after
+        type: integer
+        description: "Days to keep debug logs"
+        required: false
+    tags: ["log", "retention", "policy", "storage", "archive"]
+    test_prompts:
+      single:
+        - "Set log retention policy"
+        - "Configure log expiration"
+        - "How long to keep logs"
+        - "Set up log archival"
+
+  - name: parse_log_pattern
+    descriptions:
+      minimal: "Parse logs"
+      short: "Parse log patterns"
+      medium: "Extract structured data from log messages using patterns."
+      long: "Parse unstructured logs into structured fields. Example: parse_log_pattern(pattern='%{IP:client} - %{USER:user} \\[%{TIMESTAMP:time}\\]', source='nginx-logs')."
+      verbose: "Extract fields from unstructured log messages. Supports: Grok patterns, regex with named groups, JSON extraction. Example: parse_log_pattern(pattern='%{IP:client_ip} - - \\[%{HTTPDATE:timestamp}\\] \"%{WORD:method} %{URIPATHPARAM:path}\" %{NUMBER:status} %{NUMBER:bytes}', source='access-logs', save_as='parsed-access'). Use for: making legacy logs searchable, creating metrics from logs. Note: Test patterns on sample data first. Warning: Complex patterns may impact ingestion performance."
+    parameters:
+      - name: pattern
+        type: string
+        description: "Grok or regex pattern"
+        required: true
+      - name: source
+        type: string
+        description: "Log source to parse"
+        required: true
+      - name: save_as
+        type: string
+        description: "Save parsed logs as new source"
+        required: false
+      - name: sample_size
+        type: integer
+        description: "Test on N sample logs"
+        required: false
+        default: 100
+      - name: overwrite_fields
+        type: boolean
+        description: "Overwrite existing fields"
+        required: false
+        default: false
+    tags: ["log", "parse", "grok", "extract", "structure"]
+    test_prompts:
+      single:
+        - "Parse log pattern"
+        - "Extract fields from logs"
+        - "Apply grok pattern"
+        - "Structure unstructured logs"
+
+  - name: create_log_dashboard
+    descriptions:
+      minimal: "Create dashboard"
+      short: "Create log dashboard"
+      medium: "Create a dashboard for visualizing log data."
+      long: "Create dashboards with log visualizations. Example: create_log_dashboard(name='Error Monitor', widgets='[{\"type\": \"timeseries\", \"query\": \"count by level\"}]')."
+      verbose: "Build dashboards for log visualization. Widget types: timeseries, bar chart, pie chart, table, heatmap, single value. Example: create_log_dashboard(name='Application Health', widgets='[{\"type\": \"timeseries\", \"query\": \"count(*) by level\", \"title\": \"Log Volume\"}, {\"type\": \"table\", \"query\": \"level=error | top 10 message\", \"title\": \"Recent Errors\"}]', refresh_interval='1m', time_range='24h'). Note: Dashboards auto-refresh based on interval. Warning: Complex queries may slow dashboard loading."
+    parameters:
+      - name: name
+        type: string
+        description: "Dashboard name"
+        required: true
+      - name: widgets
+        type: string
+        description: "JSON array of widget configurations"
+        required: true
+      - name: refresh_interval
+        type: string
+        description: "Auto-refresh interval"
+        required: false
+        default: "5m"
+      - name: time_range
+        type: string
+        description: "Default time range"
+        required: false
+        default: "1h"
+      - name: shared
+        type: boolean
+        description: "Share with team"
+        required: false
+        default: true
+    tags: ["log", "dashboard", "visualization", "monitor", "chart"]
+    test_prompts:
+      single:
+        - "Create log dashboard"
+        - "Build monitoring dashboard"
+        - "Set up log visualizations"
+        - "Make a log chart"
+
+  - name: correlate_logs
+    descriptions:
+      minimal: "Correlate logs"
+      short: "Correlate logs across services"
+      medium: "Find related log entries across multiple services using correlation IDs."
+      long: "Trace requests across services using correlation. Example: correlate_logs(correlation_id='req_abc123', services='[\"api\", \"worker\", \"database\"]')."
+      verbose: "Distributed tracing through log correlation. Features: correlation ID tracking, timeline view, service dependency mapping, latency analysis. Example: correlate_logs(correlation_id='req_abc123', services='[\"api-gateway\", \"auth-service\", \"user-service\", \"database\"]', time_window='5m', include_context=true). Returns: chronological log entries across services with timing. Note: Requires consistent correlation ID propagation. Warning: Missing correlation IDs will result in incomplete traces."
+    parameters:
+      - name: correlation_id
+        type: string
+        description: "Correlation/trace ID"
+        required: true
+      - name: services
+        type: string
+        description: "JSON array of services to search"
+        required: false
+      - name: time_window
+        type: string
+        description: "Time window around first match"
+        required: false
+        default: "5m"
+      - name: include_context
+        type: boolean
+        description: "Include full log context"
+        required: false
+        default: true
+    tags: ["log", "correlate", "trace", "distributed", "debug"]
+    test_prompts:
+      single:
+        - "Correlate logs by request ID"
+        - "Trace request across services"
+        - "Find related logs"
+        - "Show distributed trace"

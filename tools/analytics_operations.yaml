@@ -1,0 +1,1138 @@
+category: analytics_operations
+description: Data analytics and reporting operations
+tools:
+  - name: run_analytics_query
+    descriptions:
+      minimal: "Run query"
+      short: "Run an analytics query"
+      medium: "Execute an analytics query on data warehouse or analytics platform."
+      long: "Run analytics queries on BigQuery, Snowflake, Redshift, etc. Returns results with optional export. Example: run_analytics_query(query='SELECT date, SUM(revenue) FROM sales GROUP BY date', database='analytics')."
+      verbose: "Execute analytics queries on data warehouses. Platforms: BigQuery, Snowflake, Redshift, Databricks, ClickHouse. Features: parameterized queries, result caching, async execution, export to file. Example: run_analytics_query(query='SELECT region, SUM(revenue) as total FROM sales WHERE date >= @start_date GROUP BY region', params='{\"start_date\": \"2024-01-01\"}', database='analytics_prod', cache=true, timeout=300). Note: Large queries may incur costs. Warning: Full table scans on big tables are expensive."
+    parameters:
+      - name: query
+        type: string
+        description: "SQL analytics query"
+        required: true
+      - name: database
+        type: string
+        description: "Database/warehouse name"
+        required: true
+      - name: params
+        type: string
+        description: "JSON query parameters"
+        required: false
+      - name: cache
+        type: boolean
+        description: "Use cached results if available"
+        required: false
+        default: true
+      - name: timeout
+        type: integer
+        description: "Query timeout (seconds)"
+        required: false
+        default: 300
+      - name: export_to
+        type: string
+        description: "Export results to file path"
+        required: false
+    tags: ["analytics", "query", "sql", "warehouse", "data"]
+    test_prompts:
+      single:
+        - "Run this analytics query"
+        - "Query the sales data"
+        - "Get revenue by region"
+        - "Execute the report query"
+
+  - name: create_dashboard
+    descriptions:
+      minimal: "Create dashboard"
+      short: "Create an analytics dashboard"
+      medium: "Create a dashboard with charts and visualizations."
+      long: "Create analytics dashboards with multiple visualizations. Supports various chart types and data sources. Example: create_dashboard(name='Sales Overview', widgets='[{\"type\": \"line\", \"query\": \"...\"}]')."
+      verbose: "Create analytics dashboards with visualizations. Platforms: Looker, Tableau, Metabase, Grafana, Power BI. Widget types: line, bar, pie, table, metric, map, funnel. Features: filters, drill-downs, auto-refresh, sharing. Example: create_dashboard(name='Executive Summary', widgets='[{\"type\": \"metric\", \"title\": \"Total Revenue\", \"query\": \"SELECT SUM(revenue) FROM sales\"}, {\"type\": \"line\", \"title\": \"Daily Trend\", \"query\": \"...\"}]', refresh='1h', shared=true). Note: Complex queries affect dashboard load time. Warning: Shared dashboards may expose sensitive data."
+    parameters:
+      - name: name
+        type: string
+        description: "Dashboard name"
+        required: true
+      - name: widgets
+        type: string
+        description: "JSON array of widget definitions"
+        required: true
+      - name: refresh
+        type: string
+        description: "Auto-refresh interval"
+        required: false
+        default: "1h"
+      - name: shared
+        type: boolean
+        description: "Make dashboard shared"
+        required: false
+        default: false
+      - name: folder
+        type: string
+        description: "Dashboard folder"
+        required: false
+    tags: ["analytics", "dashboard", "visualization", "report", "charts"]
+    test_prompts:
+      single:
+        - "Create a sales dashboard"
+        - "Build a metrics dashboard"
+        - "Set up a KPI dashboard"
+        - "Create visualization charts"
+
+  - name: generate_report
+    descriptions:
+      minimal: "Generate report"
+      short: "Generate an analytics report"
+      medium: "Generate a formatted report from analytics data."
+      long: "Generate reports in PDF, Excel, or HTML format from analytics queries. Example: generate_report(template='monthly_sales', format='pdf', params='{\"month\": \"2024-01\"}')."
+      verbose: "Generate formatted analytics reports. Formats: PDF, Excel, CSV, HTML. Features: templates, scheduling, email distribution, parameter-driven, charts embedding. Example: generate_report(template='quarterly_review', format='pdf', params='{\"quarter\": \"Q4\", \"year\": \"2024\"}', include_charts=true, recipients='[\"cfo@company.com\"]'). Note: Complex reports may take time to generate. Warning: Large datasets may exceed memory limits."
+    parameters:
+      - name: template
+        type: string
+        description: "Report template name"
+        required: true
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "pdf"
+        enum: ["pdf", "excel", "csv", "html"]
+      - name: params
+        type: string
+        description: "JSON report parameters"
+        required: false
+      - name: include_charts
+        type: boolean
+        description: "Include chart visualizations"
+        required: false
+        default: true
+      - name: recipients
+        type: string
+        description: "JSON array of email recipients"
+        required: false
+    tags: ["analytics", "report", "generate", "pdf", "export"]
+    test_prompts:
+      single:
+        - "Generate the monthly report"
+        - "Create a sales report PDF"
+        - "Export the analytics to Excel"
+        - "Send the quarterly report"
+
+  - name: track_event
+    descriptions:
+      minimal: "Track event"
+      short: "Track an analytics event"
+      medium: "Track a user or system event for analytics."
+      long: "Track events for analytics. Supports custom events with properties. Example: track_event(event='purchase', user_id='user123', properties='{\"amount\": 99.99, \"product\": \"Pro Plan\"}')."
+      verbose: "Track analytics events for user behavior and system monitoring. Event types: page views, clicks, conversions, custom events. Properties: user ID, session, timestamp, custom attributes. Example: track_event(event='subscription_started', user_id='user_abc', properties='{\"plan\": \"enterprise\", \"mrr\": 999, \"source\": \"upgrade\"}', context='{\"page\": \"/pricing\", \"device\": \"mobile\"}'). Note: Events are processed asynchronously. Warning: PII in events must comply with privacy regulations."
+    parameters:
+      - name: event
+        type: string
+        description: "Event name"
+        required: true
+      - name: user_id
+        type: string
+        description: "User identifier"
+        required: false
+      - name: properties
+        type: string
+        description: "JSON event properties"
+        required: false
+      - name: context
+        type: string
+        description: "JSON context (page, device, etc.)"
+        required: false
+      - name: timestamp
+        type: string
+        description: "Event timestamp (ISO format)"
+        required: false
+    tags: ["analytics", "event", "track", "user", "behavior"]
+    test_prompts:
+      single:
+        - "Track a purchase event"
+        - "Log user signup"
+        - "Record this conversion"
+        - "Track the button click"
+
+  - name: create_funnel
+    descriptions:
+      minimal: "Create funnel"
+      short: "Create a conversion funnel"
+      medium: "Create a funnel analysis to track conversion through steps."
+      long: "Create conversion funnel to analyze drop-off between steps. Example: create_funnel(name='Purchase Funnel', steps='[\"view_product\", \"add_to_cart\", \"checkout\", \"purchase\"]')."
+      verbose: "Create conversion funnel analysis. Define sequential steps and analyze completion rates. Features: step-by-step conversion, drop-off analysis, time between steps, segmentation. Example: create_funnel(name='Signup Flow', steps='[{\"event\": \"visit_landing\", \"label\": \"Visit\"}, {\"event\": \"click_signup\", \"label\": \"Click Signup\"}, {\"event\": \"submit_form\", \"label\": \"Submit\"}, {\"event\": \"email_verified\", \"label\": \"Verify\"}]', window='7d', segment_by='utm_source'). Note: Order of steps matters for funnel calculation. Warning: Long conversion windows may include unrelated events."
+    parameters:
+      - name: name
+        type: string
+        description: "Funnel name"
+        required: true
+      - name: steps
+        type: string
+        description: "JSON array of funnel steps"
+        required: true
+      - name: window
+        type: string
+        description: "Conversion window"
+        required: false
+        default: "7d"
+      - name: segment_by
+        type: string
+        description: "Property to segment by"
+        required: false
+    tags: ["analytics", "funnel", "conversion", "steps", "analysis"]
+    test_prompts:
+      single:
+        - "Create a purchase funnel"
+        - "Analyze the signup conversion"
+        - "Build a user journey funnel"
+        - "Track the checkout funnel"
+
+  - name: create_cohort
+    descriptions:
+      minimal: "Create cohort"
+      short: "Create a cohort analysis"
+      medium: "Create a cohort analysis to track user retention over time."
+      long: "Create cohort analysis for retention tracking. Group users by signup date and track behavior over time. Example: create_cohort(name='Weekly Retention', cohort_event='signup', return_event='login', period='week')."
+      verbose: "Create cohort analysis for retention and engagement. Cohort definition: signup date, first purchase, feature adoption. Tracking: return visits, purchases, feature usage. Example: create_cohort(name='Monthly Purchase Retention', cohort_event='first_purchase', return_event='purchase', period='month', periods=12, segment_by='plan_type'). Note: Cohort size affects statistical significance. Warning: Recent cohorts have incomplete data."
+    parameters:
+      - name: name
+        type: string
+        description: "Cohort analysis name"
+        required: true
+      - name: cohort_event
+        type: string
+        description: "Event that defines cohort"
+        required: true
+      - name: return_event
+        type: string
+        description: "Event to track for retention"
+        required: true
+      - name: period
+        type: string
+        description: "Cohort period"
+        required: false
+        default: "week"
+        enum: ["day", "week", "month"]
+      - name: periods
+        type: integer
+        description: "Number of periods to track"
+        required: false
+        default: 8
+      - name: segment_by
+        type: string
+        description: "Property to segment cohorts"
+        required: false
+    tags: ["analytics", "cohort", "retention", "users", "analysis"]
+    test_prompts:
+      single:
+        - "Create a retention cohort"
+        - "Analyze user retention by week"
+        - "Build a cohort analysis"
+        - "Track monthly retention"
+
+  - name: calculate_metrics
+    descriptions:
+      minimal: "Calculate metrics"
+      short: "Calculate business metrics"
+      medium: "Calculate key business metrics like MRR, churn, LTV."
+      long: "Calculate standard business metrics from analytics data. Example: calculate_metrics(metrics='[\"mrr\", \"churn\", \"ltv\"]', period='2024-01')."
+      verbose: "Calculate key business and product metrics. Metrics: MRR (Monthly Recurring Revenue), ARR, churn rate, retention rate, LTV (Lifetime Value), CAC (Customer Acquisition Cost), NPS. Example: calculate_metrics(metrics='[\"mrr\", \"net_mrr_growth\", \"churn_rate\", \"ltv\"]', period='2024-Q4', segment_by='plan', compare_to='previous'). Note: Metric definitions follow SaaS industry standards. Warning: Ensure data completeness for accurate calculations."
+    parameters:
+      - name: metrics
+        type: string
+        description: "JSON array of metric names"
+        required: true
+      - name: period
+        type: string
+        description: "Time period (month, quarter, year)"
+        required: true
+      - name: segment_by
+        type: string
+        description: "Segment by property"
+        required: false
+      - name: compare_to
+        type: string
+        description: "Compare to period"
+        required: false
+        enum: ["previous", "year_ago"]
+    tags: ["analytics", "metrics", "kpi", "business", "calculate"]
+    test_prompts:
+      single:
+        - "Calculate MRR"
+        - "What's our churn rate?"
+        - "Get the LTV metrics"
+        - "Calculate business KPIs"
+
+  - name: segment_users
+    descriptions:
+      minimal: "Segment users"
+      short: "Create a user segment"
+      medium: "Create a user segment based on behavior or attributes."
+      long: "Create user segments for targeted analysis or marketing. Define segments by properties or behavior. Example: segment_users(name='Power Users', conditions='{\"logins_30d\": {\">=\": 20}}')."
+      verbose: "Create user segments based on attributes and behavior. Condition types: property equals, greater/less than, contains, date ranges, event counts. Operators: AND, OR, NOT. Example: segment_users(name='Enterprise Trial', conditions='{\"AND\": [{\"plan\": \"trial\"}, {\"company_size\": {\">=\": 100}}, {\"signup_date\": {\">=\": \"2024-01-01\"}}]}', dynamic=true). Note: Dynamic segments update automatically. Warning: Complex conditions may be slow to evaluate."
+    parameters:
+      - name: name
+        type: string
+        description: "Segment name"
+        required: true
+      - name: conditions
+        type: string
+        description: "JSON segment conditions"
+        required: true
+      - name: description
+        type: string
+        description: "Segment description"
+        required: false
+      - name: dynamic
+        type: boolean
+        description: "Auto-update segment membership"
+        required: false
+        default: true
+    tags: ["analytics", "segment", "users", "audience", "targeting"]
+    test_prompts:
+      single:
+        - "Create a power users segment"
+        - "Segment users by plan type"
+        - "Create an audience segment"
+        - "Define a user cohort"
+
+  - name: ab_test_analyze
+    descriptions:
+      minimal: "Analyze A/B test"
+      short: "Analyze A/B test results"
+      medium: "Analyze the results of an A/B test for statistical significance."
+      long: "Analyze A/B test results including conversion rates and statistical significance. Example: ab_test_analyze(experiment='checkout_v2', metric='purchase_rate')."
+      verbose: "Analyze A/B/n test results with statistical rigor. Metrics: conversion rate, revenue per user, engagement. Statistics: sample size, confidence interval, p-value, statistical power, minimum detectable effect. Example: ab_test_analyze(experiment='new_pricing_page', metric='conversion_rate', confidence=0.95, segments='[\"mobile\", \"desktop\"]'). Note: Tests need sufficient sample size for significance. Warning: Peeking at results before completion inflates false positives."
+    parameters:
+      - name: experiment
+        type: string
+        description: "Experiment/test name"
+        required: true
+      - name: metric
+        type: string
+        description: "Primary metric to analyze"
+        required: true
+      - name: confidence
+        type: number
+        description: "Confidence level"
+        required: false
+        default: 0.95
+      - name: segments
+        type: string
+        description: "JSON array of segments to analyze"
+        required: false
+    tags: ["analytics", "ab_test", "experiment", "statistics", "conversion"]
+    test_prompts:
+      single:
+        - "Analyze the A/B test results"
+        - "Is the experiment statistically significant?"
+        - "Check the test conversion rates"
+        - "Get experiment results"
+
+  - name: export_data
+    descriptions:
+      minimal: "Export data"
+      short: "Export analytics data"
+      medium: "Export analytics data to a file or external system."
+      long: "Export analytics data to various destinations. Supports scheduled and one-time exports. Example: export_data(query='SELECT * FROM events', destination='s3://bucket/exports/', format='parquet')."
+      verbose: "Export analytics data to files or external systems. Destinations: S3, GCS, SFTP, BigQuery, Snowflake, Webhook. Formats: CSV, JSON, Parquet, Avro. Features: scheduling, incremental exports, compression, partitioning. Example: export_data(query='SELECT * FROM events WHERE date = @date', destination='s3://analytics/events/', format='parquet', partition_by='date', compression='snappy', schedule='0 2 * * *'). Note: Large exports may take time. Warning: Ensure destination has sufficient storage."
+    parameters:
+      - name: query
+        type: string
+        description: "Data query to export"
+        required: true
+      - name: destination
+        type: string
+        description: "Export destination URI"
+        required: true
+      - name: format
+        type: string
+        description: "Export format"
+        required: false
+        default: "csv"
+        enum: ["csv", "json", "parquet", "avro"]
+      - name: compression
+        type: string
+        description: "Compression type"
+        required: false
+        enum: ["none", "gzip", "snappy"]
+      - name: schedule
+        type: string
+        description: "Cron schedule for recurring exports"
+        required: false
+    tags: ["analytics", "export", "data", "etl", "backup"]
+    test_prompts:
+      single:
+        - "Export the analytics data"
+        - "Download events to CSV"
+        - "Export to S3"
+        - "Schedule a daily data export"
+  - name: create_funnel_analysis
+    descriptions:
+      minimal: "Create funnel"
+      short: "Create conversion funnel"
+      medium: "Build and analyze conversion funnels to track user journey through key steps."
+      long: "Create conversion funnel analysis. Track user progression through defined steps. Example: create_funnel_analysis(name='checkout_funnel', steps='[\"view_product\", \"add_to_cart\", \"checkout\", \"purchase\"]')."
+      verbose: "Build conversion funnels to analyze user journey optimization. Features: multi-step funnels, time-bounded conversions, breakdown by dimensions, trend analysis. Example: create_funnel_analysis(name='signup_funnel', steps='[\"landing_page\", \"signup_start\", \"email_verified\", \"profile_complete\"]', conversion_window='7d', breakdown_by='traffic_source', date_range='last_30_days'). Returns: conversion rates, drop-off analysis, median time between steps. Note: Ensure events are properly tracked before funnel creation. Warning: Very strict funnels may show artificially low conversion rates."
+    parameters:
+      - name: name
+        type: string
+        description: "Funnel name"
+        required: true
+      - name: steps
+        type: string
+        description: "JSON array of funnel step events"
+        required: true
+      - name: conversion_window
+        type: string
+        description: "Max time between steps"
+        required: false
+        default: "7d"
+      - name: breakdown_by
+        type: string
+        description: "Property to segment by"
+        required: false
+      - name: date_range
+        type: string
+        description: "Analysis date range"
+        required: false
+        default: "last_30_days"
+      - name: filters
+        type: string
+        description: "JSON filter conditions"
+        required: false
+    tags: ["analytics", "funnel", "conversion", "optimization", "journey"]
+    test_prompts:
+      single:
+        - "Create checkout funnel"
+        - "Analyze conversion funnel"
+        - "Build signup funnel"
+        - "Track user journey through steps"
+
+  - name: analyze_retention
+    descriptions:
+      minimal: "Analyze retention"
+      short: "Analyze user retention"
+      medium: "Calculate retention rates to understand user engagement over time."
+      long: "Perform retention cohort analysis. Track how users return over time periods. Example: analyze_retention(cohort_event='signup', return_event='login', period='week')."
+      verbose: "Cohort-based retention analysis for engagement insights. Metrics: N-day retention, rolling retention, unbounded retention. Features: cohort comparison, retention curves, lifecycle stages. Example: analyze_retention(cohort_event='first_purchase', return_event='purchase', period='week', cohort_size='week', num_periods=12, breakdown_by='acquisition_channel'). Returns: retention matrix, cohort curves, churn analysis. Note: Longer time periods needed for accurate long-term retention. Warning: New cohorts will have incomplete data for later periods."
+    parameters:
+      - name: cohort_event
+        type: string
+        description: "Event defining cohort entry"
+        required: true
+      - name: return_event
+        type: string
+        description: "Event defining return"
+        required: true
+      - name: period
+        type: string
+        description: "Retention period"
+        required: false
+        default: "week"
+        enum: ["day", "week", "month"]
+      - name: cohort_size
+        type: string
+        description: "Cohort grouping period"
+        required: false
+        default: "week"
+      - name: num_periods
+        type: integer
+        description: "Number of periods to analyze"
+        required: false
+        default: 8
+      - name: breakdown_by
+        type: string
+        description: "Property to segment by"
+        required: false
+    tags: ["analytics", "retention", "cohort", "engagement", "churn"]
+    test_prompts:
+      single:
+        - "Calculate user retention"
+        - "Show retention by cohort"
+        - "Analyze weekly retention"
+        - "Track user return rates"
+
+  - name: create_dashboard
+    descriptions:
+      minimal: "Create dashboard"
+      short: "Create analytics dashboard"
+      medium: "Create a dashboard with multiple charts and metrics for monitoring."
+      long: "Build an analytics dashboard with customizable widgets. Combine charts, metrics, and tables. Example: create_dashboard(name='Marketing Overview', widgets='[{\"type\": \"line\", \"metric\": \"signups\"}]')."
+      verbose: "Create customizable analytics dashboards. Widget types: line charts, bar charts, pie charts, metrics, tables, funnels, maps. Features: auto-refresh, filters, date range selector, sharing. Example: create_dashboard(name='Executive KPIs', widgets='[{\"type\": \"metric\", \"metric\": \"daily_revenue\", \"comparison\": \"previous_period\"}, {\"type\": \"line\", \"metric\": \"active_users\", \"period\": \"day\"}]', filters='[\"country\", \"platform\"]', refresh_interval='5m'). Note: Limit widgets to prevent performance issues. Warning: Complex dashboards may load slowly with large datasets."
+    parameters:
+      - name: name
+        type: string
+        description: "Dashboard name"
+        required: true
+      - name: widgets
+        type: string
+        description: "JSON array of widget configurations"
+        required: true
+      - name: filters
+        type: string
+        description: "JSON array of filter fields"
+        required: false
+      - name: refresh_interval
+        type: string
+        description: "Auto-refresh interval"
+        required: false
+      - name: access
+        type: string
+        description: "Access level"
+        required: false
+        default: "private"
+        enum: ["private", "team", "public"]
+    tags: ["analytics", "dashboard", "visualization", "reporting", "monitoring"]
+    test_prompts:
+      single:
+        - "Create a KPI dashboard"
+        - "Build marketing dashboard"
+        - "Set up analytics dashboard"
+        - "Create executive summary dashboard"
+
+  - name: segment_users
+    descriptions:
+      minimal: "Segment users"
+      short: "Create user segment"
+      medium: "Define user segments based on behavior, properties, or cohort criteria."
+      long: "Create user segments for targeted analysis and actions. Combine multiple conditions. Example: segment_users(name='power_users', conditions='[{\"event\": \"login\", \"count\": \">10\", \"period\": \"week\"}]')."
+      verbose: "Define user segments using behavioral and demographic criteria. Conditions: event counts, event sequences, property values, cohort membership. Features: dynamic segments (auto-update), static lists, segment combinations. Example: segment_users(name='high_value_at_risk', conditions='[{\"property\": \"lifetime_value\", \"operator\": \">\", \"value\": 1000}, {\"event\": \"purchase\", \"count\": 0, \"period\": \"30d\"}]', logic='AND'). Returns: segment size, sample users, overlap analysis. Note: Complex segments may take time to compute. Warning: Overly specific segments may have too few users for meaningful analysis."
+    parameters:
+      - name: name
+        type: string
+        description: "Segment name"
+        required: true
+      - name: conditions
+        type: string
+        description: "JSON array of segment conditions"
+        required: true
+      - name: logic
+        type: string
+        description: "Condition logic"
+        required: false
+        default: "AND"
+        enum: ["AND", "OR"]
+      - name: segment_type
+        type: string
+        description: "Segment type"
+        required: false
+        default: "dynamic"
+        enum: ["dynamic", "static"]
+      - name: description
+        type: string
+        description: "Segment description"
+        required: false
+    tags: ["analytics", "segment", "users", "targeting", "cohort"]
+    test_prompts:
+      single:
+        - "Create power users segment"
+        - "Define high-value customers"
+        - "Segment inactive users"
+        - "Create user cohort"
+
+  - name: run_experiment_analysis
+    descriptions:
+      minimal: "Analyze experiment"
+      short: "Analyze A/B experiment"
+      medium: "Perform statistical analysis on A/B test or experiment results."
+      long: "Analyze A/B test results with statistical significance. Compare variants across metrics. Example: run_experiment_analysis(experiment_id='pricing_test', primary_metric='conversion_rate')."
+      verbose: "Statistical analysis for controlled experiments. Methods: frequentist (t-test, chi-squared), Bayesian inference, sequential analysis. Metrics: conversion rates, means, ratios. Example: run_experiment_analysis(experiment_id='homepage_redesign_v2', primary_metric='signup_rate', secondary_metrics='[\"bounce_rate\", \"time_on_page\"]', method='bayesian', confidence=0.95). Returns: lift estimates, confidence intervals, p-values, sample sizes, power analysis. Note: Wait for sufficient sample size. Warning: Don't peek at results before reaching statistical significance."
+    parameters:
+      - name: experiment_id
+        type: string
+        description: "Experiment identifier"
+        required: true
+      - name: primary_metric
+        type: string
+        description: "Primary success metric"
+        required: true
+      - name: secondary_metrics
+        type: string
+        description: "JSON array of secondary metrics"
+        required: false
+      - name: method
+        type: string
+        description: "Statistical method"
+        required: false
+        default: "frequentist"
+        enum: ["frequentist", "bayesian", "sequential"]
+      - name: confidence
+        type: number
+        description: "Confidence level"
+        required: false
+        default: 0.95
+    tags: ["analytics", "experiment", "ab_test", "statistics", "significance"]
+    test_prompts:
+      single:
+        - "Analyze A/B test results"
+        - "Check experiment significance"
+        - "Evaluate test variants"
+        - "Run experiment analysis"
+
+  - name: compute_attribution
+    descriptions:
+      minimal: "Compute attribution"
+      short: "Calculate marketing attribution"
+      medium: "Calculate marketing channel attribution to understand conversion drivers."
+      long: "Compute marketing attribution across channels. Multiple models available. Example: compute_attribution(conversion_event='purchase', model='linear', lookback_window='30d')."
+      verbose: "Multi-touch attribution for marketing effectiveness. Models: first-touch, last-touch, linear, time-decay, position-based, data-driven. Example: compute_attribution(conversion_event='purchase', model='data_driven', lookback_window='30d', channels='[\"paid_search\", \"organic\", \"social\", \"email\", \"referral\"]', exclude_direct=true). Returns: channel attribution, conversion paths, ROI by channel. Note: Data-driven models require significant conversion volume. Warning: Attribution models make assumptions; combine with incrementality testing."
+    parameters:
+      - name: conversion_event
+        type: string
+        description: "Conversion event name"
+        required: true
+      - name: model
+        type: string
+        description: "Attribution model"
+        required: true
+        enum: ["first_touch", "last_touch", "linear", "time_decay", "position", "data_driven"]
+      - name: lookback_window
+        type: string
+        description: "Attribution lookback window"
+        required: false
+        default: "30d"
+      - name: channels
+        type: string
+        description: "JSON array of channel names"
+        required: false
+      - name: exclude_direct
+        type: boolean
+        description: "Exclude direct traffic"
+        required: false
+        default: false
+    tags: ["analytics", "attribution", "marketing", "channels", "conversion"]
+    test_prompts:
+      single:
+        - "Calculate channel attribution"
+        - "Analyze marketing ROI"
+        - "Run attribution analysis"
+        - "Attribute conversions to channels"
+
+  - name: forecast_metric
+    descriptions:
+      minimal: "Forecast metric"
+      short: "Forecast analytics metric"
+      medium: "Generate forecasts for key metrics based on historical trends."
+      long: "Forecast future metric values using historical data. Includes confidence intervals. Example: forecast_metric(metric='daily_active_users', horizon=30, include_seasonality=true)."
+      verbose: "Time series forecasting for analytics metrics. Features: trend detection, seasonality (daily, weekly, yearly), holiday effects, external regressors. Example: forecast_metric(metric='monthly_revenue', horizon=12, model='prophet', seasonality='[\"monthly\", \"yearly\"]', holidays='US', confidence=0.90). Returns: point forecasts, confidence intervals, trend decomposition. Note: Forecast accuracy decreases with longer horizons. Warning: Major changes (new products, market shifts) may invalidate forecasts."
+    parameters:
+      - name: metric
+        type: string
+        description: "Metric to forecast"
+        required: true
+      - name: horizon
+        type: integer
+        description: "Forecast periods ahead"
+        required: true
+      - name: model
+        type: string
+        description: "Forecasting model"
+        required: false
+        default: "auto"
+        enum: ["auto", "prophet", "arima", "ets"]
+      - name: seasonality
+        type: string
+        description: "JSON array of seasonality types"
+        required: false
+      - name: confidence
+        type: number
+        description: "Confidence interval level"
+        required: false
+        default: 0.95
+    tags: ["analytics", "forecast", "prediction", "planning", "trends"]
+    test_prompts:
+      single:
+        - "Forecast next month's revenue"
+        - "Predict user growth"
+        - "Forecast metric trends"
+        - "Project future signups"
+
+  - name: analyze_user_paths
+    descriptions:
+      minimal: "Analyze paths"
+      short: "Analyze user paths"
+      medium: "Discover common user navigation paths and journey patterns."
+      long: "Analyze user navigation paths through your product. Find common sequences. Example: analyze_user_paths(start_event='landing_page', end_event='purchase', max_steps=5)."
+      verbose: "Path analysis to understand user journeys. Analysis types: common paths, path frequency, path comparison, drop-off points. Example: analyze_user_paths(start_event='app_open', end_event='subscription', max_steps=10, min_frequency=100, exclude_events='[\"page_scroll\", \"click\"]', group_by='user_segment'). Returns: path sequences, frequency, conversion by path, Sankey diagram data. Note: Too many steps can create sparse path data. Warning: Filter out noise events to find meaningful patterns."
+    parameters:
+      - name: start_event
+        type: string
+        description: "Path starting event"
+        required: true
+      - name: end_event
+        type: string
+        description: "Path ending event"
+        required: false
+      - name: max_steps
+        type: integer
+        description: "Maximum path steps"
+        required: false
+        default: 5
+      - name: min_frequency
+        type: integer
+        description: "Minimum path occurrences"
+        required: false
+        default: 10
+      - name: exclude_events
+        type: string
+        description: "JSON array of events to exclude"
+        required: false
+      - name: group_by
+        type: string
+        description: "Property to group paths by"
+        required: false
+    tags: ["analytics", "paths", "journey", "navigation", "behavior"]
+    test_prompts:
+      single:
+        - "Show common user paths"
+        - "Analyze navigation patterns"
+        - "Find conversion paths"
+        - "Discover user journeys"
+
+  - name: alert_on_metric
+    descriptions:
+      minimal: "Set metric alert"
+      short: "Create metric alert"
+      medium: "Set up alerts to notify when metrics cross defined thresholds."
+      long: "Create alerts for metric anomalies or threshold breaches. Multiple notification channels. Example: alert_on_metric(metric='error_rate', condition='> 0.05', channel='slack')."
+      verbose: "Automated alerting for metric monitoring. Conditions: threshold (above/below), anomaly detection, rate of change, missing data. Channels: email, Slack, PagerDuty, webhook. Example: alert_on_metric(metric='daily_signups', condition='< 100', window='1h', channel='slack', recipients='#growth-team', severity='high', cooldown='4h'). Note: Set appropriate thresholds to avoid alert fatigue. Warning: Critical metrics should have escalation paths defined."
+    parameters:
+      - name: metric
+        type: string
+        description: "Metric to monitor"
+        required: true
+      - name: condition
+        type: string
+        description: "Alert condition expression"
+        required: true
+      - name: window
+        type: string
+        description: "Evaluation window"
+        required: false
+        default: "1h"
+      - name: channel
+        type: string
+        description: "Notification channel"
+        required: true
+        enum: ["email", "slack", "pagerduty", "webhook"]
+      - name: recipients
+        type: string
+        description: "Notification recipients"
+        required: true
+      - name: severity
+        type: string
+        description: "Alert severity"
+        required: false
+        default: "medium"
+        enum: ["low", "medium", "high", "critical"]
+      - name: cooldown
+        type: string
+        description: "Minimum time between alerts"
+        required: false
+        default: "1h"
+    tags: ["analytics", "alert", "monitoring", "notification", "threshold"]
+    test_prompts:
+      single:
+        - "Alert if signups drop"
+        - "Notify on high error rate"
+        - "Set up metric alert"
+        - "Create conversion alert"
+
+  - name: create_ab_test
+    descriptions:
+      minimal: "Create A/B test"
+      short: "Create an A/B test experiment"
+      medium: "Create and configure an A/B test experiment with variants and goals."
+      long: "Set up A/B or multivariate testing with traffic splitting and goal tracking. Example: create_ab_test(name='button_color', variants='[{\"name\": \"blue\"}, {\"name\": \"green\"}]', goal='clicks')."
+      verbose: "Create A/B and multivariate testing experiments. Features: traffic allocation, goal tracking, statistical significance, audience targeting, scheduling. Test types: A/B, A/B/n, multivariate, split URL. Example: create_ab_test(name='checkout_flow_v2', variants='[{\"name\": \"control\", \"traffic\": 50}, {\"name\": \"new_design\", \"traffic\": 50}]', goal='purchase_completion', min_sample_size=1000, confidence_level=0.95, targeting='{\"country\": \"US\"}', start_date='2024-02-01'). Note: Ensure adequate sample size for statistical significance. Warning: Running too many concurrent tests may cause interaction effects."
+    parameters:
+      - name: name
+        type: string
+        description: "Experiment name"
+        required: true
+      - name: variants
+        type: string
+        description: "JSON array of test variants"
+        required: true
+      - name: goal
+        type: string
+        description: "Primary goal metric"
+        required: true
+      - name: min_sample_size
+        type: integer
+        description: "Minimum sample size per variant"
+        required: false
+        default: 1000
+      - name: confidence_level
+        type: number
+        description: "Statistical confidence level"
+        required: false
+        default: 0.95
+      - name: targeting
+        type: string
+        description: "JSON audience targeting rules"
+        required: false
+      - name: start_date
+        type: string
+        description: "Experiment start date"
+        required: false
+    tags: ["analytics", "ab_test", "experiment", "optimization", "testing"]
+    test_prompts:
+      single:
+        - "Create an A/B test"
+        - "Set up split test"
+        - "Start experiment on homepage"
+        - "Test new checkout flow"
+
+  - name: analyze_cohort
+    descriptions:
+      minimal: "Analyze cohort"
+      short: "Analyze user cohorts"
+      medium: "Perform cohort analysis to understand user behavior over time."
+      long: "Analyze user cohorts by signup date, behavior, or attributes. Track retention and engagement. Example: analyze_cohort(cohort_by='signup_month', metric='retention', periods=12)."
+      verbose: "Cohort analysis for user behavior patterns. Cohort types: acquisition (signup date), behavioral (action-based), demographic. Metrics: retention, revenue, engagement, conversion. Visualization: heatmap, line chart, table. Example: analyze_cohort(cohort_by='signup_week', metric='retention', periods=12, segment='{\"plan\": \"premium\"}', compare_to='all_users', output_format='heatmap'). Note: Cohort analysis requires sufficient data per cohort. Warning: Small cohorts may show high variance."
+    parameters:
+      - name: cohort_by
+        type: string
+        description: "Cohort grouping criteria"
+        required: true
+        enum: ["signup_day", "signup_week", "signup_month", "first_purchase", "acquisition_source"]
+      - name: metric
+        type: string
+        description: "Metric to analyze"
+        required: true
+        enum: ["retention", "revenue", "ltv", "engagement", "conversion"]
+      - name: periods
+        type: integer
+        description: "Number of periods to analyze"
+        required: false
+        default: 12
+      - name: segment
+        type: string
+        description: "JSON segment filter"
+        required: false
+      - name: compare_to
+        type: string
+        description: "Comparison baseline"
+        required: false
+      - name: output_format
+        type: string
+        description: "Output format"
+        required: false
+        default: "table"
+        enum: ["table", "heatmap", "chart"]
+    tags: ["analytics", "cohort", "retention", "behavior", "analysis"]
+    test_prompts:
+      single:
+        - "Run cohort analysis"
+        - "Show retention by signup month"
+        - "Analyze user cohorts"
+        - "Compare cohort performance"
+
+  - name: calculate_attribution
+    descriptions:
+      minimal: "Calculate attribution"
+      short: "Calculate marketing attribution"
+      medium: "Calculate marketing attribution to determine channel effectiveness."
+      long: "Attribute conversions to marketing channels using various models. Example: calculate_attribution(model='linear', conversion_event='purchase', lookback_days=30)."
+      verbose: "Marketing attribution analysis across channels. Models: last touch, first touch, linear, time decay, position-based, data-driven (algorithmic). Channels: paid search, organic, social, email, direct, referral. Example: calculate_attribution(model='data_driven', conversion_event='signup', lookback_days=30, channels='[\"google_ads\", \"facebook\", \"email\", \"organic\"]', date_range='{\"from\": \"2024-01-01\", \"to\": \"2024-01-31\"}'). Note: Data-driven attribution requires significant conversion volume. Warning: Attribution models can produce vastly different results."
+    parameters:
+      - name: model
+        type: string
+        description: "Attribution model"
+        required: true
+        enum: ["last_touch", "first_touch", "linear", "time_decay", "position_based", "data_driven"]
+      - name: conversion_event
+        type: string
+        description: "Conversion event to attribute"
+        required: true
+      - name: lookback_days
+        type: integer
+        description: "Attribution window in days"
+        required: false
+        default: 30
+      - name: channels
+        type: string
+        description: "JSON array of channels to analyze"
+        required: false
+      - name: date_range
+        type: string
+        description: "JSON date range"
+        required: false
+    tags: ["analytics", "attribution", "marketing", "conversion", "channels"]
+    test_prompts:
+      single:
+        - "Calculate marketing attribution"
+        - "Show channel attribution"
+        - "Which channel drives conversions?"
+        - "Run attribution analysis"
+
+  - name: predict_churn
+    descriptions:
+      minimal: "Predict churn"
+      short: "Predict customer churn"
+      medium: "Use predictive analytics to identify customers likely to churn."
+      long: "Predict churn probability using machine learning on user behavior. Example: predict_churn(segment='all_users', timeframe='30d', threshold=0.7)."
+      verbose: "Churn prediction using machine learning. Features analyzed: engagement frequency, feature usage, support tickets, payment history, session duration. Output: churn probability score, risk factors, recommended actions. Example: predict_churn(segment='{\"plan\": \"premium\"}', timeframe='30d', threshold=0.6, include_factors=true, export_list=true, output='churn_risk.csv'). Note: Model accuracy improves with more historical data. Warning: Churn predictions should inform but not replace customer success strategies."
+    parameters:
+      - name: segment
+        type: string
+        description: "User segment to analyze"
+        required: false
+      - name: timeframe
+        type: string
+        description: "Prediction timeframe"
+        required: false
+        default: "30d"
+      - name: threshold
+        type: number
+        description: "Churn probability threshold"
+        required: false
+        default: 0.7
+      - name: include_factors
+        type: boolean
+        description: "Include contributing factors"
+        required: false
+        default: true
+      - name: export_list
+        type: boolean
+        description: "Export at-risk users list"
+        required: false
+        default: false
+      - name: output
+        type: string
+        description: "Export file path"
+        required: false
+    tags: ["analytics", "churn", "prediction", "ml", "retention"]
+    test_prompts:
+      single:
+        - "Predict customer churn"
+        - "Who is likely to cancel?"
+        - "Show churn risk scores"
+        - "Identify at-risk customers"
+
+  - name: calculate_ltv
+    descriptions:
+      minimal: "Calculate LTV"
+      short: "Calculate customer lifetime value"
+      medium: "Calculate customer lifetime value using historical data and predictions."
+      long: "Calculate LTV using various models and segmentation. Example: calculate_ltv(model='historical', segment='premium', period='36m')."
+      verbose: "Customer lifetime value calculation and prediction. Models: historical (actual spend), predictive (ML-based), contractual (subscription). Segmentation: by cohort, plan, acquisition source. Output: average LTV, distribution, trends. Example: calculate_ltv(model='predictive', segment='{\"plan\": \"premium\"}', period='36m', include_cac=true, by_cohort=true, output_format='detailed'). Note: Predictive LTV requires sufficient historical data. Warning: LTV calculations are estimates; actual values will vary."
+    parameters:
+      - name: model
+        type: string
+        description: "LTV calculation model"
+        required: false
+        default: "historical"
+        enum: ["historical", "predictive", "contractual"]
+      - name: segment
+        type: string
+        description: "User segment filter"
+        required: false
+      - name: period
+        type: string
+        description: "LTV calculation period"
+        required: false
+        default: "24m"
+      - name: include_cac
+        type: boolean
+        description: "Include CAC for LTV:CAC ratio"
+        required: false
+        default: false
+      - name: by_cohort
+        type: boolean
+        description: "Break down by cohort"
+        required: false
+        default: false
+      - name: output_format
+        type: string
+        description: "Output format"
+        required: false
+        default: "summary"
+        enum: ["summary", "detailed", "chart"]
+    tags: ["analytics", "ltv", "lifetime_value", "revenue", "customer"]
+    test_prompts:
+      single:
+        - "Calculate customer LTV"
+        - "What's the lifetime value?"
+        - "Show LTV by segment"
+        - "Predict customer value"
+
+  - name: analyze_user_journey
+    descriptions:
+      minimal: "Analyze journey"
+      short: "Analyze user journey"
+      medium: "Analyze user journeys and paths through your product or website."
+      long: "Map and analyze user journeys from entry to conversion. Example: analyze_user_journey(start_event='signup', end_event='purchase', max_steps=10)."
+      verbose: "User journey and path analysis. Analysis types: path exploration, conversion paths, drop-off analysis, common journeys. Visualization: Sankey diagram, flow chart, table. Features: step timing, segment comparison, anomaly detection. Example: analyze_user_journey(start_event='homepage_visit', end_event='purchase', max_steps=8, segment='{\"device\": \"mobile\"}', include_timing=true, min_frequency=100, output_format='sankey'). Note: Long journeys may have many variations. Warning: Path analysis works best with clear start and end events."
+    parameters:
+      - name: start_event
+        type: string
+        description: "Journey start event"
+        required: true
+      - name: end_event
+        type: string
+        description: "Journey end event (goal)"
+        required: true
+      - name: max_steps
+        type: integer
+        description: "Maximum steps to analyze"
+        required: false
+        default: 10
+      - name: segment
+        type: string
+        description: "JSON segment filter"
+        required: false
+      - name: include_timing
+        type: boolean
+        description: "Include time between steps"
+        required: false
+        default: true
+      - name: min_frequency
+        type: integer
+        description: "Minimum path frequency"
+        required: false
+        default: 10
+      - name: output_format
+        type: string
+        description: "Output format"
+        required: false
+        default: "table"
+        enum: ["table", "sankey", "flowchart"]
+    tags: ["analytics", "journey", "path", "user_flow", "conversion"]
+    test_prompts:
+      single:
+        - "Analyze user journey"
+        - "Show path to purchase"
+        - "Map conversion journey"
+        - "Trace user flow"
+
+  - name: generate_analytics_report
+    descriptions:
+      minimal: "Generate report"
+      short: "Generate analytics report"
+      medium: "Generate a comprehensive analytics report with key metrics and insights."
+      long: "Create scheduled or ad-hoc analytics reports. Example: generate_analytics_report(type='weekly', metrics='[\"users\", \"revenue\", \"conversion\"]', recipients='[\"team@company.com\"]')."
+      verbose: "Automated analytics report generation. Report types: daily digest, weekly summary, monthly deep-dive, custom. Sections: executive summary, KPI dashboard, trends, anomalies, recommendations. Formats: PDF, HTML, Slack, Email. Example: generate_analytics_report(type='weekly', metrics='[\"dau\", \"wau\", \"revenue\", \"churn\", \"nps\"]', compare_to='previous_period', include='[\"summary\", \"charts\", \"anomalies\", \"recommendations\"]', format='pdf', recipients='[\"leadership@company.com\"]', schedule='every_monday_9am'). Note: Scheduled reports run in UTC by default. Warning: Large reports may take several minutes to generate."
+    parameters:
+      - name: type
+        type: string
+        description: "Report type"
+        required: true
+        enum: ["daily", "weekly", "monthly", "quarterly", "custom"]
+      - name: metrics
+        type: string
+        description: "JSON array of metrics to include"
+        required: true
+      - name: compare_to
+        type: string
+        description: "Comparison period"
+        required: false
+        default: "previous_period"
+        enum: ["previous_period", "same_period_last_year", "none"]
+      - name: include
+        type: string
+        description: "JSON array of report sections"
+        required: false
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "pdf"
+        enum: ["pdf", "html", "slack", "email"]
+      - name: recipients
+        type: string
+        description: "JSON array of recipient emails"
+        required: false
+      - name: schedule
+        type: string
+        description: "Report schedule (cron or preset)"
+        required: false
+    tags: ["analytics", "report", "dashboard", "metrics", "automated"]
+    test_prompts:
+      single:
+        - "Generate analytics report"
+        - "Create weekly metrics report"
+        - "Send monthly analytics to team"
+        - "Build KPI report"
+
+  - name: configure_data_pipeline
+    descriptions:
+      minimal: "Configure pipeline"
+      short: "Configure analytics data pipeline"
+      medium: "Configure data pipelines for analytics ingestion and transformation."
+      long: "Set up data pipelines from sources to analytics warehouse. Example: configure_data_pipeline(source='segment', destination='bigquery', transforms='[\"dedupe\", \"enrich\"]')."
+      verbose: "Analytics data pipeline configuration. Sources: SDKs, APIs, databases, third-party tools (Segment, Fivetran). Destinations: BigQuery, Snowflake, Redshift, data lakes. Transforms: deduplication, enrichment, anonymization, aggregation. Example: configure_data_pipeline(source='{\"type\": \"segment\", \"workspace\": \"prod\"}', destination='{\"type\": \"bigquery\", \"dataset\": \"analytics\"}', transforms='[\"dedupe\", \"pii_hash\", \"geo_enrich\"]', schedule='realtime', alert_on_failure=true). Note: Realtime pipelines have higher costs. Warning: Ensure PII handling complies with privacy regulations."
+    parameters:
+      - name: source
+        type: string
+        description: "JSON source configuration"
+        required: true
+      - name: destination
+        type: string
+        description: "JSON destination configuration"
+        required: true
+      - name: transforms
+        type: string
+        description: "JSON array of transformations"
+        required: false
+      - name: schedule
+        type: string
+        description: "Pipeline schedule"
+        required: false
+        default: "hourly"
+        enum: ["realtime", "hourly", "daily", "custom"]
+      - name: alert_on_failure
+        type: boolean
+        description: "Alert on pipeline failure"
+        required: false
+        default: true
+    tags: ["analytics", "pipeline", "etl", "data", "integration"]
+    test_prompts:
+      single:
+        - "Set up data pipeline"
+        - "Configure analytics ingestion"
+        - "Connect Segment to BigQuery"
+        - "Create ETL pipeline"
+
+  - name: monitor_data_quality
+    descriptions:
+      minimal: "Monitor data quality"
+      short: "Monitor analytics data quality"
+      medium: "Monitor and alert on data quality issues in analytics pipelines."
+      long: "Track data quality metrics and detect anomalies. Example: monitor_data_quality(table='events', checks='[\"freshness\", \"volume\", \"schema\"]')."
+      verbose: "Analytics data quality monitoring. Checks: freshness (data recency), volume (row counts), schema (structure changes), distribution (statistical), duplicates, nulls. Alerting: thresholds, anomaly detection, trend deviation. Example: monitor_data_quality(table='user_events', checks='[{\"type\": \"freshness\", \"max_age\": \"1h\"}, {\"type\": \"volume\", \"min\": 10000, \"max\": 100000}, {\"type\": \"null_rate\", \"column\": \"user_id\", \"max\": 0.01}]', alert_channel='slack', run_schedule='*/15 * * * *'). Note: Set realistic thresholds based on historical patterns. Warning: Data quality issues can invalidate downstream analyses."
+    parameters:
+      - name: table
+        type: string
+        description: "Table or dataset to monitor"
+        required: true
+      - name: checks
+        type: string
+        description: "JSON array of quality checks"
+        required: true
+      - name: alert_channel
+        type: string
+        description: "Alert notification channel"
+        required: false
+        default: "email"
+        enum: ["email", "slack", "pagerduty", "webhook"]
+      - name: alert_recipients
+        type: string
+        description: "Alert recipients"
+        required: false
+      - name: run_schedule
+        type: string
+        description: "Check schedule (cron format)"
+        required: false
+        default: "0 * * * *"
+    tags: ["analytics", "data_quality", "monitoring", "validation", "alerts"]
+    test_prompts:
+      single:
+        - "Monitor data quality"
+        - "Check for data freshness"
+        - "Alert on data anomalies"
+        - "Validate analytics data"

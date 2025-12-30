@@ -1,0 +1,984 @@
+category: queue_operations
+description: Message queue and job processing operations
+tools:
+  - name: enqueue_job
+    descriptions:
+      minimal: "Enqueue job"
+      short: "Add a job to queue"
+      medium: "Add a job to the message queue for processing."
+      long: "Enqueue a job for background processing. Set priority and delay. Example: enqueue_job(queue='emails', job='{\"type\": \"welcome\", \"to\": \"...\"}'."
+      verbose: "Add jobs to message queue for asynchronous processing. Features: priority levels, delayed execution, job metadata, retry configuration. Example: enqueue_job(queue='notifications', job='{\"type\": \"push\", \"user_id\": \"123\", \"message\": \"...\"}', priority='high', delay=0, max_retries=3, metadata='{\"source\": \"api\"}'). Note: Jobs should be idempotent. Warning: Queue backlog may cause delays."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: job
+        type: string
+        description: "Job payload (JSON)"
+        required: true
+      - name: priority
+        type: string
+        description: "Job priority"
+        required: false
+        default: "normal"
+        enum: ["low", "normal", "high", "critical"]
+      - name: delay
+        type: integer
+        description: "Delay before processing (seconds)"
+        required: false
+        default: 0
+      - name: max_retries
+        type: integer
+        description: "Maximum retry attempts"
+        required: false
+        default: 3
+      - name: metadata
+        type: string
+        description: "Job metadata (JSON)"
+        required: false
+    tags: ["queue", "job", "enqueue", "async", "background"]
+    test_prompts:
+      single:
+        - "Add job to queue"
+        - "Queue the email"
+        - "Enqueue background task"
+        - "Schedule async job"
+
+  - name: process_jobs
+    descriptions:
+      minimal: "Process jobs"
+      short: "Process queued jobs"
+      medium: "Start processing jobs from a queue."
+      long: "Process jobs from queue. Start worker to consume and execute jobs. Example: process_jobs(queue='emails', concurrency=5)."
+      verbose: "Job processing/consumption from queue. Options: concurrency (parallel jobs), batch size, timeout, graceful shutdown. Features: automatic retries, dead-letter queue, job acknowledgment. Example: process_jobs(queue='image-processing', concurrency=3, timeout=300, batch_size=10, dead_letter='failed-images'). Note: Ensure handlers are idempotent. Warning: High concurrency may overwhelm resources."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: concurrency
+        type: integer
+        description: "Concurrent workers"
+        required: false
+        default: 1
+      - name: timeout
+        type: integer
+        description: "Job timeout (seconds)"
+        required: false
+        default: 60
+      - name: batch_size
+        type: integer
+        description: "Jobs per batch"
+        required: false
+        default: 1
+      - name: dead_letter
+        type: string
+        description: "Dead-letter queue name"
+        required: false
+    tags: ["queue", "process", "worker", "consume", "jobs"]
+    test_prompts:
+      single:
+        - "Start processing jobs"
+        - "Run the worker"
+        - "Process queue messages"
+        - "Consume from queue"
+
+  - name: get_queue_stats
+    descriptions:
+      minimal: "Queue stats"
+      short: "Get queue statistics"
+      medium: "Retrieve statistics about queue status and performance."
+      long: "Get queue statistics. View pending, processing, and failed job counts. Example: get_queue_stats(queue='emails')."
+      verbose: "Queue performance and status statistics. Metrics: pending count, processing count, completed count, failed count, throughput, latency percentiles. Example: get_queue_stats(queue='orders', period='1h', include_failed=true). Note: Monitor queue depth to detect backlogs. Warning: Large queues may indicate processing issues."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: false
+      - name: period
+        type: string
+        description: "Stats period"
+        required: false
+        default: "1h"
+      - name: include_failed
+        type: boolean
+        description: "Include failed job stats"
+        required: false
+        default: true
+    tags: ["queue", "stats", "metrics", "monitoring", "status"]
+    test_prompts:
+      single:
+        - "Get queue statistics"
+        - "How many jobs are pending?"
+        - "Check queue status"
+        - "Show queue metrics"
+
+  - name: retry_failed_jobs
+    descriptions:
+      minimal: "Retry failed"
+      short: "Retry failed jobs"
+      medium: "Retry jobs that have failed processing."
+      long: "Retry failed jobs. Move from dead-letter queue back to main queue. Example: retry_failed_jobs(queue='emails', filter='type:welcome')."
+      verbose: "Retry failed jobs from dead-letter queue. Options: filter by job type, error type, time range; single or batch retry. Example: retry_failed_jobs(queue='payments', filter='{\"error\": \"timeout\", \"since\": \"2024-01-01\"}', limit=100, reset_attempts=true). Note: Fix root cause before retrying. Warning: Retrying may cause duplicate processing."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: filter
+        type: string
+        description: "Job filter (JSON)"
+        required: false
+      - name: job_ids
+        type: string
+        description: "JSON array of specific job IDs"
+        required: false
+      - name: limit
+        type: integer
+        description: "Maximum jobs to retry"
+        required: false
+        default: 10
+      - name: reset_attempts
+        type: boolean
+        description: "Reset retry counter"
+        required: false
+        default: false
+    tags: ["queue", "retry", "failed", "dead-letter", "recover"]
+    test_prompts:
+      single:
+        - "Retry failed jobs"
+        - "Reprocess failed emails"
+        - "Move from dead-letter queue"
+        - "Retry the timeout failures"
+
+  - name: purge_queue
+    descriptions:
+      minimal: "Purge queue"
+      short: "Purge queue messages"
+      medium: "Delete all or filtered messages from a queue."
+      long: "Purge messages from queue. Clear pending jobs by filter or all. Example: purge_queue(queue='test-queue', confirm=true)."
+      verbose: "Queue purge/cleanup operations. Targets: 'pending' (unprocessed), 'completed' (finished), 'failed' (dead-letter), 'all'. Filters: job type, age, metadata. Example: purge_queue(queue='notifications', target='completed', older_than='7d', confirm=true). Note: Purging is irreversible. Warning: Pending jobs will not be processed."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: target
+        type: string
+        description: "What to purge"
+        required: false
+        default: "pending"
+        enum: ["pending", "completed", "failed", "all"]
+      - name: older_than
+        type: string
+        description: "Age filter (e.g., '7d')"
+        required: false
+      - name: filter
+        type: string
+        description: "Job filter (JSON)"
+        required: false
+      - name: confirm
+        type: boolean
+        description: "Confirm destructive action"
+        required: true
+    tags: ["queue", "purge", "delete", "clear", "cleanup"]
+    test_prompts:
+      single:
+        - "Purge the queue"
+        - "Clear all pending jobs"
+        - "Delete old completed jobs"
+        - "Clean up failed jobs"
+
+  - name: pause_queue
+    descriptions:
+      minimal: "Pause queue"
+      short: "Pause queue processing"
+      medium: "Pause or resume queue processing."
+      long: "Pause or resume queue processing. Stop workers without losing jobs. Example: pause_queue(queue='emails', action='pause')."
+      verbose: "Queue pause/resume operations. Actions: 'pause' (stop processing), 'resume' (restart processing). Use cases: maintenance, debugging, rate limiting. Example: pause_queue(queue='bulk-emails', action='pause', drain=true, timeout=60). Note: Pausing doesn't delete jobs. Warning: Long pauses may cause queue backlog."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: action
+        type: string
+        description: "Pause or resume"
+        required: true
+        enum: ["pause", "resume"]
+      - name: drain
+        type: boolean
+        description: "Wait for current jobs to complete"
+        required: false
+        default: true
+      - name: timeout
+        type: integer
+        description: "Drain timeout (seconds)"
+        required: false
+        default: 30
+    tags: ["queue", "pause", "resume", "stop", "maintenance"]
+    test_prompts:
+      single:
+        - "Pause the queue"
+        - "Stop processing jobs"
+        - "Resume the email queue"
+        - "Pause for maintenance"
+
+  - name: schedule_recurring
+    descriptions:
+      minimal: "Schedule recurring"
+      short: "Schedule recurring job"
+      medium: "Create a recurring/scheduled job with cron expression."
+      long: "Schedule recurring jobs. Use cron expressions for periodic tasks. Example: schedule_recurring(name='daily-cleanup', queue='maintenance', cron='0 2 * * *', job='{...}')."
+      verbose: "Create scheduled/recurring jobs. Scheduling: cron expression or interval. Features: timezone support, overlap prevention, job payload. Example: schedule_recurring(name='hourly-sync', queue='sync', cron='0 * * * *', job='{\"type\": \"full_sync\"}', timezone='America/New_York', prevent_overlap=true). Note: Cron uses 5-field format. Warning: Overlapping jobs may cause issues."
+    parameters:
+      - name: name
+        type: string
+        description: "Schedule name"
+        required: true
+      - name: queue
+        type: string
+        description: "Target queue"
+        required: true
+      - name: cron
+        type: string
+        description: "Cron expression"
+        required: true
+      - name: job
+        type: string
+        description: "Job payload (JSON)"
+        required: true
+      - name: timezone
+        type: string
+        description: "Timezone for schedule"
+        required: false
+        default: "UTC"
+      - name: prevent_overlap
+        type: boolean
+        description: "Prevent overlapping runs"
+        required: false
+        default: true
+    tags: ["queue", "schedule", "cron", "recurring", "periodic"]
+    test_prompts:
+      single:
+        - "Schedule a daily job"
+        - "Create recurring task"
+        - "Set up cron job"
+        - "Schedule hourly cleanup"
+
+  - name: get_job_status
+    descriptions:
+      minimal: "Job status"
+      short: "Get job status"
+      medium: "Check the status of a specific job."
+      long: "Get job status by ID. Check if pending, processing, completed, or failed. Example: get_job_status(job_id='abc-123')."
+      verbose: "Query job status and details. Information: status, progress, result, error, timing, attempts. Example: get_job_status(job_id='job-abc-123', include_logs=true). Returns: {\"status\": \"completed\", \"progress\": 100, \"result\": {...}, \"started_at\": \"...\", \"completed_at\": \"...\"}. Note: Job history may be pruned. Warning: Not all job details are retained long-term."
+    parameters:
+      - name: job_id
+        type: string
+        description: "Job identifier"
+        required: true
+      - name: include_logs
+        type: boolean
+        description: "Include processing logs"
+        required: false
+        default: false
+      - name: include_result
+        type: boolean
+        description: "Include job result data"
+        required: false
+        default: true
+    tags: ["queue", "job", "status", "check", "track"]
+    test_prompts:
+      single:
+        - "Check job status"
+        - "Is the job done?"
+        - "Get job progress"
+        - "Track job completion"
+
+  - name: create_queue
+    descriptions:
+      minimal: "Create queue"
+      short: "Create a message queue"
+      medium: "Create a new message queue with configuration."
+      long: "Create a new message queue. Set retention, visibility timeout, and other settings. Example: create_queue(name='orders', visibility_timeout=30)."
+      verbose: "Create message queue with configuration. Settings: visibility timeout (reprocessing window), message retention, delay default, dead-letter policy, encryption. Example: create_queue(name='high-priority-orders', visibility_timeout=60, retention='7d', dead_letter='{\"queue\": \"failed-orders\", \"max_receives\": 3}', encryption=true). Note: Queue names should follow naming conventions. Warning: Changing queue settings may require recreation."
+    parameters:
+      - name: name
+        type: string
+        description: "Queue name"
+        required: true
+      - name: visibility_timeout
+        type: integer
+        description: "Visibility timeout (seconds)"
+        required: false
+        default: 30
+      - name: retention
+        type: string
+        description: "Message retention period"
+        required: false
+        default: "4d"
+      - name: delay
+        type: integer
+        description: "Default delay (seconds)"
+        required: false
+        default: 0
+      - name: dead_letter
+        type: string
+        description: "Dead-letter queue config (JSON)"
+        required: false
+    tags: ["queue", "create", "setup", "configure", "new"]
+    test_prompts:
+      single:
+        - "Create a new queue"
+        - "Set up message queue"
+        - "Create orders queue"
+        - "Configure new queue"
+
+  - name: delete_queue
+    descriptions:
+      minimal: "Delete queue"
+      short: "Delete a message queue"
+      medium: "Delete a message queue and all its messages."
+      long: "Delete a message queue. Removes queue and all pending messages. Example: delete_queue(name='old-queue', confirm=true)."
+      verbose: "Delete message queue permanently. Effects: queue deleted, all messages lost, consumers disconnected. Checks: queue must be empty or force flag used. Example: delete_queue(name='deprecated-notifications', force=true, confirm=true). Note: This action is irreversible. Warning: Ensure no active producers or consumers."
+    parameters:
+      - name: name
+        type: string
+        description: "Queue name"
+        required: true
+      - name: force
+        type: boolean
+        description: "Delete even if not empty"
+        required: false
+        default: false
+      - name: confirm
+        type: boolean
+        description: "Confirm deletion"
+        required: true
+    tags: ["queue", "delete", "remove", "cleanup", "destroy"]
+    test_prompts:
+      single:
+        - "Delete the queue"
+        - "Remove old queue"
+        - "Clean up unused queue"
+        - "Delete deprecated queue"
+  - name: schedule_message
+    descriptions:
+      minimal: "Schedule message"
+      short: "Schedule delayed message"
+      medium: "Schedule a message for future delivery to a queue."
+      long: "Schedule message delivery for a future time. Useful for delayed processing. Example: schedule_message(queue='reminders', message='check status', delay_seconds=3600)."
+      verbose: "Schedule messages for delayed delivery. Use cases: reminders, scheduled tasks, rate limiting, workflow delays. Example: schedule_message(queue='order_followup', message='{\"order_id\": \"123\", \"action\": \"send_review_request\"}', delay_seconds=86400, attributes='{\"type\": \"followup\"}'). Returns: message ID, scheduled time. Note: Maximum delay varies by provider (typically 15 min to 7 days). Warning: Scheduled messages still count against queue limits."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: message
+        type: string
+        description: "Message content"
+        required: true
+      - name: delay_seconds
+        type: integer
+        description: "Delay in seconds"
+        required: true
+      - name: attributes
+        type: string
+        description: "JSON message attributes"
+        required: false
+    tags: ["queue", "schedule", "delay", "future", "timer"]
+    test_prompts:
+      single:
+        - "Schedule message for later"
+        - "Send delayed message"
+        - "Queue message in 1 hour"
+        - "Schedule reminder message"
+
+  - name: configure_dead_letter_queue
+    descriptions:
+      minimal: "Configure DLQ"
+      short: "Configure dead letter queue"
+      medium: "Set up a dead letter queue for failed message handling."
+      long: "Configure dead letter queue for messages that fail processing. Example: configure_dead_letter_queue(source='orders', dlq='orders-failed', max_retries=3)."
+      verbose: "Set up dead letter queues (DLQ) for failed message handling. Purpose: capture messages that can't be processed for debugging and reprocessing. Example: configure_dead_letter_queue(source='payment-processing', dlq='payment-failures', max_retries=3, alert_threshold=10, alert_email='ops@company.com'). Note: Messages move to DLQ after max_retries. Warning: Monitor DLQ regularly to prevent message loss."
+    parameters:
+      - name: source
+        type: string
+        description: "Source queue name"
+        required: true
+      - name: dlq
+        type: string
+        description: "Dead letter queue name"
+        required: true
+      - name: max_retries
+        type: integer
+        description: "Max processing attempts"
+        required: true
+      - name: create_dlq
+        type: boolean
+        description: "Create DLQ if not exists"
+        required: false
+        default: true
+      - name: alert_threshold
+        type: integer
+        description: "Alert when DLQ reaches count"
+        required: false
+      - name: alert_email
+        type: string
+        description: "Alert notification email"
+        required: false
+    tags: ["queue", "dlq", "dead_letter", "failures", "error"]
+    test_prompts:
+      single:
+        - "Set up dead letter queue"
+        - "Configure DLQ for failures"
+        - "Handle failed messages"
+        - "Create failure queue"
+
+  - name: batch_send_messages
+    descriptions:
+      minimal: "Batch send"
+      short: "Send messages in batch"
+      medium: "Send multiple messages to a queue in a single batch operation."
+      long: "Send multiple messages in one request. More efficient than individual sends. Example: batch_send_messages(queue='notifications', messages='[{\"body\": \"msg1\"}, {\"body\": \"msg2\"}]')."
+      verbose: "Efficient batch message sending. Benefits: reduced API calls, better throughput, atomic operations. Example: batch_send_messages(queue='events', messages='[{\"body\": \"{\\\"event\\\": \\\"click\\\"}\", \"delay\": 0}, {\"body\": \"{\\\"event\\\": \\\"purchase\\\"}\", \"priority\": \"high\"}]', fail_on_error=false). Returns: success/failure status per message. Note: Maximum batch size typically 10-100 messages. Warning: Partial failures possible; check individual statuses."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: messages
+        type: string
+        description: "JSON array of messages"
+        required: true
+      - name: fail_on_error
+        type: boolean
+        description: "Fail entire batch on any error"
+        required: false
+        default: false
+    tags: ["queue", "batch", "send", "bulk", "messages"]
+    test_prompts:
+      single:
+        - "Send batch of messages"
+        - "Queue multiple messages"
+        - "Bulk send to queue"
+        - "Batch enqueue messages"
+
+  - name: redrive_messages
+    descriptions:
+      minimal: "Redrive messages"
+      short: "Redrive failed messages"
+      medium: "Move messages from dead letter queue back to source queue for reprocessing."
+      long: "Redrive messages from DLQ back to source queue. Retry failed messages after fixing issues. Example: redrive_messages(dlq='orders-failed', destination='orders', count=100)."
+      verbose: "Redrive (replay) messages from dead letter queue to source queue. Use after fixing the processing issue. Example: redrive_messages(dlq='payment-failures', destination='payment-processing', count=50, filter='{\"age_hours\": 24}', velocity=10). Returns: messages redriven, remaining in DLQ. Note: Process slowly to avoid overwhelming consumers. Warning: Redriven messages may fail again if root cause not resolved."
+    parameters:
+      - name: dlq
+        type: string
+        description: "Dead letter queue name"
+        required: true
+      - name: destination
+        type: string
+        description: "Destination queue name"
+        required: true
+      - name: count
+        type: integer
+        description: "Number of messages to redrive"
+        required: false
+        default: 100
+      - name: filter
+        type: string
+        description: "JSON filter for messages"
+        required: false
+      - name: velocity
+        type: integer
+        description: "Messages per second"
+        required: false
+        default: 10
+    tags: ["queue", "redrive", "dlq", "retry", "replay"]
+    test_prompts:
+      single:
+        - "Redrive failed messages"
+        - "Retry DLQ messages"
+        - "Move messages back to queue"
+        - "Reprocess failed items"
+
+  - name: set_queue_attributes
+    descriptions:
+      minimal: "Set attributes"
+      short: "Set queue attributes"
+      medium: "Configure queue settings like retention, visibility, and limits."
+      long: "Update queue configuration settings. Adjust retention, timeouts, and limits. Example: set_queue_attributes(queue='orders', visibility_timeout=60, retention_days=14)."
+      verbose: "Configure queue behavior and limits. Attributes: visibility_timeout (processing time), retention (message TTL), max_size (bytes), delay (default delay), encryption. Example: set_queue_attributes(queue='high-priority', visibility_timeout=120, retention_days=7, max_message_size=262144, encryption='kms', kms_key='alias/my-key'). Note: Changes apply to new messages immediately. Warning: Reducing retention may cause message loss."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: visibility_timeout
+        type: integer
+        description: "Visibility timeout (seconds)"
+        required: false
+      - name: retention_days
+        type: integer
+        description: "Message retention (days)"
+        required: false
+      - name: max_message_size
+        type: integer
+        description: "Max message size (bytes)"
+        required: false
+      - name: delay_seconds
+        type: integer
+        description: "Default message delay"
+        required: false
+      - name: encryption
+        type: string
+        description: "Encryption type"
+        required: false
+        enum: ["none", "sse", "kms"]
+    tags: ["queue", "attributes", "configuration", "settings", "update"]
+    test_prompts:
+      single:
+        - "Change queue timeout"
+        - "Update retention period"
+        - "Configure queue settings"
+        - "Set message size limit"
+
+  - name: subscribe_to_queue
+    descriptions:
+      minimal: "Subscribe to queue"
+      short: "Subscribe endpoint to queue"
+      medium: "Subscribe an endpoint to receive messages from a queue."
+      long: "Create subscription for push-based message delivery. Messages sent to endpoint. Example: subscribe_to_queue(queue='events', endpoint='https://api.example.com/webhook')."
+      verbose: "Subscribe endpoints for push-based delivery. Endpoint types: HTTP/HTTPS, Lambda, email, SMS. Example: subscribe_to_queue(queue='notifications', endpoint='https://api.example.com/hooks/notifications', protocol='https', filter='{\"event_type\": [\"order_created\", \"order_shipped\"]}', retry_policy='{\"max_retries\": 3, \"backoff\": \"exponential\"}'). Note: Endpoint must confirm subscription. Warning: Secure endpoints with signature verification."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue or topic name"
+        required: true
+      - name: endpoint
+        type: string
+        description: "Subscriber endpoint"
+        required: true
+      - name: protocol
+        type: string
+        description: "Endpoint protocol"
+        required: true
+        enum: ["https", "http", "lambda", "email", "sms"]
+      - name: filter
+        type: string
+        description: "JSON message filter"
+        required: false
+      - name: retry_policy
+        type: string
+        description: "JSON retry configuration"
+        required: false
+    tags: ["queue", "subscribe", "push", "webhook", "endpoint"]
+    test_prompts:
+      single:
+        - "Subscribe webhook to queue"
+        - "Add queue subscriber"
+        - "Push messages to endpoint"
+        - "Create queue subscription"
+
+  - name: get_queue_metrics
+    descriptions:
+      minimal: "Get metrics"
+      short: "Get queue metrics"
+      medium: "Retrieve metrics and statistics for a queue."
+      long: "Get queue performance metrics. View message counts, throughput, latency. Example: get_queue_metrics(queue='orders', period='1h', metrics='[\"messages_sent\", \"messages_received\"]')."
+      verbose: "Comprehensive queue metrics for monitoring. Metrics: messages (sent, received, deleted), age (oldest message), size, approximate count, throughput. Example: get_queue_metrics(queue='processing', period='24h', metrics='[\"approximate_messages\", \"oldest_message_age\", \"throughput\"]', granularity='5m'). Returns: time-series data, aggregates. Note: Some metrics are approximate. Warning: High-frequency metric queries may incur costs."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: metrics
+        type: string
+        description: "JSON array of metrics"
+        required: true
+      - name: period
+        type: string
+        description: "Time period"
+        required: false
+        default: "1h"
+      - name: granularity
+        type: string
+        description: "Data granularity"
+        required: false
+        default: "1m"
+        enum: ["1m", "5m", "1h", "1d"]
+    tags: ["queue", "metrics", "monitoring", "statistics", "observability"]
+    test_prompts:
+      single:
+        - "Show queue metrics"
+        - "Get message statistics"
+        - "Check queue throughput"
+        - "Monitor queue performance"
+
+  - name: set_queue_policy
+    descriptions:
+      minimal: "Set policy"
+      short: "Set queue access policy"
+      medium: "Configure access control policy for a queue."
+      long: "Set queue access policy. Define who can send or receive messages. Example: set_queue_policy(queue='orders', policy='{\"allow\": [\"service-a\"], \"actions\": [\"send\"]}')."
+      verbose: "Configure queue access control. Policy elements: principals (who), actions (what), conditions (when). Example: set_queue_policy(queue='sensitive-data', policy='{\"statements\": [{\"effect\": \"allow\", \"principal\": \"arn:aws:iam::123:role/processor\", \"action\": [\"receive\", \"delete\"]}, {\"effect\": \"deny\", \"principal\": \"*\", \"action\": \"*\", \"condition\": {\"not_secure_transport\": true}}]}'). Note: Policy changes are immediate. Warning: Incorrect policies can block all access."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: policy
+        type: string
+        description: "JSON policy document"
+        required: true
+    tags: ["queue", "policy", "access", "security", "permissions"]
+    test_prompts:
+      single:
+        - "Set queue access policy"
+        - "Restrict queue access"
+        - "Allow service to send"
+        - "Configure queue permissions"
+
+  - name: replay_messages
+    descriptions:
+      minimal: "Replay messages"
+      short: "Replay archived messages"
+      medium: "Replay previously processed messages from archive for reprocessing."
+      long: "Replay messages from archive or event store. Reprocess historical messages. Example: replay_messages(source='events-archive', destination='processing', time_range='2024-01-01/2024-01-07')."
+      verbose: "Replay historical messages for reprocessing or testing. Sources: S3 archive, event store, backup. Example: replay_messages(source='s3://message-archive/2024/01/', destination='reprocessing-queue', time_range='2024-01-01T00:00:00Z/2024-01-02T00:00:00Z', filter='{\"event_type\": \"order_created\"}', velocity=100). Note: Replaying can create duplicates; ensure idempotent processing. Warning: Large replays may overwhelm consumers."
+    parameters:
+      - name: source
+        type: string
+        description: "Archive source"
+        required: true
+      - name: destination
+        type: string
+        description: "Target queue"
+        required: true
+      - name: time_range
+        type: string
+        description: "Time range (ISO 8601 interval)"
+        required: true
+      - name: filter
+        type: string
+        description: "JSON message filter"
+        required: false
+      - name: velocity
+        type: integer
+        description: "Messages per second"
+        required: false
+        default: 50
+    tags: ["queue", "replay", "archive", "reprocess", "history"]
+    test_prompts:
+      single:
+        - "Replay yesterday's messages"
+        - "Reprocess from archive"
+        - "Replay event stream"
+        - "Restore messages from backup"
+
+  - name: create_fifo_queue
+    descriptions:
+      minimal: "Create FIFO queue"
+      short: "Create FIFO ordered queue"
+      medium: "Create a First-In-First-Out queue guaranteeing message ordering."
+      long: "Create FIFO queue for ordered processing. Example: create_fifo_queue(name='order-processing.fifo', deduplication=true)."
+      verbose: "Create FIFO queue with strict ordering guarantees. Features: message ordering within groups, exactly-once delivery, deduplication. Example: create_fifo_queue(name='transactions.fifo', message_group_id_required=true, content_based_deduplication=true, deduplication_scope='message_group', visibility_timeout=60). Note: FIFO queues have lower throughput than standard queues. Warning: All messages in a group are blocked until current message is processed."
+    parameters:
+      - name: name
+        type: string
+        description: "Queue name (must end with .fifo)"
+        required: true
+      - name: deduplication
+        type: boolean
+        description: "Enable content-based deduplication"
+        required: false
+        default: true
+      - name: visibility_timeout
+        type: integer
+        description: "Visibility timeout in seconds"
+        required: false
+        default: 30
+      - name: message_group_id_required
+        type: boolean
+        description: "Require message group ID"
+        required: false
+        default: true
+      - name: deduplication_scope
+        type: string
+        description: "Deduplication scope"
+        required: false
+        default: "queue"
+        enum: ["queue", "message_group"]
+    tags: ["queue", "fifo", "ordered", "create", "exactly-once"]
+    test_prompts:
+      single:
+        - "Create FIFO queue"
+        - "Create ordered queue"
+        - "Make exactly-once queue"
+        - "Set up FIFO processing"
+
+  - name: batch_send_messages
+    descriptions:
+      minimal: "Batch send"
+      short: "Send messages in batch"
+      medium: "Send multiple messages to a queue in a single batch."
+      long: "Batch send for efficiency. Example: batch_send_messages(queue='events', messages='[{\"body\": \"msg1\"}, {\"body\": \"msg2\"}]')."
+      verbose: "Efficient batch message sending. Maximum 10 messages per batch. Features: individual delay per message, attributes per message. Example: batch_send_messages(queue='notifications', messages='[{\"id\": \"1\", \"body\": \"Hello\", \"delay\": 0, \"attributes\": {\"type\": \"greeting\"}}, {\"id\": \"2\", \"body\": \"Goodbye\", \"delay\": 60}]'). Returns: successful and failed message IDs. Note: Batch size limit varies by provider. Warning: Partial failures are possible."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: messages
+        type: string
+        description: "JSON array of messages"
+        required: true
+    tags: ["queue", "batch", "send", "messages", "bulk"]
+    test_prompts:
+      single:
+        - "Batch send messages"
+        - "Send multiple messages"
+        - "Bulk queue messages"
+        - "Send message batch"
+
+  - name: batch_receive_messages
+    descriptions:
+      minimal: "Batch receive"
+      short: "Receive messages in batch"
+      medium: "Receive multiple messages from a queue in a single call."
+      long: "Batch receive for efficiency. Example: batch_receive_messages(queue='tasks', max_messages=10, wait_time=5)."
+      verbose: "Efficient batch message retrieval. Long polling reduces empty responses. Example: batch_receive_messages(queue='processing-queue', max_messages=10, wait_time=20, visibility_timeout=120, attributes='[\"All\"]'). Returns array of messages with body, attributes, receipt handle. Note: May return fewer than max_messages. Warning: Long visibility timeout delays retry on failure."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: max_messages
+        type: integer
+        description: "Maximum messages to receive"
+        required: false
+        default: 10
+      - name: wait_time
+        type: integer
+        description: "Long polling wait time (seconds)"
+        required: false
+        default: 0
+      - name: visibility_timeout
+        type: integer
+        description: "Visibility timeout (seconds)"
+        required: false
+        default: 30
+      - name: attributes
+        type: string
+        description: "Attributes to return (JSON array)"
+        required: false
+    tags: ["queue", "batch", "receive", "messages", "poll"]
+    test_prompts:
+      single:
+        - "Batch receive messages"
+        - "Get multiple messages"
+        - "Poll queue for batch"
+        - "Receive message batch"
+
+  - name: batch_delete_messages
+    descriptions:
+      minimal: "Batch delete"
+      short: "Delete messages in batch"
+      medium: "Delete multiple messages from a queue in a single call."
+      long: "Batch delete processed messages. Example: batch_delete_messages(queue='tasks', receipt_handles='[\"handle1\", \"handle2\"]')."
+      verbose: "Efficient batch message deletion. Use after successful processing. Example: batch_delete_messages(queue='completed-tasks', entries='[{\"id\": \"1\", \"receipt_handle\": \"AQEBz...\"}, {\"id\": \"2\", \"receipt_handle\": \"AQEBx...\"}]'). Returns successful and failed deletions. Note: Receipt handles expire after visibility timeout. Warning: Deleting wrong message may cause data loss."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: entries
+        type: string
+        description: "JSON array with id and receipt_handle"
+        required: true
+    tags: ["queue", "batch", "delete", "messages", "acknowledge"]
+    test_prompts:
+      single:
+        - "Batch delete messages"
+        - "Delete multiple messages"
+        - "Bulk acknowledge messages"
+        - "Remove processed messages"
+
+  - name: change_message_visibility
+    descriptions:
+      minimal: "Change visibility"
+      short: "Change message visibility"
+      medium: "Extend or shorten the visibility timeout of a message."
+      long: "Adjust message visibility. Example: change_message_visibility(queue='tasks', receipt_handle='abc123', timeout=120)."
+      verbose: "Modify in-flight message visibility timeout. Use to: extend timeout for long processing, release message early (timeout=0). Example: change_message_visibility(queue='processing', receipt_handle='AQEBz...abc', timeout=300). Note: Can only extend up to 12 hours total. Warning: Setting to 0 makes message immediately visible to other consumers."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: receipt_handle
+        type: string
+        description: "Message receipt handle"
+        required: true
+      - name: timeout
+        type: integer
+        description: "New visibility timeout (seconds)"
+        required: true
+    tags: ["queue", "visibility", "timeout", "message", "extend"]
+    test_prompts:
+      single:
+        - "Extend message timeout"
+        - "Change visibility timeout"
+        - "Give more processing time"
+        - "Release message early"
+
+  - name: tag_queue
+    descriptions:
+      minimal: "Tag queue"
+      short: "Add tags to queue"
+      medium: "Add metadata tags to a queue for organization and billing."
+      long: "Tag queue for management. Example: tag_queue(queue='orders', tags='{\"environment\": \"production\", \"team\": \"orders\"}')."
+      verbose: "Add or update queue tags. Tags for: cost allocation, access control, organization. Example: tag_queue(queue='order-processing', tags='{\"environment\": \"production\", \"team\": \"orders\", \"cost-center\": \"cc-123\", \"data-classification\": \"pii\"}'). Note: Tag keys and values are case-sensitive. Warning: Tag changes may affect IAM policies."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: tags
+        type: string
+        description: "Tags as JSON object"
+        required: true
+    tags: ["queue", "tag", "metadata", "organize", "billing"]
+    test_prompts:
+      single:
+        - "Tag the queue"
+        - "Add queue tags"
+        - "Label queue for billing"
+        - "Set queue metadata"
+
+  - name: get_queue_url
+    descriptions:
+      minimal: "Get queue URL"
+      short: "Get queue URL"
+      medium: "Retrieve the URL endpoint for a queue by name."
+      long: "Get queue URL from name. Example: get_queue_url(name='my-queue', account_id='123456789012')."
+      verbose: "Resolve queue name to URL. Required for some queue operations. Example: get_queue_url(name='order-processing-queue', account_id='123456789012'). Returns full queue URL for API operations. Note: Queue must exist. Warning: Cross-account access requires proper permissions."
+    parameters:
+      - name: name
+        type: string
+        description: "Queue name"
+        required: true
+      - name: account_id
+        type: string
+        description: "AWS account ID (for cross-account)"
+        required: false
+    tags: ["queue", "url", "resolve", "endpoint", "lookup"]
+    test_prompts:
+      single:
+        - "Get queue URL"
+        - "Find queue endpoint"
+        - "Resolve queue name"
+        - "What's the queue URL"
+
+  - name: set_redrive_policy
+    descriptions:
+      minimal: "Set redrive"
+      short: "Configure dead letter queue"
+      medium: "Set up dead letter queue redrive policy for failed messages."
+      long: "Configure DLQ redrive. Example: set_redrive_policy(queue='orders', dlq='orders-dlq', max_receives=3)."
+      verbose: "Configure dead letter queue (DLQ) for message failures. Messages moved after max receive attempts. Example: set_redrive_policy(source_queue='order-processing', dead_letter_queue='order-processing-dlq', max_receive_count=5). Note: DLQ must exist and be same type (Standard/FIFO). Warning: Messages in DLQ must be manually investigated and reprocessed."
+    parameters:
+      - name: source_queue
+        type: string
+        description: "Source queue name"
+        required: true
+      - name: dead_letter_queue
+        type: string
+        description: "Dead letter queue ARN or URL"
+        required: true
+      - name: max_receive_count
+        type: integer
+        description: "Max receives before DLQ"
+        required: true
+    tags: ["queue", "dlq", "redrive", "dead-letter", "failed"]
+    test_prompts:
+      single:
+        - "Set up dead letter queue"
+        - "Configure DLQ"
+        - "Set redrive policy"
+        - "Move failed messages to DLQ"
+
+  - name: redrive_messages
+    descriptions:
+      minimal: "Redrive messages"
+      short: "Redrive from dead letter queue"
+      medium: "Move messages from dead letter queue back to source queue."
+      long: "Redrive DLQ messages. Example: redrive_messages(dlq='orders-dlq', destination='orders', velocity=10)."
+      verbose: "Redrive messages from DLQ to source queue for reprocessing. Options: all messages, filtered, with velocity control. Example: redrive_messages(dead_letter_queue='order-dlq', destination='order-processing', filter='{\"error_type\": \"transient\"}', velocity_per_second=20, max_messages=1000). Note: Fix underlying issues before redrive. Warning: Redriving without fixes causes loop back to DLQ."
+    parameters:
+      - name: dead_letter_queue
+        type: string
+        description: "DLQ name or ARN"
+        required: true
+      - name: destination
+        type: string
+        description: "Destination queue"
+        required: true
+      - name: filter
+        type: string
+        description: "Message filter (JSON)"
+        required: false
+      - name: velocity_per_second
+        type: integer
+        description: "Messages per second"
+        required: false
+        default: 10
+      - name: max_messages
+        type: integer
+        description: "Maximum messages to redrive"
+        required: false
+    tags: ["queue", "redrive", "dlq", "reprocess", "recover"]
+    test_prompts:
+      single:
+        - "Redrive DLQ messages"
+        - "Move messages from dead letter"
+        - "Reprocess failed messages"
+        - "Retry DLQ messages"
+
+  - name: schedule_message
+    descriptions:
+      minimal: "Schedule message"
+      short: "Schedule delayed message"
+      medium: "Schedule a message to be delivered at a specific time."
+      long: "Schedule future message delivery. Example: schedule_message(queue='reminders', body='Reminder!', deliver_at='2024-01-15T09:00:00Z')."
+      verbose: "Schedule messages for future delivery. Options: delay seconds or absolute timestamp. Example: schedule_message(queue='scheduled-tasks', body='{\"task\": \"daily_report\", \"params\": {}}', deliver_at='2024-01-15T09:00:00Z', attributes='{\"task_type\": \"report\"}', message_id='daily-report-20240115'). Note: Maximum delay varies by provider (15 minutes to 7 days). Warning: Scheduled messages count against quota."
+    parameters:
+      - name: queue
+        type: string
+        description: "Queue name"
+        required: true
+      - name: body
+        type: string
+        description: "Message body"
+        required: true
+      - name: deliver_at
+        type: string
+        description: "Delivery time (ISO 8601)"
+        required: true
+      - name: attributes
+        type: string
+        description: "Message attributes (JSON)"
+        required: false
+      - name: message_id
+        type: string
+        description: "Custom message ID"
+        required: false
+    tags: ["queue", "schedule", "delayed", "message", "future"]
+    test_prompts:
+      single:
+        - "Schedule message for later"
+        - "Send delayed message"
+        - "Queue future message"
+        - "Deliver message tomorrow"

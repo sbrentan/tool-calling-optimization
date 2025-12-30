@@ -388,3 +388,326 @@ tools:
         - "Validate the phone number format"
         - "Is this a valid URL?"
         - "Check if the string is a valid UUID"
+
+  - name: extract_entities
+    descriptions:
+      minimal: "Extract entities"
+      short: "Extract named entities from text"
+      medium: "Extract named entities like people, organizations, locations, and dates from text using NLP."
+      long: "Extract named entities from text. Identifies and categorizes entities like people, organizations, locations, dates, and more. Example: extract_entities(text='Apple CEO Tim Cook announced...')."
+      verbose: "Extract and classify named entities from text using natural language processing. Entity types: PERSON (names), ORG (organizations), LOC (locations), DATE, TIME, MONEY, PERCENT, PRODUCT, EVENT, WORK_OF_ART. Returns entities with text, type, and position. Example: extract_entities(text='Microsoft CEO Satya Nadella visited Paris on January 15th', entity_types=['PERSON', 'ORG', 'LOC', 'DATE']) returns [{\"text\": \"Microsoft\", \"type\": \"ORG\"}, {\"text\": \"Satya Nadella\", \"type\": \"PERSON\"}, ...]. Note: Accuracy depends on text quality and context. Warning: Ambiguous names may be misclassified without sufficient context."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to extract entities from"
+        required: true
+      - name: entity_types
+        type: array
+        description: "Types of entities to extract"
+        required: false
+      - name: include_positions
+        type: boolean
+        description: "Include character positions"
+        required: false
+        default: false
+    tags: ["text", "nlp", "entities", "ner", "extract", "recognition"]
+    test_prompts:
+      single:
+        - "Find all names mentioned in this article"
+        - "Extract organizations from the document"
+        - "Identify locations mentioned in the text"
+        - "What entities are in this paragraph?"
+
+  - name: analyze_sentiment
+    descriptions:
+      minimal: "Analyze sentiment"
+      short: "Analyze the sentiment of text"
+      medium: "Analyze the emotional sentiment of text as positive, negative, or neutral with a confidence score."
+      long: "Perform sentiment analysis on text. Returns sentiment label and confidence score. Can analyze overall or per-sentence. Example: analyze_sentiment(text='I love this product!') returns {'sentiment': 'positive', 'score': 0.95}."
+      verbose: "Analyze the emotional sentiment of text using NLP. Returns: overall sentiment (positive, negative, neutral), confidence score (0-1), and optionally per-sentence breakdown. Advanced options include aspect-based sentiment for specific topics. Example: analyze_sentiment(text='The food was great but service was slow', granularity='sentence', aspects=['food', 'service']) returns [{\"sentence\": \"The food was great\", \"sentiment\": \"positive\", \"aspects\": {\"food\": \"positive\"}}...]. Note: Sarcasm and irony may be misinterpreted. Warning: Short texts may have lower confidence scores."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to analyze"
+        required: true
+      - name: granularity
+        type: string
+        description: "Analysis level"
+        required: false
+        default: "document"
+        enum: ["document", "sentence"]
+      - name: aspects
+        type: array
+        description: "Specific aspects to analyze"
+        required: false
+    tags: ["text", "nlp", "sentiment", "emotion", "analysis"]
+    test_prompts:
+      single:
+        - "What is the sentiment of this review?"
+        - "Analyze if the feedback is positive or negative"
+        - "Detect the emotion in this message"
+        - "Is this comment positive?"
+
+  - name: extract_keywords
+    descriptions:
+      minimal: "Extract keywords"
+      short: "Extract important keywords from text"
+      medium: "Extract the most important keywords and key phrases from text for indexing or summarization."
+      long: "Extract keywords and key phrases from text. Returns ranked list of important terms with their relevance scores. Example: extract_keywords(text='Machine learning is transforming...', max_keywords=10)."
+      verbose: "Extract and rank keywords and key phrases from text using various algorithms. Methods: 'tfidf' (term frequency-inverse document frequency), 'textrank' (graph-based), 'rake' (Rapid Automatic Keyword Extraction), 'yake' (Yet Another Keyword Extractor). Returns keywords with relevance scores. Example: extract_keywords(text='...article about artificial intelligence...', method='textrank', max_keywords=15, include_phrases=true, min_word_length=3) returns [{\"keyword\": \"artificial intelligence\", \"score\": 0.89}, ...]. Note: Method choice affects results; experiment for best fit. Warning: Very short texts may not yield meaningful keywords."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to extract keywords from"
+        required: true
+      - name: max_keywords
+        type: integer
+        description: "Maximum keywords to return"
+        required: false
+        default: 10
+      - name: method
+        type: string
+        description: "Extraction algorithm"
+        required: false
+        default: "tfidf"
+        enum: ["tfidf", "textrank", "rake", "yake"]
+      - name: include_phrases
+        type: boolean
+        description: "Include multi-word phrases"
+        required: false
+        default: true
+    tags: ["text", "keywords", "extract", "nlp", "seo", "indexing"]
+    test_prompts:
+      single:
+        - "Extract the main keywords from this article"
+        - "What are the key topics in this document?"
+        - "Find important terms in the text"
+        - "Get keywords for SEO"
+
+  - name: correct_spelling
+    descriptions:
+      minimal: "Correct spelling"
+      short: "Check and correct spelling errors"
+      medium: "Check text for spelling errors and provide corrected version with suggested changes."
+      long: "Check and correct spelling errors in text. Returns corrected text and list of corrections made. Example: correct_spelling(text='Teh quck brown fox') returns corrected text with list of changes."
+      verbose: "Check text for spelling errors and apply corrections. Supports multiple languages with appropriate dictionaries. Can operate in 'correct' mode (auto-fix) or 'suggest' mode (provide alternatives). Respects proper nouns and technical terms. Example: correct_spelling(text='I recieved your mesage yestarday', language='en', mode='correct', add_to_dictionary=['API', 'OAuth']) returns {\"corrected\": \"I received your message yesterday\", \"corrections\": [...]}. Note: Context-aware correction improves accuracy. Warning: May incorrectly 'fix' valid specialized terminology."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to check"
+        required: true
+      - name: language
+        type: string
+        description: "Language code"
+        required: false
+        default: "en"
+      - name: mode
+        type: string
+        description: "Correction mode"
+        required: false
+        default: "correct"
+        enum: ["correct", "suggest"]
+      - name: add_to_dictionary
+        type: array
+        description: "Words to ignore"
+        required: false
+    tags: ["text", "spelling", "correct", "grammar", "proofread"]
+    test_prompts:
+      single:
+        - "Fix the spelling errors in this text"
+        - "Check this paragraph for typos"
+        - "Correct any misspelled words"
+        - "Proofread the spelling"
+
+  - name: check_grammar
+    descriptions:
+      minimal: "Check grammar"
+      short: "Check text for grammar errors"
+      medium: "Analyze text for grammatical errors and style issues with suggestions for improvement."
+      long: "Check text for grammar, punctuation, and style issues. Returns list of issues with suggestions. Example: check_grammar(text='Him go to store yesterday') returns grammar issues found."
+      verbose: "Comprehensive grammar and style checking. Checks: grammar rules, punctuation, subject-verb agreement, tense consistency, sentence structure, word choice, passive voice, and readability. Configurable strictness and style guides. Example: check_grammar(text='Their going too the store, me and him want too buy stuffs', style_guide='formal', check_passive=true) returns [{\"issue\": \"Their should be They're\", \"position\": 0, \"suggestion\": \"They're\"}...]. Note: Creative writing may flag intentional style choices. Warning: Context-dependent rules may produce false positives."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to check"
+        required: true
+      - name: language
+        type: string
+        description: "Language code"
+        required: false
+        default: "en"
+      - name: style_guide
+        type: string
+        description: "Style guide to follow"
+        required: false
+        enum: ["standard", "formal", "casual", "academic", "business"]
+      - name: check_passive
+        type: boolean
+        description: "Flag passive voice"
+        required: false
+        default: false
+    tags: ["text", "grammar", "proofread", "writing", "style"]
+    test_prompts:
+      single:
+        - "Check this text for grammar errors"
+        - "Find grammatical issues in the paragraph"
+        - "Proofread my writing"
+        - "Is this sentence grammatically correct?"
+
+  - name: generate_lorem_ipsum
+    descriptions:
+      minimal: "Generate lorem ipsum"
+      short: "Generate placeholder lorem ipsum text"
+      medium: "Generate lorem ipsum placeholder text of specified length in paragraphs, sentences, or words."
+      long: "Generate lorem ipsum dummy text. Specify amount in paragraphs, sentences, or words. Useful for mockups. Example: generate_lorem_ipsum(amount=3, unit='paragraphs')."
+      verbose: "Generate lorem ipsum placeholder text for design mockups and testing. Options: standard lorem ipsum, random Latin-like text, or themed placeholder (tech, business, hipster). Units: paragraphs, sentences, or words. Example: generate_lorem_ipsum(amount=5, unit='paragraphs', style='standard', start_with_lorem=true) generates 5 paragraphs starting with 'Lorem ipsum dolor sit amet...'. Note: HTML wrapper tags can be optionally added. Warning: Lorem ipsum is not real Latin and should not be used in production content."
+    parameters:
+      - name: amount
+        type: integer
+        description: "Amount of text units"
+        required: true
+      - name: unit
+        type: string
+        description: "Type of unit"
+        required: false
+        default: "paragraphs"
+        enum: ["paragraphs", "sentences", "words"]
+      - name: style
+        type: string
+        description: "Lorem ipsum style"
+        required: false
+        default: "standard"
+        enum: ["standard", "tech", "business", "hipster"]
+      - name: start_with_lorem
+        type: boolean
+        description: "Start with 'Lorem ipsum'"
+        required: false
+        default: true
+    tags: ["text", "lorem", "placeholder", "dummy", "generate"]
+    test_prompts:
+      single:
+        - "Generate 3 paragraphs of lorem ipsum"
+        - "Create placeholder text for the mockup"
+        - "Generate 100 words of dummy text"
+        - "Give me some lorem ipsum"
+
+  - name: compare_texts
+    descriptions:
+      minimal: "Compare texts"
+      short: "Compare two texts and find differences"
+      medium: "Compare two text versions and highlight additions, deletions, and modifications."
+      long: "Compare two texts and produce a diff showing changes. Returns line-by-line or word-by-word comparison. Example: compare_texts(text1='Hello world', text2='Hello there world')."
+      verbose: "Compare two text versions and identify differences. Modes: 'line' (line-by-line diff), 'word' (word-level changes), 'character' (character-by-character). Output formats: 'unified' (git-style), 'side_by_side', 'inline' (highlighted changes). Returns changes with type (added, removed, modified). Example: compare_texts(text1='The quick brown fox', text2='The slow brown dog', mode='word', output_format='inline', ignore_whitespace=true) highlights changed words. Note: Large texts may produce extensive diffs. Warning: Binary files are not supported."
+    parameters:
+      - name: text1
+        type: string
+        description: "Original text"
+        required: true
+      - name: text2
+        type: string
+        description: "Modified text"
+        required: true
+      - name: mode
+        type: string
+        description: "Comparison mode"
+        required: false
+        default: "line"
+        enum: ["line", "word", "character"]
+      - name: output_format
+        type: string
+        description: "Diff output format"
+        required: false
+        default: "unified"
+        enum: ["unified", "side_by_side", "inline"]
+      - name: ignore_whitespace
+        type: boolean
+        description: "Ignore whitespace changes"
+        required: false
+        default: false
+    tags: ["text", "compare", "diff", "changes", "version"]
+    test_prompts:
+      single:
+        - "Compare these two versions of the document"
+        - "Show the differences between the texts"
+        - "What changed between version 1 and 2?"
+        - "Find the differences in these paragraphs"
+
+  - name: encode_text
+    descriptions:
+      minimal: "Encode text"
+      short: "Encode text to various formats"
+      medium: "Encode text to Base64, URL encoding, HTML entities, or other formats."
+      long: "Encode text to various formats like Base64, URL encoding, or HTML entities. Example: encode_text(text='Hello World!', encoding='base64') returns 'SGVsbG8gV29ybGQh'."
+      verbose: "Encode text using various encoding schemes. Encodings: 'base64' (binary-to-text), 'url' (percent-encoding for URLs), 'html' (HTML entities), 'unicode_escape' (\\uXXXX format), 'hex' (hexadecimal), 'rot13' (Caesar cipher). Example: encode_text(text='Hello <World> & Friends', encoding='html') returns 'Hello &lt;World&gt; &amp; Friends'. Note: Some encodings increase text length. Warning: Encoding is not encryption; do not use for sensitive data."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to encode"
+        required: true
+      - name: encoding
+        type: string
+        description: "Encoding format"
+        required: true
+        enum: ["base64", "url", "html", "unicode_escape", "hex", "rot13"]
+    tags: ["text", "encode", "base64", "url", "convert"]
+    test_prompts:
+      single:
+        - "Encode this text as Base64"
+        - "URL encode the string"
+        - "Convert to HTML entities"
+        - "Encode special characters for the URL"
+
+  - name: decode_text
+    descriptions:
+      minimal: "Decode text"
+      short: "Decode text from various formats"
+      medium: "Decode text from Base64, URL encoding, HTML entities, or other encoded formats."
+      long: "Decode text from various encodings back to plain text. Example: decode_text(text='SGVsbG8gV29ybGQh', encoding='base64') returns 'Hello World!'."
+      verbose: "Decode encoded text back to its original form. Supported encodings: 'base64', 'url' (percent-decoding), 'html' (HTML entities like &amp;), 'unicode_escape' (\\uXXXX sequences), 'hex' (hexadecimal), 'rot13'. Example: decode_text(text='Hello%20World%21', encoding='url') returns 'Hello World!'. Note: Invalid encoded strings will produce errors. Warning: Malformed input may produce unexpected results."
+    parameters:
+      - name: text
+        type: string
+        description: "Encoded text to decode"
+        required: true
+      - name: encoding
+        type: string
+        description: "Source encoding format"
+        required: true
+        enum: ["base64", "url", "html", "unicode_escape", "hex", "rot13"]
+    tags: ["text", "decode", "base64", "url", "convert"]
+    test_prompts:
+      single:
+        - "Decode this Base64 string"
+        - "URL decode the text"
+        - "Convert HTML entities back to text"
+        - "Decode the encoded string"
+
+  - name: word_count
+    descriptions:
+      minimal: "Count words"
+      short: "Count words, characters, and sentences"
+      medium: "Count words, characters, sentences, and paragraphs in text with reading time estimate."
+      long: "Analyze text to count words, characters, sentences, and paragraphs. Also estimates reading time. Example: word_count(text='Hello world. This is a test.') returns counts and statistics."
+      verbose: "Comprehensive text statistics including: word count, character count (with/without spaces), sentence count, paragraph count, average word length, average sentence length, reading time (at 200-250 WPM), speaking time (at 150 WPM), and unique word count. Example: word_count(text='...article text...', reading_wpm=200, include_unique=true) returns {\"words\": 500, \"characters\": 2800, \"sentences\": 25, \"reading_time_minutes\": 2.5, \"unique_words\": 320}. Note: Reading time varies by content complexity. Warning: Sentence detection may be inaccurate for texts with unusual punctuation."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to analyze"
+        required: true
+      - name: reading_wpm
+        type: integer
+        description: "Reading speed for time estimate"
+        required: false
+        default: 200
+      - name: include_unique
+        type: boolean
+        description: "Count unique words"
+        required: false
+        default: false
+    tags: ["text", "count", "words", "statistics", "reading"]
+    test_prompts:
+      single:
+        - "How many words are in this text?"
+        - "Count the characters in the string"
+        - "What is the reading time for this article?"
+        - "Give me word count statistics"

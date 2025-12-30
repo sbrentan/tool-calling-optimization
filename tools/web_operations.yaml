@@ -354,3 +354,944 @@ tools:
         - "Decode the URL string '%20%26%3D'"
         - "Convert the encoded URL back to normal text"
         - "Decode this URL parameter: 'hello%20world'"
+
+  - name: send_email
+    descriptions:
+      minimal: "Send email"
+      short: "Send an email message"
+      medium: "Send an email to one or more recipients with optional attachments."
+      long: "Send an email message using SMTP. Supports HTML content, attachments, CC, BCC, and custom headers. Example: send_email(to='user@example.com', subject='Hello', body='Email content')."
+      verbose: "Send an email message via configured SMTP server. Supports plain text or HTML body, multiple recipients, CC, BCC, attachments, custom reply-to, and priority settings. Example: send_email(to='john@example.com', subject='Report', body='<h1>Monthly Report</h1><p>See attached.</p>', html=true, attachments='[\"report.pdf\"]', cc='manager@example.com', priority='high'). Note: Attachments must be accessible file paths. Warning: Email sending may be blocked by spam filters; verify recipient addresses."
+    parameters:
+      - name: to
+        type: string
+        description: "Recipient email address(es), comma-separated"
+        required: true
+      - name: subject
+        type: string
+        description: "Email subject line"
+        required: true
+      - name: body
+        type: string
+        description: "Email body content"
+        required: true
+      - name: html
+        type: boolean
+        description: "Send as HTML email"
+        required: false
+        default: false
+      - name: cc
+        type: string
+        description: "CC recipients, comma-separated"
+        required: false
+      - name: bcc
+        type: string
+        description: "BCC recipients, comma-separated"
+        required: false
+      - name: attachments
+        type: string
+        description: "JSON array of file paths to attach"
+        required: false
+      - name: reply_to
+        type: string
+        description: "Reply-to address"
+        required: false
+      - name: priority
+        type: string
+        description: "Email priority"
+        required: false
+        default: "normal"
+        enum: ["low", "normal", "high"]
+    tags: ["email", "send", "smtp", "message", "communication"]
+    test_prompts:
+      single:
+        - "Send an email to john@example.com"
+        - "Email the report to the team"
+        - "Send a notification email with attachment"
+        - "Email the customer about their order"
+
+  - name: web_search
+    descriptions:
+      minimal: "Web search"
+      short: "Search the web"
+      medium: "Perform a web search and return relevant results from search engines."
+      long: "Search the web using popular search engines. Returns titles, URLs, and snippets for top results. Example: web_search(query='python tutorial', num_results=10)."
+      verbose: "Perform a web search and retrieve results. Uses search engine APIs or web scraping. Returns structured results with title, URL, snippet, and optional metadata. Supports filtering by date, region, and content type. Example: web_search(query='machine learning best practices', num_results=20, region='en-US', time_range='past_year'). Note: Some search engines have rate limits. Warning: Automated searching may violate some search engine terms of service."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query"
+        required: true
+      - name: num_results
+        type: integer
+        description: "Number of results to return"
+        required: false
+        default: 10
+      - name: region
+        type: string
+        description: "Region/locale for results"
+        required: false
+      - name: time_range
+        type: string
+        description: "Time filter for results"
+        required: false
+        enum: ["any", "past_day", "past_week", "past_month", "past_year"]
+    tags: ["web", "search", "google", "query", "find"]
+    test_prompts:
+      single:
+        - "Search the web for Python tutorials"
+        - "Find information about climate change"
+        - "Search for best restaurants near me"
+        - "Look up the latest news about AI"
+
+  - name: parse_json
+    descriptions:
+      minimal: "Parse JSON"
+      short: "Parse a JSON string"
+      medium: "Parse a JSON string and extract specific values using JSON path expressions."
+      long: "Parse a JSON string and optionally extract specific values using JSONPath or key paths. Example: parse_json(json='{\"user\": {\"name\": \"John\"}}', path='$.user.name') returns 'John'."
+      verbose: "Parse JSON data and extract specific values. Supports JSONPath expressions for complex queries or simple dot-notation paths. Can validate JSON structure and handle malformed input. Example: parse_json(json=response_body, path='$.data[*].id', validate=true) extracts all IDs from a data array. JSONPath supports wildcards, filters, and recursive descent. Note: Returns the raw parsed object if no path specified. Warning: Very large JSON may have memory implications."
+    parameters:
+      - name: json
+        type: string
+        description: "JSON string to parse"
+        required: true
+      - name: path
+        type: string
+        description: "JSONPath or dot-notation path to extract"
+        required: false
+      - name: validate
+        type: boolean
+        description: "Validate JSON structure"
+        required: false
+        default: false
+    tags: ["json", "parse", "extract", "data", "web"]
+    test_prompts:
+      single:
+        - "Parse the JSON and get the user name"
+        - "Extract the price from the JSON response"
+        - "Get all IDs from the JSON array"
+        - "Parse and validate this JSON string"
+
+  - name: format_json
+    descriptions:
+      minimal: "Format JSON"
+      short: "Format and pretty-print JSON"
+      medium: "Format a JSON string with proper indentation and optional sorting of keys."
+      long: "Format and pretty-print a JSON string. Options for indentation, key sorting, and minification. Example: format_json(json='{\"b\":1,\"a\":2}', indent=2, sort_keys=true)."
+      verbose: "Format JSON data for readability or minification. Options include: custom indentation (spaces or tabs), alphabetical key sorting, stripping null values, converting to single line (minify). Example: format_json(json=compact_json, indent=4, sort_keys=true, strip_nulls=true). Note: Formatting preserves all data but may change key order. Warning: Minification removes all whitespace; ensure JSON is valid before minifying."
+    parameters:
+      - name: json
+        type: string
+        description: "JSON string to format"
+        required: true
+      - name: indent
+        type: integer
+        description: "Indentation spaces (0 = minify)"
+        required: false
+        default: 2
+      - name: sort_keys
+        type: boolean
+        description: "Sort keys alphabetically"
+        required: false
+        default: false
+      - name: strip_nulls
+        type: boolean
+        description: "Remove null values"
+        required: false
+        default: false
+    tags: ["json", "format", "pretty", "beautify", "web"]
+    test_prompts:
+      single:
+        - "Pretty print this JSON"
+        - "Format the JSON with 4 space indentation"
+        - "Minify the JSON response"
+        - "Sort the JSON keys alphabetically"
+
+  - name: validate_json
+    descriptions:
+      minimal: "Validate JSON"
+      short: "Validate JSON against a schema"
+      medium: "Validate a JSON document against a JSON Schema to ensure it matches the expected structure."
+      long: "Validate JSON data against a JSON Schema. Returns validation result and any errors found. Example: validate_json(json='{\"name\": \"John\"}', schema='{\"type\": \"object\", \"required\": [\"name\"]}')."
+      verbose: "Validate JSON data against a JSON Schema (Draft 4/6/7/2019-09 compatible). Returns detailed validation results including all schema violations, their locations, and expected vs actual values. Example: validate_json(json=user_data, schema=user_schema_json, strict=true). Supports $ref for schema references. Note: Schema must be valid JSON Schema. Warning: Complex schemas with many $refs may be slow to validate."
+    parameters:
+      - name: json
+        type: string
+        description: "JSON data to validate"
+        required: true
+      - name: schema
+        type: string
+        description: "JSON Schema to validate against"
+        required: true
+      - name: strict
+        type: boolean
+        description: "Fail on additional properties"
+        required: false
+        default: false
+    tags: ["json", "validate", "schema", "verify", "web"]
+    test_prompts:
+      single:
+        - "Validate this JSON against the schema"
+        - "Check if the response matches the expected schema"
+        - "Verify the JSON structure is correct"
+
+  - name: graphql_query
+    descriptions:
+      minimal: "GraphQL query"
+      short: "Execute a GraphQL query"
+      medium: "Execute a GraphQL query or mutation against a GraphQL API endpoint."
+      long: "Execute a GraphQL query or mutation. Supports variables and custom headers for authentication. Example: graphql_query(url='https://api.example.com/graphql', query='{ users { id name } }')."
+      verbose: "Execute a GraphQL query or mutation against an API. Supports query variables, custom operation names, and authentication headers. Returns data and any errors. Example: graphql_query(url='https://api.example.com/graphql', query='mutation CreateUser($input: UserInput!) { createUser(input: $input) { id } }', variables='{\"input\": {\"name\": \"John\"}}', headers='{\"Authorization\": \"Bearer token\"}'). Note: Returns both data and errors arrays. Warning: Introspection may be disabled on some servers."
+    parameters:
+      - name: url
+        type: string
+        description: "GraphQL endpoint URL"
+        required: true
+      - name: query
+        type: string
+        description: "GraphQL query or mutation"
+        required: true
+      - name: variables
+        type: string
+        description: "JSON object of variables"
+        required: false
+      - name: operation_name
+        type: string
+        description: "Operation name for multi-operation documents"
+        required: false
+      - name: headers
+        type: string
+        description: "JSON object of HTTP headers"
+        required: false
+    tags: ["graphql", "query", "api", "web", "request"]
+    test_prompts:
+      single:
+        - "Execute a GraphQL query to get users"
+        - "Run the GraphQL mutation"
+        - "Query the GraphQL API for products"
+        - "Fetch data using GraphQL"
+
+  - name: websocket_connect
+    descriptions:
+      minimal: "WebSocket connect"
+      short: "Connect to a WebSocket server"
+      medium: "Establish a WebSocket connection for real-time bidirectional communication."
+      long: "Connect to a WebSocket server for real-time communication. Can send and receive messages after connection. Example: websocket_connect(url='wss://stream.example.com/feed', on_message='log')."
+      verbose: "Establish a WebSocket connection for real-time bidirectional communication. Supports secure (wss://) and insecure (ws://) connections. Can specify subprotocols and custom headers. Returns a connection ID for subsequent send/receive operations. Example: websocket_connect(url='wss://realtime.example.com/socket', protocols='[\"graphql-transport-ws\"]', headers='{\"Authorization\": \"Bearer token\"}'). Note: Connection persists until explicitly closed. Warning: Network issues may cause disconnection; implement reconnection logic."
+    parameters:
+      - name: url
+        type: string
+        description: "WebSocket URL (ws:// or wss://)"
+        required: true
+      - name: protocols
+        type: string
+        description: "JSON array of subprotocols"
+        required: false
+      - name: headers
+        type: string
+        description: "JSON object of HTTP headers"
+        required: false
+    tags: ["websocket", "realtime", "connect", "stream", "web"]
+    test_prompts:
+      single:
+        - "Connect to the WebSocket server"
+        - "Establish a real-time connection to the stream"
+        - "Open a WebSocket to the chat server"
+
+  - name: oauth_authenticate
+    descriptions:
+      minimal: "OAuth authenticate"
+      short: "Perform OAuth authentication"
+      medium: "Authenticate with an OAuth 2.0 provider and obtain access tokens."
+      long: "Perform OAuth 2.0 authentication. Supports authorization code, client credentials, and refresh token flows. Example: oauth_authenticate(provider='google', client_id='...', client_secret='...', grant_type='client_credentials')."
+      verbose: "Perform OAuth 2.0 authentication with various grant types. Flows: 'authorization_code' (user login), 'client_credentials' (server-to-server), 'refresh_token' (token renewal), 'device_code' (IoT devices). Returns access token, refresh token (if applicable), and expiration. Example: oauth_authenticate(token_url='https://oauth.example.com/token', client_id='abc', client_secret='xyz', grant_type='client_credentials', scope='read write'). Note: Authorization code flow requires redirect URI. Warning: Store tokens securely; never expose client secrets."
+    parameters:
+      - name: token_url
+        type: string
+        description: "OAuth token endpoint URL"
+        required: true
+      - name: client_id
+        type: string
+        description: "OAuth client ID"
+        required: true
+      - name: client_secret
+        type: string
+        description: "OAuth client secret"
+        required: true
+      - name: grant_type
+        type: string
+        description: "OAuth grant type"
+        required: true
+        enum: ["authorization_code", "client_credentials", "refresh_token", "device_code"]
+      - name: scope
+        type: string
+        description: "OAuth scopes (space-separated)"
+        required: false
+      - name: redirect_uri
+        type: string
+        description: "Redirect URI for auth code flow"
+        required: false
+      - name: code
+        type: string
+        description: "Authorization code (for auth code flow)"
+        required: false
+      - name: refresh_token
+        type: string
+        description: "Refresh token (for refresh flow)"
+        required: false
+    tags: ["oauth", "auth", "token", "security", "web"]
+    test_prompts:
+      single:
+        - "Authenticate with the OAuth provider"
+        - "Get an access token using client credentials"
+        - "Refresh the OAuth access token"
+        - "Perform OAuth authentication"
+
+  - name: rss_feed_parse
+    descriptions:
+      minimal: "Parse RSS feed"
+      short: "Parse an RSS or Atom feed"
+      medium: "Fetch and parse an RSS or Atom feed to extract articles and entries."
+      long: "Fetch and parse an RSS/Atom feed. Returns structured data including titles, links, descriptions, and dates for each entry. Example: rss_feed_parse(url='https://blog.example.com/feed.xml')."
+      verbose: "Fetch and parse RSS 2.0, RSS 1.0, or Atom feeds. Returns feed metadata (title, description, last updated) and entries with title, link, description/content, author, published date, and categories. Can limit number of entries and parse date strings. Example: rss_feed_parse(url='https://news.example.com/rss', max_entries=20, include_content=true). Note: Content may be HTML and require sanitization. Warning: Some feeds may require authentication or have rate limits."
+    parameters:
+      - name: url
+        type: string
+        description: "RSS/Atom feed URL"
+        required: true
+      - name: max_entries
+        type: integer
+        description: "Maximum entries to return"
+        required: false
+        default: 50
+      - name: include_content
+        type: boolean
+        description: "Include full content/description"
+        required: false
+        default: true
+    tags: ["rss", "feed", "atom", "parse", "news", "web"]
+    test_prompts:
+      single:
+        - "Parse the RSS feed from the blog"
+        - "Get articles from the news feed"
+        - "Read the Atom feed and list entries"
+        - "Fetch the latest posts from the RSS feed"
+
+  - name: sitemap_parse
+    descriptions:
+      minimal: "Parse sitemap"
+      short: "Parse a website's sitemap"
+      medium: "Parse an XML sitemap to extract all URLs from a website."
+      long: "Parse an XML sitemap (sitemap.xml) to extract URLs, last modified dates, and priorities. Supports sitemap index files. Example: sitemap_parse(url='https://example.com/sitemap.xml')."
+      verbose: "Parse XML sitemaps to extract all URLs from a website. Supports standard sitemaps and sitemap indexes (collections of sitemaps). Returns URL, lastmod date, changefreq, and priority for each entry. Can recursively parse sitemap indexes. Example: sitemap_parse(url='https://shop.example.com/sitemap_index.xml', recursive=true, filter_path='/products/'). Note: Large sitemaps may be split into multiple files. Warning: Very large sites may have millions of URLs; use filtering."
+    parameters:
+      - name: url
+        type: string
+        description: "Sitemap URL"
+        required: true
+      - name: recursive
+        type: boolean
+        description: "Recursively parse sitemap indexes"
+        required: false
+        default: true
+      - name: filter_path
+        type: string
+        description: "Only return URLs containing this path"
+        required: false
+    tags: ["sitemap", "seo", "urls", "crawl", "web"]
+    test_prompts:
+      single:
+        - "Parse the website's sitemap"
+        - "Get all URLs from the sitemap"
+        - "Extract product pages from the sitemap"
+        - "Analyze the sitemap.xml file"
+
+  - name: dns_lookup
+    descriptions:
+      minimal: "DNS lookup"
+      short: "Perform a DNS lookup"
+      medium: "Look up DNS records for a domain name including A, AAAA, MX, TXT, and other record types."
+      long: "Perform DNS lookups for a domain. Supports A, AAAA, MX, TXT, NS, CNAME, SOA, and other record types. Example: dns_lookup(domain='example.com', record_type='MX')."
+      verbose: "Perform DNS queries for various record types. Types: 'A' (IPv4), 'AAAA' (IPv6), 'MX' (mail servers), 'TXT' (text/SPF), 'NS' (nameservers), 'CNAME' (canonical name), 'SOA' (authority), 'PTR' (reverse), 'SRV' (service). Returns all matching records with TTL. Example: dns_lookup(domain='example.com', record_type='TXT', nameserver='8.8.8.8'). Note: Results may vary by DNS server due to caching. Warning: Some record types require specific query formats."
+    parameters:
+      - name: domain
+        type: string
+        description: "Domain name to look up"
+        required: true
+      - name: record_type
+        type: string
+        description: "DNS record type"
+        required: false
+        default: "A"
+        enum: ["A", "AAAA", "MX", "TXT", "NS", "CNAME", "SOA", "PTR", "SRV", "ANY"]
+      - name: nameserver
+        type: string
+        description: "DNS server to query"
+        required: false
+    tags: ["dns", "lookup", "domain", "network", "web"]
+    test_prompts:
+      single:
+        - "Look up the IP address for google.com"
+        - "Get the MX records for the domain"
+        - "Find the nameservers for example.com"
+        - "Look up TXT records for the domain"
+
+  - name: whois_lookup
+    descriptions:
+      minimal: "WHOIS lookup"
+      short: "Look up domain registration information"
+      medium: "Query WHOIS databases for domain registration details including registrar, dates, and contacts."
+      long: "Look up WHOIS information for a domain. Returns registration details including registrar, creation date, expiration date, and name servers. Example: whois_lookup(domain='example.com')."
+      verbose: "Query WHOIS databases for domain registration information. Returns: registrar name, registration date, expiration date, last updated date, name servers, domain status, and contact information (if not private). Works with most TLDs but format varies. Example: whois_lookup(domain='example.com', follow_referral=true). Note: Many domains use privacy protection hiding contact info. Warning: Excessive queries may be rate-limited by WHOIS servers."
+    parameters:
+      - name: domain
+        type: string
+        description: "Domain name to look up"
+        required: true
+      - name: follow_referral
+        type: boolean
+        description: "Follow referrals to authoritative server"
+        required: false
+        default: true
+    tags: ["whois", "domain", "lookup", "registration", "web"]
+    test_prompts:
+      single:
+        - "Look up who owns example.com"
+        - "Get WHOIS information for the domain"
+        - "When does this domain expire?"
+        - "Find the registrar for the domain"
+
+  - name: ssl_certificate_check
+    descriptions:
+      minimal: "Check SSL certificate"
+      short: "Check a website's SSL certificate"
+      medium: "Retrieve and analyze SSL/TLS certificate information for a domain."
+      long: "Check SSL/TLS certificate for a domain. Returns issuer, validity dates, subject, and whether the certificate is valid. Example: ssl_certificate_check(domain='example.com')."
+      verbose: "Retrieve and analyze SSL/TLS certificates for a domain. Returns comprehensive information: issuer, subject, validity period, signature algorithm, public key info, SANs (Subject Alternative Names), certificate chain, and validation status. Checks for common issues like expiration, hostname mismatch, and weak algorithms. Example: ssl_certificate_check(domain='shop.example.com', port=443, check_chain=true). Note: Certificate chain validation requires trusted CA certificates. Warning: Some servers may require SNI (Server Name Indication)."
+    parameters:
+      - name: domain
+        type: string
+        description: "Domain to check"
+        required: true
+      - name: port
+        type: integer
+        description: "HTTPS port"
+        required: false
+        default: 443
+      - name: check_chain
+        type: boolean
+        description: "Validate the full certificate chain"
+        required: false
+        default: true
+    tags: ["ssl", "tls", "certificate", "security", "https", "web"]
+    test_prompts:
+      single:
+        - "Check the SSL certificate for google.com"
+        - "When does the SSL certificate expire?"
+        - "Verify the website's HTTPS certificate"
+        - "Is the SSL certificate valid?"
+
+  - name: http_patch
+    descriptions:
+      minimal: "Make PATCH request"
+      short: "Make an HTTP PATCH request for partial updates"
+      medium: "Make an HTTP PATCH request to partially update a resource on a server."
+      long: "Make an HTTP PATCH request to partially update a resource. Unlike PUT, PATCH only updates the specified fields. Example: http_patch(url='https://api.example.com/users/123', body='{\"email\": \"new@example.com\"}')."
+      verbose: "Make an HTTP PATCH request for partial resource updates. PATCH only updates the specified fields, leaving others unchanged (unlike PUT which replaces entirely). Supports JSON Patch format and merge patch. Example: http_patch(url='https://api.example.com/users/123', body='{\"status\": \"active\"}', headers='{\"Authorization\": \"Bearer token\"}', content_type='merge-patch+json'). Note: Not all APIs support PATCH; some require PUT for any updates. Warning: Behavior depends on server implementation."
+    parameters:
+      - name: url
+        type: string
+        description: "URL of the resource to update"
+        required: true
+      - name: body
+        type: string
+        description: "Patch data (JSON string)"
+        required: true
+      - name: headers
+        type: string
+        description: "JSON object of HTTP headers"
+        required: false
+      - name: content_type
+        type: string
+        description: "Content type of the patch"
+        required: false
+        default: "json"
+        enum: ["json", "json-patch", "merge-patch+json"]
+      - name: timeout
+        type: integer
+        description: "Request timeout in seconds"
+        required: false
+        default: 30
+    tags: ["http", "web", "api", "patch", "request", "update"]
+    test_prompts:
+      single:
+        - "Update just the user's email address"
+        - "Partially update the product record"
+        - "Make a PATCH request to update the status"
+
+  - name: curl_request
+    descriptions:
+      minimal: "cURL request"
+      short: "Execute a cURL-like HTTP request"
+      medium: "Make a flexible HTTP request with full control over method, headers, body, and options like a cURL command."
+      long: "Execute a highly configurable HTTP request similar to cURL. Full control over method, headers, auth, cookies, redirects, and SSL options. Example: curl_request(url='https://api.example.com', method='POST', headers='{...}', body='{...}')."
+      verbose: "Execute a flexible HTTP request with full cURL-like control. Options: custom method, headers, body, HTTP auth (basic, digest, bearer), cookies, follow redirects, verify SSL, proxy, timeout, custom user-agent. Returns complete response including headers. Example: curl_request(url='https://api.example.com/data', method='POST', headers='{\"X-API-Key\": \"abc\"}', body='{\"test\": true}', auth_type='bearer', auth_token='token123', verify_ssl=true, follow_redirects=true). Note: Cookies can be sent/received for session management. Warning: Disabling SSL verification is insecure."
+    parameters:
+      - name: url
+        type: string
+        description: "Request URL"
+        required: true
+      - name: method
+        type: string
+        description: "HTTP method"
+        required: false
+        default: "GET"
+        enum: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
+      - name: headers
+        type: string
+        description: "JSON object of headers"
+        required: false
+      - name: body
+        type: string
+        description: "Request body"
+        required: false
+      - name: auth_type
+        type: string
+        description: "Authentication type"
+        required: false
+        enum: ["none", "basic", "bearer", "digest"]
+      - name: auth_username
+        type: string
+        description: "Username for basic/digest auth"
+        required: false
+      - name: auth_password
+        type: string
+        description: "Password for basic/digest auth"
+        required: false
+      - name: auth_token
+        type: string
+        description: "Token for bearer auth"
+        required: false
+      - name: cookies
+        type: string
+        description: "JSON object of cookies to send"
+        required: false
+      - name: follow_redirects
+        type: boolean
+        description: "Follow HTTP redirects"
+        required: false
+        default: true
+      - name: verify_ssl
+        type: boolean
+        description: "Verify SSL certificates"
+        required: false
+        default: true
+      - name: timeout
+        type: integer
+        description: "Request timeout in seconds"
+        required: false
+        default: 30
+    tags: ["http", "curl", "request", "api", "web", "flexible"]
+    test_prompts:
+      single:
+        - "Make a request like curl would"
+        - "Send a request with basic authentication"
+        - "Execute an HTTP request with custom headers and cookies"
+
+  - name: webhook_trigger
+    descriptions:
+      minimal: "Trigger webhook"
+      short: "Send a webhook notification"
+      medium: "Trigger a webhook by sending an HTTP POST with a JSON payload to a webhook URL."
+      long: "Send a webhook notification to a specified URL. Includes JSON payload, optional HMAC signature, and retry logic. Example: webhook_trigger(url='https://hooks.example.com/webhook', payload='{\"event\": \"order.created\", \"data\": {...}}')."
+      verbose: "Trigger a webhook by sending an HTTP POST request with a JSON payload. Supports HMAC-SHA256 signing for security verification, custom headers, and retry logic. Example: webhook_trigger(url='https://hooks.example.com/orders', payload='{\"event\": \"order.completed\", \"order_id\": 12345}', secret='webhook_secret_key', sign_header='X-Signature', retries=3). Note: Signature is computed as HMAC-SHA256(secret, payload). Warning: Ensure webhook URLs are trusted; payloads may contain sensitive data."
+    parameters:
+      - name: url
+        type: string
+        description: "Webhook URL"
+        required: true
+      - name: payload
+        type: string
+        description: "JSON payload to send"
+        required: true
+      - name: secret
+        type: string
+        description: "Secret for HMAC signing"
+        required: false
+      - name: sign_header
+        type: string
+        description: "Header name for signature"
+        required: false
+      - name: headers
+        type: string
+        description: "Additional JSON headers"
+        required: false
+      - name: retries
+        type: integer
+        description: "Number of retry attempts"
+        required: false
+        default: 0
+    tags: ["webhook", "trigger", "notify", "http", "post", "event"]
+    test_prompts:
+      single:
+        - "Trigger the order webhook"
+        - "Send a webhook notification"
+        - "Notify the external system via webhook"
+        - "Fire the webhook with the event data"
+
+  - name: scrape_webpage
+    descriptions:
+      minimal: "Scrape webpage"
+      short: "Extract data from a webpage"
+      medium: "Scrape and extract structured data from a webpage using CSS selectors or XPath."
+      long: "Extract data from web pages using CSS selectors or XPath expressions. Returns structured data. Example: scrape_webpage(url='https://example.com/products', selectors={'title': 'h1.product-name', 'price': '.price'})."
+      verbose: "Extract structured data from web pages using CSS selectors or XPath. Supports JavaScript-rendered pages (headless browser), pagination, and multiple page scraping. Example: scrape_webpage(url='https://shop.example.com/products', selectors={'name': 'h2.product-title', 'price': 'span.price', 'image': 'img.product-image@src'}, render_js=true, wait_for='.products-loaded', paginate={'next': 'a.next-page', 'max_pages': 5}). Note: Respect robots.txt and rate limits. Warning: Web scraping may violate terms of service; ensure compliance."
+    parameters:
+      - name: url
+        type: string
+        description: "URL to scrape"
+        required: true
+      - name: selectors
+        type: string
+        description: "JSON map of field names to CSS/XPath selectors"
+        required: true
+      - name: render_js
+        type: boolean
+        description: "Render JavaScript (headless browser)"
+        required: false
+        default: false
+      - name: wait_for
+        type: string
+        description: "CSS selector to wait for before scraping"
+        required: false
+      - name: headers
+        type: string
+        description: "Custom HTTP headers (JSON)"
+        required: false
+      - name: paginate
+        type: string
+        description: "Pagination config (JSON)"
+        required: false
+    tags: ["web", "scrape", "extract", "parse", "html", "data"]
+    test_prompts:
+      single:
+        - "Scrape product data from this page"
+        - "Extract prices from the webpage"
+        - "Get all article titles from the site"
+        - "Scrape the table data from this URL"
+
+  - name: check_url_status
+    descriptions:
+      minimal: "Check URL status"
+      short: "Check if a URL is accessible"
+      medium: "Check the HTTP status and response time of a URL to verify it's online."
+      long: "Check if a URL is accessible and return its HTTP status code, response time, and headers. Example: check_url_status(url='https://example.com', timeout=10)."
+      verbose: "Check URL accessibility and health. Returns: HTTP status code, response time (ms), response headers, redirect chain, SSL certificate info. Useful for monitoring and link checking. Example: check_url_status(url='https://api.example.com/health', method='HEAD', follow_redirects=true, verify_ssl=true, expected_status=[200, 201]) returns {\"status\": 200, \"response_time_ms\": 145, \"ssl_valid\": true, ...}. Note: HEAD method is faster as it doesn't download body. Warning: Some servers block HEAD requests; use GET as fallback."
+    parameters:
+      - name: url
+        type: string
+        description: "URL to check"
+        required: true
+      - name: method
+        type: string
+        description: "HTTP method"
+        required: false
+        default: "HEAD"
+        enum: ["HEAD", "GET"]
+      - name: timeout
+        type: integer
+        description: "Timeout in seconds"
+        required: false
+        default: 10
+      - name: follow_redirects
+        type: boolean
+        description: "Follow HTTP redirects"
+        required: false
+        default: true
+      - name: verify_ssl
+        type: boolean
+        description: "Verify SSL certificate"
+        required: false
+        default: true
+      - name: expected_status
+        type: array
+        description: "Expected status codes"
+        required: false
+    tags: ["web", "url", "check", "status", "health", "monitor"]
+    test_prompts:
+      single:
+        - "Is this website online?"
+        - "Check if the API endpoint is responding"
+        - "Verify the URL is accessible"
+        - "Check the status of the website"
+
+  - name: shorten_url
+    descriptions:
+      minimal: "Shorten URL"
+      short: "Create a shortened URL"
+      medium: "Create a shortened URL using a URL shortening service."
+      long: "Generate a short URL that redirects to the original long URL. Supports custom aliases and expiration. Example: shorten_url(url='https://example.com/very/long/path/to/page', alias='my-link')."
+      verbose: "Create shortened URLs for easier sharing. Features: custom aliases, expiration dates, click tracking, password protection. Services: 'bitly', 'tinyurl', 'custom' (self-hosted). Example: shorten_url(url='https://docs.example.com/api/v2/reference/endpoints', service='bitly', alias='api-docs', expires_at='2024-12-31', track_clicks=true) returns 'https://bit.ly/api-docs'. Note: Custom aliases must be unique and available. Warning: Shortened URLs can obscure malicious destinations; use trusted services."
+    parameters:
+      - name: url
+        type: string
+        description: "URL to shorten"
+        required: true
+      - name: service
+        type: string
+        description: "Shortening service"
+        required: false
+        default: "bitly"
+        enum: ["bitly", "tinyurl", "custom"]
+      - name: alias
+        type: string
+        description: "Custom short alias"
+        required: false
+      - name: expires_at
+        type: string
+        description: "Expiration date"
+        required: false
+      - name: track_clicks
+        type: boolean
+        description: "Enable click tracking"
+        required: false
+        default: true
+    tags: ["web", "url", "shorten", "link", "share"]
+    test_prompts:
+      single:
+        - "Create a short URL for this link"
+        - "Shorten this long URL"
+        - "Generate a bitly link"
+        - "Make a tiny URL for sharing"
+
+  - name: validate_url
+    descriptions:
+      minimal: "Validate URL"
+      short: "Validate URL format"
+      medium: "Validate that a string is a properly formatted URL."
+      long: "Check if a string is a valid URL with proper format. Can check specific schemes and validate domain. Example: validate_url(url='https://example.com/path', check_dns=true)."
+      verbose: "Validate URL format and optionally verify accessibility. Checks: proper scheme, valid domain format, allowed schemes, DNS resolution, SSL validity. Example: validate_url(url='https://api.example.com/v2', allowed_schemes=['https'], check_dns=true, check_ssl=true) returns {\"valid\": true, \"scheme\": \"https\", \"domain\": \"api.example.com\", \"dns_resolves\": true, \"ssl_valid\": true}. Note: DNS and SSL checks require network access. Warning: Valid format doesn't guarantee the resource exists."
+    parameters:
+      - name: url
+        type: string
+        description: "URL to validate"
+        required: true
+      - name: allowed_schemes
+        type: array
+        description: "Allowed URL schemes"
+        required: false
+      - name: check_dns
+        type: boolean
+        description: "Verify domain resolves"
+        required: false
+        default: false
+      - name: check_ssl
+        type: boolean
+        description: "Verify SSL certificate"
+        required: false
+        default: false
+    tags: ["web", "url", "validate", "check", "format"]
+    test_prompts:
+      single:
+        - "Is this a valid URL?"
+        - "Validate the URL format"
+        - "Check if this link is properly formatted"
+        - "Verify the URL is correct"
+
+  - name: parse_html
+    descriptions:
+      minimal: "Parse HTML"
+      short: "Parse HTML content"
+      medium: "Parse HTML content and extract elements, text, or attributes using selectors."
+      long: "Parse HTML string and extract data using CSS selectors or XPath. Returns matched elements and their content. Example: parse_html(html='<div>...</div>', selector='div.content p')."
+      verbose: "Parse HTML content and extract structured data. Input can be HTML string or URL. Extraction methods: CSS selectors, XPath, tag names. Returns: text content, HTML content, attributes. Example: parse_html(html='<ul><li>Item 1</li><li>Item 2</li></ul>', selector='li', extract='text', as_list=true) returns ['Item 1', 'Item 2']. Note: Handles malformed HTML gracefully. Warning: Be cautious parsing untrusted HTML to avoid XSS."
+    parameters:
+      - name: html
+        type: string
+        description: "HTML content to parse"
+        required: true
+      - name: selector
+        type: string
+        description: "CSS selector or XPath"
+        required: true
+      - name: extract
+        type: string
+        description: "What to extract"
+        required: false
+        default: "text"
+        enum: ["text", "html", "attribute"]
+      - name: attribute
+        type: string
+        description: "Attribute name (if extract=attribute)"
+        required: false
+      - name: as_list
+        type: boolean
+        description: "Return all matches as list"
+        required: false
+        default: false
+    tags: ["web", "html", "parse", "extract", "dom", "selector"]
+    test_prompts:
+      single:
+        - "Extract all links from this HTML"
+        - "Parse the HTML and get the title"
+        - "Get the text from all paragraph tags"
+        - "Extract data from the HTML table"
+
+  - name: resolve_dns
+    descriptions:
+      minimal: "Resolve DNS"
+      short: "Look up DNS records"
+      medium: "Query DNS records for a domain including A, AAAA, MX, TXT, and other record types."
+      long: "Perform DNS lookups for a domain. Query various record types. Example: resolve_dns(domain='example.com', record_type='MX')."
+      verbose: "Query DNS records for a domain. Record types: 'A' (IPv4), 'AAAA' (IPv6), 'MX' (mail), 'TXT' (text/SPF/DKIM), 'CNAME' (alias), 'NS' (nameserver), 'SOA' (authority), 'PTR' (reverse). Can use specific DNS servers. Example: resolve_dns(domain='example.com', record_type='ALL', dns_server='8.8.8.8', timeout=5) returns all record types. Note: DNS propagation may cause different results from different servers. Warning: Some records may not exist for all domains."
+    parameters:
+      - name: domain
+        type: string
+        description: "Domain to look up"
+        required: true
+      - name: record_type
+        type: string
+        description: "DNS record type"
+        required: false
+        default: "A"
+        enum: ["A", "AAAA", "MX", "TXT", "CNAME", "NS", "SOA", "PTR", "ALL"]
+      - name: dns_server
+        type: string
+        description: "DNS server to query"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Query timeout in seconds"
+        required: false
+        default: 5
+    tags: ["web", "dns", "lookup", "domain", "network"]
+    test_prompts:
+      single:
+        - "Get the IP address for example.com"
+        - "Look up MX records for the domain"
+        - "Resolve DNS for this domain"
+        - "What are the nameservers for this domain?"
+
+  - name: download_file
+    descriptions:
+      minimal: "Download file"
+      short: "Download a file from URL"
+      medium: "Download a file from a URL to the local filesystem with progress tracking."
+      long: "Download a file from a URL and save it locally. Supports resume, progress callbacks, and authentication. Example: download_file(url='https://example.com/file.zip', destination='./downloads/file.zip')."
+      verbose: "Download files from URLs with advanced options. Features: resume interrupted downloads, progress tracking, parallel chunk download, authentication, custom headers. Example: download_file(url='https://releases.example.com/app-v2.0.tar.gz', destination='/opt/downloads/', filename='app.tar.gz', resume=true, verify_checksum='sha256:abc123...', max_retries=3, timeout=300). Note: Large files may take significant time; use resume for reliability. Warning: Verify checksums for security-critical downloads."
+    parameters:
+      - name: url
+        type: string
+        description: "URL of file to download"
+        required: true
+      - name: destination
+        type: string
+        description: "Local destination path"
+        required: true
+      - name: filename
+        type: string
+        description: "Override filename"
+        required: false
+      - name: resume
+        type: boolean
+        description: "Resume partial download"
+        required: false
+        default: true
+      - name: verify_checksum
+        type: string
+        description: "Expected checksum (algorithm:hash)"
+        required: false
+      - name: headers
+        type: string
+        description: "Custom headers (JSON)"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Timeout in seconds"
+        required: false
+        default: 300
+    tags: ["web", "download", "file", "http", "fetch"]
+    test_prompts:
+      single:
+        - "Download the file from this URL"
+        - "Fetch the ZIP file and save it locally"
+        - "Download the release package"
+        - "Get the file from the server"
+
+  - name: upload_file
+    descriptions:
+      minimal: "Upload file"
+      short: "Upload a file to a URL"
+      medium: "Upload a file to a web server via HTTP POST with multipart form data."
+      long: "Upload a file to a server using HTTP POST multipart/form-data. Example: upload_file(url='https://api.example.com/upload', file='/path/to/document.pdf', field_name='file')."
+      verbose: "Upload files to web servers via HTTP. Methods: multipart form-data (standard), raw binary, chunked upload for large files. Can include additional form fields. Example: upload_file(url='https://api.example.com/documents', file='/reports/q4.pdf', field_name='document', form_data='{\"title\": \"Q4 Report\", \"public\": false}', headers='{\"Authorization\": \"Bearer token123\"}', chunked=true). Note: Server must support the chosen upload method. Warning: Large uploads may timeout; use chunked for reliability."
+    parameters:
+      - name: url
+        type: string
+        description: "Upload endpoint URL"
+        required: true
+      - name: file
+        type: string
+        description: "Local file path"
+        required: true
+      - name: field_name
+        type: string
+        description: "Form field name for file"
+        required: false
+        default: "file"
+      - name: form_data
+        type: string
+        description: "Additional form fields (JSON)"
+        required: false
+      - name: headers
+        type: string
+        description: "Custom headers (JSON)"
+        required: false
+      - name: chunked
+        type: boolean
+        description: "Use chunked upload"
+        required: false
+        default: false
+    tags: ["web", "upload", "file", "http", "post"]
+    test_prompts:
+      single:
+        - "Upload this file to the server"
+        - "Post the document to the API"
+        - "Upload the image to the storage endpoint"
+        - "Send the file to the upload URL"
+
+  - name: get_ssl_info
+    descriptions:
+      minimal: "Get SSL info"
+      short: "Get SSL certificate information"
+      medium: "Retrieve SSL/TLS certificate details for a domain including expiry and issuer."
+      long: "Get SSL certificate information for a domain. Returns issuer, validity dates, and certificate chain. Example: get_ssl_info(domain='example.com')."
+      verbose: "Retrieve comprehensive SSL/TLS certificate information. Returns: common name, issuer, validity period, signature algorithm, public key info, SAN (Subject Alternative Names), certificate chain, OCSP status. Example: get_ssl_info(domain='api.example.com', port=443, check_revocation=true) returns {\"valid\": true, \"expires_at\": \"2025-01-01\", \"days_until_expiry\": 180, \"issuer\": \"Let's Encrypt\", ...}. Note: Port 443 is used by default. Warning: Some certificate details may be unavailable for certain configurations."
+    parameters:
+      - name: domain
+        type: string
+        description: "Domain to check"
+        required: true
+      - name: port
+        type: integer
+        description: "SSL port"
+        required: false
+        default: 443
+      - name: check_revocation
+        type: boolean
+        description: "Check certificate revocation"
+        required: false
+        default: false
+      - name: get_chain
+        type: boolean
+        description: "Include full certificate chain"
+        required: false
+        default: false
+    tags: ["web", "ssl", "tls", "certificate", "security", "https"]
+    test_prompts:
+      single:
+        - "Check when the SSL certificate expires"
+        - "Get SSL certificate details for the domain"
+        - "Is the SSL certificate valid?"
+        - "Show certificate information for example.com"

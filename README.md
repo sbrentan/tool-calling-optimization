@@ -105,3 +105,17 @@ experiments/        # Experiment configs and results
 Results are saved to `experiments/results/`:
 - `*_summary.json` - Aggregated metrics (accuracy, latency, etc.)
 - `*_details.csv` - Per-test-case results for analysis
+
+## Tool Categories
+
+You can get the list of available tool categories in `tools/README.md`.
+
+Additionally, you can list the amount of available tools per category by running this PowerShell command in the root directory (for Windows):
+```powershell
+Get-ChildItem -Path ".\tools\*.yaml" | ForEach-Object { $file = $_.Name; $count = (Select-String -Path $_.FullName -Pattern "^  - name:" | Measure-Object).Count; "$file`: $count tools" } | Sort-Object
+```
+
+Or for Linux/Mac:
+```bash
+for file in tools/*.yaml; do count=$(grep -c "^  - name:" "$file"); echo "$(basename "$file"): $count tools"; done | sort
+```

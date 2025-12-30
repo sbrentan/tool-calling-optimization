@@ -371,3 +371,340 @@ tools:
         - "Terminate all Python processes"
         - "Stop the hung application"
         - "Force kill the unresponsive process"
+
+  - name: get_disk_info
+    descriptions:
+      minimal: "Get disk info"
+      short: "Get disk space information"
+      medium: "Get disk space usage and availability for mounted filesystems."
+      long: "Retrieve disk space information including total, used, free, and percentage for all or specific mounts. Example: get_disk_info(mount_point='/')."
+      verbose: "Get detailed disk space information for mounted filesystems. Returns: mount point, device, filesystem type, total/used/free/available space, usage percentage, inode info. Example: get_disk_info(mount_point='/home', human_readable=true, include_inodes=true) returns {\"mount\": \"/home\", \"total\": \"500GB\", \"used\": \"350GB\", \"free\": \"150GB\", \"percent_used\": 70, ...}. Note: 'Available' may differ from 'free' due to reserved space. Warning: Network mounts may have delayed or cached information."
+    parameters:
+      - name: mount_point
+        type: string
+        description: "Specific mount point (all if omitted)"
+        required: false
+      - name: human_readable
+        type: boolean
+        description: "Format sizes for readability"
+        required: false
+        default: true
+      - name: include_inodes
+        type: boolean
+        description: "Include inode information"
+        required: false
+        default: false
+      - name: exclude_pseudo
+        type: boolean
+        description: "Exclude pseudo filesystems"
+        required: false
+        default: true
+    tags: ["system", "disk", "storage", "space", "filesystem", "df"]
+    test_prompts:
+      single:
+        - "How much disk space is available?"
+        - "Check disk usage on the server"
+        - "Show free space on all drives"
+        - "Get disk information for /home"
+
+  - name: get_memory_info
+    descriptions:
+      minimal: "Get memory info"
+      short: "Get system memory usage"
+      medium: "Get RAM and swap memory usage statistics for the system."
+      long: "Retrieve memory usage information including total, used, free, and cached memory. Example: get_memory_info(include_swap=true)."
+      verbose: "Get detailed system memory statistics. Returns: total RAM, used, free, available, buffers, cached, swap (total/used/free), memory pressure indicators. Example: get_memory_info(include_swap=true, include_per_process=true, top_n=10) returns memory overview plus top 10 memory-consuming processes. Note: 'Available' is better indicator than 'free' for usable memory. Warning: Per-process memory includes shared libraries counted multiple times."
+    parameters:
+      - name: include_swap
+        type: boolean
+        description: "Include swap statistics"
+        required: false
+        default: true
+      - name: include_per_process
+        type: boolean
+        description: "Include per-process breakdown"
+        required: false
+        default: false
+      - name: top_n
+        type: integer
+        description: "Number of top processes to show"
+        required: false
+        default: 10
+      - name: human_readable
+        type: boolean
+        description: "Format sizes for readability"
+        required: false
+        default: true
+    tags: ["system", "memory", "ram", "swap", "usage", "monitor"]
+    test_prompts:
+      single:
+        - "How much RAM is being used?"
+        - "Check system memory usage"
+        - "Show memory and swap statistics"
+        - "What's the current memory utilization?"
+
+  - name: get_cpu_info
+    descriptions:
+      minimal: "Get CPU info"
+      short: "Get CPU information and usage"
+      medium: "Get CPU specifications and current usage statistics."
+      long: "Retrieve CPU information including model, cores, and real-time usage percentages. Example: get_cpu_info(include_per_core=true)."
+      verbose: "Get comprehensive CPU information and usage. Returns: processor model, architecture, core count (physical/logical), frequency (current/min/max), usage percentage (overall and per-core), load average, temperature (if available). Example: get_cpu_info(include_per_core=true, include_frequency=true, sample_interval=1) returns CPU details with per-core usage over 1 second sample. Note: Accurate usage requires sampling over time. Warning: Temperature reading requires hardware support and appropriate permissions."
+    parameters:
+      - name: include_per_core
+        type: boolean
+        description: "Include per-core usage"
+        required: false
+        default: false
+      - name: include_frequency
+        type: boolean
+        description: "Include frequency info"
+        required: false
+        default: true
+      - name: include_temperature
+        type: boolean
+        description: "Include CPU temperature"
+        required: false
+        default: false
+      - name: sample_interval
+        type: number
+        description: "Usage sample interval in seconds"
+        required: false
+        default: 0.5
+    tags: ["system", "cpu", "processor", "usage", "monitor", "hardware"]
+    test_prompts:
+      single:
+        - "What's the CPU usage?"
+        - "Show CPU information"
+        - "Check processor load"
+        - "Get CPU temperature and frequency"
+
+  - name: get_network_info
+    descriptions:
+      minimal: "Get network info"
+      short: "Get network interface information"
+      medium: "Get network interfaces, IP addresses, and traffic statistics."
+      long: "Retrieve network interface information including addresses, status, and traffic counters. Example: get_network_info(interface='eth0')."
+      verbose: "Get detailed network interface information. Returns: interface name, MAC address, IP addresses (IPv4/IPv6), netmask, status, speed, MTU, bytes/packets sent/received, errors/drops. Example: get_network_info(interface='eth0', include_statistics=true, include_connections=true) returns interface details plus active connections. Note: Virtual interfaces may have different characteristics. Warning: Connection listing may require elevated privileges."
+    parameters:
+      - name: interface
+        type: string
+        description: "Specific interface (all if omitted)"
+        required: false
+      - name: include_statistics
+        type: boolean
+        description: "Include traffic statistics"
+        required: false
+        default: true
+      - name: include_connections
+        type: boolean
+        description: "Include active connections"
+        required: false
+        default: false
+      - name: include_ipv6
+        type: boolean
+        description: "Include IPv6 addresses"
+        required: false
+        default: true
+    tags: ["system", "network", "interface", "ip", "connection", "monitor"]
+    test_prompts:
+      single:
+        - "Show network interface information"
+        - "What's my IP address?"
+        - "Get network traffic statistics"
+        - "List all network connections"
+
+  - name: schedule_task
+    descriptions:
+      minimal: "Schedule task"
+      short: "Schedule a task to run later"
+      medium: "Schedule a command or script to run at a specific time or on a recurring schedule."
+      long: "Schedule a task to run at a specific time or interval. Similar to cron on Unix or Task Scheduler on Windows. Example: schedule_task(command='backup.sh', schedule='0 2 * * *', name='daily_backup')."
+      verbose: "Schedule commands to run at specified times. Formats: cron expression (Unix), datetime, or interval. Options: working directory, environment variables, output logging, failure notifications. Example: schedule_task(command='/scripts/cleanup.sh', schedule='0 3 * * 0', name='weekly_cleanup', working_dir='/var/app', log_output='/var/log/cleanup.log', on_failure='notify'). Note: Cron syntax: minute hour day month weekday. Warning: Scheduled tasks run without interactive terminal; ensure proper environment."
+    parameters:
+      - name: command
+        type: string
+        description: "Command to execute"
+        required: true
+      - name: schedule
+        type: string
+        description: "Cron expression or datetime"
+        required: true
+      - name: name
+        type: string
+        description: "Task identifier"
+        required: true
+      - name: working_dir
+        type: string
+        description: "Working directory"
+        required: false
+      - name: log_output
+        type: string
+        description: "Path to log output"
+        required: false
+      - name: enabled
+        type: boolean
+        description: "Enable the task"
+        required: false
+        default: true
+    tags: ["system", "schedule", "cron", "task", "automation", "timer"]
+    test_prompts:
+      single:
+        - "Schedule the backup to run at 2am daily"
+        - "Create a cron job for the cleanup script"
+        - "Schedule this task to run every hour"
+        - "Set up a recurring task"
+
+  - name: manage_service
+    descriptions:
+      minimal: "Manage service"
+      short: "Start, stop, or restart a system service"
+      medium: "Control system services: start, stop, restart, or check status."
+      long: "Manage system services. Perform actions like start, stop, restart, reload, or get status. Example: manage_service(name='nginx', action='restart')."
+      verbose: "Control and monitor system services (systemd, init.d, Windows Services). Actions: 'start', 'stop', 'restart', 'reload' (config reload without restart), 'status', 'enable' (start on boot), 'disable'. Example: manage_service(name='postgresql', action='status', timeout=30) returns {\"active\": true, \"status\": \"running\", \"pid\": 1234, \"uptime\": \"5 days\", ...}. Note: Requires appropriate privileges. Warning: Stopping critical services may affect system stability."
+    parameters:
+      - name: name
+        type: string
+        description: "Service name"
+        required: true
+      - name: action
+        type: string
+        description: "Action to perform"
+        required: true
+        enum: ["start", "stop", "restart", "reload", "status", "enable", "disable"]
+      - name: timeout
+        type: integer
+        description: "Action timeout in seconds"
+        required: false
+        default: 30
+      - name: force
+        type: boolean
+        description: "Force action (kill if needed)"
+        required: false
+        default: false
+    tags: ["system", "service", "daemon", "start", "stop", "systemd"]
+    test_prompts:
+      single:
+        - "Restart the nginx service"
+        - "Check if PostgreSQL is running"
+        - "Stop the Redis service"
+        - "Enable the service to start on boot"
+
+  - name: get_uptime
+    descriptions:
+      minimal: "Get uptime"
+      short: "Get system uptime"
+      medium: "Get how long the system has been running since last boot."
+      long: "Retrieve system uptime showing how long since the last boot. Returns uptime in various formats. Example: get_uptime()."
+      verbose: "Get system uptime and boot information. Returns: uptime (seconds, human-readable), boot time, load averages, user sessions. Example: get_uptime(include_load=true, include_users=true) returns {\"uptime_seconds\": 432000, \"uptime_human\": \"5 days, 0:00:00\", \"boot_time\": \"2024-01-01T00:00:00Z\", \"load_avg\": [0.5, 0.7, 0.8], \"users\": 3}. Note: Load average is Unix-specific. Warning: Uptime resets on reboot; use boot_time for absolute reference."
+    parameters:
+      - name: include_load
+        type: boolean
+        description: "Include load averages"
+        required: false
+        default: true
+      - name: include_users
+        type: boolean
+        description: "Include logged-in user count"
+        required: false
+        default: false
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "human"
+        enum: ["human", "seconds", "detailed"]
+    tags: ["system", "uptime", "boot", "availability", "monitor"]
+    test_prompts:
+      single:
+        - "How long has the system been running?"
+        - "Show system uptime"
+        - "When was the server last rebooted?"
+        - "Check the uptime"
+
+  - name: get_logs
+    descriptions:
+      minimal: "Get logs"
+      short: "Retrieve system or application logs"
+      medium: "Retrieve and filter system or application log entries."
+      long: "Retrieve log entries from system logs or log files. Filter by time, level, and content. Example: get_logs(source='syslog', level='error', since='1h')."
+      verbose: "Query and filter log entries from various sources. Sources: 'syslog', 'journald', 'dmesg', or file path. Filters: time range, severity level, unit/service, text pattern. Example: get_logs(source='journald', unit='nginx', level='warning', since='2024-01-01', until='now', pattern='timeout', limit=100) returns filtered log entries. Note: Time formats: '1h', '30m', '7d', or ISO datetime. Warning: Large log queries may be slow; use time range and limit."
+    parameters:
+      - name: source
+        type: string
+        description: "Log source or file path"
+        required: true
+      - name: since
+        type: string
+        description: "Start time (e.g., '1h', '2024-01-01')"
+        required: false
+      - name: until
+        type: string
+        description: "End time"
+        required: false
+      - name: level
+        type: string
+        description: "Minimum severity level"
+        required: false
+        enum: ["debug", "info", "warning", "error", "critical"]
+      - name: pattern
+        type: string
+        description: "Text pattern to match"
+        required: false
+      - name: unit
+        type: string
+        description: "Service/unit name (for journald)"
+        required: false
+      - name: limit
+        type: integer
+        description: "Maximum entries to return"
+        required: false
+        default: 100
+    tags: ["system", "logs", "logging", "monitor", "debug", "journal"]
+    test_prompts:
+      single:
+        - "Show the last hour of error logs"
+        - "Get nginx logs from today"
+        - "Retrieve system logs with 'timeout'"
+        - "Show recent critical errors"
+
+  - name: check_port
+    descriptions:
+      minimal: "Check port"
+      short: "Check if a port is open"
+      medium: "Check if a network port is open and listening on the local or remote system."
+      long: "Check if a port is open/listening on local or remote host. Returns status and service info. Example: check_port(port=443, host='example.com')."
+      verbose: "Check network port status. Can check local ports (listening) or remote ports (connectable). Returns: open/closed status, process using port (local), service banner (if available), response time. Example: check_port(port=5432, host='db.example.com', timeout=5, get_banner=true) returns {\"open\": true, \"response_time_ms\": 15, \"banner\": \"PostgreSQL 14.0\"}. Note: Remote port checks may be blocked by firewalls. Warning: Port scanning remote hosts may violate policies."
+    parameters:
+      - name: port
+        type: integer
+        description: "Port number to check"
+        required: true
+      - name: host
+        type: string
+        description: "Host to check (default localhost)"
+        required: false
+        default: "localhost"
+      - name: protocol
+        type: string
+        description: "Protocol to check"
+        required: false
+        default: "tcp"
+        enum: ["tcp", "udp"]
+      - name: timeout
+        type: integer
+        description: "Connection timeout in seconds"
+        required: false
+        default: 5
+      - name: get_banner
+        type: boolean
+        description: "Try to get service banner"
+        required: false
+        default: false
+    tags: ["system", "network", "port", "check", "firewall", "service"]
+    test_prompts:
+      single:
+        - "Is port 8080 open?"
+        - "Check if the database port is accessible"
+        - "Test if the web server is listening"
+        - "Verify port 443 is open on the server"

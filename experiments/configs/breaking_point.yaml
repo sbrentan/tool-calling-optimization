@@ -5,17 +5,18 @@ name: breaking_point
 description: "Test with increasing number of tools to find breaking point"
 
 # Tool configuration
-num_tools: 50
-doc_length: medium
-num_similar_tools: 5
+num_tools: 250
+doc_length: verbose
+num_similar_tools: 0
 categories: null
 
 # Model configuration  
-model: gemini-2.0-flash
+model: llama-3.3-70b
+provider: cerebras
 temperature: 0.0
 
 # Test configuration
-num_test_samples: 20
+num_test_samples: 5
 seed: 42
 
 # Output configuration

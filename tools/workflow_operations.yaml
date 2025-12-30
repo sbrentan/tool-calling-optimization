@@ -1,0 +1,390 @@
+category: workflow_operations
+description: Workflow automation, orchestration, and process management operations
+tools:
+  - name: create_workflow
+    descriptions:
+      minimal: "Create workflow"
+      short: "Create a new workflow"
+      medium: "Create an automated workflow with defined steps and triggers."
+      long: "Define automated workflow. Example: create_workflow(name='Order Processing', trigger='webhook', steps='[{\"action\": \"validate\"}, {\"action\": \"process\"}]')."
+      verbose: "Workflow creation and design. Components: triggers, steps, conditions, error handling. Example: create_workflow(name='Customer Onboarding', trigger='form_submission', steps='[{\"action\": \"create_account\", \"params\": {...}}, {\"action\": \"send_welcome_email\"}, {\"action\": \"assign_to_sales\", \"condition\": \"data.plan == enterprise\"}]', error_handler='notify_ops', timeout='30m'). Note: Test workflows in staging first. Warning: Complex workflows may have unexpected interactions."
+    parameters:
+      - name: name
+        type: string
+        description: "Workflow name"
+        required: true
+      - name: trigger
+        type: string
+        description: "Workflow trigger type"
+        required: true
+        enum: ["webhook", "schedule", "event", "manual", "form_submission"]
+      - name: steps
+        type: string
+        description: "JSON array of workflow steps"
+        required: true
+      - name: error_handler
+        type: string
+        description: "Error handling strategy"
+        required: false
+        default: "retry"
+      - name: timeout
+        type: string
+        description: "Workflow timeout"
+        required: false
+        default: "1h"
+      - name: enabled
+        type: boolean
+        description: "Enable workflow immediately"
+        required: false
+        default: false
+    tags: ["workflow", "create", "automation", "orchestration", "process"]
+    test_prompts:
+      single:
+        - "Create a workflow"
+        - "Set up automation"
+        - "Define workflow steps"
+        - "Build automated process"
+
+  - name: run_workflow
+    descriptions:
+      minimal: "Run workflow"
+      short: "Execute a workflow"
+      medium: "Manually trigger and run a workflow."
+      long: "Execute workflow with input data. Example: run_workflow(workflow_id='wf_123', input='{\"order_id\": \"ord_456\"}')."
+      verbose: "Manual workflow execution. Options: input data, priority, async execution. Example: run_workflow(workflow_id='wf_onboarding', input='{\"user_email\": \"new@example.com\", \"plan\": \"premium\"}', priority='high', wait_for_completion=false, idempotency_key='run_abc'). Returns: execution ID, status, outputs. Note: Async runs return immediately with execution ID. Warning: High-priority runs may affect other executions."
+    parameters:
+      - name: workflow_id
+        type: string
+        description: "Workflow identifier"
+        required: true
+      - name: input
+        type: string
+        description: "Input data (JSON)"
+        required: false
+      - name: priority
+        type: string
+        description: "Execution priority"
+        required: false
+        default: "normal"
+        enum: ["low", "normal", "high", "critical"]
+      - name: wait_for_completion
+        type: boolean
+        description: "Wait for workflow to complete"
+        required: false
+        default: true
+      - name: idempotency_key
+        type: string
+        description: "Idempotency key for deduplication"
+        required: false
+    tags: ["workflow", "run", "execute", "trigger", "start"]
+    test_prompts:
+      single:
+        - "Run the workflow"
+        - "Execute workflow"
+        - "Trigger workflow manually"
+        - "Start automation"
+
+  - name: get_workflow_status
+    descriptions:
+      minimal: "Workflow status"
+      short: "Get workflow execution status"
+      medium: "Check the status of a running or completed workflow execution."
+      long: "Get execution status and progress. Example: get_workflow_status(execution_id='exec_123', include_steps=true)."
+      verbose: "Workflow execution monitoring. Information: status, current step, step outputs, timing, errors. Example: get_workflow_status(execution_id='exec_abc', include_steps=true, include_logs=true). Returns: {\"status\": \"running\", \"current_step\": 3, \"steps\": [...], \"started_at\": \"...\", \"progress_percent\": 60}. Note: Completed executions are retained per retention policy. Warning: Large logs may be truncated."
+    parameters:
+      - name: execution_id
+        type: string
+        description: "Execution identifier"
+        required: true
+      - name: include_steps
+        type: boolean
+        description: "Include step details"
+        required: false
+        default: true
+      - name: include_logs
+        type: boolean
+        description: "Include execution logs"
+        required: false
+        default: false
+    tags: ["workflow", "status", "monitor", "execution", "progress"]
+    test_prompts:
+      single:
+        - "Check workflow status"
+        - "Get execution status"
+        - "Monitor workflow progress"
+        - "Is the workflow done"
+
+  - name: cancel_workflow
+    descriptions:
+      minimal: "Cancel workflow"
+      short: "Cancel a running workflow"
+      medium: "Cancel a workflow execution in progress."
+      long: "Cancel running workflow execution. Example: cancel_workflow(execution_id='exec_123', reason='User requested')."
+      verbose: "Workflow cancellation with cleanup. Options: graceful (complete current step) or immediate. Example: cancel_workflow(execution_id='exec_abc', reason='Duplicate submission', mode='graceful', cleanup=true, notify=true). Cleanup: rollback completed steps if supported. Note: Graceful cancellation allows current step to complete. Warning: Some steps may not be reversible."
+    parameters:
+      - name: execution_id
+        type: string
+        description: "Execution to cancel"
+        required: true
+      - name: reason
+        type: string
+        description: "Cancellation reason"
+        required: false
+      - name: mode
+        type: string
+        description: "Cancellation mode"
+        required: false
+        default: "graceful"
+        enum: ["graceful", "immediate"]
+      - name: cleanup
+        type: boolean
+        description: "Run cleanup handlers"
+        required: false
+        default: true
+    tags: ["workflow", "cancel", "abort", "stop", "terminate"]
+    test_prompts:
+      single:
+        - "Cancel the workflow"
+        - "Stop workflow execution"
+        - "Abort running workflow"
+        - "Terminate the process"
+
+  - name: retry_workflow_step
+    descriptions:
+      minimal: "Retry step"
+      short: "Retry a failed workflow step"
+      medium: "Retry a failed step in a workflow execution."
+      long: "Retry failed workflow step. Example: retry_workflow_step(execution_id='exec_123', step_id='step_3', modified_input='{...}')."
+      verbose: "Retry failed steps with optional modifications. Options: modify input, skip step, use fallback. Example: retry_workflow_step(execution_id='exec_abc', step_id='payment_step', modified_input='{\"retry_count\": 2}', max_retries=3, backoff='exponential'). Features: exponential backoff, modified inputs, alternate paths. Note: Retries use the same execution context. Warning: Idempotency is critical for safe retries."
+    parameters:
+      - name: execution_id
+        type: string
+        description: "Execution identifier"
+        required: true
+      - name: step_id
+        type: string
+        description: "Failed step identifier"
+        required: true
+      - name: modified_input
+        type: string
+        description: "Modified input (JSON)"
+        required: false
+      - name: max_retries
+        type: integer
+        description: "Maximum retry attempts"
+        required: false
+        default: 3
+      - name: backoff
+        type: string
+        description: "Backoff strategy"
+        required: false
+        default: "exponential"
+        enum: ["none", "linear", "exponential"]
+    tags: ["workflow", "retry", "step", "failed", "recover"]
+    test_prompts:
+      single:
+        - "Retry failed step"
+        - "Retry workflow step"
+        - "Rerun failed action"
+        - "Retry the failed task"
+
+  - name: create_approval_request
+    descriptions:
+      minimal: "Request approval"
+      short: "Create an approval request"
+      medium: "Create an approval request in a workflow for human review."
+      long: "Request human approval in workflow. Example: create_approval_request(workflow_id='wf_123', approvers='[\"manager@company.com\"]', message='Please approve budget')."
+      verbose: "Human-in-the-loop approval workflow. Features: multiple approvers, approval policies, escalation, expiration. Example: create_approval_request(execution_id='exec_abc', approvers='[\"manager@company.com\", \"director@company.com\"]', policy='any', message='Approve expense report for $5000', data='{\"amount\": 5000, \"category\": \"travel\"}', expires_in='48h', escalate_after='24h'). Note: Workflows pause until approval. Warning: Set appropriate expiration to avoid stuck workflows."
+    parameters:
+      - name: execution_id
+        type: string
+        description: "Workflow execution ID"
+        required: true
+      - name: approvers
+        type: string
+        description: "JSON array of approver emails"
+        required: true
+      - name: policy
+        type: string
+        description: "Approval policy"
+        required: false
+        default: "any"
+        enum: ["any", "all", "majority"]
+      - name: message
+        type: string
+        description: "Approval request message"
+        required: true
+      - name: data
+        type: string
+        description: "Data for review (JSON)"
+        required: false
+      - name: expires_in
+        type: string
+        description: "Expiration time"
+        required: false
+        default: "72h"
+    tags: ["workflow", "approval", "request", "human", "review"]
+    test_prompts:
+      single:
+        - "Request approval"
+        - "Create approval request"
+        - "Send for approval"
+        - "Get manager approval"
+
+  - name: respond_to_approval
+    descriptions:
+      minimal: "Respond approval"
+      short: "Respond to approval request"
+      medium: "Approve or reject a pending approval request."
+      long: "Respond to approval request. Example: respond_to_approval(request_id='apr_123', decision='approved', comment='Looks good')."
+      verbose: "Approval response handling. Decisions: approved, rejected, delegate. Example: respond_to_approval(request_id='apr_abc', decision='approved', comment='Budget approved for Q1', conditions='[\"Must complete by March\"]', delegate_to='finance@company.com'). Features: conditional approval, delegation, comments. Note: Decision is recorded for audit. Warning: Rejections may require re-submission."
+    parameters:
+      - name: request_id
+        type: string
+        description: "Approval request ID"
+        required: true
+      - name: decision
+        type: string
+        description: "Approval decision"
+        required: true
+        enum: ["approved", "rejected", "delegate"]
+      - name: comment
+        type: string
+        description: "Decision comment"
+        required: false
+      - name: conditions
+        type: string
+        description: "JSON array of conditions"
+        required: false
+      - name: delegate_to
+        type: string
+        description: "Delegate to another approver"
+        required: false
+    tags: ["workflow", "approval", "respond", "approve", "reject"]
+    test_prompts:
+      single:
+        - "Approve the request"
+        - "Reject approval"
+        - "Respond to approval"
+        - "Make approval decision"
+
+  - name: schedule_workflow
+    descriptions:
+      minimal: "Schedule workflow"
+      short: "Schedule workflow execution"
+      medium: "Schedule a workflow to run at a specific time or on a recurring basis."
+      long: "Schedule workflow runs. Example: schedule_workflow(workflow_id='wf_123', schedule='0 9 * * MON', timezone='America/New_York')."
+      verbose: "Workflow scheduling with cron expressions. Features: one-time, recurring, timezone support, input templates. Example: schedule_workflow(workflow_id='wf_weekly_report', schedule='0 9 * * MON', timezone='America/New_York', input_template='{\"report_date\": \"{{now-7d}}\"}', enabled=true, catch_up=false). Note: Missed schedules can optionally catch up. Warning: Overlapping schedules may cause resource contention."
+    parameters:
+      - name: workflow_id
+        type: string
+        description: "Workflow to schedule"
+        required: true
+      - name: schedule
+        type: string
+        description: "Cron expression or ISO datetime"
+        required: true
+      - name: timezone
+        type: string
+        description: "Schedule timezone"
+        required: false
+        default: "UTC"
+      - name: input_template
+        type: string
+        description: "Input template with variables"
+        required: false
+      - name: enabled
+        type: boolean
+        description: "Enable schedule"
+        required: false
+        default: true
+      - name: catch_up
+        type: boolean
+        description: "Run missed schedules"
+        required: false
+        default: false
+    tags: ["workflow", "schedule", "cron", "recurring", "timer"]
+    test_prompts:
+      single:
+        - "Schedule workflow"
+        - "Set up recurring workflow"
+        - "Schedule daily run"
+        - "Create workflow schedule"
+
+  - name: create_workflow_template
+    descriptions:
+      minimal: "Create template"
+      short: "Create workflow template"
+      medium: "Create a reusable workflow template."
+      long: "Create reusable workflow template. Example: create_workflow_template(name='Standard Approval', category='approvals', steps='[...]')."
+      verbose: "Workflow template management. Features: parameterization, versioning, sharing, marketplace. Example: create_workflow_template(name='Employee Onboarding', category='hr', description='Standard onboarding process', steps='[...]', parameters='[{\"name\": \"department\", \"type\": \"string\", \"required\": true}]', tags='[\"hr\", \"onboarding\"]', visibility='organization'). Note: Templates should be well-documented. Warning: Changing templates doesn't affect existing workflows."
+    parameters:
+      - name: name
+        type: string
+        description: "Template name"
+        required: true
+      - name: category
+        type: string
+        description: "Template category"
+        required: true
+      - name: description
+        type: string
+        description: "Template description"
+        required: false
+      - name: steps
+        type: string
+        description: "JSON array of step definitions"
+        required: true
+      - name: parameters
+        type: string
+        description: "JSON array of template parameters"
+        required: false
+      - name: visibility
+        type: string
+        description: "Template visibility"
+        required: false
+        default: "private"
+        enum: ["private", "team", "organization", "public"]
+    tags: ["workflow", "template", "reusable", "create", "design"]
+    test_prompts:
+      single:
+        - "Create workflow template"
+        - "Make reusable workflow"
+        - "Define workflow template"
+        - "Save as template"
+
+  - name: get_workflow_metrics
+    descriptions:
+      minimal: "Workflow metrics"
+      short: "Get workflow metrics"
+      medium: "Get performance metrics and statistics for workflows."
+      long: "Retrieve workflow analytics. Example: get_workflow_metrics(workflow_id='wf_123', period='30d')."
+      verbose: "Workflow performance analytics. Metrics: execution count, success rate, average duration, step-level timing, error rates. Example: get_workflow_metrics(workflow_id='wf_order_process', period='30d', granularity='day', include_step_breakdown=true). Returns: {\"executions\": 1500, \"success_rate\": 0.98, \"avg_duration_sec\": 45, \"by_step\": [...]}. Note: Historical data subject to retention. Warning: Real-time metrics may have slight delays."
+    parameters:
+      - name: workflow_id
+        type: string
+        description: "Workflow identifier"
+        required: true
+      - name: period
+        type: string
+        description: "Metrics period"
+        required: false
+        default: "7d"
+      - name: granularity
+        type: string
+        description: "Time granularity"
+        required: false
+        default: "day"
+        enum: ["hour", "day", "week", "month"]
+      - name: include_step_breakdown
+        type: boolean
+        description: "Include per-step metrics"
+        required: false
+        default: true
+    tags: ["workflow", "metrics", "analytics", "performance", "statistics"]
+    test_prompts:
+      single:
+        - "Get workflow metrics"
+        - "Show workflow statistics"
+        - "Workflow performance"
+        - "Analyze workflow runs"
