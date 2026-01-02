@@ -61,10 +61,13 @@ class ExperimentConfig:
     save_raw_responses: bool = False
     
     # Methodology configuration
-    methodology: str = "mcp"  # mcp, clustering, etc.
+    methodology: str = "mcp"  # mcp, clustering, rag, etc.
     max_steps: int = 10  # Max steps for multi-step methodologies
     allow_backtrack: bool = True  # Allow backtracking in step-based methodologies
     allow_no_tool_call: bool = False  # Allow LLM to decline calling any tool
+    
+    # RAG methodology configuration
+    rag_config: Optional[dict[str, Any]] = None  # RAG-specific settings
     
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
@@ -87,6 +90,7 @@ class ExperimentConfig:
             "max_steps": self.max_steps,
             "allow_backtrack": self.allow_backtrack,
             "allow_no_tool_call": self.allow_no_tool_call,
+            "rag_config": self.rag_config,
         }
     
     @classmethod

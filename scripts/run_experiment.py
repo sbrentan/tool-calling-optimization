@@ -83,11 +83,17 @@ def run_experiment(config: ExperimentConfig) -> dict:
     
     # Create methodology
     try:
+        # Build extra kwargs for specific methodologies
+        extra_kwargs = {}
+        if config.methodology == "rag" and config.rag_config:
+            extra_kwargs = config.rag_config
+        
         methodology = create_methodology(
             name=config.methodology,
             max_steps=config.max_steps,
             allow_backtrack=config.allow_backtrack,
             allow_decline=config.allow_no_tool_call,
+            **extra_kwargs,
         )
         logger.info(f"Using methodology: {methodology.NAME}")
     except ValueError as e:

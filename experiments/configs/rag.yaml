@@ -1,0 +1,47 @@
+# RAG Methodology Experiment
+# Tests retrieval-augmented generation approach for tool selection
+
+name: rag_baseline
+description: "Baseline test for RAG methodology - semantic retrieval of relevant tools before LLM selection"
+
+# Tool configuration
+num_tools: 50
+doc_length: medium
+prompt_type: clear  # concise or clear
+num_similar_tools: 0
+categories: null  # Use all categories
+
+# Model configuration
+model: llama-3.3-70b
+provider: cerebras
+temperature: 0.0
+
+# Test configuration
+num_test_samples: 10
+seed: 42
+
+# Output configuration
+output_dir: experiments/results
+save_raw_responses: false
+
+# Methodology configuration
+methodology: rag
+allow_no_tool_call: false
+
+# RAG-specific configuration
+rag_config:
+  # Embedding model from sentence-transformers
+  # Options: all-MiniLM-L6-v2 (fast), all-mpnet-base-v2 (better quality)
+  embedding_model: all-MiniLM-L6-v2
+  
+  # Number of tools to retrieve for each query
+  top_k: 10
+  
+  # Minimum similarity threshold (0.0 = no threshold)
+  similarity_threshold: 0.0
+  
+  # Cache tool embeddings between queries (recommended for speed)
+  cache_embeddings: true
+  
+  # Include parameter descriptions in tool embedding text
+  include_params_in_embedding: false

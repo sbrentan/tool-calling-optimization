@@ -6,12 +6,14 @@ from typing import Any, Optional, Type
 from .base import BaseMethodology
 from .mcp import MCPMethodology
 from .clustering import ClusteringMethodology
+from .rag import RAGMethodology
 
 
 # Registry of available methodologies
 METHODOLOGY_REGISTRY: dict[str, Type[BaseMethodology]] = {
     "mcp": MCPMethodology,
     "clustering": ClusteringMethodology,
+    "rag": RAGMethodology,
 }
 
 
@@ -102,6 +104,12 @@ def create_methodology(
             max_steps=max_steps,
             allow_backtrack=allow_backtrack,
             allow_decline=allow_decline,
+            **kwargs,
+        )
+    elif name == "rag":
+        return MethodologyFactory.create(
+            name,
+            allow_no_tool_call=allow_decline,
             **kwargs,
         )
     else:
