@@ -38,6 +38,7 @@ from src.tools.generator import ToolGenerator
 from src.clients import create_client, get_available_models, get_available_providers
 from src.evaluation.metrics import ToolCallEvaluator
 from src.experiments.config import ExperimentConfig
+from src.methodologies import create_methodology, MethodologyFactory
 
 # Load environment variables
 load_dotenv()
@@ -64,6 +65,7 @@ def run_experiment(config: ExperimentConfig) -> dict:
     """
     logger.info(f"Starting experiment: {config.name}")
     logger.info(f"Configuration: {config.num_tools} tools, {config.doc_length} docs, model={config.model}")
+    logger.info(f"Methodology: {config.methodology}")
     
     # Initialize components
     generator = ToolGenerator(seed=config.seed)
@@ -79,6 +81,19 @@ def run_experiment(config: ExperimentConfig) -> dict:
         logger.error(f"Failed to create client: {e}")
         raise
     
+    # Create methodology
+    try:
+        methodology = create_methodology(
+            name=config.methodology,
+            max_steps=config.max_steps,
+            allow_backtrack=config.allow_backtrack,
+            allow_decline=config.allow_no_tool_call,
+        )
+        logger.info(f"Using methodology: {methodology.NAME}")
+    except ValueError as e:
+        logger.error(f"Failed to create methodology: {e}")
+        raise
+    
     evaluator = ToolCallEvaluator()
     
     # Generate tools
@@ -91,27 +106,60 @@ def run_experiment(config: ExperimentConfig) -> dict:
     )
     logger.info(f"Generated {len(tools)} tools across categories")
     
+    # Log tool categories distribution
+    categories_count = {}
+    for tool in tools:
+        categories_count[tool.category] = categories_count.get(tool.category, 0) + 1
+    logger.debug(f"Tools by category: {categories_count}")
+    
     # Generate test cases
-    test_cases = generator.generate_test_cases(tools)
+    prompt_type = getattr(config, 'prompt_type', 'concise')
+    logger.info(f"Using prompt type: {prompt_type}")
+    test_cases = generator.generate_test_cases(tools, prompt_type=prompt_type)
     if config.num_test_samples is not None:
         test_cases = test_cases[:config.num_test_samples]
     logger.info(f"Running {len(test_cases)} test cases...")
     
-    # Run tests
+    # Run tests using methodology
     for i, test_case in enumerate(test_cases):
-        logger.debug(f"Test {i+1}/{len(test_cases)}: {test_case.prompt[:50]}...")
+        logger.info(f"")
+        logger.info(f"======== Test {i+1}/{len(test_cases)} ========")
+        logger.debug(f"Prompt: {test_case.prompt}")
+        logger.debug(f"Expected tool: {test_case.expected_tool}")
+        logger.debug(f"Expected category: {test_case.category}")
         
-        # Make API call
-        result = client.call_with_tools(
+        # Use methodology to run the test
+        methodology_result = methodology.run_single(
             prompt=test_case.prompt,
-            tools=tools
+            tools=tools,
+            client=client,
         )
         
+        # Convert to CallResult for evaluation
+        result = methodology_result.to_call_result()
+        
         # Evaluate
-        test_result = evaluator.evaluate_single(test_case, result)
+        test_result = evaluator.evaluate_single(test_case, result, methodology_result)
         
         status = "✓" if test_result.tool_correct else "✗"
-        logger.info(f"  [{status}] Expected: {test_case.expected_tool}, Got: {result.called_tool}")
+        extra_info = ""
+        if hasattr(methodology_result, 'steps') and len(methodology_result.steps) > 1:
+            extra_info = f" (steps: {len(methodology_result.steps)}"
+            if methodology_result.backtrack_count > 0:
+                extra_info += f", backtracks: {methodology_result.backtrack_count}"
+            extra_info += ")"
+        
+        # Log detailed result info
+        logger.debug(f"Result details:")
+        logger.debug(f"  Called tool: {result.called_tool}")
+        logger.debug(f"  Called args: {result.called_args}")
+        logger.debug(f"  Latency: {result.latency_ms:.1f}ms")
+        if methodology_result.methodology != "mcp":
+            logger.debug(f"  Categories selected: {methodology_result.categories_selected}")
+            logger.debug(f"  Final category: {methodology_result.final_category}")
+            logger.debug(f"  Steps: {[{'type': s.step_type.value, 'selection': s.selection} for s in methodology_result.steps]}")
+        
+        logger.info(f"  [{status}] Expected: {test_case.expected_tool}, Got: {result.called_tool}{extra_info}")
     
     # Compute metrics
     metrics = evaluator.compute_metrics(experiment_config=config.to_dict())
@@ -153,11 +201,16 @@ def run(
     config: str = typer.Option(None, "--config", "-c", help="Path to YAML config file"),
     num_tools: int = typer.Option(10, "--num-tools", "-n", help="Number of tools"),
     doc_length: str = typer.Option("medium", "--doc-length", "-d", help="Documentation length (minimal/short/medium/long/verbose)"),
+    prompt_type: str = typer.Option("concise", "--prompt-type", "-t", help="Prompt type (concise/clear)"),
     model: str = typer.Option("llama-3.3-70b", "--model", "-m", help="Model to use (auto-detects provider)"),
     provider: str = typer.Option(None, "--provider", "-p", help="Provider (gemini/cerebras/openai). Auto-detected if not specified."),
     num_similar: int = typer.Option(0, "--num-similar", "-s", help="Number of similar tools"),
     seed: int = typer.Option(42, "--seed", help="Random seed"),
     name: str = typer.Option("experiment", "--name", help="Experiment name"),
+    methodology: str = typer.Option("mcp", "--methodology", help="Methodology to use (mcp/clustering)"),
+    max_steps: int = typer.Option(10, "--max-steps", help="Max steps for multi-step methodologies"),
+    allow_backtrack: bool = typer.Option(True, "--allow-backtrack/--no-backtrack", help="Allow backtracking in step-based methodologies"),
+    allow_decline: bool = typer.Option(False, "--allow-decline/--no-decline", help="Allow LLM to decline calling any tool"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose logging"),
 ):
     """Run a tool calling experiment."""
@@ -172,9 +225,14 @@ def run(
             name=name,
             num_tools=num_tools,
             doc_length=doc_length,
+            prompt_type=prompt_type,
             model=model,
             num_similar_tools=num_similar,
-            seed=seed
+            seed=seed,
+            methodology=methodology,
+            max_steps=max_steps,
+            allow_backtrack=allow_backtrack,
+            allow_no_tool_call=allow_decline,
         )
         # Store provider if explicitly specified
         if provider:
@@ -304,6 +362,28 @@ def list_tools(
                 print(f"  - {tool['name']} ({tool['param_count']} params) [{tags}]{multi}")
             else:
                 print(f"  - {tool['name']}")
+    
+    print("\n" + "=" * 60 + "\n")
+
+
+@app.command("list-methodologies")
+def list_methodologies():
+    """List all available methodologies."""
+    print("\n" + "=" * 60)
+    print("AVAILABLE METHODOLOGIES")
+    print("=" * 60)
+    
+    available = MethodologyFactory.get_available()
+    
+    descriptions = {
+        "mcp": "Model Context Protocol - all tools passed to LLM at once (baseline)",
+        "clustering": "Two-step selection - first select category, then tool within category",
+    }
+    
+    for name in available:
+        desc = descriptions.get(name, "No description available")
+        print(f"\n  {name}:")
+        print(f"    {desc}")
     
     print("\n" + "=" * 60 + "\n")
 

@@ -37,6 +37,11 @@ tools:
         - "Log this message"
         - "Add to the log"
         - "Record log event"
+      single_clear:
+        - "I need to write a log entry. Write a log entry"
+        - "I need to write a log entry. Log this message"
+        - "I need to write a log entry. Add to the log"
+        - "I need to write a log entry. Record log event"
 
   - name: search_logs
     descriptions:
@@ -84,6 +89,11 @@ tools:
         - "Find log entries"
         - "Query logs for errors"
         - "Look up in logs"
+      single_clear:
+        - "Please search and retrieve log entries. Search the logs"
+        - "Please search and retrieve log entries. Find log entries"
+        - "Please search and retrieve log entries. Query logs for errors"
+        - "Please search and retrieve log entries. Look up in logs"
 
   - name: tail_logs
     descriptions:
@@ -120,6 +130,11 @@ tools:
         - "Stream live logs"
         - "Watch logs in real-time"
         - "Follow log output"
+      single_clear:
+        - "I need to stream logs in real-time. Tail the logs"
+        - "I need to stream logs in real-time. Stream live logs"
+        - "I need to stream logs in real-time. Watch logs in real-time"
+        - "I need to stream logs in real-time. Follow log output"
 
   - name: create_log_alert
     descriptions:
@@ -163,6 +178,11 @@ tools:
         - "Set up error notification"
         - "Alert on log pattern"
         - "Monitor logs for errors"
+      single_clear:
+        - "I need to create an alert for log events. Create log alert"
+        - "I need to create an alert for log events. Set up error notification"
+        - "I need to create an alert for log events. Alert on log pattern"
+        - "I need to create an alert for log events. Monitor logs for errors"
 
   - name: aggregate_logs
     descriptions:
@@ -205,6 +225,11 @@ tools:
         - "Count errors by source"
         - "Get log statistics"
         - "Summarize log levels"
+      single_clear:
+        - "I need to compute statistics from log data. Aggregate log data"
+        - "I need to compute statistics from log data. Count errors by source"
+        - "I need to compute statistics from log data. Get log statistics"
+        - "I need to compute statistics from log data. Summarize log levels"
 
   - name: export_logs
     descriptions:
@@ -247,6 +272,11 @@ tools:
         - "Download log data"
         - "Backup logs to S3"
         - "Save logs as CSV"
+      single_clear:
+        - "I need to export logs to a file. Export logs to file"
+        - "I need to export logs to a file. Download log data"
+        - "I need to export logs to a file. Backup logs to S3"
+        - "I need to export logs to a file. Save logs as CSV"
 
   - name: set_log_retention
     descriptions:
@@ -283,6 +313,11 @@ tools:
         - "Configure log expiration"
         - "How long to keep logs"
         - "Set up log archival"
+      single_clear:
+        - "I need to configure log retention settings. Set log retention policy"
+        - "I need to configure log retention settings. Configure log expiration"
+        - "I need to configure log retention settings. How long to keep logs"
+        - "I need to configure log retention settings. Set up log archival"
 
   - name: parse_log_pattern
     descriptions:
@@ -321,6 +356,11 @@ tools:
         - "Extract fields from logs"
         - "Apply grok pattern"
         - "Structure unstructured logs"
+      single_clear:
+        - "I need to extract structured data from logs. Parse log pattern"
+        - "I need to extract structured data from logs. Extract fields from logs"
+        - "I need to extract structured data from logs. Apply grok pattern"
+        - "I need to extract structured data from logs. Structure unstructured logs"
 
   - name: create_log_dashboard
     descriptions:
@@ -360,6 +400,11 @@ tools:
         - "Build monitoring dashboard"
         - "Set up log visualizations"
         - "Make a log chart"
+      single_clear:
+        - "I need to create a log visualization dashboard. Create log dashboard"
+        - "I need to create a log visualization dashboard. Build monitoring dashboard"
+        - "I need to create a log visualization dashboard. Set up log visualizations"
+        - "I need to create a log visualization dashboard. Make a log chart"
 
   - name: correlate_logs
     descriptions:
@@ -394,3 +439,8 @@ tools:
         - "Trace request across services"
         - "Find related logs"
         - "Show distributed trace"
+      single_clear:
+        - "I need to trace logs across services. Correlate logs by request ID"
+        - "I need to trace logs across services. Trace request across services"
+        - "I need to trace logs across services. Find related logs"
+        - "I need to trace logs across services. Show distributed trace"

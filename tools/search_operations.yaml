@@ -44,6 +44,11 @@ tools:
         - "Find documents about AI"
         - "Search the knowledge base"
         - "Look up tutorials"
+      single_clear:
+        - "I need to search documents. Search for articles"
+        - "I need to search documents. Find documents about AI"
+        - "I need to search documents. Search the knowledge base"
+        - "I need to search documents. Look up tutorials"
 
   - name: index_document
     descriptions:
@@ -82,6 +87,11 @@ tools:
         - "Add to search index"
         - "Update the indexed document"
         - "Index the article"
+      single_clear:
+        - "Please index a document for search. Index this document"
+        - "Please index a document for search. Add to search index"
+        - "Please index a document for search. Update the indexed document"
+        - "Please index a document for search. Index the article"
 
   - name: bulk_index
     descriptions:
@@ -116,6 +126,11 @@ tools:
         - "Import documents to search"
         - "Batch index products"
         - "Load documents into index"
+      single_clear:
+        - "I need to bulk index multiple documents. Bulk index documents"
+        - "I need to bulk index multiple documents. Import documents to search"
+        - "I need to bulk index multiple documents. Batch index products"
+        - "I need to bulk index multiple documents. Load documents into index"
 
   - name: create_index
     descriptions:
@@ -148,6 +163,11 @@ tools:
         - "Set up the products index"
         - "Create index with mappings"
         - "Define search schema"
+      single_clear:
+        - "I want to create a new search index. Create a search index"
+        - "I want to create a new search index. Set up the products index"
+        - "I want to create a new search index. Create index with mappings"
+        - "I want to create a new search index. Define search schema"
 
   - name: delete_from_index
     descriptions:
@@ -181,6 +201,11 @@ tools:
         - "Remove the document"
         - "Delete old logs"
         - "Remove from search"
+      single_clear:
+        - "I need to delete something from the search index. Delete from index"
+        - "I need to delete something from the search index. Remove the document"
+        - "I need to delete something from the search index. Delete old logs"
+        - "I need to delete something from the search index. Remove from search"
 
   - name: get_suggestions
     descriptions:
@@ -221,6 +246,11 @@ tools:
         - "Autocomplete the query"
         - "Did you mean..."
         - "Suggest corrections"
+      single_clear:
+        - "I need search suggestions. Get search suggestions"
+        - "I need search suggestions. Autocomplete the query"
+        - "I need search suggestions. Did you mean..."
+        - "I need search suggestions. Suggest corrections"
 
   - name: get_aggregations
     descriptions:
@@ -255,6 +285,11 @@ tools:
         - "Aggregate by status"
         - "Show search facets"
         - "Get order statistics"
+      single_clear:
+        - "I need to get search aggregations. Get category counts"
+        - "I need to get search aggregations. Aggregate by status"
+        - "I need to get search aggregations. Show search facets"
+        - "I need to get search aggregations. Get order statistics"
 
   - name: reindex
     descriptions:
@@ -292,6 +327,11 @@ tools:
         - "Migrate the index"
         - "Copy documents to new index"
         - "Transform and reindex"
+      single_clear:
+        - "I need to reindex documents. Reindex to new version"
+        - "I need to reindex documents. Migrate the index"
+        - "I need to reindex documents. Copy documents to new index"
+        - "I need to reindex documents. Transform and reindex"
 
   - name: manage_synonyms
     descriptions:
@@ -331,6 +371,11 @@ tools:
         - "Update synonyms list"
         - "Configure synonyms"
         - "Add product synonyms"
+      single_clear:
+        - "I need to manage search synonyms. Add search synonyms"
+        - "I need to manage search synonyms. Update synonyms list"
+        - "I need to manage search synonyms. Configure synonyms"
+        - "I need to manage search synonyms. Add product synonyms"
 
   - name: analyze_query
     descriptions:
@@ -368,6 +413,11 @@ tools:
         - "How is the text tokenized?"
         - "Debug search query"
         - "Explain query analysis"
+      single_clear:
+        - "I need to analyze a search query. Analyze this query"
+        - "I need to analyze a search query. How is the text tokenized?"
+        - "I need to analyze a search query. Debug search query"
+        - "I need to analyze a search query. Explain query analysis"
   - name: semantic_search
     descriptions:
       minimal: "Semantic search"
@@ -413,6 +463,11 @@ tools:
         - "Search by meaning not keywords"
         - "Do semantic search for tutorials"
         - "Find conceptually related articles"
+      single_clear:
+        - "I want to perform a semantic search. Find similar documents to this query"
+        - "I want to perform a semantic search. Search by meaning not keywords"
+        - "I want to perform a semantic search. Do semantic search for tutorials"
+        - "I want to perform a semantic search. Find conceptually related articles"
 
   - name: manage_search_synonyms
     descriptions:
@@ -452,6 +507,11 @@ tools:
         - "Set up synonym rules"
         - "Make laptop and notebook synonyms"
         - "Configure synonym mappings"
+      single_clear:
+        - "I need to manage search synonym rules. Add search synonyms"
+        - "I need to manage search synonym rules. Set up synonym rules"
+        - "I need to manage search synonym rules. Make laptop and notebook synonyms"
+        - "I need to manage search synonym rules. Configure synonym mappings"
 
   - name: boost_search_results
     descriptions:
@@ -489,6 +549,11 @@ tools:
         - "Prioritize recent content"
         - "Configure search ranking boost"
         - "Increase relevance of popular items"
+      single_clear:
+        - "I need to boost search results. Boost featured products in search"
+        - "I need to boost search results. Prioritize recent content"
+        - "I need to boost search results. Configure search ranking boost"
+        - "I need to boost search results. Increase relevance of popular items"
 
   - name: search_with_filters
     descriptions:
@@ -536,6 +601,11 @@ tools:
         - "Find products with facets"
         - "Filter search by price range"
         - "Search with category filter"
+      single_clear:
+        - "I need to search with filters. Search with filters applied"
+        - "I need to search with filters. Find products with facets"
+        - "I need to search with filters. Filter search by price range"
+        - "I need to search with filters. Search with category filter"
 
   - name: configure_search_relevance
     descriptions:
@@ -574,6 +644,11 @@ tools:
         - "Adjust field weights"
         - "Configure search scoring"
         - "Set title field to higher weight"
+      single_clear:
+        - "I need to configure search relevance. Tune search relevance"
+        - "I need to configure search relevance. Adjust field weights"
+        - "I need to configure search relevance. Configure search scoring"
+        - "I need to configure search relevance. Set title field to higher weight"
 
   - name: search_typeahead
     descriptions:
@@ -617,6 +692,11 @@ tools:
         - "Show typeahead for search"
         - "Suggest completions for query"
         - "Real-time search suggestions"
+      single_clear:
+        - "I need typeahead search suggestions. Get autocomplete suggestions"
+        - "I need typeahead search suggestions. Show typeahead for search"
+        - "I need typeahead search suggestions. Suggest completions for query"
+        - "I need typeahead search suggestions. Real-time search suggestions"
 
   - name: log_search_event
     descriptions:
@@ -662,6 +742,11 @@ tools:
         - "Track search click"
         - "Record search conversion"
         - "Log search analytics event"
+      single_clear:
+        - "I need to log a search event. Log the search query"
+        - "I need to log a search event. Track search click"
+        - "I need to log a search event. Record search conversion"
+        - "I need to log a search event. Log search analytics event"
 
   - name: rerank_results
     descriptions:
@@ -702,6 +787,11 @@ tools:
         - "Apply ML reranking"
         - "Improve result ordering"
         - "Use cross-encoder to rerank"
+      single_clear:
+        - "I need to rerank search results. Rerank search results"
+        - "I need to rerank search results. Apply ML reranking"
+        - "I need to rerank search results. Improve result ordering"
+        - "I need to rerank search results. Use cross-encoder to rerank"
 
   - name: personalize_search
     descriptions:
@@ -750,6 +840,11 @@ tools:
         - "Show personalized results"
         - "Apply user preferences to search"
         - "Customize results based on history"
+      single_clear:
+        - "I need to personalize search results. Personalize search for user"
+        - "I need to personalize search results. Show personalized results"
+        - "I need to personalize search results. Apply user preferences to search"
+        - "I need to personalize search results. Customize results based on history"
 
   - name: search_images
     descriptions:
@@ -792,6 +887,11 @@ tools:
         - "Find photos of beaches"
         - "Search stock images"
         - "Find similar images"
+      single_clear:
+        - "I need to search for images. Search for images"
+        - "I need to search for images. Find photos of beaches"
+        - "I need to search for images. Search stock images"
+        - "I need to search for images. Find similar images"
 
   - name: search_logs
     descriptions:
@@ -830,6 +930,11 @@ tools:
         - "Find error logs"
         - "Query log entries"
         - "Search for log patterns"
+      single_clear:
+        - "I need to search application logs. Search application logs"
+        - "I need to search application logs. Find error logs"
+        - "I need to search application logs. Query log entries"
+        - "I need to search application logs. Search for log patterns"
 
   - name: search_code
     descriptions:
@@ -873,6 +978,11 @@ tools:
         - "Find function definitions"
         - "Search codebase for pattern"
         - "Grep across repositories"
+      single_clear:
+        - "I need to search source code. Search source code"
+        - "I need to search source code. Find function definitions"
+        - "I need to search source code. Search codebase for pattern"
+        - "I need to search source code. Grep across repositories"
 
   - name: search_documents
     descriptions:
@@ -916,6 +1026,11 @@ tools:
         - "Find in PDF files"
         - "Search document content"
         - "Full-text document search"
+      single_clear:
+        - "I need to search within documents. Search in documents"
+        - "I need to search within documents. Find in PDF files"
+        - "I need to search within documents. Search document content"
+        - "I need to search within documents. Full-text document search"
 
   - name: search_database
     descriptions:
@@ -957,6 +1072,11 @@ tools:
         - "Query customer table"
         - "Find database entries"
         - "Search in database"
+      single_clear:
+        - "I need to search database records. Search database records"
+        - "I need to search database records. Query customer table"
+        - "I need to search database records. Find database entries"
+        - "I need to search database records. Search in database"
 
   - name: search_events
     descriptions:
@@ -998,6 +1118,11 @@ tools:
         - "Find meetings about project"
         - "Search for appointments"
         - "Find events with attendee"
+      single_clear:
+        - "I need to search calendar events. Search calendar events"
+        - "I need to search calendar events. Find meetings about project"
+        - "I need to search calendar events. Search for appointments"
+        - "I need to search calendar events. Find events with attendee"
 
   - name: search_emails
     descriptions:
@@ -1043,6 +1168,11 @@ tools:
         - "Find emails from sender"
         - "Search for attachments"
         - "Find email about topic"
+      single_clear:
+        - "I need to search emails. Search my emails"
+        - "I need to search emails. Find emails from sender"
+        - "I need to search emails. Search for attachments"
+        - "I need to search emails. Find email about topic"
 
   - name: search_products
     descriptions:
@@ -1089,6 +1219,11 @@ tools:
         - "Find headphones under $100"
         - "Search product catalog"
         - "Find items in category"
+      single_clear:
+        - "I need to search products. Search for products"
+        - "I need to search products. Find headphones under $100"
+        - "I need to search products. Search product catalog"
+        - "I need to search products. Find items in category"
 
   - name: search_users
     descriptions:
@@ -1131,3 +1266,8 @@ tools:
         - "Find employees in department"
         - "Look up user by name"
         - "Search user directory"
+      single_clear:
+        - "I need to search for users. Search for users"
+        - "I need to search for users. Find employees in department"
+        - "I need to search for users. Look up user by name"
+        - "I need to search for users. Search user directory"

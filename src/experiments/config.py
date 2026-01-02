@@ -43,6 +43,7 @@ class ExperimentConfig:
     # Tool configuration
     num_tools: int = 10
     doc_length: str = "medium"  # minimal, short, medium, long, verbose
+    prompt_type: str = "concise"  # concise or clear
     num_similar_tools: int = 0
     categories: Optional[list[str]] = None
     
@@ -59,8 +60,11 @@ class ExperimentConfig:
     output_dir: str = "experiments/results"
     save_raw_responses: bool = False
     
-    # Methodology (for future extension)
-    methodology: str = "mcp"  # mcp, rag, batching, etc.
+    # Methodology configuration
+    methodology: str = "mcp"  # mcp, clustering, etc.
+    max_steps: int = 10  # Max steps for multi-step methodologies
+    allow_backtrack: bool = True  # Allow backtracking in step-based methodologies
+    allow_no_tool_call: bool = False  # Allow LLM to decline calling any tool
     
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
@@ -69,6 +73,7 @@ class ExperimentConfig:
             "description": self.description,
             "num_tools": self.num_tools,
             "doc_length": self.doc_length,
+            "prompt_type": self.prompt_type,
             "num_similar_tools": self.num_similar_tools,
             "categories": self.categories,
             "model": self.model,
@@ -78,7 +83,10 @@ class ExperimentConfig:
             "seed": self.seed,
             "output_dir": self.output_dir,
             "save_raw_responses": self.save_raw_responses,
-            "methodology": self.methodology
+            "methodology": self.methodology,
+            "max_steps": self.max_steps,
+            "allow_backtrack": self.allow_backtrack,
+            "allow_no_tool_call": self.allow_no_tool_call,
         }
     
     @classmethod

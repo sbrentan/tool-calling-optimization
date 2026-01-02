@@ -52,6 +52,11 @@ tools:
         - "Email the report"
         - "Send notification email"
         - "Mail the user"
+      single_clear:
+        - "I need to compose and send an email message to recipients with a subject and body. Send an email"
+        - "I need to compose and send an email message to recipients with a subject and body. Email the report"
+        - "I need to compose and send an email message to recipients with a subject and body. Send notification email"
+        - "I need to compose and send an email message to recipients with a subject and body. Mail the user"
 
   - name: send_template_email
     descriptions:
@@ -89,6 +94,11 @@ tools:
         - "Use order confirmation template"
         - "Send templated email"
         - "Email using template"
+      single_clear:
+        - "Please send an email using a predefined template with personalization variables. Send welcome email"
+        - "Please send an email using a predefined template with personalization variables. Use order confirmation template"
+        - "Please send an email using a predefined template with personalization variables. Send templated email"
+        - "Please send an email using a predefined template with personalization variables. Email using template"
 
   - name: create_email_template
     descriptions:
@@ -127,6 +137,11 @@ tools:
         - "Design welcome email"
         - "Set up email template"
         - "Create invoice template"
+      single_clear:
+        - "I need to create a new reusable email template for future messages. Create email template"
+        - "I need to create a new reusable email template for future messages. Design welcome email"
+        - "I need to create a new reusable email template for future messages. Set up email template"
+        - "I need to create a new reusable email template for future messages. Create invoice template"
 
   - name: get_email_status
     descriptions:
@@ -152,6 +167,11 @@ tools:
         - "Was the email delivered?"
         - "Track email opens"
         - "Get delivery status"
+      single_clear:
+        - "Please check the delivery status and tracking information for a sent email. Check email status"
+        - "Please check the delivery status and tracking information for a sent email. Was the email delivered?"
+        - "Please check the delivery status and tracking information for a sent email. Track email opens"
+        - "Please check the delivery status and tracking information for a sent email. Get delivery status"
 
   - name: manage_mailing_list
     descriptions:
@@ -190,6 +210,11 @@ tools:
         - "Unsubscribe from newsletter"
         - "Update subscriber"
         - "List subscribers"
+      single_clear:
+        - "I need to add, remove, or update subscribers in a mailing list. Add to mailing list"
+        - "I need to add, remove, or update subscribers in a mailing list. Unsubscribe from newsletter"
+        - "I need to add, remove, or update subscribers in a mailing list. Update subscriber"
+        - "I need to add, remove, or update subscribers in a mailing list. List subscribers"
 
   - name: send_bulk_email
     descriptions:
@@ -230,6 +255,11 @@ tools:
         - "Email the newsletter"
         - "Send campaign email"
         - "Mass email announcement"
+      single_clear:
+        - "Please send the same email message to multiple recipients at once. Send bulk email"
+        - "Please send the same email message to multiple recipients at once. Email the newsletter"
+        - "Please send the same email message to multiple recipients at once. Send campaign email"
+        - "Please send the same email message to multiple recipients at once. Mass email announcement"
 
   - name: validate_email
     descriptions:
@@ -265,6 +295,11 @@ tools:
         - "Is this email valid?"
         - "Check email deliverability"
         - "Verify the email"
+      single_clear:
+        - "I need to validate whether an email address is properly formatted and deliverable. Validate email address"
+        - "I need to validate whether an email address is properly formatted and deliverable. Is this email valid?"
+        - "I need to validate whether an email address is properly formatted and deliverable. Check email deliverability"
+        - "I need to validate whether an email address is properly formatted and deliverable. Verify the email"
 
   - name: get_email_analytics
     descriptions:
@@ -304,6 +339,11 @@ tools:
         - "Show campaign stats"
         - "Email open rates"
         - "Campaign performance"
+      single_clear:
+        - "Please get email campaign analytics including open rates, click rates, and bounces. Get email analytics"
+        - "Please get email campaign analytics including open rates, click rates, and bounces. Show campaign stats"
+        - "Please get email campaign analytics including open rates, click rates, and bounces. Email open rates"
+        - "Please get email campaign analytics including open rates, click rates, and bounces. Campaign performance"
 
   - name: configure_email_domain
     descriptions:
@@ -329,6 +369,11 @@ tools:
         - "Set up DKIM"
         - "Verify email domain"
         - "Check domain authentication"
+      single_clear:
+        - "I need to configure domain authentication settings for email sending with SPF, DKIM, and DMARC. Configure email domain"
+        - "I need to configure domain authentication settings for email sending with SPF, DKIM, and DMARC. Set up DKIM"
+        - "I need to configure domain authentication settings for email sending with SPF, DKIM, and DMARC. Verify email domain"
+        - "I need to configure domain authentication settings for email sending with SPF, DKIM, and DMARC. Check domain authentication"
 
   - name: handle_bounce
     descriptions:
@@ -365,6 +410,11 @@ tools:
         - "Process hard bounces"
         - "List bounced emails"
         - "Manage suppression list"
+      single_clear:
+        - "I need to process and handle email bounces and spam complaints to maintain list hygiene. Handle email bounces"
+        - "I need to process and handle email bounces and spam complaints to maintain list hygiene. Process hard bounces"
+        - "I need to process and handle email bounces and spam complaints to maintain list hygiene. List bounced emails"
+        - "I need to process and handle email bounces and spam complaints to maintain list hygiene. Manage suppression list"
   - name: create_email_campaign
     descriptions:
       minimal: "Create campaign"
@@ -408,6 +458,11 @@ tools:
         - "Set up marketing email"
         - "Schedule newsletter send"
         - "Create promotional campaign"
+      single_clear:
+        - "I need to create a new email marketing campaign with scheduling and segmentation. Create email campaign"
+        - "I need to create a new email marketing campaign with scheduling and segmentation. Set up marketing email"
+        - "I need to create a new email marketing campaign with scheduling and segmentation. Schedule newsletter send"
+        - "I need to create a new email marketing campaign with scheduling and segmentation. Create promotional campaign"
 
   - name: manage_email_list
     descriptions:
@@ -450,6 +505,11 @@ tools:
         - "Remove from mailing list"
         - "Create new email list"
         - "Clean invalid emails"
+      single_clear:
+        - "I need to create, update, or manage email subscriber lists. Add subscriber to list"
+        - "I need to create, update, or manage email subscriber lists. Remove from mailing list"
+        - "I need to create, update, or manage email subscriber lists. Create new email list"
+        - "I need to create, update, or manage email subscriber lists. Clean invalid emails"
 
   - name: analyze_email_metrics
     descriptions:
@@ -488,6 +548,11 @@ tools:
         - "Analyze open rates"
         - "Get click performance"
         - "Report on email results"
+      single_clear:
+        - "I need to get analytics and performance metrics for email campaigns. Show email campaign metrics"
+        - "I need to get analytics and performance metrics for email campaigns. Analyze open rates"
+        - "I need to get analytics and performance metrics for email campaigns. Get click performance"
+        - "I need to get analytics and performance metrics for email campaigns. Report on email results"
 
   - name: setup_email_automation
     descriptions:
@@ -529,6 +594,11 @@ tools:
         - "Set up drip campaign"
         - "Automate onboarding emails"
         - "Create email workflow"
+      single_clear:
+        - "I need to create automated email workflows triggered by events or schedules. Create welcome email series"
+        - "I need to create automated email workflows triggered by events or schedules. Set up drip campaign"
+        - "I need to create automated email workflows triggered by events or schedules. Automate onboarding emails"
+        - "I need to create automated email workflows triggered by events or schedules. Create email workflow"
 
   - name: verify_email_address
     descriptions:
@@ -564,6 +634,11 @@ tools:
         - "Check if email is valid"
         - "Validate email before sending"
         - "Is this email deliverable"
+      single_clear:
+        - "I need to verify an email address validity and deliverability before sending. Verify this email address"
+        - "I need to verify an email address validity and deliverability before sending. Check if email is valid"
+        - "I need to verify an email address validity and deliverability before sending. Validate email before sending"
+        - "I need to verify an email address validity and deliverability before sending. Is this email deliverable"
 
   - name: configure_email_domain
     descriptions:
@@ -598,6 +673,11 @@ tools:
         - "Configure DKIM for email"
         - "Verify email domain"
         - "Get DNS records for domain"
+      single_clear:
+        - "I need to set up and configure a domain for email sending with DNS records. Set up sending domain"
+        - "I need to set up and configure a domain for email sending with DNS records. Configure DKIM for email"
+        - "I need to set up and configure a domain for email sending with DNS records. Verify email domain"
+        - "I need to set up and configure a domain for email sending with DNS records. Get DNS records for domain"
 
   - name: manage_email_template_variables
     descriptions:
@@ -636,6 +716,11 @@ tools:
         - "Set default for variable"
         - "List template variables"
         - "Test personalization"
+      single_clear:
+        - "I need to define and manage dynamic variables for email template personalization. Define template variable"
+        - "I need to define and manage dynamic variables for email template personalization. Set default for variable"
+        - "I need to define and manage dynamic variables for email template personalization. List template variables"
+        - "I need to define and manage dynamic variables for email template personalization. Test personalization"
 
   - name: schedule_email_digest
     descriptions:
@@ -677,6 +762,11 @@ tools:
         - "Schedule newsletter from blog"
         - "Set up content digest"
         - "Automate RSS to email"
+      single_clear:
+        - "I need to create and schedule automated email digests from content feeds. Create weekly digest"
+        - "I need to create and schedule automated email digests from content feeds. Schedule newsletter from blog"
+        - "I need to create and schedule automated email digests from content feeds. Set up content digest"
+        - "I need to create and schedule automated email digests from content feeds. Automate RSS to email"
 
   - name: test_email_deliverability
     descriptions:
@@ -715,6 +805,11 @@ tools:
         - "Check spam score"
         - "Verify inbox placement"
         - "Analyze email for spam triggers"
+      single_clear:
+        - "I need to test email deliverability across major email providers. Test email deliverability"
+        - "I need to test email deliverability across major email providers. Check spam score"
+        - "I need to test email deliverability across major email providers. Verify inbox placement"
+        - "I need to test email deliverability across major email providers. Analyze email for spam triggers"
 
   - name: archive_email
     descriptions:
@@ -749,6 +844,11 @@ tools:
         - "Move email to archive"
         - "Archive old messages"
         - "Store email in archive folder"
+      single_clear:
+        - "I need to move an email message to the archive folder for long-term storage. Archive this email"
+        - "I need to move an email message to the archive folder for long-term storage. Move email to archive"
+        - "I need to move an email message to the archive folder for long-term storage. Archive old messages"
+        - "I need to move an email message to the archive folder for long-term storage. Store email in archive folder"
 
   - name: restore_archived_email
     descriptions:
@@ -784,6 +884,11 @@ tools:
         - "Bring back archived message"
         - "Recover email from archive"
         - "Unarchive this email"
+      single_clear:
+        - "I need to restore an archived email back to the inbox or another folder. Restore archived email"
+        - "I need to restore an archived email back to the inbox or another folder. Bring back archived message"
+        - "I need to restore an archived email back to the inbox or another folder. Recover email from archive"
+        - "I need to restore an archived email back to the inbox or another folder. Unarchive this email"
 
   - name: create_email_signature
     descriptions:
@@ -821,6 +926,11 @@ tools:
         - "Set up my signature"
         - "Design email footer"
         - "Add signature block"
+      single_clear:
+        - "I need to create a reusable email signature for outgoing messages. Create email signature"
+        - "I need to create a reusable email signature for outgoing messages. Set up my signature"
+        - "I need to create a reusable email signature for outgoing messages. Design email footer"
+        - "I need to create a reusable email signature for outgoing messages. Add signature block"
 
   - name: get_email_headers
     descriptions:
@@ -851,6 +961,11 @@ tools:
         - "Show message headers"
         - "Retrieve email metadata"
         - "Analyze email routing"
+      single_clear:
+        - "I need to retrieve the full headers of an email message for analysis. Get email headers"
+        - "I need to retrieve the full headers of an email message for analysis. Show message headers"
+        - "I need to retrieve the full headers of an email message for analysis. Retrieve email metadata"
+        - "I need to retrieve the full headers of an email message for analysis. Analyze email routing"
 
   - name: set_email_auto_reply
     descriptions:
@@ -891,6 +1006,11 @@ tools:
         - "Enable out of office message"
         - "Configure auto-responder"
         - "Set up automatic reply"
+      single_clear:
+        - "I need to configure automatic email replies for vacation or absence. Set vacation auto-reply"
+        - "I need to configure automatic email replies for vacation or absence. Enable out of office message"
+        - "I need to configure automatic email replies for vacation or absence. Configure auto-responder"
+        - "I need to configure automatic email replies for vacation or absence. Set up automatic reply"
 
   - name: export_emails
     descriptions:
@@ -938,6 +1058,11 @@ tools:
         - "Backup email folder"
         - "Download emails as mbox"
         - "Export inbox to file"
+      single_clear:
+        - "I need to export emails to various file formats for backup or migration. Export my emails"
+        - "I need to export emails to various file formats for backup or migration. Backup email folder"
+        - "I need to export emails to various file formats for backup or migration. Download emails as mbox"
+        - "I need to export emails to various file formats for backup or migration. Export inbox to file"
 
   - name: import_emails
     descriptions:
@@ -982,6 +1107,11 @@ tools:
         - "Restore email backup"
         - "Import mbox file"
         - "Migrate emails from PST"
+      single_clear:
+        - "I need to import emails from EML, MBOX, or PST files for migration. Import emails from file"
+        - "I need to import emails from EML, MBOX, or PST files for migration. Restore email backup"
+        - "I need to import emails from EML, MBOX, or PST files for migration. Import mbox file"
+        - "I need to import emails from EML, MBOX, or PST files for migration. Migrate emails from PST"
 
   - name: snooze_email
     descriptions:
@@ -1016,6 +1146,11 @@ tools:
         - "Remind me about this email tomorrow"
         - "Hide email until Monday"
         - "Snooze message for later"
+      single_clear:
+        - "I need to snooze an email to reappear at a specified time later. Snooze this email"
+        - "I need to snooze an email to reappear at a specified time later. Remind me about this email tomorrow"
+        - "I need to snooze an email to reappear at a specified time later. Hide email until Monday"
+        - "I need to snooze an email to reappear at a specified time later. Snooze message for later"
 
   - name: get_email_attachments
     descriptions:
@@ -1054,6 +1189,11 @@ tools:
         - "Download attachments from email"
         - "Extract files from message"
         - "List email attachments"
+      single_clear:
+        - "I need to download or list attachments from an email message. Get email attachments"
+        - "I need to download or list attachments from an email message. Download attachments from email"
+        - "I need to download or list attachments from an email message. Extract files from message"
+        - "I need to download or list attachments from an email message. List email attachments"
 
   - name: verify_email_address
     descriptions:
@@ -1094,3 +1234,8 @@ tools:
         - "Check if email is valid"
         - "Validate this email"
         - "Is this email deliverable"
+      single_clear:
+        - "I need to verify if an email address is valid and deliverable. Verify email address"
+        - "I need to verify if an email address is valid and deliverable. Check if email is valid"
+        - "I need to verify if an email address is valid and deliverable. Validate this email"
+        - "I need to verify if an email address is valid and deliverable. Is this email deliverable"

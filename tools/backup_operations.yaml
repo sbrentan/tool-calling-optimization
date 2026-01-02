@@ -45,6 +45,11 @@ tools:
         - "Back up the database"
         - "Make a snapshot"
         - "Backup files to S3"
+      single_clear:
+        - "I need to create a backup of data. Create a backup"
+        - "I need to create a backup of data. Back up the database"
+        - "I need to create a backup of data. Make a snapshot"
+        - "I need to create a backup of data. Backup files to S3"
 
   - name: restore_backup
     descriptions:
@@ -87,6 +92,11 @@ tools:
         - "Recover the database"
         - "Restore files"
         - "Perform point-in-time recovery"
+      single_clear:
+        - "Please restore data from a backup. Restore from backup"
+        - "Please restore data from a backup. Recover the database"
+        - "Please restore data from a backup. Restore files"
+        - "Please restore data from a backup. Perform point-in-time recovery"
 
   - name: list_backups
     descriptions:
@@ -129,6 +139,11 @@ tools:
         - "Show backup history"
         - "Find available backups"
         - "Get backup inventory"
+      single_clear:
+        - "I need to list available backups. List all backups"
+        - "I need to list available backups. Show backup history"
+        - "I need to list available backups. Find available backups"
+        - "I need to list available backups. Get backup inventory"
 
   - name: verify_backup
     descriptions:
@@ -165,6 +180,11 @@ tools:
         - "Check if backup is valid"
         - "Test backup restorability"
         - "Validate backup files"
+      single_clear:
+        - "I need to verify the integrity of a backup. Verify backup integrity"
+        - "I need to verify the integrity of a backup. Check if backup is valid"
+        - "I need to verify the integrity of a backup. Test backup restorability"
+        - "I need to verify the integrity of a backup. Validate backup files"
 
   - name: delete_backup
     descriptions:
@@ -202,6 +222,11 @@ tools:
         - "Remove backup files"
         - "Clean up expired backups"
         - "Delete backup to free space"
+      single_clear:
+        - "I need to delete a backup. Delete old backup"
+        - "I need to delete a backup. Remove backup files"
+        - "I need to delete a backup. Clean up expired backups"
+        - "I need to delete a backup. Delete backup to free space"
 
   - name: schedule_backup
     descriptions:
@@ -248,6 +273,11 @@ tools:
         - "Set up nightly backups"
         - "Create backup schedule"
         - "Automate database backup"
+      single_clear:
+        - "I need to schedule automatic backups. Schedule automatic backup"
+        - "I need to schedule automatic backups. Set up nightly backups"
+        - "I need to schedule automatic backups. Create backup schedule"
+        - "I need to schedule automatic backups. Automate database backup"
 
   - name: replicate_backup
     descriptions:
@@ -290,6 +320,11 @@ tools:
         - "Copy backup to another region"
         - "Sync backups across locations"
         - "Set up backup replication"
+      single_clear:
+        - "I need to replicate a backup to another location. Replicate backup to DR site"
+        - "I need to replicate a backup to another location. Copy backup to another region"
+        - "I need to replicate a backup to another location. Sync backups across locations"
+        - "I need to replicate a backup to another location. Set up backup replication"
 
   - name: export_backup
     descriptions:
@@ -328,6 +363,11 @@ tools:
         - "Create portable backup"
         - "Export for offline storage"
         - "Archive backup to ISO"
+      single_clear:
+        - "I need to export a backup to a portable format. Export backup to file"
+        - "I need to export a backup to a portable format. Create portable backup"
+        - "I need to export a backup to a portable format. Export for offline storage"
+        - "I need to export a backup to a portable format. Archive backup to ISO"
 
   - name: backup_database
     descriptions:
@@ -372,6 +412,11 @@ tools:
         - "Create database dump"
         - "Backup PostgreSQL database"
         - "Export database backup"
+      single_clear:
+        - "I need to backup a database. Backup the database"
+        - "I need to backup a database. Create database dump"
+        - "I need to backup a database. Backup PostgreSQL database"
+        - "I need to backup a database. Export database backup"
 
   - name: create_disaster_recovery_plan
     descriptions:
@@ -419,3 +464,8 @@ tools:
         - "Set up DR configuration"
         - "Define failover plan"
         - "Configure RTO and RPO"
+      single_clear:
+        - "I need to create a disaster recovery plan. Create disaster recovery plan"
+        - "I need to create a disaster recovery plan. Set up DR configuration"
+        - "I need to create a disaster recovery plan. Define failover plan"
+        - "I need to create a disaster recovery plan. Configure RTO and RPO"

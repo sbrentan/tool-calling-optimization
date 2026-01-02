@@ -42,6 +42,11 @@ tools:
         - "Convert the audio to FLAC format"
         - "Change the audio format to AAC"
         - "Export the audio as OGG"
+      single_clear:
+        - "Please convert an audio file to a different format. Convert this WAV file to MP3"
+        - "Please convert an audio file to a different format. Convert the audio to FLAC format"
+        - "Please convert an audio file to a different format. Change the audio format to AAC"
+        - "Please convert an audio file to a different format. Export the audio as OGG"
 
   - name: trim_audio
     descriptions:
@@ -88,6 +93,11 @@ tools:
         - "Trim the first 30 seconds of the audio"
         - "Extract a clip from the podcast"
         - "Cut out the middle section of the song"
+      single_clear:
+        - "I need to extract a portion of an audio file by specifying a time range. Cut the audio from 1:00 to 2:30"
+        - "I need to extract a portion of an audio file by specifying a time range. Trim the first 30 seconds of the audio"
+        - "I need to extract a portion of an audio file by specifying a time range. Extract a clip from the podcast"
+        - "I need to extract a portion of an audio file by specifying a time range. Cut out the middle section of the song"
 
   - name: merge_audio
     descriptions:
@@ -127,6 +137,11 @@ tools:
         - "Combine the tracks into one file"
         - "Join the audio clips"
         - "Concatenate the MP3 files"
+      single_clear:
+        - "I need to combine multiple audio files into one continuous file. Merge these audio files together"
+        - "I need to combine multiple audio files into one continuous file. Combine the tracks into one file"
+        - "I need to combine multiple audio files into one continuous file. Join the audio clips"
+        - "I need to combine multiple audio files into one continuous file. Concatenate the MP3 files"
 
   - name: adjust_volume
     descriptions:
@@ -165,6 +180,11 @@ tools:
         - "Decrease the volume by 3dB"
         - "Normalize the audio volume"
         - "Boost the audio volume"
+      single_clear:
+        - "I need to adjust the volume level of an audio file. Make the audio louder"
+        - "I need to adjust the volume level of an audio file. Decrease the volume by 3dB"
+        - "I need to adjust the volume level of an audio file. Normalize the audio volume"
+        - "I need to adjust the volume level of an audio file. Boost the audio volume"
 
   - name: get_audio_info
     descriptions:
@@ -195,6 +215,11 @@ tools:
         - "What's the duration of this MP3?"
         - "Show me the audio file metadata"
         - "What format is this audio?"
+      single_clear:
+        - "I need to retrieve metadata and technical details about an audio file. Get info about this audio file"
+        - "I need to retrieve metadata and technical details about an audio file. What's the duration of this MP3?"
+        - "I need to retrieve metadata and technical details about an audio file. Show me the audio file metadata"
+        - "I need to retrieve metadata and technical details about an audio file. What format is this audio?"
 
   - name: set_audio_metadata
     descriptions:
@@ -247,6 +272,11 @@ tools:
         - "Update the album metadata"
         - "Add tags to the audio file"
         - "Set the title and artist"
+      single_clear:
+        - "I need to set or update metadata tags on an audio file. Set the artist name on this MP3"
+        - "I need to set or update metadata tags on an audio file. Update the album metadata"
+        - "I need to set or update metadata tags on an audio file. Add tags to the audio file"
+        - "I need to set or update metadata tags on an audio file. Set the title and artist"
 
   - name: transcribe_audio
     descriptions:
@@ -292,6 +322,11 @@ tools:
         - "Convert the speech to text"
         - "Create subtitles from the audio"
         - "Get the transcript of this recording"
+      single_clear:
+        - "I need to transcribe speech in an audio file to text. Transcribe this audio to text"
+        - "I need to transcribe speech in an audio file to text. Convert the speech to text"
+        - "I need to transcribe speech in an audio file to text. Create subtitles from the audio"
+        - "I need to transcribe speech in an audio file to text. Get the transcript of this recording"
 
   - name: text_to_speech
     descriptions:
@@ -342,6 +377,11 @@ tools:
         - "Read this text out loud and save it"
         - "Generate audio from the text"
         - "Create a voiceover for this text"
+      single_clear:
+        - "I need to generate speech audio from text. Convert this text to speech"
+        - "I need to generate speech audio from text. Read this text out loud and save it"
+        - "I need to generate speech audio from text. Generate audio from the text"
+        - "I need to generate speech audio from text. Create a voiceover for this text"
 
   - name: add_audio_effect
     descriptions:
@@ -380,6 +420,11 @@ tools:
         - "Apply echo effect to the recording"
         - "Add distortion to the guitar track"
         - "Apply compression to the audio"
+      single_clear:
+        - "I need to apply audio effects to transform sound. Add reverb to this audio"
+        - "I need to apply audio effects to transform sound. Apply echo effect to the recording"
+        - "I need to apply audio effects to transform sound. Add distortion to the guitar track"
+        - "I need to apply audio effects to transform sound. Apply compression to the audio"
 
   - name: remove_noise
     descriptions:
@@ -419,6 +464,11 @@ tools:
         - "Clean up the noisy audio"
         - "Reduce the hiss in the audio"
         - "Remove the hum from the recording"
+      single_clear:
+        - "I need to reduce or remove background noise from an audio recording. Remove background noise from this recording"
+        - "I need to reduce or remove background noise from an audio recording. Clean up the noisy audio"
+        - "I need to reduce or remove background noise from an audio recording. Reduce the hiss in the audio"
+        - "I need to reduce or remove background noise from an audio recording. Remove the hum from the recording"
 
   - name: extract_audio
     descriptions:
@@ -459,6 +509,11 @@ tools:
         - "Rip the audio track from the movie"
         - "Get the audio from the MP4 file"
         - "Convert video to audio"
+      single_clear:
+        - "I need to extract the audio track from a video file. Extract the audio from this video"
+        - "I need to extract the audio track from a video file. Rip the audio track from the movie"
+        - "I need to extract the audio track from a video file. Get the audio from the MP4 file"
+        - "I need to extract the audio track from a video file. Convert video to audio"
 
   - name: split_audio
     descriptions:
@@ -510,6 +565,11 @@ tools:
         - "Split the podcast by silence"
         - "Divide the audio at specific times"
         - "Segment the audio file"
+      single_clear:
+        - "I need to split an audio file into multiple segments. Split the audio into 5 equal parts"
+        - "I need to split an audio file into multiple segments. Split the podcast by silence"
+        - "I need to split an audio file into multiple segments. Divide the audio at specific times"
+        - "I need to split an audio file into multiple segments. Segment the audio file"
 
   - name: mix_audio_tracks
     descriptions:
@@ -543,6 +603,11 @@ tools:
         - "Layer these audio files together"
         - "Combine multiple tracks into one mix"
         - "Mix the audio with background music"
+      single_clear:
+        - "I need to mix multiple audio tracks together with volume control. Mix the voice and music tracks"
+        - "I need to mix multiple audio tracks together with volume control. Layer these audio files together"
+        - "I need to mix multiple audio tracks together with volume control. Combine multiple tracks into one mix"
+        - "I need to mix multiple audio tracks together with volume control. Mix the audio with background music"
 
   - name: analyze_audio
     descriptions:
@@ -568,6 +633,11 @@ tools:
         - "Analyze the audio characteristics"
         - "Detect the key of this track"
         - "Measure the loudness of the audio"
+      single_clear:
+        - "I need to analyze audio for tempo, key, loudness, and other characteristics. What's the tempo of this song?"
+        - "I need to analyze audio for tempo, key, loudness, and other characteristics. Analyze the audio characteristics"
+        - "I need to analyze audio for tempo, key, loudness, and other characteristics. Detect the key of this track"
+        - "I need to analyze audio for tempo, key, loudness, and other characteristics. Measure the loudness of the audio"
 
   - name: change_audio_speed
     descriptions:
@@ -607,6 +677,11 @@ tools:
         - "Slow down the podcast"
         - "Make the audio 2x faster"
         - "Change the audio speed without changing pitch"
+      single_clear:
+        - "I need to change the playback speed of an audio file. Speed up the audio by 1.5x"
+        - "I need to change the playback speed of an audio file. Slow down the podcast"
+        - "I need to change the playback speed of an audio file. Make the audio 2x faster"
+        - "I need to change the playback speed of an audio file. Change the audio speed without changing pitch"
 
   - name: record_audio
     descriptions:
@@ -658,6 +733,11 @@ tools:
         - "Start recording from the microphone"
         - "Record a voice memo"
         - "Capture audio input"
+      single_clear:
+        - "I need to record audio from a microphone or audio input device. Record audio for 30 seconds"
+        - "I need to record audio from a microphone or audio input device. Start recording from the microphone"
+        - "I need to record audio from a microphone or audio input device. Record a voice memo"
+        - "I need to record audio from a microphone or audio input device. Capture audio input"
 
   - name: generate_tone
     descriptions:
@@ -712,6 +792,11 @@ tools:
         - "Create a 2-second sine wave"
         - "Generate white noise for 10 seconds"
         - "Create a musical note tone"
+      single_clear:
+        - "I need to generate a synthetic audio tone or waveform. Generate a 1-second beep at 440Hz"
+        - "I need to generate a synthetic audio tone or waveform. Create a 2-second sine wave"
+        - "I need to generate a synthetic audio tone or waveform. Generate white noise for 10 seconds"
+        - "I need to generate a synthetic audio tone or waveform. Create a musical note tone"
 
   - name: apply_audio_effect
     descriptions:
@@ -751,6 +836,11 @@ tools:
         - "Apply delay effect to the audio"
         - "Add distortion to the guitar"
         - "Put a chorus effect on this track"
+      single_clear:
+        - "I need to apply signal processing effects to an audio file. Add reverb to the vocal track"
+        - "I need to apply signal processing effects to an audio file. Apply delay effect to the audio"
+        - "I need to apply signal processing effects to an audio file. Add distortion to the guitar"
+        - "I need to apply signal processing effects to an audio file. Put a chorus effect on this track"
 
   - name: split_audio
     descriptions:
@@ -802,6 +892,11 @@ tools:
         - "Divide the audio by silence"
         - "Split the album into individual tracks"
         - "Cut the audio into 10 equal parts"
+      single_clear:
+        - "I need to split an audio file into multiple parts. Split this podcast into 5-minute segments"
+        - "I need to split an audio file into multiple parts. Divide the audio by silence"
+        - "I need to split an audio file into multiple parts. Split the album into individual tracks"
+        - "I need to split an audio file into multiple parts. Cut the audio into 10 equal parts"
 
   - name: detect_bpm
     descriptions:
@@ -840,6 +935,11 @@ tools:
         - "Detect the tempo of the track"
         - "Find the beats per minute"
         - "Analyze the rhythm of this audio"
+      single_clear:
+        - "I need to detect the tempo in beats per minute of an audio file. What's the BPM of this song?"
+        - "I need to detect the tempo in beats per minute of an audio file. Detect the tempo of the track"
+        - "I need to detect the tempo in beats per minute of an audio file. Find the beats per minute"
+        - "I need to detect the tempo in beats per minute of an audio file. Analyze the rhythm of this audio"
 
   - name: audio_spectrum_analysis
     descriptions:
@@ -884,6 +984,11 @@ tools:
         - "Analyze the frequency content"
         - "Show the audio spectrum"
         - "What frequencies are dominant?"
+      single_clear:
+        - "I need to perform frequency spectrum analysis on audio. Generate a spectrogram of this audio"
+        - "I need to perform frequency spectrum analysis on audio. Analyze the frequency content"
+        - "I need to perform frequency spectrum analysis on audio. Show the audio spectrum"
+        - "I need to perform frequency spectrum analysis on audio. What frequencies are dominant?"
 
   - name: remove_background_noise
     descriptions:
@@ -927,6 +1032,11 @@ tools:
         - "Clean up this noisy recording"
         - "Reduce the hiss in the audio"
         - "Filter out the static"
+      single_clear:
+        - "I need to remove or reduce background noise from an audio recording. Remove the background noise"
+        - "I need to remove or reduce background noise from an audio recording. Clean up this noisy recording"
+        - "I need to remove or reduce background noise from an audio recording. Reduce the hiss in the audio"
+        - "I need to remove or reduce background noise from an audio recording. Filter out the static"
 
   - name: audio_pitch_detection
     descriptions:
@@ -972,6 +1082,11 @@ tools:
         - "What notes are being sung?"
         - "Analyze the melody"
         - "Extract the pitch contour"
+      single_clear:
+        - "I need to detect pitch and musical notes in audio. Detect the pitch of this vocal"
+        - "I need to detect pitch and musical notes in audio. What notes are being sung?"
+        - "I need to detect pitch and musical notes in audio. Analyze the melody"
+        - "I need to detect pitch and musical notes in audio. Extract the pitch contour"
 
   - name: sync_audio_video
     descriptions:
@@ -1017,6 +1132,11 @@ tools:
         - "Sync the audio with the video"
         - "Fix the audio-video sync issue"
         - "Align this audio track with the video"
+      single_clear:
+        - "I need to synchronize audio with video by adjusting timing or replacing the audio track. Replace the audio in this video"
+        - "I need to synchronize audio with video by adjusting timing or replacing the audio track. Sync the audio with the video"
+        - "I need to synchronize audio with video by adjusting timing or replacing the audio track. Fix the audio-video sync issue"
+        - "I need to synchronize audio with video by adjusting timing or replacing the audio track. Align this audio track with the video"
 
   - name: extract_vocals
     descriptions:
@@ -1059,6 +1179,11 @@ tools:
         - "Separate vocals and instrumental"
         - "Create a karaoke version"
         - "Isolate the drums from the mix"
+      single_clear:
+        - "I need to separate vocals or instruments from a mixed audio track. Extract the vocals from this song"
+        - "I need to separate vocals or instruments from a mixed audio track. Separate vocals and instrumental"
+        - "I need to separate vocals or instruments from a mixed audio track. Create a karaoke version"
+        - "I need to separate vocals or instruments from a mixed audio track. Isolate the drums from the mix"
 
   - name: audio_fingerprint
     descriptions:
@@ -1097,3 +1222,8 @@ tools:
         - "Generate an audio fingerprint"
         - "Check if these two audio files match"
         - "What song is playing?"
+      single_clear:
+        - "I need to generate an acoustic fingerprint to identify or match audio. Identify this song"
+        - "I need to generate an acoustic fingerprint to identify or match audio. Generate an audio fingerprint"
+        - "I need to generate an acoustic fingerprint to identify or match audio. Check if these two audio files match"
+        - "I need to generate an acoustic fingerprint to identify or match audio. What song is playing?"

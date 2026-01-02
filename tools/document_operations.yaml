@@ -39,6 +39,11 @@ tools:
         - "Change the document format"
         - "Convert Markdown to HTML"
         - "Export as PDF"
+      single_clear:
+        - "Please convert a document to a different format. Convert this Word document to PDF"
+        - "Please convert a document to a different format. Change the document format"
+        - "Please convert a document to a different format. Convert Markdown to HTML"
+        - "Please convert a document to a different format. Export as PDF"
 
   - name: merge_documents
     descriptions:
@@ -78,6 +83,11 @@ tools:
         - "Combine the documents"
         - "Join the Word documents"
         - "Create one PDF from these files"
+      single_clear:
+        - "I need to merge multiple documents. Merge these PDF files"
+        - "I need to merge multiple documents. Combine the documents"
+        - "I need to merge multiple documents. Join the Word documents"
+        - "I need to merge multiple documents. Create one PDF from these files"
 
   - name: split_document
     descriptions:
@@ -120,6 +130,11 @@ tools:
         - "Extract pages 1-10"
         - "Split every 5 pages"
         - "Divide the document by bookmarks"
+      single_clear:
+        - "I need to split a document into parts. Split this PDF into chapters"
+        - "I need to split a document into parts. Extract pages 1-10"
+        - "I need to split a document into parts. Split every 5 pages"
+        - "I need to split a document into parts. Divide the document by bookmarks"
 
   - name: extract_text
     descriptions:
@@ -163,6 +178,11 @@ tools:
         - "Get the text content"
         - "OCR this scanned document"
         - "Pull text from the Word file"
+      single_clear:
+        - "I need to extract text from a document. Extract text from this PDF"
+        - "I need to extract text from a document. Get the text content"
+        - "I need to extract text from a document. OCR this scanned document"
+        - "I need to extract text from a document. Pull text from the Word file"
 
   - name: add_page_numbers
     descriptions:
@@ -208,6 +228,11 @@ tools:
         - "Number the pages"
         - "Put page numbers at the bottom"
         - "Add 'Page X of Y' to each page"
+      single_clear:
+        - "I need to add page numbers to a document. Add page numbers to this PDF"
+        - "I need to add page numbers to a document. Number the pages"
+        - "I need to add page numbers to a document. Put page numbers at the bottom"
+        - "I need to add page numbers to a document. Add 'Page X of Y' to each page"
 
   - name: add_watermark
     descriptions:
@@ -260,6 +285,11 @@ tools:
         - "Stamp the document as DRAFT"
         - "Add my logo as watermark"
         - "Put a watermark on every page"
+      single_clear:
+        - "I need to add a watermark to a document. Add a 'CONFIDENTIAL' watermark"
+        - "I need to add a watermark to a document. Stamp the document as DRAFT"
+        - "I need to add a watermark to a document. Add my logo as watermark"
+        - "I need to add a watermark to a document. Put a watermark on every page"
 
   - name: fill_form
     descriptions:
@@ -298,6 +328,11 @@ tools:
         - "Complete the form with this data"
         - "What fields are in this form?"
         - "Fill the application form"
+      single_clear:
+        - "I need to fill in a PDF form. Fill out this PDF form"
+        - "I need to fill in a PDF form. Complete the form with this data"
+        - "I need to fill in a PDF form. What fields are in this form?"
+        - "I need to fill in a PDF form. Fill the application form"
 
   - name: sign_document
     descriptions:
@@ -348,6 +383,11 @@ tools:
         - "Add my digital signature"
         - "Sign the contract with my certificate"
         - "Put a signature on the PDF"
+      single_clear:
+        - "I need to digitally sign a document. Sign this document"
+        - "I need to digitally sign a document. Add my digital signature"
+        - "I need to digitally sign a document. Sign the contract with my certificate"
+        - "I need to digitally sign a document. Put a signature on the PDF"
 
   - name: compress_document
     descriptions:
@@ -393,6 +433,11 @@ tools:
         - "Reduce the file size"
         - "Optimize the document"
         - "Make this PDF smaller"
+      single_clear:
+        - "I need to compress a document to reduce file size. Compress this PDF"
+        - "I need to compress a document to reduce file size. Reduce the file size"
+        - "I need to compress a document to reduce file size. Optimize the document"
+        - "I need to compress a document to reduce file size. Make this PDF smaller"
 
   - name: protect_document
     descriptions:
@@ -446,6 +491,11 @@ tools:
         - "Add security to the document"
         - "Protect this file with a password"
         - "Lock the PDF from editing"
+      single_clear:
+        - "I need to password protect a document. Password protect this PDF"
+        - "I need to password protect a document. Add security to the document"
+        - "I need to password protect a document. Protect this file with a password"
+        - "I need to password protect a document. Lock the PDF from editing"
   - name: redact_document
     descriptions:
       minimal: "Redact content"
@@ -487,6 +537,11 @@ tools:
         - "Remove sensitive information"
         - "Black out personal data"
         - "Redact credit card numbers"
+      single_clear:
+        - "I need to redact sensitive information from a document. Redact SSN from document"
+        - "I need to redact sensitive information from a document. Remove sensitive information"
+        - "I need to redact sensitive information from a document. Black out personal data"
+        - "I need to redact sensitive information from a document. Redact credit card numbers"
 
   - name: add_watermark
     descriptions:
@@ -534,6 +589,11 @@ tools:
         - "Stamp document as confidential"
         - "Add company logo watermark"
         - "Mark pages as draft"
+      single_clear:
+        - "I need to add a watermark to a document. Add watermark to PDF"
+        - "I need to add a watermark to a document. Stamp document as confidential"
+        - "I need to add a watermark to a document. Add company logo watermark"
+        - "I need to add a watermark to a document. Mark pages as draft"
 
   - name: flatten_form_fields
     descriptions:
@@ -567,6 +627,11 @@ tools:
         - "Make form non-editable"
         - "Finalize filled form"
         - "Lock form fields"
+      single_clear:
+        - "I need to flatten form fields in a PDF. Flatten PDF form"
+        - "I need to flatten form fields in a PDF. Make form non-editable"
+        - "I need to flatten form fields in a PDF. Finalize filled form"
+        - "I need to flatten form fields in a PDF. Lock form fields"
 
   - name: compare_documents
     descriptions:
@@ -607,6 +672,11 @@ tools:
         - "Show document differences"
         - "Diff the contract versions"
         - "What changed between versions"
+      single_clear:
+        - "I need to compare two documents. Compare two PDFs"
+        - "I need to compare two documents. Show document differences"
+        - "I need to compare two documents. Diff the contract versions"
+        - "I need to compare two documents. What changed between versions"
 
   - name: add_page_numbers
     descriptions:
@@ -652,6 +722,11 @@ tools:
         - "Number the pages"
         - "Add Page X of Y footer"
         - "Insert page numbering"
+      single_clear:
+        - "I need to add page numbers to a document. Add page numbers"
+        - "I need to add page numbers to a document. Number the pages"
+        - "I need to add page numbers to a document. Add Page X of Y footer"
+        - "I need to add page numbers to a document. Insert page numbering"
 
   - name: add_header_footer
     descriptions:
@@ -700,6 +775,11 @@ tools:
         - "Add footer with date"
         - "Insert company header"
         - "Add page footer"
+      single_clear:
+        - "I need to add headers and footers to a document. Add header to document"
+        - "I need to add headers and footers to a document. Add footer with date"
+        - "I need to add headers and footers to a document. Insert company header"
+        - "I need to add headers and footers to a document. Add page footer"
 
   - name: rotate_pages
     descriptions:
@@ -733,6 +813,11 @@ tools:
         - "Fix page orientation"
         - "Turn pages right"
         - "Rotate landscape to portrait"
+      single_clear:
+        - "I need to rotate pages in a document. Rotate page 90 degrees"
+        - "I need to rotate pages in a document. Fix page orientation"
+        - "I need to rotate pages in a document. Turn pages right"
+        - "I need to rotate pages in a document. Rotate landscape to portrait"
 
   - name: create_pdf_portfolio
     descriptions:
@@ -771,6 +856,11 @@ tools:
         - "Bundle files into portfolio"
         - "Combine documents and images"
         - "Create file collection"
+      single_clear:
+        - "I need to create a PDF portfolio. Create PDF portfolio"
+        - "I need to create a PDF portfolio. Bundle files into portfolio"
+        - "I need to create a PDF portfolio. Combine documents and images"
+        - "I need to create a PDF portfolio. Create file collection"
 
   - name: linearize_pdf
     descriptions:
@@ -805,6 +895,11 @@ tools:
         - "Enable fast web view"
         - "Linearize the document"
         - "Prepare PDF for website"
+      single_clear:
+        - "I need to optimize a PDF for web viewing. Optimize PDF for web"
+        - "I need to optimize a PDF for web viewing. Enable fast web view"
+        - "I need to optimize a PDF for web viewing. Linearize the document"
+        - "I need to optimize a PDF for web viewing. Prepare PDF for website"
 
   - name: extract_text_from_document
     descriptions:
@@ -846,6 +941,11 @@ tools:
         - "Get document text"
         - "Pull text from file"
         - "Convert document to text"
+      single_clear:
+        - "I need to extract text from a document. Extract text from PDF"
+        - "I need to extract text from a document. Get document text"
+        - "I need to extract text from a document. Pull text from file"
+        - "I need to extract text from a document. Convert document to text"
 
   - name: create_document_template
     descriptions:
@@ -882,6 +982,11 @@ tools:
         - "Make reusable template"
         - "Set up mail merge template"
         - "Create invoice template"
+      single_clear:
+        - "I need to create a document template. Create document template"
+        - "I need to create a document template. Make reusable template"
+        - "I need to create a document template. Set up mail merge template"
+        - "I need to create a document template. Create invoice template"
 
   - name: generate_document_from_template
     descriptions:
@@ -916,6 +1021,11 @@ tools:
         - "Fill in template"
         - "Create document from data"
         - "Mail merge document"
+      single_clear:
+        - "I need to generate a document from a template. Generate document from template"
+        - "I need to generate a document from a template. Fill in template"
+        - "I need to generate a document from a template. Create document from data"
+        - "I need to generate a document from a template. Mail merge document"
 
   - name: compare_documents
     descriptions:
@@ -955,6 +1065,11 @@ tools:
         - "Show document differences"
         - "Diff these files"
         - "What changed between versions"
+      single_clear:
+        - "I need to compare two documents. Compare two documents"
+        - "I need to compare two documents. Show document differences"
+        - "I need to compare two documents. Diff these files"
+        - "I need to compare two documents. What changed between versions"
 
   - name: redact_document
     descriptions:
@@ -993,6 +1108,11 @@ tools:
         - "Remove SSN from document"
         - "Redact personal data"
         - "Black out confidential info"
+      single_clear:
+        - "I need to redact sensitive information from a document. Redact sensitive info"
+        - "I need to redact sensitive information from a document. Remove SSN from document"
+        - "I need to redact sensitive information from a document. Redact personal data"
+        - "I need to redact sensitive information from a document. Black out confidential info"
 
   - name: add_digital_signature
     descriptions:
@@ -1043,6 +1163,11 @@ tools:
         - "Add signature to PDF"
         - "Sign with certificate"
         - "Apply digital signature"
+      single_clear:
+        - "I need to add a digital signature to a document. Digitally sign document"
+        - "I need to add a digital signature to a document. Add signature to PDF"
+        - "I need to add a digital signature to a document. Sign with certificate"
+        - "I need to add a digital signature to a document. Apply digital signature"
 
   - name: verify_document_signature
     descriptions:
@@ -1072,6 +1197,11 @@ tools:
         - "Check if signature is valid"
         - "Validate signed PDF"
         - "Is this document authentic"
+      single_clear:
+        - "I need to verify a digital signature on a document. Verify document signature"
+        - "I need to verify a digital signature on a document. Check if signature is valid"
+        - "I need to verify a digital signature on a document. Validate signed PDF"
+        - "I need to verify a digital signature on a document. Is this document authentic"
 
   - name: flatten_pdf
     descriptions:
@@ -1111,3 +1241,8 @@ tools:
         - "Lock form fields"
         - "Make PDF non-editable"
         - "Flatten PDF annotations"
+      single_clear:
+        - "I need to flatten a PDF to make it non-editable. Flatten PDF form"
+        - "I need to flatten a PDF to make it non-editable. Lock form fields"
+        - "I need to flatten a PDF to make it non-editable. Make PDF non-editable"
+        - "I need to flatten a PDF to make it non-editable. Flatten PDF annotations"

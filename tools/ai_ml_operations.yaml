@@ -43,6 +43,11 @@ tools:
         - "Write a short story about robots"
         - "Complete this sentence with AI"
         - "Generate marketing copy for the product"
+      single_clear:
+        - "I need to generate text using an AI language model. Generate a product description"
+        - "I need to generate text using an AI language model. Write a short story about robots"
+        - "I need to generate text using an AI language model. Complete this sentence with AI"
+        - "I need to generate text using an AI language model. Generate marketing copy for the product"
 
   - name: classify_text
     descriptions:
@@ -82,6 +87,11 @@ tools:
         - "Categorize the support ticket"
         - "What topic is this article about?"
         - "Classify the customer feedback"
+      single_clear:
+        - "Please classify text into categories. Classify this review as positive or negative"
+        - "Please classify text into categories. Categorize the support ticket"
+        - "Please classify text into categories. What topic is this article about?"
+        - "Please classify text into categories. Classify the customer feedback"
 
   - name: generate_embeddings
     descriptions:
@@ -122,6 +132,11 @@ tools:
         - "Get vector representation of this text"
         - "Create embeddings for similarity search"
         - "Embed these sentences"
+      single_clear:
+        - "I need to create text embeddings for similarity search. Generate embeddings for the document"
+        - "I need to create text embeddings for similarity search. Get vector representation of this text"
+        - "I need to create text embeddings for similarity search. Create embeddings for similarity search"
+        - "I need to create text embeddings for similarity search. Embed these sentences"
 
   - name: semantic_search
     descriptions:
@@ -164,6 +179,11 @@ tools:
         - "Search for similar articles"
         - "Find relevant FAQs for this question"
         - "Semantic search the knowledge base"
+      single_clear:
+        - "I need to search by meaning using AI. Find documents about climate change"
+        - "I need to search by meaning using AI. Search for similar articles"
+        - "I need to search by meaning using AI. Find relevant FAQs for this question"
+        - "I need to search by meaning using AI. Semantic search the knowledge base"
 
   - name: generate_image
     descriptions:
@@ -211,6 +231,11 @@ tools:
         - "Create a logo for a coffee shop"
         - "Generate product mockup images"
         - "Make an illustration of a robot"
+      single_clear:
+        - "I need to generate an image from a text description. Generate an image of a futuristic city"
+        - "I need to generate an image from a text description. Create a logo for a coffee shop"
+        - "I need to generate an image from a text description. Generate product mockup images"
+        - "I need to generate an image from a text description. Make an illustration of a robot"
 
   - name: transcribe_audio
     descriptions:
@@ -254,6 +279,11 @@ tools:
         - "Convert the podcast to text"
         - "Get the transcript of the meeting"
         - "Speech to text for this file"
+      single_clear:
+        - "I need to convert audio to text using speech recognition. Transcribe this audio recording"
+        - "I need to convert audio to text using speech recognition. Convert the podcast to text"
+        - "I need to convert audio to text using speech recognition. Get the transcript of the meeting"
+        - "I need to convert audio to text using speech recognition. Speech to text for this file"
 
   - name: text_to_speech
     descriptions:
@@ -301,6 +331,11 @@ tools:
         - "Generate audio from the script"
         - "Convert the article to speech"
         - "Create voiceover for the video"
+      single_clear:
+        - "I need to convert text to spoken audio. Read this text aloud"
+        - "I need to convert text to spoken audio. Generate audio from the script"
+        - "I need to convert text to spoken audio. Convert the article to speech"
+        - "I need to convert text to spoken audio. Create voiceover for the video"
 
   - name: analyze_image
     descriptions:
@@ -341,6 +376,11 @@ tools:
         - "Describe the photo"
         - "Extract text from the image"
         - "Detect objects in the picture"
+      single_clear:
+        - "I need to analyze image content with AI vision. What's in this image?"
+        - "I need to analyze image content with AI vision. Describe the photo"
+        - "I need to analyze image content with AI vision. Extract text from the image"
+        - "I need to analyze image content with AI vision. Detect objects in the picture"
 
   - name: moderate_content
     descriptions:
@@ -379,6 +419,11 @@ tools:
         - "Moderate the user's post"
         - "Is this content safe?"
         - "Flag inappropriate content"
+      single_clear:
+        - "I need to check content for policy violations. Check if this comment is appropriate"
+        - "I need to check content for policy violations. Moderate the user's post"
+        - "I need to check content for policy violations. Is this content safe?"
+        - "I need to check content for policy violations. Flag inappropriate content"
 
   - name: train_model
     descriptions:
@@ -426,6 +471,11 @@ tools:
         - "Fine-tune GPT on our FAQs"
         - "Create a custom classifier"
         - "Train a sentiment model"
+      single_clear:
+        - "I need to train a custom ML model. Train a model on my data"
+        - "I need to train a custom ML model. Fine-tune GPT on our FAQs"
+        - "I need to train a custom ML model. Create a custom classifier"
+        - "I need to train a custom ML model. Train a sentiment model"
   - name: detect_anomaly
     descriptions:
       minimal: "Detect anomalies"
@@ -469,6 +519,11 @@ tools:
         - "Detect unusual patterns"
         - "Check for outliers in data"
         - "Identify anomalous behavior"
+      single_clear:
+        - "I need to detect anomalies in data using ML. Find anomalies in server metrics"
+        - "I need to detect anomalies in data using ML. Detect unusual patterns"
+        - "I need to detect anomalies in data using ML. Check for outliers in data"
+        - "I need to detect anomalies in data using ML. Identify anomalous behavior"
 
   - name: predict_time_series
     descriptions:
@@ -512,6 +567,11 @@ tools:
         - "Predict future demand"
         - "Forecast website traffic"
         - "Predict stock levels"
+      single_clear:
+        - "I need to predict time series values. Forecast next month sales"
+        - "I need to predict time series values. Predict future demand"
+        - "I need to predict time series values. Forecast website traffic"
+        - "I need to predict time series values. Predict stock levels"
 
   - name: cluster_data
     descriptions:
@@ -552,6 +612,11 @@ tools:
         - "Cluster similar products"
         - "Find data patterns"
         - "Group users by behavior"
+      single_clear:
+        - "I need to cluster data into groups. Segment customers into groups"
+        - "I need to cluster data into groups. Cluster similar products"
+        - "I need to cluster data into groups. Find data patterns"
+        - "I need to cluster data into groups. Group users by behavior"
 
   - name: extract_features
     descriptions:
@@ -593,6 +658,11 @@ tools:
         - "Engineer ML features"
         - "Create feature matrix"
         - "Generate predictive features"
+      single_clear:
+        - "I need to extract ML features from data. Extract features from user data"
+        - "I need to extract ML features from data. Engineer ML features"
+        - "I need to extract ML features from data. Create feature matrix"
+        - "I need to extract ML features from data. Generate predictive features"
 
   - name: explain_prediction
     descriptions:
@@ -633,6 +703,11 @@ tools:
         - "What drove this prediction?"
         - "Show feature contributions"
         - "Interpret model decision"
+      single_clear:
+        - "I need to explain a model prediction. Explain why this was predicted"
+        - "I need to explain a model prediction. What drove this prediction?"
+        - "I need to explain a model prediction. Show feature contributions"
+        - "I need to explain a model prediction. Interpret model decision"
 
   - name: evaluate_model
     descriptions:
@@ -669,6 +744,11 @@ tools:
         - "Check model performance"
         - "Compare model versions"
         - "Run model benchmarks"
+      single_clear:
+        - "I need to evaluate model performance. Evaluate model accuracy"
+        - "I need to evaluate model performance. Check model performance"
+        - "I need to evaluate model performance. Compare model versions"
+        - "I need to evaluate model performance. Run model benchmarks"
 
   - name: deploy_model
     descriptions:
@@ -711,6 +791,11 @@ tools:
         - "Create model endpoint"
         - "Serve model via API"
         - "Deploy with auto-scaling"
+      single_clear:
+        - "I need to deploy an ML model to production. Deploy model to production"
+        - "I need to deploy an ML model to production. Create model endpoint"
+        - "I need to deploy an ML model to production. Serve model via API"
+        - "I need to deploy an ML model to production. Deploy with auto-scaling"
 
   - name: run_ab_test
     descriptions:
@@ -758,6 +843,11 @@ tools:
         - "Compare models in production"
         - "Run model experiment"
         - "Test new model against baseline"
+      single_clear:
+        - "I need to run an A/B test for ML models. A/B test model versions"
+        - "I need to run an A/B test for ML models. Compare models in production"
+        - "I need to run an A/B test for ML models. Run model experiment"
+        - "I need to run an A/B test for ML models. Test new model against baseline"
 
   - name: detect_data_drift
     descriptions:
@@ -796,6 +886,11 @@ tools:
         - "Monitor model input distribution"
         - "Detect feature drift"
         - "Compare training vs production data"
+      single_clear:
+        - "I need to detect data drift in production. Check for data drift"
+        - "I need to detect data drift in production. Monitor model input distribution"
+        - "I need to detect data drift in production. Detect feature drift"
+        - "I need to detect data drift in production. Compare training vs production data"
 
   - name: create_feature_store
     descriptions:
@@ -844,6 +939,11 @@ tools:
         - "Set up ML features"
         - "Initialize feature store"
         - "Create feature repository"
+      single_clear:
+        - "I need to create an ML feature store. Create feature store"
+        - "I need to create an ML feature store. Set up ML features"
+        - "I need to create an ML feature store. Initialize feature store"
+        - "I need to create an ML feature store. Create feature repository"
 
   - name: ingest_features
     descriptions:
@@ -887,6 +987,11 @@ tools:
         - "Load features to store"
         - "Update feature data"
         - "Push features to store"
+      single_clear:
+        - "I need to ingest features into the store. Ingest features"
+        - "I need to ingest features into the store. Load features to store"
+        - "I need to ingest features into the store. Update feature data"
+        - "I need to ingest features into the store. Push features to store"
 
   - name: get_features
     descriptions:
@@ -925,6 +1030,11 @@ tools:
         - "Retrieve feature values"
         - "Fetch features for inference"
         - "Get training features"
+      single_clear:
+        - "I need to retrieve features from the feature store. Get features for user"
+        - "I need to retrieve features from the feature store. Retrieve feature values"
+        - "I need to retrieve features from the feature store. Fetch features for inference"
+        - "I need to retrieve features from the feature store. Get training features"
 
   - name: explain_prediction
     descriptions:
@@ -965,6 +1075,11 @@ tools:
         - "Why did model predict this"
         - "Get feature importance"
         - "Interpret model decision"
+      single_clear:
+        - "I need to explain a model prediction. Explain model prediction"
+        - "I need to explain a model prediction. Why did model predict this"
+        - "I need to explain a model prediction. Get feature importance"
+        - "I need to explain a model prediction. Interpret model decision"
 
   - name: create_pipeline
     descriptions:
@@ -1001,6 +1116,11 @@ tools:
         - "Build training pipeline"
         - "Set up automated workflow"
         - "Create retraining pipeline"
+      single_clear:
+        - "I need to create an ML pipeline. Create ML pipeline"
+        - "I need to create an ML pipeline. Build training pipeline"
+        - "I need to create an ML pipeline. Set up automated workflow"
+        - "I need to create an ML pipeline. Create retraining pipeline"
 
   - name: run_pipeline
     descriptions:
@@ -1034,6 +1154,11 @@ tools:
         - "Execute training pipeline"
         - "Start pipeline run"
         - "Trigger retraining"
+      single_clear:
+        - "I need to execute an ML pipeline. Run ML pipeline"
+        - "I need to execute an ML pipeline. Execute training pipeline"
+        - "I need to execute an ML pipeline. Start pipeline run"
+        - "I need to execute an ML pipeline. Trigger retraining"
 
   - name: create_labeling_job
     descriptions:
@@ -1082,6 +1207,11 @@ tools:
         - "Set up data annotation"
         - "Label training data"
         - "Start image labeling"
+      single_clear:
+        - "I need to create a data labeling job. Create labeling job"
+        - "I need to create a data labeling job. Set up data annotation"
+        - "I need to create a data labeling job. Label training data"
+        - "I need to create a data labeling job. Start image labeling"
 
   - name: tune_hyperparameters
     descriptions:
@@ -1131,6 +1261,11 @@ tools:
         - "Optimize model parameters"
         - "Find best hyperparameters"
         - "Run hyperparameter search"
+      single_clear:
+        - "I need to tune model hyperparameters. Tune hyperparameters"
+        - "I need to tune model hyperparameters. Optimize model parameters"
+        - "I need to tune model hyperparameters. Find best hyperparameters"
+        - "I need to tune model hyperparameters. Run hyperparameter search"
 
   - name: compare_models
     descriptions:
@@ -1169,6 +1304,11 @@ tools:
         - "Which model is better"
         - "Model comparison report"
         - "Evaluate multiple models"
+      single_clear:
+        - "I need to compare ML models. Compare models"
+        - "I need to compare ML models. Which model is better"
+        - "I need to compare ML models. Model comparison report"
+        - "I need to compare ML models. Evaluate multiple models"
 
   - name: monitor_model
     descriptions:
@@ -1211,3 +1351,8 @@ tools:
         - "Set up model monitoring"
         - "Track model performance"
         - "Watch model metrics"
+      single_clear:
+        - "I need to monitor a deployed model. Monitor deployed model"
+        - "I need to monitor a deployed model. Set up model monitoring"
+        - "I need to monitor a deployed model. Track model performance"
+        - "I need to monitor a deployed model. Watch model metrics"

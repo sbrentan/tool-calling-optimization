@@ -42,6 +42,11 @@ tools:
         - "Define new metric"
         - "Add monitoring metric"
         - "Create latency histogram"
+      single_clear:
+        - "I need to create a monitoring metric. Create custom metric"
+        - "I need to create a monitoring metric. Define new metric"
+        - "I need to create a monitoring metric. Add monitoring metric"
+        - "I need to create a monitoring metric. Create latency histogram"
 
   - name: record_metric
     descriptions:
@@ -74,6 +79,11 @@ tools:
         - "Log metric data"
         - "Increment counter"
         - "Set gauge value"
+      single_clear:
+        - "I want to record metric data. Record metric value"
+        - "I want to record metric data. Log metric data"
+        - "I want to record metric data. Increment counter"
+        - "I want to record metric data. Set gauge value"
 
   - name: create_alert_rule
     descriptions:
@@ -119,6 +129,11 @@ tools:
         - "Set up CPU alert"
         - "Alert when error rate high"
         - "Create threshold alert"
+      single_clear:
+        - "I need to create an alert rule. Create alert rule"
+        - "I need to create an alert rule. Set up CPU alert"
+        - "I need to create an alert rule. Alert when error rate high"
+        - "I need to create an alert rule. Create threshold alert"
 
   - name: query_metrics
     descriptions:
@@ -159,6 +174,11 @@ tools:
         - "Get CPU usage data"
         - "Fetch request rate"
         - "Query error metrics"
+      single_clear:
+        - "Please query the metrics. Query metrics"
+        - "Please query the metrics. Get CPU usage data"
+        - "Please query the metrics. Fetch request rate"
+        - "Please query the metrics. Query error metrics"
 
   - name: create_dashboard
     descriptions:
@@ -200,6 +220,11 @@ tools:
         - "Build metrics dashboard"
         - "Set up service dashboard"
         - "Create visualization panel"
+      single_clear:
+        - "I want to create a monitoring dashboard. Create monitoring dashboard"
+        - "I want to create a monitoring dashboard. Build metrics dashboard"
+        - "I want to create a monitoring dashboard. Set up service dashboard"
+        - "I want to create a monitoring dashboard. Create visualization panel"
 
   - name: get_alert_status
     descriptions:
@@ -239,6 +264,11 @@ tools:
         - "Check firing alerts"
         - "List active alerts"
         - "Show critical alerts"
+      single_clear:
+        - "Please check the alert status. Get alert status"
+        - "Please check the alert status. Check firing alerts"
+        - "Please check the alert status. List active alerts"
+        - "Please check the alert status. Show critical alerts"
 
   - name: silence_alert
     descriptions:
@@ -275,6 +305,11 @@ tools:
         - "Suppress notifications"
         - "Mute alerts for maintenance"
         - "Stop alert for 2 hours"
+      single_clear:
+        - "I need to silence an alert. Silence alert"
+        - "I need to silence an alert. Suppress notifications"
+        - "I need to silence an alert. Mute alerts for maintenance"
+        - "I need to silence an alert. Stop alert for 2 hours"
 
   - name: create_uptime_check
     descriptions:
@@ -332,6 +367,11 @@ tools:
         - "Monitor website uptime"
         - "Set up health check"
         - "Check API availability"
+      single_clear:
+        - "I want to set up an uptime check. Create uptime check"
+        - "I want to set up an uptime check. Monitor website uptime"
+        - "I want to set up an uptime check. Set up health check"
+        - "I want to set up an uptime check. Check API availability"
 
   - name: create_trace
     descriptions:
@@ -374,6 +414,11 @@ tools:
         - "Start distributed trace"
         - "Track request flow"
         - "Create span"
+      single_clear:
+        - "I need to create a distributed trace. Create trace"
+        - "I need to create a distributed trace. Start distributed trace"
+        - "I need to create a distributed trace. Track request flow"
+        - "I need to create a distributed trace. Create span"
 
   - name: analyze_anomalies
     descriptions:
@@ -419,3 +464,8 @@ tools:
         - "Find unusual patterns"
         - "Analyze metric anomalies"
         - "Check for spikes"
+      single_clear:
+        - "Please analyze for anomalies. Detect anomalies"
+        - "Please analyze for anomalies. Find unusual patterns"
+        - "Please analyze for anomalies. Analyze metric anomalies"
+        - "Please analyze for anomalies. Check for spikes"

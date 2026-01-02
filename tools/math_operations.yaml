@@ -26,6 +26,12 @@ tools:
         - "Evaluate (100 / 4) + 50"
         - "Compute 2 to the power of 10"
         - "Calculate sin(45 degrees)"
+      single_clear:
+        - "I need to evaluate a mathematical expression and get the numeric result. Calculate 15 * 7 + 23"
+        - "I need to evaluate a mathematical expression and get the numeric result. What is the square root of 144?"
+        - "I need to evaluate a mathematical expression and get the numeric result. Evaluate (100 / 4) + 50"
+        - "I need to evaluate a mathematical expression and get the numeric result. Compute 2 to the power of 10"
+        - "I need to evaluate a mathematical expression and get the numeric result. Calculate sin(45 degrees)"
 
   - name: convert_units
     descriptions:
@@ -55,6 +61,12 @@ tools:
         - "Convert 72 degrees Fahrenheit to Celsius"
         - "Convert 1 gigabyte to megabytes"
         - "How many cups in 2 liters?"
+      single_clear:
+        - "Please convert a value from one unit of measurement to another. Convert 100 kilometers to miles"
+        - "Please convert a value from one unit of measurement to another. How many pounds is 50 kilograms?"
+        - "Please convert a value from one unit of measurement to another. Convert 72 degrees Fahrenheit to Celsius"
+        - "Please convert a value from one unit of measurement to another. Convert 1 gigabyte to megabytes"
+        - "Please convert a value from one unit of measurement to another. How many cups in 2 liters?"
 
   - name: calculate_statistics
     descriptions:
@@ -80,6 +92,11 @@ tools:
         - "What are the statistics for this dataset?"
         - "Find the median of these numbers"
         - "Get statistical summary of the values"
+      single_clear:
+        - "I need to calculate statistical measures for a dataset. Calculate the mean and standard deviation of [10, 20, 30, 40, 50]"
+        - "I need to calculate statistical measures for a dataset. What are the statistics for this dataset?"
+        - "I need to calculate statistical measures for a dataset. Find the median of these numbers"
+        - "I need to calculate statistical measures for a dataset. Get statistical summary of the values"
 
   - name: round_number
     descriptions:
@@ -111,6 +128,11 @@ tools:
         - "Round up 4.2 to the nearest integer"
         - "Truncate 9.999 to 1 decimal place"
         - "Round 1234 to the nearest hundred"
+      single_clear:
+        - "Please round a number to specified decimal places. Round 3.14159 to 2 decimal places"
+        - "Please round a number to specified decimal places. Round up 4.2 to the nearest integer"
+        - "Please round a number to specified decimal places. Truncate 9.999 to 1 decimal place"
+        - "Please round a number to specified decimal places. Round 1234 to the nearest hundred"
 
   - name: percentage
     descriptions:
@@ -153,6 +175,12 @@ tools:
         - "What is the percentage change from 80 to 100?"
         - "Add 20% to 150"
         - "Find 10% off the price of 49.99"
+      single_clear:
+        - "I need to calculate a percentage value. What percentage is 25 of 200?"
+        - "I need to calculate a percentage value. Calculate 15% of 500"
+        - "I need to calculate a percentage value. What is the percentage change from 80 to 100?"
+        - "I need to calculate a percentage value. Add 20% to 150"
+        - "I need to calculate a percentage value. Find 10% off the price of 49.99"
 
   - name: random_number
     descriptions:
@@ -191,6 +219,11 @@ tools:
         - "Pick a random integer from 1 to 10"
         - "Generate a random decimal between 0 and 1"
         - "Roll a six-sided die (random 1-6)"
+      single_clear:
+        - "I need to generate random numbers. Generate a random number between 1 and 100"
+        - "I need to generate random numbers. Pick a random integer from 1 to 10"
+        - "I need to generate random numbers. Generate a random decimal between 0 and 1"
+        - "I need to generate random numbers. Roll a six-sided die (random 1-6)"
 
   - name: prime_check
     descriptions:
@@ -216,6 +249,11 @@ tools:
         - "Check if 100 is prime"
         - "Is 97 prime?"
         - "Check whether 2 is a prime number"
+      single_clear:
+        - "I need to check if a number is prime. Is 17 a prime number?"
+        - "I need to check if a number is prime. Check if 100 is prime"
+        - "I need to check if a number is prime. Is 97 prime?"
+        - "I need to check if a number is prime. Check whether 2 is a prime number"
 
   - name: factorial
     descriptions:
@@ -242,6 +280,11 @@ tools:
         - "What is 10!"
         - "Compute the factorial of 7"
         - "Calculate factorial of 0"
+      single_clear:
+        - "I need to calculate the factorial of a number. Calculate 5 factorial"
+        - "I need to calculate the factorial of a number. What is 10!"
+        - "I need to calculate the factorial of a number. Compute the factorial of 7"
+        - "I need to calculate the factorial of a number. Calculate factorial of 0"
 
   - name: gcd_lcm
     descriptions:
@@ -267,6 +310,11 @@ tools:
         - "What is the LCM of 4, 6, and 8?"
         - "Calculate the greatest common divisor of 100 and 75"
         - "Find the least common multiple of 12 and 15"
+      single_clear:
+        - "I need to find the greatest common divisor or least common multiple. Find the GCD of 48 and 18"
+        - "I need to find the greatest common divisor or least common multiple. What is the LCM of 4, 6, and 8?"
+        - "I need to find the greatest common divisor or least common multiple. Calculate the greatest common divisor of 100 and 75"
+        - "I need to find the greatest common divisor or least common multiple. Find the least common multiple of 12 and 15"
 
   - name: solve_equation
     descriptions:
@@ -291,6 +339,11 @@ tools:
         - "Find x in the equation x^2 - 4 = 0"
         - "Solve the quadratic equation x^2 - 5x + 6 = 0"
         - "What is x if 3x - 7 = 14?"
+      single_clear:
+        - "I need to solve an algebraic equation for a variable. Solve 2x + 5 = 15 for x"
+        - "I need to solve an algebraic equation for a variable. Find x in the equation x^2 - 4 = 0"
+        - "I need to solve an algebraic equation for a variable. Solve the quadratic equation x^2 - 5x + 6 = 0"
+        - "I need to solve an algebraic equation for a variable. What is x if 3x - 7 = 14?"
 
   - name: matrix_operation
     descriptions:
@@ -325,6 +378,12 @@ tools:
         - "Find the inverse of the matrix"
         - "Transpose the given matrix"
         - "What are the eigenvalues of this matrix?"
+      single_clear:
+        - "I need to perform a matrix operation. Calculate the determinant of the 2x2 matrix"
+        - "I need to perform a matrix operation. Multiply these two matrices together"
+        - "I need to perform a matrix operation. Find the inverse of the matrix"
+        - "I need to perform a matrix operation. Transpose the given matrix"
+        - "I need to perform a matrix operation. What are the eigenvalues of this matrix?"
 
   - name: trigonometry
     descriptions:
@@ -361,6 +420,12 @@ tools:
         - "Find the arctangent of 1"
         - "Calculate tan(30 degrees)"
         - "What is sin(pi/2)?"
+      single_clear:
+        - "I need to calculate a trigonometric function. Calculate sin of 45 degrees"
+        - "I need to calculate a trigonometric function. What is the cosine of 60 degrees?"
+        - "I need to calculate a trigonometric function. Find the arctangent of 1"
+        - "I need to calculate a trigonometric function. Calculate tan(30 degrees)"
+        - "I need to calculate a trigonometric function. What is sin(pi/2)?"
 
   - name: logarithm
     descriptions:
@@ -386,6 +451,11 @@ tools:
         - "What is log base 10 of 1000?"
         - "Find log base 2 of 256"
         - "Calculate ln(e)"
+      single_clear:
+        - "I need to calculate a logarithm. Calculate the natural log of 10"
+        - "I need to calculate a logarithm. What is log base 10 of 1000?"
+        - "I need to calculate a logarithm. Find log base 2 of 256"
+        - "I need to calculate a logarithm. Calculate ln(e)"
 
   - name: exponentiation
     descriptions:
@@ -420,6 +490,12 @@ tools:
         - "Find the cube root of 27"
         - "Calculate e^2"
         - "What is the 4th root of 81?"
+      single_clear:
+        - "I need to calculate powers or roots. Calculate 2 to the power of 10"
+        - "I need to calculate powers or roots. What is the square root of 144?"
+        - "I need to calculate powers or roots. Find the cube root of 27"
+        - "I need to calculate powers or roots. Calculate e^2"
+        - "I need to calculate powers or roots. What is the 4th root of 81?"
 
   - name: number_base_convert
     descriptions:
@@ -449,6 +525,12 @@ tools:
         - "Convert hexadecimal FF to decimal"
         - "Convert decimal 100 to octal"
         - "Change the number from base 2 to base 16"
+      single_clear:
+        - "I need to convert a number between different bases. Convert 255 to binary"
+        - "I need to convert a number between different bases. What is 1010 binary in decimal?"
+        - "I need to convert a number between different bases. Convert hexadecimal FF to decimal"
+        - "I need to convert a number between different bases. Convert decimal 100 to octal"
+        - "I need to convert a number between different bases. Change the number from base 2 to base 16"
 
   - name: complex_number
     descriptions:
@@ -486,6 +568,11 @@ tools:
         - "Multiply two complex numbers"
         - "Convert the complex number to polar form"
         - "Find the conjugate of 2 + 3i"
+      single_clear:
+        - "I need to perform an operation on complex numbers. Calculate the magnitude of 3 + 4i"
+        - "I need to perform an operation on complex numbers. Multiply two complex numbers"
+        - "I need to perform an operation on complex numbers. Convert the complex number to polar form"
+        - "I need to perform an operation on complex numbers. Find the conjugate of 2 + 3i"
 
   - name: fibonacci
     descriptions:
@@ -516,6 +603,11 @@ tools:
         - "Generate the first 15 Fibonacci numbers"
         - "Is 144 a Fibonacci number?"
         - "Find the Fibonacci number at position 20"
+      single_clear:
+        - "I need to work with Fibonacci numbers. What is the 10th Fibonacci number?"
+        - "I need to work with Fibonacci numbers. Generate the first 15 Fibonacci numbers"
+        - "I need to work with Fibonacci numbers. Is 144 a Fibonacci number?"
+        - "I need to work with Fibonacci numbers. Find the Fibonacci number at position 20"
 
   - name: permutation_combination
     descriptions:
@@ -550,6 +642,11 @@ tools:
         - "Calculate 52 choose 5"
         - "How many permutations of 3 letters from 26?"
         - "Calculate the number of combinations of 10 items taken 4 at a time"
+      single_clear:
+        - "I need to calculate permutations or combinations. How many ways to arrange 5 items from 10?"
+        - "I need to calculate permutations or combinations. Calculate 52 choose 5"
+        - "I need to calculate permutations or combinations. How many permutations of 3 letters from 26?"
+        - "I need to calculate permutations or combinations. Calculate the number of combinations of 10 items taken 4 at a time"
 
   - name: probability
     descriptions:
@@ -598,6 +695,9 @@ tools:
       single:
         - "What is the probability of getting 3 heads in 10 coin flips?"
         - "Calculate the binomial probability"
+      single_clear:
+        - "I need to calculate probabilities. What is the probability of getting 3 heads in 10 coin flips?"
+        - "I need to calculate probabilities. Calculate the binomial probability"
         - "Find the probability for the normal distribution"
         - "What is the Poisson probability with lambda=5?"
 

@@ -7,6 +7,7 @@ description: "Compare accuracy across different documentation lengths"
 # Tool configuration
 num_tools: 15
 doc_length: verbose  # Change this: minimal, short, medium, long, verbose
+prompt_type: concise  # concise or clear
 num_similar_tools: 0
 categories: null
 

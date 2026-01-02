@@ -38,6 +38,11 @@ tools:
         - "Add an IoT device"
         - "Provision the temperature sensor"
         - "Set up the new device"
+      single_clear:
+        - "I need to register a new IoT device. Register a new sensor"
+        - "I need to register a new IoT device. Add an IoT device"
+        - "I need to register a new IoT device. Provision the temperature sensor"
+        - "I need to register a new IoT device. Set up the new device"
 
   - name: send_command
     descriptions:
@@ -76,6 +81,11 @@ tools:
         - "Send command to the sensor"
         - "Control the actuator"
         - "Set the device parameter"
+      single_clear:
+        - "Please send a command to an IoT device. Turn on the device"
+        - "Please send a command to an IoT device. Send command to the sensor"
+        - "Please send a command to an IoT device. Control the actuator"
+        - "Please send a command to an IoT device. Set the device parameter"
 
   - name: get_telemetry
     descriptions:
@@ -113,6 +123,11 @@ tools:
         - "Show sensor data for last hour"
         - "Retrieve device telemetry"
         - "Get the humidity data"
+      single_clear:
+        - "I need to retrieve telemetry data from an IoT device. Get temperature readings"
+        - "I need to retrieve telemetry data from an IoT device. Show sensor data for last hour"
+        - "I need to retrieve telemetry data from an IoT device. Retrieve device telemetry"
+        - "I need to retrieve telemetry data from an IoT device. Get the humidity data"
 
   - name: update_device_twin
     descriptions:
@@ -141,6 +156,11 @@ tools:
         - "Set desired temperature"
         - "Change device configuration"
         - "Update the device twin"
+      single_clear:
+        - "I need to update device twin properties. Update the device settings"
+        - "I need to update device twin properties. Set desired temperature"
+        - "I need to update device twin properties. Change device configuration"
+        - "I need to update device twin properties. Update the device twin"
 
   - name: create_alert_rule
     descriptions:
@@ -184,6 +204,11 @@ tools:
         - "Create a low battery alert"
         - "Set up device offline alert"
         - "Create sensor threshold alert"
+      single_clear:
+        - "I need to create an IoT alert rule. Alert when temperature exceeds 100"
+        - "I need to create an IoT alert rule. Create a low battery alert"
+        - "I need to create an IoT alert rule. Set up device offline alert"
+        - "I need to create an IoT alert rule. Create sensor threshold alert"
 
   - name: manage_firmware
     descriptions:
@@ -223,6 +248,11 @@ tools:
         - "Upload new firmware"
         - "Check firmware status"
         - "Rollback to previous version"
+      single_clear:
+        - "I need to manage device firmware. Deploy firmware update"
+        - "I need to manage device firmware. Upload new firmware"
+        - "I need to manage device firmware. Check firmware status"
+        - "I need to manage device firmware. Rollback to previous version"
 
   - name: query_devices
     descriptions:
@@ -252,6 +282,11 @@ tools:
         - "Query devices in building A"
         - "List temperature sensors"
         - "Find devices needing update"
+      single_clear:
+        - "I need to query IoT devices. Find all offline devices"
+        - "I need to query IoT devices. Query devices in building A"
+        - "I need to query IoT devices. List temperature sensors"
+        - "I need to query IoT devices. Find devices needing update"
 
   - name: create_device_group
     descriptions:
@@ -291,6 +326,11 @@ tools:
         - "Group devices by location"
         - "Create a device collection"
         - "Organize devices into groups"
+      single_clear:
+        - "I need to create an IoT device group. Create a sensor group"
+        - "I need to create an IoT device group. Group devices by location"
+        - "I need to create an IoT device group. Create a device collection"
+        - "I need to create an IoT device group. Organize devices into groups"
 
   - name: get_device_status
     descriptions:
@@ -321,6 +361,11 @@ tools:
         - "Get device health status"
         - "Is the device connected?"
         - "Show device diagnostics"
+      single_clear:
+        - "I need to get the status of an IoT device. Check if the sensor is online"
+        - "I need to get the status of an IoT device. Get device health status"
+        - "I need to get the status of an IoT device. Is the device connected?"
+        - "I need to get the status of an IoT device. Show device diagnostics"
 
   - name: simulate_device
     descriptions:
@@ -361,6 +406,11 @@ tools:
         - "Create a test device"
         - "Run device simulation"
         - "Mock IoT telemetry"
+      single_clear:
+        - "I need to simulate an IoT device for testing. Simulate a temperature sensor"
+        - "I need to simulate an IoT device for testing. Create a test device"
+        - "I need to simulate an IoT device for testing. Run device simulation"
+        - "I need to simulate an IoT device for testing. Mock IoT telemetry"
   - name: create_device_group
     descriptions:
       minimal: "Create device group"
@@ -402,6 +452,11 @@ tools:
         - "Group all devices on floor 2"
         - "Organize devices by building"
         - "Create a device collection"
+      single_clear:
+        - "I need to create an IoT device group. Create a group of temperature sensors"
+        - "I need to create an IoT device group. Group all devices on floor 2"
+        - "I need to create an IoT device group. Organize devices by building"
+        - "I need to create an IoT device group. Create a device collection"
 
   - name: schedule_device_job
     descriptions:
@@ -449,6 +504,11 @@ tools:
         - "Plan firmware update for all sensors"
         - "Create a scheduled configuration job"
         - "Set up nightly device maintenance"
+      single_clear:
+        - "I need to schedule a job for IoT devices. Schedule device restart"
+        - "I need to schedule a job for IoT devices. Plan firmware update for all sensors"
+        - "I need to schedule a job for IoT devices. Create a scheduled configuration job"
+        - "I need to schedule a job for IoT devices. Set up nightly device maintenance"
 
   - name: manage_device_twin
     descriptions:
@@ -482,6 +542,11 @@ tools:
         - "Set desired temperature threshold"
         - "Get device twin state"
         - "Sync device settings"
+      single_clear:
+        - "I need to manage an IoT device twin. Update device configuration"
+        - "I need to manage an IoT device twin. Set desired temperature threshold"
+        - "I need to manage an IoT device twin. Get device twin state"
+        - "I need to manage an IoT device twin. Sync device settings"
 
   - name: configure_data_route
     descriptions:
@@ -524,6 +589,11 @@ tools:
         - "Set up telemetry routing"
         - "Configure alert routing"
         - "Send data to Event Hub"
+      single_clear:
+        - "I need to configure IoT data routing. Route sensor data to storage"
+        - "I need to configure IoT data routing. Set up telemetry routing"
+        - "I need to configure IoT data routing. Configure alert routing"
+        - "I need to configure IoT data routing. Send data to Event Hub"
 
   - name: create_edge_deployment
     descriptions:
@@ -561,6 +631,11 @@ tools:
         - "Update edge deployment"
         - "Add container to IoT Edge"
         - "Configure edge gateway"
+      single_clear:
+        - "I need to deploy to IoT Edge. Deploy module to edge device"
+        - "I need to deploy to IoT Edge. Update edge deployment"
+        - "I need to deploy to IoT Edge. Add container to IoT Edge"
+        - "I need to deploy to IoT Edge. Configure edge gateway"
 
   - name: analyze_device_data
     descriptions:
@@ -605,6 +680,11 @@ tools:
         - "Show average sensor readings"
         - "Detect anomalies in device data"
         - "Compare multiple sensors"
+      single_clear:
+        - "I need to analyze IoT device data. Analyze temperature trends"
+        - "I need to analyze IoT device data. Show average sensor readings"
+        - "I need to analyze IoT device data. Detect anomalies in device data"
+        - "I need to analyze IoT device data. Compare multiple sensors"
 
   - name: manage_device_security
     descriptions:
@@ -643,6 +723,11 @@ tools:
         - "Update device certificate"
         - "Revoke device access"
         - "Set device security policy"
+      single_clear:
+        - "I need to manage IoT device security. Rotate device security keys"
+        - "I need to manage IoT device security. Update device certificate"
+        - "I need to manage IoT device security. Revoke device access"
+        - "I need to manage IoT device security. Set device security policy"
 
   - name: configure_device_alert
     descriptions:
@@ -690,6 +775,11 @@ tools:
         - "Notify when device goes offline"
         - "Create low battery alert"
         - "Set up sensor threshold alert"
+      single_clear:
+        - "I need to configure an IoT device alert. Alert when temperature exceeds 30"
+        - "I need to configure an IoT device alert. Notify when device goes offline"
+        - "I need to configure an IoT device alert. Create low battery alert"
+        - "I need to configure an IoT device alert. Set up sensor threshold alert"
 
   - name: provision_device_batch
     descriptions:
@@ -735,6 +825,11 @@ tools:
         - "Import devices from CSV"
         - "Bulk register devices"
         - "Mass provision temperature sensors"
+      single_clear:
+        - "I need to bulk provision IoT devices. Provision 100 new sensors"
+        - "I need to bulk provision IoT devices. Import devices from CSV"
+        - "I need to bulk provision IoT devices. Bulk register devices"
+        - "I need to bulk provision IoT devices. Mass provision temperature sensors"
 
   - name: configure_device_shadow
     descriptions:
@@ -777,6 +872,11 @@ tools:
         - "Get device twin state"
         - "Set desired device config"
         - "Sync device state"
+      single_clear:
+        - "I need to configure a device shadow. Update device shadow"
+        - "I need to configure a device shadow. Get device twin state"
+        - "I need to configure a device shadow. Set desired device config"
+        - "I need to configure a device shadow. Sync device state"
 
   - name: manage_iot_rules
     descriptions:
@@ -822,6 +922,11 @@ tools:
         - "Set up temperature alert"
         - "Process motion sensor data"
         - "Route IoT messages"
+      single_clear:
+        - "I need to manage IoT rules engine. Create IoT rule"
+        - "I need to manage IoT rules engine. Set up temperature alert"
+        - "I need to manage IoT rules engine. Process motion sensor data"
+        - "I need to manage IoT rules engine. Route IoT messages"
 
   - name: configure_iot_security
     descriptions:
@@ -864,6 +969,11 @@ tools:
         - "Set up IoT security policy"
         - "Rotate device credentials"
         - "Revoke compromised certificate"
+      single_clear:
+        - "I need to configure IoT security. Create device certificate"
+        - "I need to configure IoT security. Set up IoT security policy"
+        - "I need to configure IoT security. Rotate device credentials"
+        - "I need to configure IoT security. Revoke compromised certificate"
 
   - name: manage_iot_fleet
     descriptions:
@@ -910,6 +1020,11 @@ tools:
         - "Add device to fleet"
         - "Get fleet metrics"
         - "Create dynamic group"
+      single_clear:
+        - "I need to manage an IoT device fleet. Create device group"
+        - "I need to manage an IoT device fleet. Add device to fleet"
+        - "I need to manage an IoT device fleet. Get fleet metrics"
+        - "I need to manage an IoT device fleet. Create dynamic group"
 
   - name: configure_iot_stream
     descriptions:
@@ -957,6 +1072,11 @@ tools:
         - "Stream to Kinesis"
         - "Set up telemetry pipeline"
         - "Configure streaming analytics"
+      single_clear:
+        - "I need to configure an IoT data stream. Create IoT data stream"
+        - "I need to configure an IoT data stream. Stream to Kinesis"
+        - "I need to configure an IoT data stream. Set up telemetry pipeline"
+        - "I need to configure an IoT data stream. Configure streaming analytics"
 
   - name: manage_iot_jobs
     descriptions:
@@ -1006,6 +1126,11 @@ tools:
         - "Deploy configuration to fleet"
         - "Cancel running job"
         - "Check job status"
+      single_clear:
+        - "I need to manage IoT jobs. Create device reboot job"
+        - "I need to manage IoT jobs. Deploy configuration to fleet"
+        - "I need to manage IoT jobs. Cancel running job"
+        - "I need to manage IoT jobs. Check job status"
 
   - name: configure_edge_gateway
     descriptions:
@@ -1048,6 +1173,11 @@ tools:
         - "Configure edge gateway"
         - "Check gateway status"
         - "Update edge software"
+      single_clear:
+        - "I need to configure an edge gateway. Deploy edge component"
+        - "I need to configure an edge gateway. Configure edge gateway"
+        - "I need to configure an edge gateway. Check gateway status"
+        - "I need to configure an edge gateway. Update edge software"
 
   - name: analyze_iot_anomalies
     descriptions:
@@ -1097,6 +1227,11 @@ tools:
         - "Analyze unusual patterns"
         - "Train anomaly model"
         - "Find anomalies in fleet"
+      single_clear:
+        - "I need to analyze IoT anomalies. Detect sensor anomalies"
+        - "I need to analyze IoT anomalies. Analyze unusual patterns"
+        - "I need to analyze IoT anomalies. Train anomaly model"
+        - "I need to analyze IoT anomalies. Find anomalies in fleet"
 
   - name: simulate_iot_devices
     descriptions:
@@ -1148,3 +1283,8 @@ tools:
         - "Start device simulation"
         - "Test with virtual devices"
         - "Run load test simulation"
+      single_clear:
+        - "I need to simulate IoT devices for testing. Simulate 100 sensors"
+        - "I need to simulate IoT devices for testing. Start device simulation"
+        - "I need to simulate IoT devices for testing. Test with virtual devices"
+        - "I need to simulate IoT devices for testing. Run load test simulation"

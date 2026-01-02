@@ -44,6 +44,11 @@ tools:
         - "Set up automation"
         - "Define workflow steps"
         - "Build automated process"
+      single_clear:
+        - "I need to create a workflow. Create a workflow"
+        - "I need to create a workflow. Set up automation"
+        - "I need to create a workflow. Define workflow steps"
+        - "I need to create a workflow. Build automated process"
 
   - name: run_workflow
     descriptions:
@@ -83,6 +88,11 @@ tools:
         - "Execute workflow"
         - "Trigger workflow manually"
         - "Start automation"
+      single_clear:
+        - "Please execute a workflow. Run the workflow"
+        - "Please execute a workflow. Execute workflow"
+        - "Please execute a workflow. Trigger workflow manually"
+        - "Please execute a workflow. Start automation"
 
   - name: get_workflow_status
     descriptions:
@@ -113,6 +123,11 @@ tools:
         - "Get execution status"
         - "Monitor workflow progress"
         - "Is the workflow done"
+      single_clear:
+        - "I want to check workflow execution status. Check workflow status"
+        - "I want to check workflow execution status. Get execution status"
+        - "I want to check workflow execution status. Monitor workflow progress"
+        - "I want to check workflow execution status. Is the workflow done"
 
   - name: cancel_workflow
     descriptions:
@@ -148,6 +163,11 @@ tools:
         - "Stop workflow execution"
         - "Abort running workflow"
         - "Terminate the process"
+      single_clear:
+        - "I need to cancel a running workflow. Cancel the workflow"
+        - "I need to cancel a running workflow. Stop workflow execution"
+        - "I need to cancel a running workflow. Abort running workflow"
+        - "I need to cancel a running workflow. Terminate the process"
 
   - name: retry_workflow_step
     descriptions:
@@ -187,6 +207,11 @@ tools:
         - "Retry workflow step"
         - "Rerun failed action"
         - "Retry the failed task"
+      single_clear:
+        - "I want to retry a failed workflow step. Retry failed step"
+        - "I want to retry a failed workflow step. Retry workflow step"
+        - "I want to retry a failed workflow step. Rerun failed action"
+        - "I want to retry a failed workflow step. Retry the failed task"
 
   - name: create_approval_request
     descriptions:
@@ -230,6 +255,11 @@ tools:
         - "Create approval request"
         - "Send for approval"
         - "Get manager approval"
+      single_clear:
+        - "I need to create an approval request. Request approval"
+        - "I need to create an approval request. Create approval request"
+        - "I need to create an approval request. Send for approval"
+        - "I need to create an approval request. Get manager approval"
 
   - name: respond_to_approval
     descriptions:
@@ -267,6 +297,11 @@ tools:
         - "Reject approval"
         - "Respond to approval"
         - "Make approval decision"
+      single_clear:
+        - "I want to respond to an approval request. Approve the request"
+        - "I want to respond to an approval request. Reject approval"
+        - "I want to respond to an approval request. Respond to approval"
+        - "I want to respond to an approval request. Make approval decision"
 
   - name: schedule_workflow
     descriptions:
@@ -310,6 +345,11 @@ tools:
         - "Set up recurring workflow"
         - "Schedule daily run"
         - "Create workflow schedule"
+      single_clear:
+        - "I need to schedule a workflow execution. Schedule workflow"
+        - "I need to schedule a workflow execution. Set up recurring workflow"
+        - "I need to schedule a workflow execution. Schedule daily run"
+        - "I need to schedule a workflow execution. Create workflow schedule"
 
   - name: create_workflow_template
     descriptions:
@@ -352,6 +392,11 @@ tools:
         - "Make reusable workflow"
         - "Define workflow template"
         - "Save as template"
+      single_clear:
+        - "I want to create a reusable workflow template. Create workflow template"
+        - "I want to create a reusable workflow template. Make reusable workflow"
+        - "I want to create a reusable workflow template. Define workflow template"
+        - "I want to create a reusable workflow template. Save as template"
 
   - name: get_workflow_metrics
     descriptions:
@@ -388,3 +433,8 @@ tools:
         - "Show workflow statistics"
         - "Workflow performance"
         - "Analyze workflow runs"
+      single_clear:
+        - "I need to get workflow performance metrics. Get workflow metrics"
+        - "I need to get workflow performance metrics. Show workflow statistics"
+        - "I need to get workflow performance metrics. Workflow performance"
+        - "I need to get workflow performance metrics. Analyze workflow runs"

@@ -55,6 +55,11 @@ tools:
         - "Email the report to the team"
         - "Send a message to the client with the proposal attached"
         - "Email the status update to my manager"
+      single_clear:
+        - "I need to send an email. Send an email to john@example.com about the meeting"
+        - "I need to send an email. Email the report to the team"
+        - "I need to send an email. Send a message to the client with the proposal attached"
+        - "I need to send an email. Email the status update to my manager"
 
   - name: send_sms
     descriptions:
@@ -92,6 +97,11 @@ tools:
         - "Text the customer about their order status"
         - "Send an SMS confirmation to the phone number"
         - "Message the client via text"
+      single_clear:
+        - "I need to send an SMS. Send a text message to +1234567890"
+        - "I need to send an SMS. Text the customer about their order status"
+        - "I need to send an SMS. Send an SMS confirmation to the phone number"
+        - "I need to send an SMS. Message the client via text"
 
   - name: send_slack_message
     descriptions:
@@ -137,6 +147,11 @@ tools:
         - "Send a Slack DM to John"
         - "Notify the team on Slack about the deployment"
         - "Message the engineering channel"
+      single_clear:
+        - "I need to send a Slack message. Post a message to the #general channel on Slack"
+        - "I need to send a Slack message. Send a Slack DM to John"
+        - "I need to send a Slack message. Notify the team on Slack about the deployment"
+        - "I need to send a Slack message. Message the engineering channel"
 
   - name: send_teams_message
     descriptions:
@@ -182,6 +197,11 @@ tools:
         - "Post to the Engineering team on Teams"
         - "Message the project channel on Microsoft Teams"
         - "Notify the team via Teams"
+      single_clear:
+        - "I need to send a Microsoft Teams message. Send a message to the Teams channel"
+        - "I need to send a Microsoft Teams message. Post to the Engineering team on Teams"
+        - "I need to send a Microsoft Teams message. Message the project channel on Microsoft Teams"
+        - "I need to send a Microsoft Teams message. Notify the team via Teams"
 
   - name: send_push_notification
     descriptions:
@@ -234,6 +254,11 @@ tools:
         - "Notify all mobile users about the update"
         - "Send an alert to the customer's phone"
         - "Push a notification about the new feature"
+      single_clear:
+        - "I need to send a push notification. Send a push notification to the user"
+        - "I need to send a push notification. Notify all mobile users about the update"
+        - "I need to send a push notification. Send an alert to the customer's phone"
+        - "I need to send a push notification. Push a notification about the new feature"
 
   - name: send_webhook
     descriptions:
@@ -282,6 +307,11 @@ tools:
         - "Trigger the Zapier webhook"
         - "Notify the external service via webhook"
         - "Post event data to the webhook endpoint"
+      single_clear:
+        - "I need to send a webhook. Send a webhook to the integration URL"
+        - "I need to send a webhook. Trigger the Zapier webhook"
+        - "I need to send a webhook. Notify the external service via webhook"
+        - "I need to send a webhook. Post event data to the webhook endpoint"
 
   - name: send_discord_message
     descriptions:
@@ -327,6 +357,11 @@ tools:
         - "Post an announcement to the Discord channel"
         - "Notify the gaming community on Discord"
         - "Send a Discord message with an embed"
+      single_clear:
+        - "I need to send a Discord message. Send a message to the Discord server"
+        - "I need to send a Discord message. Post an announcement to the Discord channel"
+        - "I need to send a Discord message. Notify the gaming community on Discord"
+        - "I need to send a Discord message. Send a Discord message with an embed"
 
   - name: send_telegram_message
     descriptions:
@@ -369,6 +404,11 @@ tools:
         - "Post to the Telegram channel"
         - "Message the Telegram group"
         - "Send a notification via Telegram bot"
+      single_clear:
+        - "I need to send a Telegram message. Send a Telegram message to the user"
+        - "I need to send a Telegram message. Post to the Telegram channel"
+        - "I need to send a Telegram message. Message the Telegram group"
+        - "I need to send a Telegram message. Send a notification via Telegram bot"
 
   - name: create_message_template
     descriptions:
@@ -410,6 +450,11 @@ tools:
         - "Set up a welcome message template"
         - "Create a template for SMS notifications"
         - "Make a reusable message template"
+      single_clear:
+        - "I need to create a message template. Create an email template for order confirmations"
+        - "I need to create a message template. Set up a welcome message template"
+        - "I need to create a message template. Create a template for SMS notifications"
+        - "I need to create a message template. Make a reusable message template"
 
   - name: schedule_message
     descriptions:
@@ -461,6 +506,11 @@ tools:
         - "Send a reminder SMS next Monday"
         - "Schedule the newsletter for next week"
         - "Set up a recurring weekly email"
+      single_clear:
+        - "I need to schedule a message. Schedule an email for tomorrow at 9am"
+        - "I need to schedule a message. Send a reminder SMS next Monday"
+        - "I need to schedule a message. Schedule the newsletter for next week"
+        - "I need to schedule a message. Set up a recurring weekly email"
   - name: send_whatsapp_message
     descriptions:
       minimal: "Send WhatsApp"
@@ -506,6 +556,11 @@ tools:
         - "Message customer on WhatsApp"
         - "Send WhatsApp order confirmation"
         - "Send WhatsApp template message"
+      single_clear:
+        - "I need to send a WhatsApp message. Send a WhatsApp message"
+        - "I need to send a WhatsApp message. Message customer on WhatsApp"
+        - "I need to send a WhatsApp message. Send WhatsApp order confirmation"
+        - "I need to send a WhatsApp message. Send WhatsApp template message"
 
   - name: broadcast_message
     descriptions:
@@ -551,6 +606,11 @@ tools:
         - "Blast message to premium segment"
         - "Send mass notification"
         - "Broadcast announcement to subscribers"
+      single_clear:
+        - "I need to broadcast a message. Send broadcast email to all users"
+        - "I need to broadcast a message. Blast message to premium segment"
+        - "I need to broadcast a message. Send mass notification"
+        - "I need to broadcast a message. Broadcast announcement to subscribers"
 
   - name: create_chat_room
     descriptions:
@@ -594,6 +654,11 @@ tools:
         - "Set up group conversation"
         - "Make a project chat channel"
         - "Create private chat room"
+      single_clear:
+        - "I need to create a chat room. Create a team chat room"
+        - "I need to create a chat room. Set up group conversation"
+        - "I need to create a chat room. Make a project chat channel"
+        - "I need to create a chat room. Create private chat room"
 
   - name: send_in_app_message
     descriptions:
@@ -644,6 +709,11 @@ tools:
         - "Display welcome modal"
         - "Show feature announcement"
         - "Send in-app notification"
+      single_clear:
+        - "I need to send an in-app message. Show in-app message to user"
+        - "I need to send an in-app message. Display welcome modal"
+        - "I need to send an in-app message. Show feature announcement"
+        - "I need to send an in-app message. Send in-app notification"
 
   - name: manage_message_queue
     descriptions:
@@ -684,6 +754,11 @@ tools:
         - "Check message queue status"
         - "Purge old pending messages"
         - "View message queue depth"
+      single_clear:
+        - "I need to manage the message queue. Retry failed messages"
+        - "I need to manage the message queue. Check message queue status"
+        - "I need to manage the message queue. Purge old pending messages"
+        - "I need to manage the message queue. View message queue depth"
 
   - name: get_message_status
     descriptions:
@@ -714,6 +789,11 @@ tools:
         - "Get message delivery status"
         - "Was the SMS sent successfully?"
         - "Track message open and clicks"
+      single_clear:
+        - "I need to get the message status. Check if the email was delivered"
+        - "I need to get the message status. Get message delivery status"
+        - "I need to get the message status. Was the SMS sent successfully?"
+        - "I need to get the message status. Track message open and clicks"
 
   - name: set_auto_response
     descriptions:
@@ -766,6 +846,11 @@ tools:
         - "Create out-of-office response"
         - "Configure auto-response for SMS"
         - "Set up automatic chat responses"
+      single_clear:
+        - "I need to set up an auto-response. Set up auto-reply for emails"
+        - "I need to set up an auto-response. Create out-of-office response"
+        - "I need to set up an auto-response. Configure auto-response for SMS"
+        - "I need to set up an auto-response. Set up automatic chat responses"
 
   - name: send_rich_media_message
     descriptions:
@@ -808,6 +893,11 @@ tools:
         - "Post video message"
         - "Send interactive card"
         - "Share document via Teams"
+      single_clear:
+        - "I need to send a rich media message. Send image to Slack channel"
+        - "I need to send a rich media message. Post video message"
+        - "I need to send a rich media message. Send interactive card"
+        - "I need to send a rich media message. Share document via Teams"
 
   - name: manage_contact_list
     descriptions:
@@ -851,6 +941,11 @@ tools:
         - "Add contacts to the list"
         - "Import subscribers from CSV"
         - "Segment the contact list"
+      single_clear:
+        - "I need to manage the contact list. Create a new mailing list"
+        - "I need to manage the contact list. Add contacts to the list"
+        - "I need to manage the contact list. Import subscribers from CSV"
+        - "I need to manage the contact list. Segment the contact list"
 
   - name: send_push_notification
     descriptions:
@@ -896,6 +991,11 @@ tools:
         - "Notify user on mobile"
         - "Send app notification"
         - "Push alert to device"
+      single_clear:
+        - "I need to send a push notification. Send push notification"
+        - "I need to send a push notification. Notify user on mobile"
+        - "I need to send a push notification. Send app notification"
+        - "I need to send a push notification. Push alert to device"
 
   - name: create_message_thread
     descriptions:
@@ -934,6 +1034,11 @@ tools:
         - "Start group conversation"
         - "Create chat thread"
         - "Begin new conversation"
+      single_clear:
+        - "I need to create a message thread. Create message thread"
+        - "I need to create a message thread. Start group conversation"
+        - "I need to create a message thread. Create chat thread"
+        - "I need to create a message thread. Begin new conversation"
 
   - name: archive_conversation
     descriptions:
@@ -968,6 +1073,11 @@ tools:
         - "Archive old threads"
         - "Hide conversation"
         - "Archive chat thread"
+      single_clear:
+        - "I need to archive a conversation. Archive this conversation"
+        - "I need to archive a conversation. Archive old threads"
+        - "I need to archive a conversation. Hide conversation"
+        - "I need to archive a conversation. Archive chat thread"
 
   - name: translate_message
     descriptions:
@@ -1011,6 +1121,11 @@ tools:
         - "Translate this text"
         - "Convert to French"
         - "Translate conversation"
+      single_clear:
+        - "I need to translate a message. Translate message to Spanish"
+        - "I need to translate a message. Translate this text"
+        - "I need to translate a message. Convert to French"
+        - "I need to translate a message. Translate conversation"
 
   - name: pin_message
     descriptions:
@@ -1044,6 +1159,11 @@ tools:
         - "Pin to channel"
         - "Mark message as pinned"
         - "Highlight important message"
+      single_clear:
+        - "I need to pin a message. Pin this message"
+        - "I need to pin a message. Pin to channel"
+        - "I need to pin a message. Mark message as pinned"
+        - "I need to pin a message. Highlight important message"
 
   - name: set_presence_status
     descriptions:
@@ -1082,6 +1202,11 @@ tools:
         - "Update my presence"
         - "Set do not disturb"
         - "Change availability status"
+      single_clear:
+        - "I need to set my presence status. Set status to away"
+        - "I need to set my presence status. Update my presence"
+        - "I need to set my presence status. Set do not disturb"
+        - "I need to set my presence status. Change availability status"
 
   - name: search_messages
     descriptions:
@@ -1127,6 +1252,11 @@ tools:
         - "Find messages from user"
         - "Search chat history"
         - "Look up old messages"
+      single_clear:
+        - "I need to search messages. Search messages"
+        - "I need to search messages. Find messages from user"
+        - "I need to search messages. Search chat history"
+        - "I need to search messages. Look up old messages"
 
   - name: create_message_reaction
     descriptions:
@@ -1156,6 +1286,11 @@ tools:
         - "React with thumbs up"
         - "Add emoji reaction"
         - "Like the message"
+      single_clear:
+        - "I need to add a reaction to a message. Add reaction to message"
+        - "I need to add a reaction to a message. React with thumbs up"
+        - "I need to add a reaction to a message. Add emoji reaction"
+        - "I need to add a reaction to a message. Like the message"
 
   - name: schedule_message
     descriptions:
@@ -1194,3 +1329,8 @@ tools:
         - "Send message at 9am"
         - "Schedule announcement"
         - "Delay message send"
+      single_clear:
+        - "I need to schedule a message. Schedule message for later"
+        - "I need to schedule a message. Send message at 9am"
+        - "I need to schedule a message. Schedule announcement"
+        - "I need to schedule a message. Delay message send"

@@ -46,6 +46,11 @@ tools:
         - "Process a credit card charge"
         - "Set up a payment intent for the order"
         - "Initialize a card payment for the customer"
+      single_clear:
+        - "I need to process a payment transaction. Create a payment for $29.99"
+        - "I need to process a payment transaction. Process a credit card charge"
+        - "I need to process a payment transaction. Set up a payment intent for the order"
+        - "I need to process a payment transaction. Initialize a card payment for the customer"
 
   - name: process_refund
     descriptions:
@@ -89,6 +94,11 @@ tools:
         - "Process a partial refund of $15"
         - "Give the customer their money back"
         - "Refund the order due to cancellation"
+      single_clear:
+        - "I need to process a refund. Refund the customer's payment"
+        - "I need to process a refund. Process a partial refund of $15"
+        - "I need to process a refund. Give the customer their money back"
+        - "I need to process a refund. Refund the order due to cancellation"
 
   - name: create_subscription
     descriptions:
@@ -136,6 +146,11 @@ tools:
         - "Create a subscription for the Pro tier"
         - "Set up recurring billing for the user"
         - "Start a subscription with a 14-day trial"
+      single_clear:
+        - "I need to create a subscription. Subscribe the customer to the monthly plan"
+        - "I need to create a subscription. Create a subscription for the Pro tier"
+        - "I need to create a subscription. Set up recurring billing for the user"
+        - "I need to create a subscription. Start a subscription with a 14-day trial"
 
   - name: cancel_subscription
     descriptions:
@@ -175,6 +190,11 @@ tools:
         - "End the subscription at the end of the month"
         - "Stop the recurring billing"
         - "Cancel the Pro plan subscription"
+      single_clear:
+        - "I need to cancel a subscription. Cancel the customer's subscription"
+        - "I need to cancel a subscription. End the subscription at the end of the month"
+        - "I need to cancel a subscription. Stop the recurring billing"
+        - "I need to cancel a subscription. Cancel the Pro plan subscription"
 
   - name: create_invoice
     descriptions:
@@ -226,6 +246,11 @@ tools:
         - "Bill the customer for the consulting work"
         - "Generate an invoice with multiple line items"
         - "Create a due invoice for the project"
+      single_clear:
+        - "Please create an invoice. Create an invoice for $500"
+        - "Please create an invoice. Bill the customer for the consulting work"
+        - "Please create an invoice. Generate an invoice with multiple line items"
+        - "Please create an invoice. Create a due invoice for the project"
 
   - name: get_payment_status
     descriptions:
@@ -250,6 +275,11 @@ tools:
         - "Check if the payment went through"
         - "Get details on the customer's payment"
         - "Has the charge been processed?"
+      single_clear:
+        - "I need to check a payment status. What's the status of payment pi_123?"
+        - "I need to check a payment status. Check if the payment went through"
+        - "I need to check a payment status. Get details on the customer's payment"
+        - "I need to check a payment status. Has the charge been processed?"
 
   - name: create_customer
     descriptions:
@@ -294,6 +324,11 @@ tools:
         - "Add a customer record for john@example.com"
         - "Set up a billing customer"
         - "Register the user for payment processing"
+      single_clear:
+        - "I need to create a customer record. Create a new customer for payments"
+        - "I need to create a customer record. Add a customer record for john@example.com"
+        - "I need to create a customer record. Set up a billing customer"
+        - "I need to create a customer record. Register the user for payment processing"
 
   - name: add_payment_method
     descriptions:
@@ -327,6 +362,11 @@ tools:
         - "Save the payment method to the customer"
         - "Attach the card to the account"
         - "Store the customer's bank account"
+      single_clear:
+        - "I need to add a payment method. Add the customer's credit card"
+        - "I need to add a payment method. Save the payment method to the customer"
+        - "I need to add a payment method. Attach the card to the account"
+        - "I need to add a payment method. Store the customer's bank account"
 
   - name: create_payout
     descriptions:
@@ -374,6 +414,11 @@ tools:
         - "Create a payout of the available balance"
         - "Withdraw funds to the connected bank"
         - "Send an instant payout"
+      single_clear:
+        - "I need to create a payout. Transfer $1000 to my bank account"
+        - "I need to create a payout. Create a payout of the available balance"
+        - "I need to create a payout. Withdraw funds to the connected bank"
+        - "I need to create a payout. Send an instant payout"
 
   - name: verify_payment_method
     descriptions:
@@ -412,6 +457,11 @@ tools:
         - "Check if the payment method is valid"
         - "Verify the bank account with micro-deposits"
         - "Validate the card before charging"
+      single_clear:
+        - "I need to verify a payment method. Verify the customer's credit card"
+        - "I need to verify a payment method. Check if the payment method is valid"
+        - "I need to verify a payment method. Verify the bank account with micro-deposits"
+        - "I need to verify a payment method. Validate the card before charging"
   - name: create_invoice
     descriptions:
       minimal: "Create invoice"
@@ -457,6 +507,11 @@ tools:
         - "Generate invoice for consulting services"
         - "Bill the customer for the project"
         - "Send an invoice with net-30 terms"
+      single_clear:
+        - "Please create an invoice. Create an invoice for the client"
+        - "Please create an invoice. Generate invoice for consulting services"
+        - "Please create an invoice. Bill the customer for the project"
+        - "Please create an invoice. Send an invoice with net-30 terms"
 
   - name: manage_subscription_billing
     descriptions:
@@ -504,6 +559,11 @@ tools:
         - "Upgrade customer to premium plan"
         - "Cancel the subscription at period end"
         - "Start a free trial subscription"
+      single_clear:
+        - "I need to manage subscription billing. Create a monthly subscription"
+        - "I need to manage subscription billing. Upgrade customer to premium plan"
+        - "I need to manage subscription billing. Cancel the subscription at period end"
+        - "I need to manage subscription billing. Start a free trial subscription"
 
   - name: calculate_tax
     descriptions:
@@ -550,6 +610,11 @@ tools:
         - "What's the VAT for this EU order?"
         - "Compute tax for the transaction"
         - "Get tax amount for New York purchase"
+      single_clear:
+        - "I need to calculate tax. Calculate sales tax for California"
+        - "I need to calculate tax. What's the VAT for this EU order?"
+        - "I need to calculate tax. Compute tax for the transaction"
+        - "I need to calculate tax. Get tax amount for New York purchase"
 
   - name: create_payment_link
     descriptions:
@@ -596,6 +661,11 @@ tools:
         - "Generate a shareable checkout link"
         - "Make a payment link for the invoice"
         - "Create a donation link"
+      single_clear:
+        - "I need to create a payment link. Create a payment link for $50"
+        - "I need to create a payment link. Generate a shareable checkout link"
+        - "I need to create a payment link. Make a payment link for the invoice"
+        - "I need to create a payment link. Create a donation link"
 
   - name: process_ach_transfer
     descriptions:
@@ -639,6 +709,11 @@ tools:
         - "Debit customer's bank account"
         - "Initiate bank transfer payment"
         - "Send same-day ACH transfer"
+      single_clear:
+        - "I need to process an ACH transfer. Process an ACH payment"
+        - "I need to process an ACH transfer. Debit customer's bank account"
+        - "I need to process an ACH transfer. Initiate bank transfer payment"
+        - "I need to process an ACH transfer. Send same-day ACH transfer"
 
   - name: manage_payment_dispute
     descriptions:
@@ -673,6 +748,11 @@ tools:
         - "Handle the payment dispute"
         - "Fight the fraudulent chargeback"
         - "Accept the dispute and refund"
+      single_clear:
+        - "I need to manage a payment dispute. Submit evidence for the chargeback"
+        - "I need to manage a payment dispute. Handle the payment dispute"
+        - "I need to manage a payment dispute. Fight the fraudulent chargeback"
+        - "I need to manage a payment dispute. Accept the dispute and refund"
 
   - name: setup_recurring_payment
     descriptions:
@@ -722,6 +802,11 @@ tools:
         - "Create installment payment plan"
         - "Configure recurring charge"
         - "Schedule automatic billing"
+      single_clear:
+        - "I need to set up a recurring payment. Set up monthly automatic payment"
+        - "I need to set up a recurring payment. Create installment payment plan"
+        - "I need to set up a recurring payment. Configure recurring charge"
+        - "I need to set up a recurring payment. Schedule automatic billing"
 
   - name: generate_payment_report
     descriptions:
@@ -768,6 +853,11 @@ tools:
         - "Export transaction history"
         - "Create revenue report"
         - "Download payment analytics"
+      single_clear:
+        - "I need to generate a payment report. Generate payment report for January"
+        - "I need to generate a payment report. Export transaction history"
+        - "I need to generate a payment report. Create revenue report"
+        - "I need to generate a payment report. Download payment analytics"
 
   - name: manage_payment_method
     descriptions:
@@ -811,6 +901,11 @@ tools:
         - "Update the expiration date"
         - "Remove old payment method"
         - "Set default payment card"
+      single_clear:
+        - "I need to manage a payment method. Add a credit card for customer"
+        - "I need to manage a payment method. Update the expiration date"
+        - "I need to manage a payment method. Remove old payment method"
+        - "I need to manage a payment method. Set default payment card"
 
   - name: create_payment_link
     descriptions:
@@ -856,6 +951,11 @@ tools:
         - "Generate checkout link"
         - "Share payment URL"
         - "Make a pay-by-link"
+      single_clear:
+        - "I need to create a payment link. Create a payment link"
+        - "I need to create a payment link. Generate checkout link"
+        - "I need to create a payment link. Share payment URL"
+        - "I need to create a payment link. Make a pay-by-link"
 
   - name: verify_bank_account
     descriptions:
@@ -889,6 +989,11 @@ tools:
         - "Confirm micro-deposits"
         - "Validate ACH account"
         - "Complete bank verification"
+      single_clear:
+        - "I need to verify a bank account. Verify bank account"
+        - "I need to verify a bank account. Confirm micro-deposits"
+        - "I need to verify a bank account. Validate ACH account"
+        - "I need to verify a bank account. Complete bank verification"
 
   - name: calculate_payment_fees
     descriptions:
@@ -929,6 +1034,11 @@ tools:
         - "What are the processing fees"
         - "Show fee breakdown"
         - "Estimate transaction cost"
+      single_clear:
+        - "I need to calculate payment fees. Calculate payment fees"
+        - "I need to calculate payment fees. What are the processing fees"
+        - "I need to calculate payment fees. Show fee breakdown"
+        - "I need to calculate payment fees. Estimate transaction cost"
 
   - name: create_virtual_card
     descriptions:
@@ -971,6 +1081,11 @@ tools:
         - "Generate a virtual credit card"
         - "Issue single-use card"
         - "Create burner card for subscription"
+      single_clear:
+        - "I need to create a virtual card. Create virtual card"
+        - "I need to create a virtual card. Generate a virtual credit card"
+        - "I need to create a virtual card. Issue single-use card"
+        - "I need to create a virtual card. Create burner card for subscription"
 
   - name: split_payment
     descriptions:
@@ -1004,6 +1119,11 @@ tools:
         - "Divide payment to multiple accounts"
         - "Distribute marketplace payment"
         - "Split revenue between partners"
+      single_clear:
+        - "I need to split a payment. Split payment between vendors"
+        - "I need to split a payment. Divide payment to multiple accounts"
+        - "I need to split a payment. Distribute marketplace payment"
+        - "I need to split a payment. Split revenue between partners"
 
   - name: create_payout
     descriptions:
@@ -1043,6 +1163,11 @@ tools:
         - "Transfer balance to bank account"
         - "Initiate instant payout"
         - "Withdraw funds to bank"
+      single_clear:
+        - "I need to create a payout. Create payout to bank"
+        - "I need to create a payout. Transfer balance to bank account"
+        - "I need to create a payout. Initiate instant payout"
+        - "I need to create a payout. Withdraw funds to bank"
 
   - name: apply_coupon
     descriptions:
@@ -1077,6 +1202,11 @@ tools:
         - "Use discount code"
         - "Redeem promo code"
         - "Apply promotional discount"
+      single_clear:
+        - "I need to apply a coupon. Apply coupon code"
+        - "I need to apply a coupon. Use discount code"
+        - "I need to apply a coupon. Redeem promo code"
+        - "I need to apply a coupon. Apply promotional discount"
 
   - name: get_payment_balance
     descriptions:
@@ -1107,6 +1237,11 @@ tools:
         - "Check available funds"
         - "Show payment balance"
         - "What's my current balance"
+      single_clear:
+        - "I need to check the payment balance. Get account balance"
+        - "I need to check the payment balance. Check available funds"
+        - "I need to check the payment balance. Show payment balance"
+        - "I need to check the payment balance. What's my current balance"
 
   - name: create_invoice
     descriptions:
@@ -1148,6 +1283,11 @@ tools:
         - "Generate customer invoice"
         - "Bill the client"
         - "Send invoice to customer"
+      single_clear:
+        - "Please create an invoice. Create an invoice"
+        - "Please create an invoice. Generate customer invoice"
+        - "Please create an invoice. Bill the client"
+        - "Please create an invoice. Send invoice to customer"
 
   - name: void_payment
     descriptions:
@@ -1178,3 +1318,8 @@ tools:
         - "Cancel pending authorization"
         - "Void uncaptured payment"
         - "Cancel the transaction"
+      single_clear:
+        - "I need to void a payment. Void the payment"
+        - "I need to void a payment. Cancel pending authorization"
+        - "I need to void a payment. Void uncaptured payment"
+        - "I need to void a payment. Cancel the transaction"

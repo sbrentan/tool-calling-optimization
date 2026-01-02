@@ -24,6 +24,11 @@ tools:
         - "What is the HOME environment variable set to?"
         - "Retrieve the DATABASE_URL environment variable"
         - "Get the current user's username from environment"
+      single_clear:
+        - "I need to retrieve an environment variable. Get the value of the PATH environment variable"
+        - "I need to retrieve an environment variable. What is the HOME environment variable set to?"
+        - "I need to retrieve an environment variable. Retrieve the DATABASE_URL environment variable"
+        - "I need to retrieve an environment variable. Get the current user's username from environment"
 
   - name: set_environment_variable
     descriptions:
@@ -52,6 +57,10 @@ tools:
         - "Set the DEBUG environment variable to true"
         - "Create an environment variable called MY_APP_MODE with value 'development'"
         - "Set API_KEY to the given value"
+      single_clear:
+        - "I need to set an environment variable. Set the DEBUG environment variable to true"
+        - "I need to set an environment variable. Create an environment variable called MY_APP_MODE with value 'development'"
+        - "I need to set an environment variable. Set API_KEY to the given value"
 
   - name: execute_command
     descriptions:
@@ -85,6 +94,11 @@ tools:
         - "Execute the git status command"
         - "Run the build script"
         - "Execute 'npm install' in the project folder"
+      single_clear:
+        - "I need to execute a system command. Run 'ls -la' in the current directory"
+        - "I need to execute a system command. Execute the git status command"
+        - "I need to execute a system command. Run the build script"
+        - "I need to execute a system command. Execute 'npm install' in the project folder"
 
   - name: get_system_info
     descriptions:
@@ -107,6 +121,12 @@ tools:
         - "What operating system is this?"
         - "Show me the disk space usage"
         - "Get CPU and memory information"
+      single_clear:
+        - "Please get system information. Get the current system information"
+        - "Please get system information. How much free memory does the system have?"
+        - "Please get system information. What operating system is this?"
+        - "Please get system information. Show me the disk space usage"
+        - "Please get system information. Get CPU and memory information"
 
   - name: get_current_datetime
     descriptions:
@@ -133,6 +153,11 @@ tools:
         - "Get today's date"
         - "What time is it in UTC?"
         - "Get the current date and time in ISO format"
+      single_clear:
+        - "I need to get the current date and time. What is the current time?"
+        - "I need to get the current date and time. Get today's date"
+        - "I need to get the current date and time. What time is it in UTC?"
+        - "I need to get the current date and time. Get the current date and time in ISO format"
 
   - name: sleep_delay
     descriptions:
@@ -159,6 +184,11 @@ tools:
         - "Pause execution for 100 milliseconds"
         - "Sleep for 1 minute"
         - "Add a 2 second delay"
+      single_clear:
+        - "I need to pause execution. Wait for 5 seconds"
+        - "I need to pause execution. Pause execution for 100 milliseconds"
+        - "I need to pause execution. Sleep for 1 minute"
+        - "I need to pause execution. Add a 2 second delay"
 
   - name: generate_uuid
     descriptions:
@@ -194,6 +224,11 @@ tools:
         - "Create a unique identifier"
         - "Generate a UUID v4"
         - "Make a random UUID for the new record"
+      single_clear:
+        - "I need to generate a unique identifier. Generate a new UUID"
+        - "I need to generate a unique identifier. Create a unique identifier"
+        - "I need to generate a unique identifier. Generate a UUID v4"
+        - "I need to generate a unique identifier. Make a random UUID for the new record"
 
   - name: hash_data
     descriptions:
@@ -231,6 +266,11 @@ tools:
         - "Calculate the MD5 checksum of this text"
         - "Hash the file using SHA-512"
         - "Create a hash of the password"
+      single_clear:
+        - "I need to hash some data. Generate SHA256 hash of 'hello world'"
+        - "I need to hash some data. Calculate the MD5 checksum of this text"
+        - "I need to hash some data. Hash the file using SHA-512"
+        - "I need to hash some data. Create a hash of the password"
 
   - name: encode_decode
     descriptions:
@@ -261,6 +301,11 @@ tools:
         - "Decode this base64 string"
         - "Convert the text to hexadecimal"
         - "URL encode this string"
+      single_clear:
+        - "I need to encode or decode data. Encode 'hello world' in base64"
+        - "I need to encode or decode data. Decode this base64 string"
+        - "I need to encode or decode data. Convert the text to hexadecimal"
+        - "I need to encode or decode data. URL encode this string"
 
   - name: compress_decompress
     descriptions:
@@ -305,6 +350,11 @@ tools:
         - "Decompress the gzipped data"
         - "Compress the log file"
         - "Extract the compressed archive"
+      single_clear:
+        - "I need to compress or decompress data. Compress this text using gzip"
+        - "I need to compress or decompress data. Decompress the gzipped data"
+        - "I need to compress or decompress data. Compress the log file"
+        - "I need to compress or decompress data. Extract the compressed archive"
 
   - name: list_processes
     descriptions:
@@ -336,6 +386,11 @@ tools:
         - "Show processes using the most CPU"
         - "Find all Python processes"
         - "List the top 10 processes by memory usage"
+      single_clear:
+        - "I need to list running processes. List all running processes"
+        - "I need to list running processes. Show processes using the most CPU"
+        - "I need to list running processes. Find all Python processes"
+        - "I need to list running processes. List the top 10 processes by memory usage"
 
   - name: kill_process
     descriptions:
@@ -371,6 +426,11 @@ tools:
         - "Terminate all Python processes"
         - "Stop the hung application"
         - "Force kill the unresponsive process"
+      single_clear:
+        - "I need to terminate a process. Kill process with PID 1234"
+        - "I need to terminate a process. Terminate all Python processes"
+        - "I need to terminate a process. Stop the hung application"
+        - "I need to terminate a process. Force kill the unresponsive process"
 
   - name: get_disk_info
     descriptions:
@@ -406,6 +466,11 @@ tools:
         - "Check disk usage on the server"
         - "Show free space on all drives"
         - "Get disk information for /home"
+      single_clear:
+        - "I need to get disk space information. How much disk space is available?"
+        - "I need to get disk space information. Check disk usage on the server"
+        - "I need to get disk space information. Show free space on all drives"
+        - "I need to get disk space information. Get disk information for /home"
 
   - name: get_memory_info
     descriptions:
@@ -442,6 +507,11 @@ tools:
         - "Check system memory usage"
         - "Show memory and swap statistics"
         - "What's the current memory utilization?"
+      single_clear:
+        - "I need to get memory usage information. How much RAM is being used?"
+        - "I need to get memory usage information. Check system memory usage"
+        - "I need to get memory usage information. Show memory and swap statistics"
+        - "I need to get memory usage information. What's the current memory utilization?"
 
   - name: get_cpu_info
     descriptions:
@@ -478,6 +548,11 @@ tools:
         - "Show CPU information"
         - "Check processor load"
         - "Get CPU temperature and frequency"
+      single_clear:
+        - "I need to get CPU information. What's the CPU usage?"
+        - "I need to get CPU information. Show CPU information"
+        - "I need to get CPU information. Check processor load"
+        - "I need to get CPU information. Get CPU temperature and frequency"
 
   - name: get_network_info
     descriptions:
@@ -513,6 +588,11 @@ tools:
         - "What's my IP address?"
         - "Get network traffic statistics"
         - "List all network connections"
+      single_clear:
+        - "I need to get network information. Show network interface information"
+        - "I need to get network information. What's my IP address?"
+        - "I need to get network information. Get network traffic statistics"
+        - "I need to get network information. List all network connections"
 
   - name: schedule_task
     descriptions:
@@ -554,6 +634,11 @@ tools:
         - "Create a cron job for the cleanup script"
         - "Schedule this task to run every hour"
         - "Set up a recurring task"
+      single_clear:
+        - "I need to schedule a task. Schedule the backup to run at 2am daily"
+        - "I need to schedule a task. Create a cron job for the cleanup script"
+        - "I need to schedule a task. Schedule this task to run every hour"
+        - "I need to schedule a task. Set up a recurring task"
 
   - name: manage_service
     descriptions:
@@ -589,6 +674,11 @@ tools:
         - "Check if PostgreSQL is running"
         - "Stop the Redis service"
         - "Enable the service to start on boot"
+      single_clear:
+        - "I need to manage a system service. Restart the nginx service"
+        - "I need to manage a system service. Check if PostgreSQL is running"
+        - "I need to manage a system service. Stop the Redis service"
+        - "I need to manage a system service. Enable the service to start on boot"
 
   - name: get_uptime
     descriptions:
@@ -621,6 +711,11 @@ tools:
         - "Show system uptime"
         - "When was the server last rebooted?"
         - "Check the uptime"
+      single_clear:
+        - "I need to check system uptime. How long has the system been running?"
+        - "I need to check system uptime. Show system uptime"
+        - "I need to check system uptime. When was the server last rebooted?"
+        - "I need to check system uptime. Check the uptime"
 
   - name: get_logs
     descriptions:
@@ -667,6 +762,11 @@ tools:
         - "Get nginx logs from today"
         - "Retrieve system logs with 'timeout'"
         - "Show recent critical errors"
+      single_clear:
+        - "I need to retrieve system logs. Show the last hour of error logs"
+        - "I need to retrieve system logs. Get nginx logs from today"
+        - "I need to retrieve system logs. Retrieve system logs with 'timeout'"
+        - "I need to retrieve system logs. Show recent critical errors"
 
   - name: check_port
     descriptions:
@@ -708,3 +808,8 @@ tools:
         - "Check if the database port is accessible"
         - "Test if the web server is listening"
         - "Verify port 443 is open on the server"
+      single_clear:
+        - "I need to check a network port. Is port 8080 open?"
+        - "I need to check a network port. Check if the database port is accessible"
+        - "I need to check a network port. Test if the web server is listening"
+        - "I need to check a network port. Verify port 443 is open on the server"

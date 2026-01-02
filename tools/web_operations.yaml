@@ -33,6 +33,11 @@ tools:
         - "Make a GET request to the weather API"
         - "Retrieve the list of posts from the API"
         - "Get the user profile from the REST endpoint"
+      single_clear:
+        - "I need to make an HTTP GET request. Fetch data from https://api.github.com/users/octocat"
+        - "I need to make an HTTP GET request. Make a GET request to the weather API"
+        - "I need to make an HTTP GET request. Retrieve the list of posts from the API"
+        - "I need to make an HTTP GET request. Get the user profile from the REST endpoint"
 
   - name: http_post
     descriptions:
@@ -72,6 +77,11 @@ tools:
         - "Send a POST request with the order data"
         - "Submit the form data to the registration endpoint"
         - "Post a new comment to the comments API"
+      single_clear:
+        - "I need to make an HTTP POST request. Create a new user by posting to the API"
+        - "I need to make an HTTP POST request. Send a POST request with the order data"
+        - "I need to make an HTTP POST request. Submit the form data to the registration endpoint"
+        - "I need to make an HTTP POST request. Post a new comment to the comments API"
 
   - name: http_put
     descriptions:
@@ -104,6 +114,10 @@ tools:
         - "Update the user profile at the API endpoint"
         - "Replace the product data using a PUT request"
         - "Update the entire customer record via API"
+      single_clear:
+        - "I need to make an HTTP PUT request. Update the user profile at the API endpoint"
+        - "I need to make an HTTP PUT request. Replace the product data using a PUT request"
+        - "I need to make an HTTP PUT request. Update the entire customer record via API"
 
   - name: http_delete
     descriptions:
@@ -132,6 +146,10 @@ tools:
         - "Delete the user with ID 123 from the API"
         - "Remove the post using a DELETE request"
         - "Delete the expired session via the API"
+      single_clear:
+        - "I need to make an HTTP DELETE request. Delete the user with ID 123 from the API"
+        - "I need to make an HTTP DELETE request. Remove the post using a DELETE request"
+        - "I need to make an HTTP DELETE request. Delete the expired session via the API"
 
   - name: download_file
     descriptions:
@@ -165,6 +183,11 @@ tools:
         - "Fetch the image and save it locally"
         - "Download the dataset file from the server"
         - "Save the report from the URL to my downloads folder"
+      single_clear:
+        - "Please download a file from a URL. Download the PDF from the given URL"
+        - "Please download a file from a URL. Fetch the image and save it locally"
+        - "Please download a file from a URL. Download the dataset file from the server"
+        - "Please download a file from a URL. Save the report from the URL to my downloads folder"
 
   - name: upload_file
     descriptions:
@@ -201,6 +224,10 @@ tools:
         - "Upload the image file to the server"
         - "Send the document to the upload endpoint"
         - "Upload my report.pdf to the API"
+      single_clear:
+        - "Please upload a file to a URL. Upload the image file to the server"
+        - "Please upload a file to a URL. Send the document to the upload endpoint"
+        - "Please upload a file to a URL. Upload my report.pdf to the API"
 
   - name: parse_html
     descriptions:
@@ -239,6 +266,11 @@ tools:
         - "Parse the HTML and get the product titles"
         - "Find all image URLs in the HTML content"
         - "Extract the main content from the webpage HTML"
+      single_clear:
+        - "I need to parse HTML content and extract data. Extract all links from the HTML page"
+        - "I need to parse HTML content and extract data. Parse the HTML and get the product titles"
+        - "I need to parse HTML content and extract data. Find all image URLs in the HTML content"
+        - "I need to parse HTML content and extract data. Extract the main content from the webpage HTML"
       multi:
         - prompt: "Fetch the webpage and extract all product prices"
           required_tools: ["http_get", "parse_html"]
@@ -281,6 +313,11 @@ tools:
         - "Extract article titles from the news website"
         - "Get all the prices from the product listing page"
         - "Scrape the headlines from the homepage"
+      single_clear:
+        - "Please scrape content from a webpage. Scrape the product names from the e-commerce page"
+        - "Please scrape content from a webpage. Extract article titles from the news website"
+        - "Please scrape content from a webpage. Get all the prices from the product listing page"
+        - "Please scrape content from a webpage. Scrape the headlines from the homepage"
 
   - name: check_url_status
     descriptions:
@@ -311,6 +348,11 @@ tools:
         - "Verify that the download link is still valid"
         - "Test if the website is accessible"
         - "Check the status of the server health endpoint"
+      single_clear:
+        - "I need to check a URL status. Check if the API endpoint is up"
+        - "I need to check a URL status. Verify that the download link is still valid"
+        - "I need to check a URL status. Test if the website is accessible"
+        - "I need to check a URL status. Check the status of the server health endpoint"
 
   - name: encode_url
     descriptions:
@@ -335,6 +377,10 @@ tools:
         - "URL encode the search query 'hello world'"
         - "Encode the string for use in a URL parameter"
         - "Make this text URL-safe: 'name=John&age=30'"
+      single_clear:
+        - "I need to URL-encode a string. URL encode the search query 'hello world'"
+        - "I need to URL-encode a string. Encode the string for use in a URL parameter"
+        - "I need to URL-encode a string. Make this text URL-safe: 'name=John&age=30'"
 
   - name: decode_url
     descriptions:
@@ -354,6 +400,10 @@ tools:
         - "Decode the URL string '%20%26%3D'"
         - "Convert the encoded URL back to normal text"
         - "Decode this URL parameter: 'hello%20world'"
+      single_clear:
+        - "I need to decode a URL-encoded string. Decode the URL string '%20%26%3D'"
+        - "I need to decode a URL-encoded string. Convert the encoded URL back to normal text"
+        - "I need to decode a URL-encoded string. Decode this URL parameter: 'hello%20world'"
 
   - name: send_email
     descriptions:
@@ -409,6 +459,11 @@ tools:
         - "Email the report to the team"
         - "Send a notification email with attachment"
         - "Email the customer about their order"
+      single_clear:
+        - "I need to send an email message. Send an email to john@example.com"
+        - "I need to send an email message. Email the report to the team"
+        - "I need to send an email message. Send a notification email with attachment"
+        - "I need to send an email message. Email the customer about their order"
 
   - name: web_search
     descriptions:
@@ -443,6 +498,11 @@ tools:
         - "Find information about climate change"
         - "Search for best restaurants near me"
         - "Look up the latest news about AI"
+      single_clear:
+        - "I need to perform a web search. Search the web for Python tutorials"
+        - "I need to perform a web search. Find information about climate change"
+        - "I need to perform a web search. Search for best restaurants near me"
+        - "I need to perform a web search. Look up the latest news about AI"
 
   - name: parse_json
     descriptions:
@@ -472,6 +532,11 @@ tools:
         - "Extract the price from the JSON response"
         - "Get all IDs from the JSON array"
         - "Parse and validate this JSON string"
+      single_clear:
+        - "I need to parse a JSON string. Parse the JSON and get the user name"
+        - "I need to parse a JSON string. Extract the price from the JSON response"
+        - "I need to parse a JSON string. Get all IDs from the JSON array"
+        - "I need to parse a JSON string. Parse and validate this JSON string"
 
   - name: format_json
     descriptions:
@@ -507,6 +572,11 @@ tools:
         - "Format the JSON with 4 space indentation"
         - "Minify the JSON response"
         - "Sort the JSON keys alphabetically"
+      single_clear:
+        - "I need to format and pretty-print JSON. Pretty print this JSON"
+        - "I need to format and pretty-print JSON. Format the JSON with 4 space indentation"
+        - "I need to format and pretty-print JSON. Minify the JSON response"
+        - "I need to format and pretty-print JSON. Sort the JSON keys alphabetically"
 
   - name: validate_json
     descriptions:
@@ -535,6 +605,10 @@ tools:
         - "Validate this JSON against the schema"
         - "Check if the response matches the expected schema"
         - "Verify the JSON structure is correct"
+      single_clear:
+        - "I need to validate JSON against a schema. Validate this JSON against the schema"
+        - "I need to validate JSON against a schema. Check if the response matches the expected schema"
+        - "I need to validate JSON against a schema. Verify the JSON structure is correct"
 
   - name: graphql_query
     descriptions:
@@ -571,6 +645,11 @@ tools:
         - "Run the GraphQL mutation"
         - "Query the GraphQL API for products"
         - "Fetch data using GraphQL"
+      single_clear:
+        - "I need to execute a GraphQL query. Execute a GraphQL query to get users"
+        - "I need to execute a GraphQL query. Run the GraphQL mutation"
+        - "I need to execute a GraphQL query. Query the GraphQL API for products"
+        - "I need to execute a GraphQL query. Fetch data using GraphQL"
 
   - name: websocket_connect
     descriptions:
@@ -598,6 +677,10 @@ tools:
         - "Connect to the WebSocket server"
         - "Establish a real-time connection to the stream"
         - "Open a WebSocket to the chat server"
+      single_clear:
+        - "I need to connect to a WebSocket server. Connect to the WebSocket server"
+        - "I need to connect to a WebSocket server. Establish a real-time connection to the stream"
+        - "I need to connect to a WebSocket server. Open a WebSocket to the chat server"
 
   - name: oauth_authenticate
     descriptions:
@@ -647,6 +730,11 @@ tools:
         - "Get an access token using client credentials"
         - "Refresh the OAuth access token"
         - "Perform OAuth authentication"
+      single_clear:
+        - "I need to perform OAuth authentication. Authenticate with the OAuth provider"
+        - "I need to perform OAuth authentication. Get an access token using client credentials"
+        - "I need to perform OAuth authentication. Refresh the OAuth access token"
+        - "I need to perform OAuth authentication. Perform OAuth authentication"
 
   - name: rss_feed_parse
     descriptions:
@@ -677,6 +765,11 @@ tools:
         - "Get articles from the news feed"
         - "Read the Atom feed and list entries"
         - "Fetch the latest posts from the RSS feed"
+      single_clear:
+        - "I need to parse an RSS or Atom feed. Parse the RSS feed from the blog"
+        - "I need to parse an RSS or Atom feed. Get articles from the news feed"
+        - "I need to parse an RSS or Atom feed. Read the Atom feed and list entries"
+        - "I need to parse an RSS or Atom feed. Fetch the latest posts from the RSS feed"
 
   - name: sitemap_parse
     descriptions:
@@ -706,6 +799,11 @@ tools:
         - "Get all URLs from the sitemap"
         - "Extract product pages from the sitemap"
         - "Analyze the sitemap.xml file"
+      single_clear:
+        - "I need to parse a website's sitemap. Parse the website's sitemap"
+        - "I need to parse a website's sitemap. Get all URLs from the sitemap"
+        - "I need to parse a website's sitemap. Extract product pages from the sitemap"
+        - "I need to parse a website's sitemap. Analyze the sitemap.xml file"
 
   - name: dns_lookup
     descriptions:
@@ -736,6 +834,11 @@ tools:
         - "Get the MX records for the domain"
         - "Find the nameservers for example.com"
         - "Look up TXT records for the domain"
+      single_clear:
+        - "I need to perform a DNS lookup. Look up the IP address for google.com"
+        - "I need to perform a DNS lookup. Get the MX records for the domain"
+        - "I need to perform a DNS lookup. Find the nameservers for example.com"
+        - "I need to perform a DNS lookup. Look up TXT records for the domain"
 
   - name: whois_lookup
     descriptions:
@@ -761,6 +864,11 @@ tools:
         - "Get WHOIS information for the domain"
         - "When does this domain expire?"
         - "Find the registrar for the domain"
+      single_clear:
+        - "I need to look up domain registration information. Look up who owns example.com"
+        - "I need to look up domain registration information. Get WHOIS information for the domain"
+        - "I need to look up domain registration information. When does this domain expire?"
+        - "I need to look up domain registration information. Find the registrar for the domain"
 
   - name: ssl_certificate_check
     descriptions:
@@ -791,6 +899,11 @@ tools:
         - "When does the SSL certificate expire?"
         - "Verify the website's HTTPS certificate"
         - "Is the SSL certificate valid?"
+      single_clear:
+        - "I need to check an SSL certificate. Check the SSL certificate for google.com"
+        - "I need to check an SSL certificate. When does the SSL certificate expire?"
+        - "I need to check an SSL certificate. Verify the website's HTTPS certificate"
+        - "I need to check an SSL certificate. Is the SSL certificate valid?"
 
   - name: http_patch
     descriptions:
@@ -829,6 +942,10 @@ tools:
         - "Update just the user's email address"
         - "Partially update the product record"
         - "Make a PATCH request to update the status"
+      single_clear:
+        - "I need to make an HTTP PATCH request. Update just the user's email address"
+        - "I need to make an HTTP PATCH request. Partially update the product record"
+        - "I need to make an HTTP PATCH request. Make a PATCH request to update the status"
 
   - name: curl_request
     descriptions:
@@ -898,6 +1015,10 @@ tools:
         - "Make a request like curl would"
         - "Send a request with basic authentication"
         - "Execute an HTTP request with custom headers and cookies"
+      single_clear:
+        - "I need to execute a cURL-like HTTP request. Make a request like curl would"
+        - "I need to execute a cURL-like HTTP request. Send a request with basic authentication"
+        - "I need to execute a cURL-like HTTP request. Execute an HTTP request with custom headers and cookies"
 
   - name: webhook_trigger
     descriptions:
@@ -939,6 +1060,11 @@ tools:
         - "Send a webhook notification"
         - "Notify the external system via webhook"
         - "Fire the webhook with the event data"
+      single_clear:
+        - "I need to trigger a webhook. Trigger the order webhook"
+        - "I need to trigger a webhook. Send a webhook notification"
+        - "I need to trigger a webhook. Notify the external system via webhook"
+        - "I need to trigger a webhook. Fire the webhook with the event data"
 
   - name: scrape_webpage
     descriptions:
@@ -980,6 +1106,11 @@ tools:
         - "Extract prices from the webpage"
         - "Get all article titles from the site"
         - "Scrape the table data from this URL"
+      single_clear:
+        - "Please scrape content from a webpage. Scrape product data from this page"
+        - "Please scrape content from a webpage. Extract prices from the webpage"
+        - "Please scrape content from a webpage. Get all article titles from the site"
+        - "Please scrape content from a webpage. Scrape the table data from this URL"
 
   - name: check_url_status
     descriptions:
@@ -1025,6 +1156,11 @@ tools:
         - "Check if the API endpoint is responding"
         - "Verify the URL is accessible"
         - "Check the status of the website"
+      single_clear:
+        - "I need to check a URL status. Is this website online?"
+        - "I need to check a URL status. Check if the API endpoint is responding"
+        - "I need to check a URL status. Verify the URL is accessible"
+        - "I need to check a URL status. Check the status of the website"
 
   - name: shorten_url
     descriptions:
@@ -1064,6 +1200,11 @@ tools:
         - "Shorten this long URL"
         - "Generate a bitly link"
         - "Make a tiny URL for sharing"
+      single_clear:
+        - "I need to create a shortened URL. Create a short URL for this link"
+        - "I need to create a shortened URL. Shorten this long URL"
+        - "I need to create a shortened URL. Generate a bitly link"
+        - "I need to create a shortened URL. Make a tiny URL for sharing"
 
   - name: validate_url
     descriptions:
@@ -1098,6 +1239,11 @@ tools:
         - "Validate the URL format"
         - "Check if this link is properly formatted"
         - "Verify the URL is correct"
+      single_clear:
+        - "I need to validate a URL format. Is this a valid URL?"
+        - "I need to validate a URL format. Validate the URL format"
+        - "I need to validate a URL format. Check if this link is properly formatted"
+        - "I need to validate a URL format. Verify the URL is correct"
 
   - name: parse_html
     descriptions:
@@ -1137,6 +1283,11 @@ tools:
         - "Parse the HTML and get the title"
         - "Get the text from all paragraph tags"
         - "Extract data from the HTML table"
+      single_clear:
+        - "I need to parse HTML content and extract data. Extract all links from this HTML"
+        - "I need to parse HTML content and extract data. Parse the HTML and get the title"
+        - "I need to parse HTML content and extract data. Get the text from all paragraph tags"
+        - "I need to parse HTML content and extract data. Extract data from the HTML table"
 
   - name: resolve_dns
     descriptions:
@@ -1172,6 +1323,11 @@ tools:
         - "Look up MX records for the domain"
         - "Resolve DNS for this domain"
         - "What are the nameservers for this domain?"
+      single_clear:
+        - "I need to look up DNS records. Get the IP address for example.com"
+        - "I need to look up DNS records. Look up MX records for the domain"
+        - "I need to look up DNS records. Resolve DNS for this domain"
+        - "I need to look up DNS records. What are the nameservers for this domain?"
 
   - name: download_file
     descriptions:
@@ -1218,6 +1374,11 @@ tools:
         - "Fetch the ZIP file and save it locally"
         - "Download the release package"
         - "Get the file from the server"
+      single_clear:
+        - "Please download a file from a URL. Download the file from this URL"
+        - "Please download a file from a URL. Fetch the ZIP file and save it locally"
+        - "Please download a file from a URL. Download the release package"
+        - "Please download a file from a URL. Get the file from the server"
 
   - name: upload_file
     descriptions:
@@ -1260,6 +1421,11 @@ tools:
         - "Post the document to the API"
         - "Upload the image to the storage endpoint"
         - "Send the file to the upload URL"
+      single_clear:
+        - "Please upload a file to a URL. Upload this file to the server"
+        - "Please upload a file to a URL. Post the document to the API"
+        - "Please upload a file to a URL. Upload the image to the storage endpoint"
+        - "Please upload a file to a URL. Send the file to the upload URL"
 
   - name: get_ssl_info
     descriptions:
@@ -1295,3 +1461,8 @@ tools:
         - "Get SSL certificate details for the domain"
         - "Is the SSL certificate valid?"
         - "Show certificate information for example.com"
+      single_clear:
+        - "I need to get SSL certificate information. Check when the SSL certificate expires"
+        - "I need to get SSL certificate information. Get SSL certificate details for the domain"
+        - "I need to get SSL certificate information. Is the SSL certificate valid?"
+        - "I need to get SSL certificate information. Show certificate information for example.com"

@@ -42,6 +42,11 @@ tools:
         - "Log this action for audit"
         - "Create compliance log entry"
         - "Record audit trail"
+      single_clear:
+        - "I need to generate an audit log entry. Generate audit log"
+        - "I need to generate an audit log entry. Log this action for audit"
+        - "I need to generate an audit log entry. Create compliance log entry"
+        - "I need to generate an audit log entry. Record audit trail"
 
   - name: run_compliance_check
     descriptions:
@@ -77,6 +82,11 @@ tools:
         - "Check HIPAA compliance"
         - "Verify SOC2 compliance"
         - "Audit for PCI-DSS"
+      single_clear:
+        - "I need to run a regulatory compliance check. Run compliance check"
+        - "I need to run a regulatory compliance check. Check HIPAA compliance"
+        - "I need to run a regulatory compliance check. Verify SOC2 compliance"
+        - "I need to run a regulatory compliance check. Audit for PCI-DSS"
 
   - name: manage_data_retention
     descriptions:
@@ -115,6 +125,11 @@ tools:
         - "Configure retention rules"
         - "Enforce data lifecycle"
         - "Purge expired data"
+      single_clear:
+        - "I need to manage data retention policies. Set data retention policy"
+        - "I need to manage data retention policies. Configure retention rules"
+        - "I need to manage data retention policies. Enforce data lifecycle"
+        - "I need to manage data retention policies. Purge expired data"
 
   - name: process_data_subject_request
     descriptions:
@@ -153,6 +168,11 @@ tools:
         - "Handle GDPR erasure request"
         - "Export user data for request"
         - "Delete user under CCPA"
+      single_clear:
+        - "I need to process a data subject request. Process data subject request"
+        - "I need to process a data subject request. Handle GDPR erasure request"
+        - "I need to process a data subject request. Export user data for request"
+        - "I need to process a data subject request. Delete user under CCPA"
 
   - name: generate_compliance_report
     descriptions:
@@ -193,6 +213,11 @@ tools:
         - "Create SOC2 report"
         - "Audit report for Q1"
         - "Export compliance status"
+      single_clear:
+        - "Please generate a compliance audit report. Generate compliance report"
+        - "Please generate a compliance audit report. Create SOC2 report"
+        - "Please generate a compliance audit report. Audit report for Q1"
+        - "Please generate a compliance audit report. Export compliance status"
 
   - name: manage_consent
     descriptions:
@@ -230,6 +255,11 @@ tools:
         - "Manage consent preferences"
         - "Revoke marketing consent"
         - "Check consent status"
+      single_clear:
+        - "I need to manage user consent records. Record user consent"
+        - "I need to manage user consent records. Manage consent preferences"
+        - "I need to manage user consent records. Revoke marketing consent"
+        - "I need to manage user consent records. Check consent status"
 
   - name: classify_data
     descriptions:
@@ -271,6 +301,11 @@ tools:
         - "Scan for PII"
         - "Data classification scan"
         - "Find sensitive data"
+      single_clear:
+        - "I need to classify data by sensitivity level. Classify data sensitivity"
+        - "I need to classify data by sensitivity level. Scan for PII"
+        - "I need to classify data by sensitivity level. Data classification scan"
+        - "I need to classify data by sensitivity level. Find sensitive data"
 
   - name: manage_policy
     descriptions:
@@ -313,6 +348,11 @@ tools:
         - "Update security policy"
         - "Publish new policy"
         - "Manage organizational policies"
+      single_clear:
+        - "I need to manage a compliance policy. Create compliance policy"
+        - "I need to manage a compliance policy. Update security policy"
+        - "I need to manage a compliance policy. Publish new policy"
+        - "I need to manage a compliance policy. Manage organizational policies"
 
   - name: track_vendor_compliance
     descriptions:
@@ -351,6 +391,11 @@ tools:
         - "Assess third-party risk"
         - "Send vendor questionnaire"
         - "Review vendor security"
+      single_clear:
+        - "I need to track third-party vendor compliance. Track vendor compliance"
+        - "I need to track third-party vendor compliance. Assess third-party risk"
+        - "I need to track third-party vendor compliance. Send vendor questionnaire"
+        - "I need to track third-party vendor compliance. Review vendor security"
 
   - name: manage_exception
     descriptions:
@@ -397,3 +442,8 @@ tools:
         - "Approve policy exception"
         - "Extend exception deadline"
         - "Track compliance waivers"
+      single_clear:
+        - "I need to manage a compliance exception. Request compliance exception"
+        - "I need to manage a compliance exception. Approve policy exception"
+        - "I need to manage a compliance exception. Extend exception deadline"
+        - "I need to manage a compliance exception. Track compliance waivers"

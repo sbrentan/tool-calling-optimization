@@ -46,6 +46,11 @@ tools:
         - "Encrypt the sensitive data using AES"
         - "Secure the text with encryption"
         - "Encrypt the file contents"
+      single_clear:
+        - "Please encrypt data securely. Encrypt this message with a password"
+        - "Please encrypt data securely. Encrypt the sensitive data using AES"
+        - "Please encrypt data securely. Secure the text with encryption"
+        - "Please encrypt data securely. Encrypt the file contents"
 
   - name: decrypt_data
     descriptions:
@@ -92,6 +97,11 @@ tools:
         - "Decrypt the data with the password"
         - "Decode the encrypted content"
         - "Unlock the encrypted file"
+      single_clear:
+        - "I need to decrypt encrypted data. Decrypt this encrypted message"
+        - "I need to decrypt encrypted data. Decrypt the data with the password"
+        - "I need to decrypt encrypted data. Decode the encrypted content"
+        - "I need to decrypt encrypted data. Unlock the encrypted file"
 
   - name: generate_keypair
     descriptions:
@@ -142,6 +152,11 @@ tools:
         - "Create a new SSH key pair"
         - "Generate an Ed25519 key pair"
         - "Create public and private keys"
+      single_clear:
+        - "I want to generate a cryptographic key pair. Generate an RSA key pair"
+        - "I want to generate a cryptographic key pair. Create a new SSH key pair"
+        - "I want to generate a cryptographic key pair. Generate an Ed25519 key pair"
+        - "I want to generate a cryptographic key pair. Create public and private keys"
 
   - name: sign_data
     descriptions:
@@ -186,6 +201,11 @@ tools:
         - "Create a digital signature for the data"
         - "Sign the message for verification"
         - "Generate a signature for the file"
+      single_clear:
+        - "I need to create a digital signature. Sign this document with my private key"
+        - "I need to create a digital signature. Create a digital signature for the data"
+        - "I need to create a digital signature. Sign the message for verification"
+        - "I need to create a digital signature. Generate a signature for the file"
 
   - name: verify_signature
     descriptions:
@@ -230,6 +250,11 @@ tools:
         - "Check if the signature is valid"
         - "Validate the digital signature"
         - "Verify the message authenticity"
+      single_clear:
+        - "I want to verify a digital signature. Verify the signature on this document"
+        - "I want to verify a digital signature. Check if the signature is valid"
+        - "I want to verify a digital signature. Validate the digital signature"
+        - "I want to verify a digital signature. Verify the message authenticity"
 
   - name: generate_password
     descriptions:
@@ -285,6 +310,11 @@ tools:
         - "Create a 20 character random password"
         - "Generate a password without special characters"
         - "Make a secure password for my account"
+      single_clear:
+        - "I need to generate a secure password. Generate a strong password"
+        - "I need to generate a secure password. Create a 20 character random password"
+        - "I need to generate a secure password. Generate a password without special characters"
+        - "I need to generate a secure password. Make a secure password for my account"
 
   - name: check_password_strength
     descriptions:
@@ -314,6 +344,11 @@ tools:
         - "Analyze the password strength"
         - "Is this a secure password?"
         - "Rate the strength of my password"
+      single_clear:
+        - "I need to analyze password strength. Check how strong this password is"
+        - "I need to analyze password strength. Analyze the password strength"
+        - "I need to analyze password strength. Is this a secure password?"
+        - "I need to analyze password strength. Rate the strength of my password"
 
   - name: hash_password
     descriptions:
@@ -355,6 +390,11 @@ tools:
         - "Create a bcrypt hash of the password"
         - "Hash the password using Argon2"
         - "Securely hash the user's password"
+      single_clear:
+        - "I need to securely hash a password. Hash this password for storage"
+        - "I need to securely hash a password. Create a bcrypt hash of the password"
+        - "I need to securely hash a password. Hash the password using Argon2"
+        - "I need to securely hash a password. Securely hash the user's password"
 
   - name: verify_password_hash
     descriptions:
@@ -379,6 +419,11 @@ tools:
         - "Verify the user's password"
         - "Validate the password against the stored hash"
         - "Does this password match?"
+      single_clear:
+        - "I need to verify a password hash. Check if the password matches the hash"
+        - "I need to verify a password hash. Verify the user's password"
+        - "I need to verify a password hash. Validate the password against the stored hash"
+        - "I need to verify a password hash. Does this password match?"
 
   - name: generate_api_key
     descriptions:
@@ -415,6 +460,11 @@ tools:
         - "Create a secret key for the API"
         - "Generate an API token with a prefix"
         - "Make a new authentication key"
+      single_clear:
+        - "I need to generate an API key. Generate a new API key"
+        - "I need to generate an API key. Create a secret key for the API"
+        - "I need to generate an API key. Generate an API token with a prefix"
+        - "I need to generate an API key. Make a new authentication key"
 
   - name: generate_totp_secret
     descriptions:
@@ -465,6 +515,11 @@ tools:
         - "Create a TOTP secret for the user"
         - "Set up two-factor authentication"
         - "Generate an authenticator app secret"
+      single_clear:
+        - "I need to set up two-factor authentication. Generate a 2FA secret for my app"
+        - "I need to set up two-factor authentication. Create a TOTP secret for the user"
+        - "I need to set up two-factor authentication. Set up two-factor authentication"
+        - "I need to set up two-factor authentication. Generate an authenticator app secret"
 
   - name: verify_totp
     descriptions:
@@ -510,6 +565,11 @@ tools:
         - "Check if the TOTP code is valid"
         - "Validate the authenticator code"
         - "Verify the one-time password"
+      single_clear:
+        - "I need to verify a two-factor authentication code. Verify the 2FA code"
+        - "I need to verify a two-factor authentication code. Check if the TOTP code is valid"
+        - "I need to verify a two-factor authentication code. Validate the authenticator code"
+        - "I need to verify a two-factor authentication code. Verify the one-time password"
 
   - name: generate_jwt
     descriptions:
@@ -561,6 +621,11 @@ tools:
         - "Create an authentication token"
         - "Generate a JWT that expires in 1 hour"
         - "Create a signed JWT with user claims"
+      single_clear:
+        - "I need to generate a JSON Web Token. Generate a JWT for the user"
+        - "I need to generate a JSON Web Token. Create an authentication token"
+        - "I need to generate a JSON Web Token. Generate a JWT that expires in 1 hour"
+        - "I need to generate a JSON Web Token. Create a signed JWT with user claims"
 
   - name: verify_jwt
     descriptions:
@@ -607,6 +672,11 @@ tools:
         - "Check if the token is valid"
         - "Validate the authentication token"
         - "Decode the JWT and verify its signature"
+      single_clear:
+        - "I need to verify a JWT token. Verify and decode this JWT"
+        - "I need to verify a JWT token. Check if the token is valid"
+        - "I need to verify a JWT token. Validate the authentication token"
+        - "I need to verify a JWT token. Decode the JWT and verify its signature"
 
   - name: encrypt_file
     descriptions:
@@ -655,6 +725,11 @@ tools:
         - "Password protect the document"
         - "Encrypt the file for secure transfer"
         - "Secure the file with encryption"
+      single_clear:
+        - "I need to encrypt a file securely. Encrypt this sensitive file"
+        - "I need to encrypt a file securely. Password protect the document"
+        - "I need to encrypt a file securely. Encrypt the file for secure transfer"
+        - "I need to encrypt a file securely. Secure the file with encryption"
 
   - name: decrypt_file
     descriptions:
@@ -692,6 +767,11 @@ tools:
         - "Unlock the password-protected file"
         - "Decrypt and restore the document"
         - "Unencrypt the secure file"
+      single_clear:
+        - "I need to decrypt an encrypted file. Decrypt the encrypted file"
+        - "I need to decrypt an encrypted file. Unlock the password-protected file"
+        - "I need to decrypt an encrypted file. Decrypt and restore the document"
+        - "I need to decrypt an encrypted file. Unencrypt the secure file"
 
   - name: generate_certificate
     descriptions:
@@ -739,6 +819,11 @@ tools:
         - "Create a certificate for localhost"
         - "Generate a development HTTPS certificate"
         - "Create an SSL cert for testing"
+      single_clear:
+        - "I need to generate an SSL certificate. Generate a self-signed SSL certificate"
+        - "I need to generate an SSL certificate. Create a certificate for localhost"
+        - "I need to generate an SSL certificate. Generate a development HTTPS certificate"
+        - "I need to generate an SSL certificate. Create an SSL cert for testing"
 
   - name: scan_vulnerabilities
     descriptions:
@@ -780,6 +865,11 @@ tools:
         - "Check dependencies for security issues"
         - "Find hardcoded secrets in the code"
         - "Audit the project for CVEs"
+      single_clear:
+        - "I need to scan for security vulnerabilities. Scan the project for vulnerabilities"
+        - "I need to scan for security vulnerabilities. Check dependencies for security issues"
+        - "I need to scan for security vulnerabilities. Find hardcoded secrets in the code"
+        - "I need to scan for security vulnerabilities. Audit the project for CVEs"
 
   - name: sanitize_input
     descriptions:
@@ -818,6 +908,11 @@ tools:
         - "Clean the user input for SQL"
         - "Remove dangerous characters from the input"
         - "Make this input safe for display"
+      single_clear:
+        - "I need to sanitize user input for security. Sanitize this HTML input"
+        - "I need to sanitize user input for security. Clean the user input for SQL"
+        - "I need to sanitize user input for security. Remove dangerous characters from the input"
+        - "I need to sanitize user input for security. Make this input safe for display"
 
   - name: check_file_signature
     descriptions:
@@ -842,6 +937,11 @@ tools:
         - "Verify the file type by its signature"
         - "Is this file really what it claims to be?"
         - "Check the magic bytes of the uploaded file"
+      single_clear:
+        - "I need to verify a file's true type. Check if this PDF is actually a PDF"
+        - "I need to verify a file's true type. Verify the file type by its signature"
+        - "I need to verify a file's true type. Is this file really what it claims to be?"
+        - "I need to verify a file's true type. Check the magic bytes of the uploaded file"
 
   - name: generate_secure_token
     descriptions:
@@ -869,6 +969,11 @@ tools:
         - "Create a CSRF token"
         - "Generate a secure random token"
         - "Create a password reset token"
+      single_clear:
+        - "I need to generate a secure random token. Generate a session token"
+        - "I need to generate a secure random token. Create a CSRF token"
+        - "I need to generate a secure random token. Generate a secure random token"
+        - "I need to generate a secure random token. Create a password reset token"
 
   - name: scan_vulnerabilities
     descriptions:
@@ -910,6 +1015,11 @@ tools:
         - "Check for security issues in the code"
         - "Audit the project for CVEs"
         - "Find vulnerabilities in the Docker image"
+      single_clear:
+        - "I need to scan for security vulnerabilities. Scan dependencies for vulnerabilities"
+        - "I need to scan for security vulnerabilities. Check for security issues in the code"
+        - "I need to scan for security vulnerabilities. Audit the project for CVEs"
+        - "I need to scan for security vulnerabilities. Find vulnerabilities in the Docker image"
 
   - name: verify_signature
     descriptions:
@@ -944,6 +1054,11 @@ tools:
         - "Check if the file signature is valid"
         - "Validate the digital signature"
         - "Verify authenticity of the download"
+      single_clear:
+        - "I need to verify a file signature. Verify the GPG signature"
+        - "I need to verify a file signature. Check if the file signature is valid"
+        - "I need to verify a file signature. Validate the digital signature"
+        - "I need to verify a file signature. Verify authenticity of the download"
 
   - name: create_signature
     descriptions:
@@ -987,6 +1102,11 @@ tools:
         - "Create a GPG signature"
         - "Digitally sign the document"
         - "Generate a signature for the release"
+      single_clear:
+        - "I need to digitally sign a file. Sign this file with my key"
+        - "I need to digitally sign a file. Create a GPG signature"
+        - "I need to digitally sign a file. Digitally sign the document"
+        - "I need to digitally sign a file. Generate a signature for the release"
 
   - name: rotate_keys
     descriptions:
@@ -1025,6 +1145,11 @@ tools:
         - "Generate a new API key and rotate"
         - "Re-encrypt data with new key"
         - "Rotate signing keys"
+      single_clear:
+        - "I need to rotate encryption keys. Rotate the encryption keys"
+        - "I need to rotate encryption keys. Generate a new API key and rotate"
+        - "I need to rotate encryption keys. Re-encrypt data with new key"
+        - "I need to rotate encryption keys. Rotate signing keys"
 
   - name: check_ssl_certificate
     descriptions:
@@ -1064,6 +1189,11 @@ tools:
         - "When does the certificate expire?"
         - "Is the SSL certificate valid?"
         - "Analyze the TLS configuration"
+      single_clear:
+        - "I need to check an SSL certificate. Check SSL certificate for example.com"
+        - "I need to check an SSL certificate. When does the certificate expire?"
+        - "I need to check an SSL certificate. Is the SSL certificate valid?"
+        - "I need to check an SSL certificate. Analyze the TLS configuration"
 
   - name: generate_otp
     descriptions:
@@ -1104,6 +1234,11 @@ tools:
         - "Get the current OTP"
         - "Generate 2FA code"
         - "What's the current authenticator code?"
+      single_clear:
+        - "I need to generate a one-time password. Generate a TOTP code"
+        - "I need to generate a one-time password. Get the current OTP"
+        - "I need to generate a one-time password. Generate 2FA code"
+        - "I need to generate a one-time password. What's the current authenticator code?"
 
   - name: verify_otp
     descriptions:
@@ -1143,6 +1278,11 @@ tools:
         - "Is this 2FA code valid?"
         - "Check if the TOTP is correct"
         - "Validate the authenticator code"
+      single_clear:
+        - "I need to verify a one-time password. Verify this OTP code"
+        - "I need to verify a one-time password. Is this 2FA code valid?"
+        - "I need to verify a one-time password. Check if the TOTP is correct"
+        - "I need to verify a one-time password. Validate the authenticator code"
 
   - name: audit_permissions
     descriptions:
@@ -1182,6 +1322,11 @@ tools:
         - "Check for insecure file permissions"
         - "Find world-writable files"
         - "Audit access controls"
+      single_clear:
+        - "I need to audit file permissions. Audit permissions on /var/www"
+        - "I need to audit file permissions. Check for insecure file permissions"
+        - "I need to audit file permissions. Find world-writable files"
+        - "I need to audit file permissions. Audit access controls"
 
   - name: secrets_scan
     descriptions:
@@ -1220,3 +1365,8 @@ tools:
         - "Find secrets in the codebase"
         - "Check for leaked credentials"
         - "Scan git history for secrets"
+      single_clear:
+        - "I need to scan for exposed secrets. Scan for exposed API keys"
+        - "I need to scan for exposed secrets. Find secrets in the codebase"
+        - "I need to scan for exposed secrets. Check for leaked credentials"
+        - "I need to scan for exposed secrets. Scan git history for secrets"

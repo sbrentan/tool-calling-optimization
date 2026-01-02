@@ -49,6 +49,11 @@ tools:
         - "Change the video format to WebM"
         - "Transcode the video to H.265"
         - "Convert AVI to MP4"
+      single_clear:
+        - "I need to convert a video to a different format. Convert this video to MP4"
+        - "I need to convert a video to a different format. Change the video format to WebM"
+        - "I need to convert a video to a different format. Transcode the video to H.265"
+        - "I need to convert a video to a different format. Convert AVI to MP4"
 
   - name: trim_video
     descriptions:
@@ -91,6 +96,11 @@ tools:
         - "Cut the first 30 seconds"
         - "Extract a 2-minute clip"
         - "Trim the video to the highlight"
+      single_clear:
+        - "Please trim a video to a specific time range. Trim the video from 1:30 to 5:00"
+        - "Please trim a video to a specific time range. Cut the first 30 seconds"
+        - "Please trim a video to a specific time range. Extract a 2-minute clip"
+        - "Please trim a video to a specific time range. Trim the video to the highlight"
 
   - name: merge_videos
     descriptions:
@@ -131,6 +141,11 @@ tools:
         - "Concatenate the video parts"
         - "Join the clips together"
         - "Combine videos with a crossfade"
+      single_clear:
+        - "I want to merge multiple videos into one. Merge these video files"
+        - "I want to merge multiple videos into one. Concatenate the video parts"
+        - "I want to merge multiple videos into one. Join the clips together"
+        - "I want to merge multiple videos into one. Combine videos with a crossfade"
 
   - name: add_subtitles
     descriptions:
@@ -186,6 +201,11 @@ tools:
         - "Burn these captions into the video"
         - "Add SRT subtitles"
         - "Put subtitles on the movie"
+      single_clear:
+        - "I need to add subtitles to a video file. Add subtitles to the video"
+        - "I need to add subtitles to a video file. Burn these captions into the video"
+        - "I need to add subtitles to a video file. Add SRT subtitles"
+        - "I need to add subtitles to a video file. Put subtitles on the movie"
 
   - name: extract_frames
     descriptions:
@@ -240,6 +260,11 @@ tools:
         - "Get 10 frames from the video"
         - "Extract a frame at 1:30"
         - "Save all frames as images"
+      single_clear:
+        - "I need to extract still frames from a video. Extract frames every 5 seconds"
+        - "I need to extract still frames from a video. Get 10 frames from the video"
+        - "I need to extract still frames from a video. Extract a frame at 1:30"
+        - "I need to extract still frames from a video. Save all frames as images"
 
   - name: add_watermark
     descriptions:
@@ -295,6 +320,11 @@ tools:
         - "Put a watermark on the video"
         - "Add branding to the corner"
         - "Watermark with my company logo"
+      single_clear:
+        - "I want to add a watermark to my video. Add my logo to the video"
+        - "I want to add a watermark to my video. Put a watermark on the video"
+        - "I want to add a watermark to my video. Add branding to the corner"
+        - "I want to add a watermark to my video. Watermark with my company logo"
 
   - name: resize_video
     descriptions:
@@ -338,6 +368,11 @@ tools:
         - "Scale down to 1080p"
         - "Make the video smaller"
         - "Convert to HD resolution"
+      single_clear:
+        - "I need to resize a video to a different resolution. Resize the video to 720p"
+        - "I need to resize a video to a different resolution. Scale down to 1080p"
+        - "I need to resize a video to a different resolution. Make the video smaller"
+        - "I need to resize a video to a different resolution. Convert to HD resolution"
 
   - name: adjust_video_speed
     descriptions:
@@ -377,6 +412,11 @@ tools:
         - "Create slow motion"
         - "Make a timelapse"
         - "Slow down the video"
+      single_clear:
+        - "I want to adjust the playback speed of a video. Speed up the video 2x"
+        - "I want to adjust the playback speed of a video. Create slow motion"
+        - "I want to adjust the playback speed of a video. Make a timelapse"
+        - "I want to adjust the playback speed of a video. Slow down the video"
 
   - name: rotate_video
     descriptions:
@@ -417,6 +457,11 @@ tools:
         - "Flip the video horizontally"
         - "Fix the video orientation"
         - "Turn the video upside down"
+      single_clear:
+        - "I need to rotate or flip a video. Rotate the video 90 degrees"
+        - "I need to rotate or flip a video. Flip the video horizontally"
+        - "I need to rotate or flip a video. Fix the video orientation"
+        - "I need to rotate or flip a video. Turn the video upside down"
 
   - name: compress_video
     descriptions:
@@ -466,6 +511,11 @@ tools:
         - "Reduce the video file size"
         - "Make the video smaller for sharing"
         - "Optimize the video for web"
+      single_clear:
+        - "I want to compress a video to reduce file size. Compress this video to under 100MB"
+        - "I want to compress a video to reduce file size. Reduce the video file size"
+        - "I want to compress a video to reduce file size. Make the video smaller for sharing"
+        - "I want to compress a video to reduce file size. Optimize the video for web"
   - name: add_video_overlay
     descriptions:
       minimal: "Add overlay"
@@ -517,6 +567,11 @@ tools:
         - "Watermark the video"
         - "Add picture-in-picture"
         - "Overlay image on video"
+      single_clear:
+        - "I need to add an overlay to a video. Add logo to video"
+        - "I need to add an overlay to a video. Watermark the video"
+        - "I need to add an overlay to a video. Add picture-in-picture"
+        - "I need to add an overlay to a video. Overlay image on video"
 
   - name: create_video_montage
     descriptions:
@@ -561,6 +616,11 @@ tools:
         - "Make video montage"
         - "Combine videos in grid"
         - "Create 2x2 video layout"
+      single_clear:
+        - "I want to create a video montage or split-screen. Create split-screen video"
+        - "I want to create a video montage or split-screen. Make video montage"
+        - "I want to create a video montage or split-screen. Combine videos in grid"
+        - "I want to create a video montage or split-screen. Create 2x2 video layout"
 
   - name: stabilize_video
     descriptions:
@@ -607,6 +667,11 @@ tools:
         - "Fix camera shake"
         - "Smooth out video"
         - "Remove video shake"
+      single_clear:
+        - "I need to stabilize shaky video footage. Stabilize shaky footage"
+        - "I need to stabilize shaky video footage. Fix camera shake"
+        - "I need to stabilize shaky video footage. Smooth out video"
+        - "I need to stabilize shaky video footage. Remove video shake"
 
   - name: generate_video_chapters
     descriptions:
@@ -646,6 +711,11 @@ tools:
         - "Create video navigation"
         - "Mark video sections"
         - "Generate chapter markers"
+      single_clear:
+        - "I want to add chapter markers to a video for navigation. Add chapters to video"
+        - "I want to add chapter markers to a video for navigation. Create video navigation"
+        - "I want to add chapter markers to a video for navigation. Mark video sections"
+        - "I want to add chapter markers to a video for navigation. Generate chapter markers"
 
   - name: apply_video_filter
     descriptions:
@@ -683,6 +753,11 @@ tools:
         - "Make video black and white"
         - "Color grade the footage"
         - "Add vintage filter"
+      single_clear:
+        - "I want to apply a filter or color effect to a video. Apply cinematic look"
+        - "I want to apply a filter or color effect to a video. Make video black and white"
+        - "I want to apply a filter or color effect to a video. Color grade the footage"
+        - "I want to apply a filter or color effect to a video. Add vintage filter"
 
   - name: loop_video
     descriptions:
@@ -726,6 +801,11 @@ tools:
         - "Create seamless loop"
         - "Make boomerang video"
         - "Repeat video clip"
+      single_clear:
+        - "I need to loop a video multiple times. Loop video 5 times"
+        - "I need to loop a video multiple times. Create seamless loop"
+        - "I need to loop a video multiple times. Make boomerang video"
+        - "I need to loop a video multiple times. Repeat video clip"
 
   - name: create_video_slideshow
     descriptions:
@@ -775,6 +855,11 @@ tools:
         - "Make video from images"
         - "Build image presentation"
         - "Create slideshow with music"
+      single_clear:
+        - "I want to create a video slideshow from images. Create photo slideshow"
+        - "I want to create a video slideshow from images. Make video from images"
+        - "I want to create a video slideshow from images. Build image presentation"
+        - "I want to create a video slideshow from images. Create slideshow with music"
 
   - name: reverse_video
     descriptions:
@@ -810,6 +895,11 @@ tools:
         - "Play video backwards"
         - "Create rewind effect"
         - "Flip video direction"
+      single_clear:
+        - "I need to reverse a video to play backwards. Reverse the video"
+        - "I need to reverse a video to play backwards. Play video backwards"
+        - "I need to reverse a video to play backwards. Create rewind effect"
+        - "I need to reverse a video to play backwards. Flip video direction"
 
   - name: add_chapter_markers
     descriptions:
@@ -849,6 +939,11 @@ tools:
         - "Create chapter markers"
         - "Add timestamps to video"
         - "Mark sections in video"
+      single_clear:
+        - "I want to add chapter markers with timestamps to a video. Add chapters to the video"
+        - "I want to add chapter markers with timestamps to a video. Create chapter markers"
+        - "I want to add chapter markers with timestamps to a video. Add timestamps to video"
+        - "I want to add chapter markers with timestamps to a video. Mark sections in video"
 
   - name: detect_scene_changes
     descriptions:
@@ -890,6 +985,11 @@ tools:
         - "Find all cuts in the video"
         - "Analyze video scenes"
         - "Get scene timestamps"
+      single_clear:
+        - "I need to detect scene changes and cuts in a video. Detect scene changes"
+        - "I need to detect scene changes and cuts in a video. Find all cuts in the video"
+        - "I need to detect scene changes and cuts in a video. Analyze video scenes"
+        - "I need to detect scene changes and cuts in a video. Get scene timestamps"
 
   - name: apply_color_grading
     descriptions:
@@ -932,6 +1032,11 @@ tools:
         - "Add cinematic look to video"
         - "Color correct the footage"
         - "Apply LUT to video"
+      single_clear:
+        - "I want to apply professional color grading to a video. Apply color grading"
+        - "I want to apply professional color grading to a video. Add cinematic look to video"
+        - "I want to apply professional color grading to a video. Color correct the footage"
+        - "I want to apply professional color grading to a video. Apply LUT to video"
 
   - name: create_video_thumbnail
     descriptions:
@@ -979,6 +1084,11 @@ tools:
         - "Extract best frame for thumbnail"
         - "Generate YouTube thumbnail"
         - "Make preview image"
+      single_clear:
+        - "I need to create a thumbnail image from a video. Create video thumbnail"
+        - "I need to create a thumbnail image from a video. Extract best frame for thumbnail"
+        - "I need to create a thumbnail image from a video. Generate YouTube thumbnail"
+        - "I need to create a thumbnail image from a video. Make preview image"
 
   - name: add_picture_in_picture
     descriptions:
@@ -1029,6 +1139,11 @@ tools:
         - "Create picture-in-picture"
         - "Overlay facecam on gameplay"
         - "Add PiP to screen recording"
+      single_clear:
+        - "I want to add a picture-in-picture overlay to a video. Add webcam overlay to video"
+        - "I want to add a picture-in-picture overlay to a video. Create picture-in-picture"
+        - "I want to add a picture-in-picture overlay to a video. Overlay facecam on gameplay"
+        - "I want to add a picture-in-picture overlay to a video. Add PiP to screen recording"
 
   - name: generate_video_preview
     descriptions:
@@ -1074,6 +1189,11 @@ tools:
         - "Generate trailer from video"
         - "Make highlight reel"
         - "Extract video highlights"
+      single_clear:
+        - "I need to generate a preview or trailer from a video. Create video preview"
+        - "I need to generate a preview or trailer from a video. Generate trailer from video"
+        - "I need to generate a preview or trailer from a video. Make highlight reel"
+        - "I need to generate a preview or trailer from a video. Extract video highlights"
 
   - name: remove_background
     descriptions:
@@ -1123,6 +1243,11 @@ tools:
         - "Replace video background"
         - "Apply chroma key"
         - "Remove background with AI"
+      single_clear:
+        - "I want to remove or replace the background from a video. Remove green screen background"
+        - "I want to remove or replace the background from a video. Replace video background"
+        - "I want to remove or replace the background from a video. Apply chroma key"
+        - "I want to remove or replace the background from a video. Remove background with AI"
 
   - name: detect_faces_in_video
     descriptions:
@@ -1166,6 +1291,11 @@ tools:
         - "Blur all faces"
         - "Track face throughout video"
         - "Anonymize people in video"
+      single_clear:
+        - "I need to detect and track faces in a video. Detect faces in video"
+        - "I need to detect and track faces in a video. Blur all faces"
+        - "I need to detect and track faces in a video. Track face throughout video"
+        - "I need to detect and track faces in a video. Anonymize people in video"
 
   - name: add_animated_title
     descriptions:
@@ -1231,3 +1361,8 @@ tools:
         - "Create animated lower third"
         - "Add text overlay with animation"
         - "Insert credits at end"
+      single_clear:
+        - "I want to add an animated title or text to a video. Add title to video"
+        - "I want to add an animated title or text to a video. Create animated lower third"
+        - "I want to add an animated title or text to a video. Add text overlay with animation"
+        - "I want to add an animated title or text to a video. Insert credits at end"

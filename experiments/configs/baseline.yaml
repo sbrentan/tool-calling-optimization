@@ -7,6 +7,7 @@ description: "Baseline MCP tool calling test with 10 tools and medium documentat
 # Tool configuration
 num_tools: 10
 doc_length: medium  # minimal, short, medium, long, verbose
+prompt_type: concise  # concise or clear
 num_similar_tools: 0
 categories: null  # null = all categories
 

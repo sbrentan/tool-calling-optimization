@@ -289,7 +289,8 @@ class ToolGenerator:
     def generate_test_cases(
         self,
         tools: list[Tool],
-        include_multi_tool: bool = False
+        include_multi_tool: bool = False,
+        prompt_type: str = "concise"
     ) -> list[TestCase]:
         """
         Generate test cases for the given tools.
@@ -297,6 +298,7 @@ class ToolGenerator:
         Args:
             tools: List of tools to generate tests for
             include_multi_tool: Whether to include multi-tool test scenarios
+            prompt_type: Type of prompts to use ('concise' or 'clear')
             
         Returns:
             List of TestCase objects
@@ -309,8 +311,12 @@ class ToolGenerator:
             test_prompts = self._get_test_prompts(tool.name, tool.category)
             
             if test_prompts:
-                # Use a single test prompt (pick randomly or first)
-                single_prompts = test_prompts.get("single", [])
+                # Select prompts based on prompt_type
+                if prompt_type == "clear":
+                    single_prompts = test_prompts.get("single_clear", test_prompts.get("single", []))
+                else:
+                    single_prompts = test_prompts.get("single", [])
+                
                 if single_prompts:
                     prompt = random.choice(single_prompts) if isinstance(single_prompts, list) else single_prompts
                 else:
@@ -323,12 +329,13 @@ class ToolGenerator:
                 expected_tool=tool.name,
                 category=tool.category,
                 difficulty=self._get_difficulty(tool.complexity, len(tools)),
-                description=f"Test: {prompt}"
+                description=f"Test: {prompt}",
+                prompt_type=prompt_type
             ))
         
         # Add multi-tool test cases if requested
         if include_multi_tool:
-            multi_tool_cases = self._generate_multi_tool_cases(tools)
+            multi_tool_cases = self._generate_multi_tool_cases(tools, prompt_type)
             test_cases.extend(multi_tool_cases)
         
         return test_cases
@@ -361,7 +368,7 @@ class ToolGenerator:
                 return "hard"
             return "expert"
     
-    def _generate_multi_tool_cases(self, tools: list[Tool]) -> list[TestCase]:
+    def _generate_multi_tool_cases(self, tools: list[Tool], prompt_type: str = "concise") -> list[TestCase]:
         """Generate multi-tool test cases from YAML definitions."""
         multi_cases = []
         tool_names = {t.name for t in tools}
@@ -369,7 +376,12 @@ class ToolGenerator:
         for category, tool_defs in self._tools_cache.items():
             for tool_def in tool_defs:
                 test_prompts = tool_def.get("test_prompts", {})
-                multi_prompts = test_prompts.get("multi", [])
+                
+                # Select multi prompts based on prompt_type
+                if prompt_type == "clear":
+                    multi_prompts = test_prompts.get("multi_clear", test_prompts.get("multi", []))
+                else:
+                    multi_prompts = test_prompts.get("multi", [])
                 
                 for multi in multi_prompts:
                     if isinstance(multi, dict):
@@ -384,7 +396,8 @@ class ToolGenerator:
                                 expected_tool=required_tools[0] if required_tools else tool_def["name"],
                                 category=category,
                                 difficulty="hard",
-                                description=f"Multi-tool test requiring: {', '.join(required_tools)}"
+                                description=f"Multi-tool test requiring: {', '.join(required_tools)}",
+                                prompt_type=prompt_type
                             ))
         
         return multi_cases

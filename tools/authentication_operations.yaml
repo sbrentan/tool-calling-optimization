@@ -38,6 +38,11 @@ tools:
         - "Authenticate with password"
         - "Verify user credentials"
         - "User login with MFA"
+      single_clear:
+        - "I need to authenticate a user with credentials. Log in the user"
+        - "I need to authenticate a user with credentials. Authenticate with password"
+        - "I need to authenticate a user with credentials. Verify user credentials"
+        - "I need to authenticate a user with credentials. User login with MFA"
 
   - name: create_user
     descriptions:
@@ -75,6 +80,11 @@ tools:
         - "Register a new user"
         - "Add user to the system"
         - "Set up user account"
+      single_clear:
+        - "I need to register a new user account. Create a new user account"
+        - "I need to register a new user account. Register a new user"
+        - "I need to register a new user account. Add user to the system"
+        - "I need to register a new user account. Set up user account"
 
   - name: manage_session
     descriptions:
@@ -114,6 +124,11 @@ tools:
         - "Log out the user"
         - "Refresh the access token"
         - "List active sessions"
+      single_clear:
+        - "I need to manage the user session. Validate the session token"
+        - "Please log out the current user session. Log out the user"
+        - "I need to manage the user session. Refresh the access token"
+        - "I need to manage the user session. List active sessions"
 
   - name: reset_password
     descriptions:
@@ -152,6 +167,11 @@ tools:
         - "Send password reset email"
         - "I forgot my password"
         - "Complete password reset"
+      single_clear:
+        - "Please initiate a password reset. Reset the user's password"
+        - "Please initiate a password reset. Send password reset email"
+        - "Please initiate a password reset. I forgot my password"
+        - "Please initiate a password reset. Complete password reset"
 
   - name: manage_mfa
     descriptions:
@@ -186,6 +206,11 @@ tools:
         - "Set up authenticator app"
         - "Disable MFA for user"
         - "Verify MFA setup"
+      single_clear:
+        - "I need to configure multi-factor authentication. Enable two-factor authentication"
+        - "I need to configure multi-factor authentication. Set up authenticator app"
+        - "I need to configure multi-factor authentication. Disable MFA for user"
+        - "I need to configure multi-factor authentication. Verify MFA setup"
 
   - name: manage_roles
     descriptions:
@@ -223,6 +248,11 @@ tools:
         - "Remove editor role"
         - "List user's roles"
         - "Check if user has permission"
+      single_clear:
+        - "I need to manage user roles and permissions. Assign admin role to user"
+        - "I need to manage user roles and permissions. Remove editor role"
+        - "I need to manage user roles and permissions. List user's roles"
+        - "I need to manage user roles and permissions. Check if user has permission"
 
   - name: create_api_key
     descriptions:
@@ -259,6 +289,11 @@ tools:
         - "Generate service token"
         - "Create access credentials"
         - "Set up API authentication"
+      single_clear:
+        - "I need to generate API credentials for programmatic access. Create an API key"
+        - "I need to generate API credentials for programmatic access. Generate service token"
+        - "I need to generate API credentials for programmatic access. Create access credentials"
+        - "I need to generate API credentials for programmatic access. Set up API authentication"
 
   - name: manage_oauth
     descriptions:
@@ -300,6 +335,11 @@ tools:
         - "Create OAuth client"
         - "Rotate client secret"
         - "List OAuth applications"
+      single_clear:
+        - "I need to manage OAuth client applications. Register an OAuth application"
+        - "I need to manage OAuth client applications. Create OAuth client"
+        - "I need to manage OAuth client applications. Rotate client secret"
+        - "I need to manage OAuth client applications. List OAuth applications"
 
   - name: audit_auth_events
     descriptions:
@@ -338,6 +378,11 @@ tools:
         - "Audit user authentication history"
         - "Check security events"
         - "Get login audit logs"
+      single_clear:
+        - "I need to query authentication audit logs. Show failed login attempts"
+        - "I need to query authentication audit logs. Audit user authentication history"
+        - "I need to query authentication audit logs. Check security events"
+        - "I need to query authentication audit logs. Get login audit logs"
 
   - name: configure_auth_policy
     descriptions:
@@ -382,6 +427,11 @@ tools:
         - "Configure lockout settings"
         - "Require MFA for admins"
         - "Update authentication policy"
+      single_clear:
+        - "I need to configure authentication policies. Set password policy"
+        - "I need to configure authentication policies. Configure lockout settings"
+        - "I need to configure authentication policies. Require MFA for admins"
+        - "I need to configure authentication policies. Update authentication policy"
   - name: generate_api_key
     descriptions:
       minimal: "Generate API key"
@@ -418,6 +468,11 @@ tools:
         - "Create an API key for the production service"
         - "Issue a read-only API key"
         - "Generate API credentials with rate limiting"
+      single_clear:
+        - "I need to generate a new API key for programmatic access. Generate a new API key"
+        - "I need to generate a new API key for programmatic access. Create an API key for the production service"
+        - "I need to generate a new API key for programmatic access. Issue a read-only API key"
+        - "I need to generate a new API key for programmatic access. Generate API credentials with rate limiting"
 
   - name: revoke_api_key
     descriptions:
@@ -447,6 +502,11 @@ tools:
         - "Disable API key ak_12345"
         - "Cancel the old API credentials"
         - "Invalidate the API key immediately"
+      single_clear:
+        - "I need to revoke an API key to disable access. Revoke the compromised API key"
+        - "I need to revoke an API key to disable access. Disable API key ak_12345"
+        - "I need to revoke an API key to disable access. Cancel the old API credentials"
+        - "I need to revoke an API key to disable access. Invalidate the API key immediately"
 
   - name: setup_oauth_provider
     descriptions:
@@ -488,6 +548,11 @@ tools:
         - "Configure GitHub authentication"
         - "Add Microsoft SSO integration"
         - "Enable social login with Facebook"
+      single_clear:
+        - "I need to configure an OAuth identity provider. Setup Google OAuth login"
+        - "I need to configure an OAuth identity provider. Configure GitHub authentication"
+        - "I need to configure an OAuth identity provider. Add Microsoft SSO integration"
+        - "I need to configure an OAuth identity provider. Enable social login with Facebook"
 
   - name: verify_email
     descriptions:
@@ -522,6 +587,11 @@ tools:
         - "Confirm email with verification code"
         - "Resend verification email"
         - "Check if email is verified"
+      single_clear:
+        - "I need to verify a user's email address. Verify the user's email address"
+        - "I need to verify a user's email address. Confirm email with verification code"
+        - "I need to verify a user's email address. Resend verification email"
+        - "I need to verify a user's email address. Check if email is verified"
 
   - name: reset_password
     descriptions:
@@ -564,6 +634,11 @@ tools:
         - "Send password reset email"
         - "Complete password reset with token"
         - "Force password reset for user"
+      single_clear:
+        - "Please initiate a password reset. Reset the user's password"
+        - "Please initiate a password reset. Send password reset email"
+        - "Please initiate a password reset. Complete password reset with token"
+        - "Please initiate a password reset. Force password reset for user"
 
   - name: enable_mfa
     descriptions:
@@ -597,6 +672,11 @@ tools:
         - "Setup MFA with authenticator app"
         - "Add SMS verification to account"
         - "Configure hardware security key"
+      single_clear:
+        - "I need to enable multi-factor authentication for security. Enable two-factor authentication"
+        - "I need to enable multi-factor authentication for security. Setup MFA with authenticator app"
+        - "I need to enable multi-factor authentication for security. Add SMS verification to account"
+        - "I need to enable multi-factor authentication for security. Configure hardware security key"
 
   - name: disable_mfa
     descriptions:
@@ -636,6 +716,11 @@ tools:
         - "Remove MFA from account"
         - "Turn off SMS verification"
         - "Admin disable MFA for locked out user"
+      single_clear:
+        - "I need to disable multi-factor authentication. Disable two-factor authentication"
+        - "I need to disable multi-factor authentication. Remove MFA from account"
+        - "I need to disable multi-factor authentication. Turn off SMS verification"
+        - "I need to disable multi-factor authentication. Admin disable MFA for locked out user"
 
   - name: create_service_account
     descriptions:
@@ -674,6 +759,11 @@ tools:
         - "Setup machine-to-machine authentication"
         - "Create automated service credentials"
         - "Add service account for microservice"
+      single_clear:
+        - "I need to create a service account for automated access. Create a service account for the deployment pipeline"
+        - "I need to create a service account for automated access. Setup machine-to-machine authentication"
+        - "I need to create a service account for automated access. Create automated service credentials"
+        - "I need to create a service account for automated access. Add service account for microservice"
 
   - name: audit_auth_logs
     descriptions:
@@ -712,6 +802,10 @@ tools:
         - "Show failed login attempts"
         - "Audit authentication logs for user"
         - "Find all logins from IP address"
+      single_clear:
+        - "I need to query authentication audit logs for security analysis. Show failed login attempts"
+        - "I need to query authentication audit logs for security analysis. Audit authentication logs for user"
+        - "I need to query authentication audit logs for security analysis. Find all logins from IP address"
 
   - name: configure_sso
     descriptions:
@@ -760,6 +854,11 @@ tools:
         - "Configure Azure AD integration"
         - "Enable single sign-on"
         - "Connect Google Workspace SSO"
+      single_clear:
+        - "I need to configure single sign-on integration. Set up SSO with Okta"
+        - "I need to configure single sign-on integration. Configure Azure AD integration"
+        - "I need to configure single sign-on integration. Enable single sign-on"
+        - "I need to configure single sign-on integration. Connect Google Workspace SSO"
 
   - name: manage_api_scopes
     descriptions:
@@ -803,6 +902,11 @@ tools:
         - "List all OAuth scopes"
         - "Add scope to client"
         - "Define permission scope"
+      single_clear:
+        - "I need to manage API authorization scopes. Create new API scope"
+        - "I need to manage API authorization scopes. List all OAuth scopes"
+        - "I need to manage API authorization scopes. Add scope to client"
+        - "I need to manage API authorization scopes. Define permission scope"
 
   - name: configure_passwordless
     descriptions:
@@ -847,6 +951,11 @@ tools:
         - "Set up magic link authentication"
         - "Configure passkey authentication"
         - "Enable WebAuthn"
+      single_clear:
+        - "I need to configure passwordless authentication. Enable passwordless login"
+        - "I need to configure passwordless authentication. Set up magic link authentication"
+        - "I need to configure passwordless authentication. Configure passkey authentication"
+        - "I need to configure passwordless authentication. Enable WebAuthn"
 
   - name: manage_device_trust
     descriptions:
@@ -889,6 +998,11 @@ tools:
         - "Revoke device access"
         - "Trust this device"
         - "Remove all trusted devices"
+      single_clear:
+        - "I need to manage trusted devices for authentication. Show trusted devices"
+        - "I need to manage trusted devices for authentication. Revoke device access"
+        - "I need to manage trusted devices for authentication. Trust this device"
+        - "I need to manage trusted devices for authentication. Remove all trusted devices"
 
   - name: configure_rate_limiting
     descriptions:
@@ -932,6 +1046,11 @@ tools:
         - "Configure brute force protection"
         - "Limit password reset attempts"
         - "Add rate limits to auth"
+      single_clear:
+        - "I need to configure rate limiting for authentication endpoints. Set up login rate limiting"
+        - "I need to configure rate limiting for authentication endpoints. Configure brute force protection"
+        - "I need to configure rate limiting for authentication endpoints. Limit password reset attempts"
+        - "I need to configure rate limiting for authentication endpoints. Add rate limits to auth"
 
   - name: manage_identity_verification
     descriptions:
@@ -976,6 +1095,11 @@ tools:
         - "Start document verification"
         - "Check verification status"
         - "Initiate KYC process"
+      single_clear:
+        - "I need to manage identity verification for a user. Verify user identity"
+        - "I need to manage identity verification for a user. Start document verification"
+        - "I need to manage identity verification for a user. Check verification status"
+        - "I need to manage identity verification for a user. Initiate KYC process"
 
   - name: configure_session_policy
     descriptions:
@@ -1025,6 +1149,11 @@ tools:
         - "Configure concurrent sessions"
         - "Update session policy"
         - "Limit active sessions"
+      single_clear:
+        - "I need to configure session management policies. Set session timeout"
+        - "I need to configure session management policies. Configure concurrent sessions"
+        - "I need to configure session management policies. Update session policy"
+        - "I need to configure session management policies. Limit active sessions"
 
   - name: manage_emergency_access
     descriptions:
@@ -1073,6 +1202,11 @@ tools:
         - "Generate recovery codes"
         - "Configure trusted contacts"
         - "Trigger emergency recovery"
+      single_clear:
+        - "I need to manage emergency access procedures. Set up emergency access"
+        - "I need to manage emergency access procedures. Generate recovery codes"
+        - "I need to manage emergency access procedures. Configure trusted contacts"
+        - "I need to manage emergency access procedures. Trigger emergency recovery"
 
   - name: sync_directory
     descriptions:
@@ -1122,5 +1256,10 @@ tools:
         - "Connect LDAP directory"
         - "Import users from Azure AD"
         - "Run directory sync"
+      single_clear:
+        - "I need to synchronize users from an external directory. Sync users from Active Directory"
+        - "I need to synchronize users from an external directory. Connect LDAP directory"
+        - "I need to synchronize users from an external directory. Import users from Azure AD"
+        - "I need to synchronize users from an external directory. Run directory sync"
 
         - "Get security events from last week"

@@ -35,6 +35,11 @@ tools:
         - "Check if host is reachable"
         - "Test connectivity to IP"
         - "Ping this address"
+      single_clear:
+        - "Please check if a host is reachable. Ping the server"
+        - "Please check if a host is reachable. Check if host is reachable"
+        - "Please check if a host is reachable. Test connectivity to IP"
+        - "Please check if a host is reachable. Ping this address"
 
   - name: dns_lookup
     descriptions:
@@ -70,6 +75,11 @@ tools:
         - "Resolve DNS records"
         - "Get MX records"
         - "Look up IP address"
+      single_clear:
+        - "I need to perform a DNS lookup. DNS lookup for domain"
+        - "I need to perform a DNS lookup. Resolve DNS records"
+        - "I need to perform a DNS lookup. Get MX records"
+        - "I need to perform a DNS lookup. Look up IP address"
 
   - name: traceroute
     descriptions:
@@ -111,6 +121,11 @@ tools:
         - "Trace network path"
         - "Show route to host"
         - "Network path analysis"
+      single_clear:
+        - "I need to trace the network path to a destination. Traceroute to server"
+        - "I need to trace the network path to a destination. Trace network path"
+        - "I need to trace the network path to a destination. Show route to host"
+        - "I need to trace the network path to a destination. Network path analysis"
 
   - name: port_scan
     descriptions:
@@ -151,6 +166,11 @@ tools:
         - "Check open ports"
         - "Port scan the host"
         - "Find open services"
+      single_clear:
+        - "I need to scan for open ports on a host. Scan ports on server"
+        - "I need to scan for open ports on a host. Check open ports"
+        - "I need to scan for open ports on a host. Port scan the host"
+        - "I need to scan for open ports on a host. Find open services"
 
   - name: configure_firewall_rule
     descriptions:
@@ -200,6 +220,11 @@ tools:
         - "Allow port 443"
         - "Block incoming traffic"
         - "Configure firewall"
+      single_clear:
+        - "I need to configure a firewall rule. Add firewall rule"
+        - "I need to configure a firewall rule. Allow port 443"
+        - "I need to configure a firewall rule. Block incoming traffic"
+        - "I need to configure a firewall rule. Configure firewall"
 
   - name: create_dns_record
     descriptions:
@@ -242,6 +267,11 @@ tools:
         - "Add A record"
         - "Set up subdomain"
         - "Add MX record"
+      single_clear:
+        - "I need to create a DNS record. Create DNS record"
+        - "I need to create a DNS record. Add A record"
+        - "I need to create a DNS record. Set up subdomain"
+        - "I need to create a DNS record. Add MX record"
 
   - name: get_network_interfaces
     descriptions:
@@ -272,6 +302,11 @@ tools:
         - "Get interface info"
         - "Show network config"
         - "What's my IP address"
+      single_clear:
+        - "I need to get network interface information. List network interfaces"
+        - "I need to get network interface information. Get interface info"
+        - "I need to get network interface information. Show network config"
+        - "I need to get network interface information. What's my IP address"
 
   - name: configure_load_balancer
     descriptions:
@@ -317,6 +352,11 @@ tools:
         - "Add backend servers"
         - "Set up load balancing"
         - "Manage LB backends"
+      single_clear:
+        - "I need to configure a load balancer. Configure load balancer"
+        - "I need to configure a load balancer. Add backend servers"
+        - "I need to configure a load balancer. Set up load balancing"
+        - "I need to configure a load balancer. Manage LB backends"
 
   - name: create_vpn_connection
     descriptions:
@@ -363,6 +403,11 @@ tools:
         - "Set up site-to-site VPN"
         - "Configure IPsec tunnel"
         - "Establish VPN tunnel"
+      single_clear:
+        - "I need to create a VPN connection. Create VPN connection"
+        - "I need to create a VPN connection. Set up site-to-site VPN"
+        - "I need to create a VPN connection. Configure IPsec tunnel"
+        - "I need to create a VPN connection. Establish VPN tunnel"
 
   - name: bandwidth_test
     descriptions:
@@ -405,3 +450,8 @@ tools:
         - "Run speed test"
         - "Check network throughput"
         - "Measure connection speed"
+      single_clear:
+        - "I need to test network bandwidth. Test network bandwidth"
+        - "I need to test network bandwidth. Run speed test"
+        - "I need to test network bandwidth. Check network throughput"
+        - "I need to test network bandwidth. Measure connection speed"

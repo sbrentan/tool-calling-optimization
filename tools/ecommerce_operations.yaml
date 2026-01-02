@@ -50,6 +50,11 @@ tools:
         - "Add a product to the catalog"
         - "List a new item for sale"
         - "Create a product listing"
+      single_clear:
+        - "I need to create a new product. Create a new product"
+        - "I need to create a new product. Add a product to the catalog"
+        - "I need to create a new product. List a new item for sale"
+        - "I need to create a new product. Create a product listing"
 
   - name: update_inventory
     descriptions:
@@ -87,6 +92,11 @@ tools:
         - "Add 50 units to stock"
         - "Reduce inventory by 10"
         - "Set stock level to 100"
+      single_clear:
+        - "I need to manage product inventory. Update the inventory count"
+        - "I need to manage product inventory. Add 50 units to stock"
+        - "I need to manage product inventory. Reduce inventory by 10"
+        - "I need to manage product inventory. Set stock level to 100"
 
   - name: create_order
     descriptions:
@@ -132,6 +142,11 @@ tools:
         - "Place an order for this customer"
         - "Process the checkout"
         - "Create a purchase order"
+      single_clear:
+        - "I need to create a new order. Create a new order"
+        - "I need to create a new order. Place an order for this customer"
+        - "I need to create a new order. Process the checkout"
+        - "I need to create a new order. Create a purchase order"
 
   - name: update_order_status
     descriptions:
@@ -170,6 +185,11 @@ tools:
         - "Update order status to delivered"
         - "Cancel the order"
         - "Add tracking to the order"
+      single_clear:
+        - "I need to update the order status. Mark the order as shipped"
+        - "I need to update the order status. Update order status to delivered"
+        - "I need to update the order status. Cancel the order"
+        - "I need to update the order status. Add tracking to the order"
 
   - name: apply_discount
     descriptions:
@@ -198,6 +218,11 @@ tools:
         - "Use this coupon"
         - "Add a promo code"
         - "Apply the discount"
+      single_clear:
+        - "Please apply a discount to my cart. Apply discount code SAVE20"
+        - "Please apply a discount to my cart. Use this coupon"
+        - "Please apply a discount to my cart. Add a promo code"
+        - "Please apply a discount to my cart. Apply the discount"
 
   - name: create_discount
     descriptions:
@@ -243,6 +268,11 @@ tools:
         - "Make a discount code"
         - "Set up a free shipping promo"
         - "Create a buy-one-get-one deal"
+      single_clear:
+        - "I need to create a new discount code. Create a 20% off coupon"
+        - "I need to create a new discount code. Make a discount code"
+        - "I need to create a new discount code. Set up a free shipping promo"
+        - "I need to create a new discount code. Create a buy-one-get-one deal"
 
   - name: manage_cart
     descriptions:
@@ -276,6 +306,11 @@ tools:
         - "Update cart quantity"
         - "Remove item from cart"
         - "Clear the shopping cart"
+      single_clear:
+        - "I need to manage my shopping cart. Add this item to cart"
+        - "I need to manage my shopping cart. Update cart quantity"
+        - "I need to manage my shopping cart. Remove item from cart"
+        - "I need to manage my shopping cart. Clear the shopping cart"
 
   - name: calculate_shipping
     descriptions:
@@ -308,6 +343,11 @@ tools:
         - "What are the shipping options?"
         - "Get shipping rates for this order"
         - "How much is delivery?"
+      single_clear:
+        - "I need to calculate shipping rates. Calculate shipping costs"
+        - "I need to calculate shipping rates. What are the shipping options?"
+        - "I need to calculate shipping rates. Get shipping rates for this order"
+        - "I need to calculate shipping rates. How much is delivery?"
 
   - name: process_return
     descriptions:
@@ -347,6 +387,11 @@ tools:
         - "Initiate a refund"
         - "Start a return request"
         - "Exchange this item"
+      single_clear:
+        - "I need to process a product return. Process a return for this order"
+        - "I need to process a product return. Initiate a refund"
+        - "I need to process a product return. Start a return request"
+        - "I need to process a product return. Exchange this item"
 
   - name: search_products
     descriptions:
@@ -395,6 +440,11 @@ tools:
         - "Find products in electronics"
         - "Show me wireless headphones"
         - "Search the catalog"
+      single_clear:
+        - "I need to search for products. Search for t-shirts under $30"
+        - "I need to search for products. Find products in electronics"
+        - "I need to search for products. Show me wireless headphones"
+        - "I need to search for products. Search the catalog"
   - name: create_discount_code
     descriptions:
       minimal: "Create discount"
@@ -444,6 +494,11 @@ tools:
         - "Make a coupon for free shipping"
         - "Create a promo code for new customers"
         - "Set up a $10 off coupon"
+      single_clear:
+        - "I need to create a discount code. Create a 20% off discount code"
+        - "I need to create a discount code. Make a coupon for free shipping"
+        - "I need to create a discount code. Create a promo code for new customers"
+        - "I need to create a discount code. Set up a $10 off coupon"
 
   - name: process_return
     descriptions:
@@ -494,6 +549,11 @@ tools:
         - "Initiate a refund for wrong size"
         - "Generate return label for customer"
         - "Handle product return request"
+      single_clear:
+        - "I need to process a product return. Process a return for order 12345"
+        - "I need to process a product return. Initiate a refund for wrong size"
+        - "I need to process a product return. Generate return label for customer"
+        - "I need to process a product return. Handle product return request"
 
   - name: calculate_shipping
     descriptions:
@@ -532,6 +592,11 @@ tools:
         - "Get shipping rates for my order"
         - "How much is shipping to California?"
         - "Show shipping options and costs"
+      single_clear:
+        - "I need to calculate shipping rates. Calculate shipping to New York"
+        - "I need to calculate shipping rates. Get shipping rates for my order"
+        - "I need to calculate shipping rates. How much is shipping to California?"
+        - "I need to calculate shipping rates. Show shipping options and costs"
 
   - name: manage_wishlist
     descriptions:
@@ -571,6 +636,11 @@ tools:
         - "Show my saved items"
         - "Move wishlist items to cart"
         - "Remove from favorites"
+      single_clear:
+        - "I need to manage my wishlist. Add product to wishlist"
+        - "I need to manage my wishlist. Show my saved items"
+        - "I need to manage my wishlist. Move wishlist items to cart"
+        - "I need to manage my wishlist. Remove from favorites"
 
   - name: generate_sales_report
     descriptions:
@@ -616,6 +686,11 @@ tools:
         - "Show me revenue by product"
         - "Get sales analytics for last quarter"
         - "Export monthly sales data"
+      single_clear:
+        - "I need to generate a sales report. Generate a sales report for January"
+        - "I need to generate a sales report. Show me revenue by product"
+        - "I need to generate a sales report. Get sales analytics for last quarter"
+        - "I need to generate a sales report. Export monthly sales data"
 
   - name: manage_cart
     descriptions:
@@ -657,6 +732,11 @@ tools:
         - "Update cart quantity"
         - "Remove product from cart"
         - "Apply discount code to cart"
+      single_clear:
+        - "I need to manage my shopping cart. Add item to shopping cart"
+        - "I need to manage my shopping cart. Update cart quantity"
+        - "I need to manage my shopping cart. Remove product from cart"
+        - "I need to manage my shopping cart. Apply discount code to cart"
 
   - name: manage_product_reviews
     descriptions:
@@ -702,6 +782,11 @@ tools:
         - "Submit a product review"
         - "Approve pending reviews"
         - "Respond to customer review"
+      single_clear:
+        - "I need to manage product reviews. Get reviews for product"
+        - "I need to manage product reviews. Submit a product review"
+        - "I need to manage product reviews. Approve pending reviews"
+        - "I need to manage product reviews. Respond to customer review"
 
   - name: create_subscription
     descriptions:
@@ -748,6 +833,11 @@ tools:
         - "Set up recurring delivery"
         - "Start a product subscription"
         - "Enable auto-ship for customer"
+      single_clear:
+        - "I need to set up a subscription. Create a monthly subscription"
+        - "I need to set up a subscription. Set up recurring delivery"
+        - "I need to set up a subscription. Start a product subscription"
+        - "I need to set up a subscription. Enable auto-ship for customer"
 
   - name: check_fraud_risk
     descriptions:
@@ -791,6 +881,11 @@ tools:
         - "Analyze fraud risk score"
         - "Verify order is not fraudulent"
         - "Run fraud detection on order"
+      single_clear:
+        - "I need to check for fraud risk. Check order for fraud"
+        - "I need to check for fraud risk. Analyze fraud risk score"
+        - "I need to check for fraud risk. Verify order is not fraudulent"
+        - "I need to check for fraud risk. Run fraud detection on order"
 
   - name: manage_product_reviews
     descriptions:
@@ -833,6 +928,11 @@ tools:
         - "Respond to customer review"
         - "Approve product reviews"
         - "Analyze review sentiment"
+      single_clear:
+        - "I need to manage product reviews. Show pending reviews"
+        - "I need to manage product reviews. Respond to customer review"
+        - "I need to manage product reviews. Approve product reviews"
+        - "I need to manage product reviews. Analyze review sentiment"
 
   - name: configure_shipping_rules
     descriptions:
@@ -879,6 +979,11 @@ tools:
         - "Add free shipping rule"
         - "Configure shipping zones"
         - "Create weight-based shipping"
+      single_clear:
+        - "I need to configure shipping rules. Set up shipping rates"
+        - "I need to configure shipping rules. Add free shipping rule"
+        - "I need to configure shipping rules. Configure shipping zones"
+        - "I need to configure shipping rules. Create weight-based shipping"
 
   - name: manage_abandoned_carts
     descriptions:
@@ -927,6 +1032,11 @@ tools:
         - "Send cart recovery email"
         - "Analyze cart abandonment"
         - "Recover abandoned checkouts"
+      single_clear:
+        - "I need to manage abandoned carts. Show abandoned carts"
+        - "I need to manage abandoned carts. Send cart recovery email"
+        - "I need to manage abandoned carts. Analyze cart abandonment"
+        - "I need to manage abandoned carts. Recover abandoned checkouts"
 
   - name: configure_tax_rules
     descriptions:
@@ -974,6 +1084,11 @@ tools:
         - "Configure VAT rates"
         - "Add tax exemption"
         - "Update tax rules"
+      single_clear:
+        - "I need to configure tax rules. Set up sales tax"
+        - "I need to configure tax rules. Configure VAT rates"
+        - "I need to configure tax rules. Add tax exemption"
+        - "I need to configure tax rules. Update tax rules"
 
   - name: manage_gift_cards
     descriptions:
@@ -1023,6 +1138,11 @@ tools:
         - "Check gift card balance"
         - "Redeem gift card"
         - "Send gift card by email"
+      single_clear:
+        - "I need to manage gift cards. Create a gift card"
+        - "I need to manage gift cards. Check gift card balance"
+        - "I need to manage gift cards. Redeem gift card"
+        - "I need to manage gift cards. Send gift card by email"
 
   - name: manage_product_bundles
     descriptions:
@@ -1070,6 +1190,11 @@ tools:
         - "Set up kit pricing"
         - "Add products to bundle"
         - "List product bundles"
+      single_clear:
+        - "I need to manage product bundles. Create product bundle"
+        - "I need to manage product bundles. Set up kit pricing"
+        - "I need to manage product bundles. Add products to bundle"
+        - "I need to manage product bundles. List product bundles"
 
   - name: manage_loyalty_program
     descriptions:
@@ -1115,6 +1240,11 @@ tools:
         - "Add points to customer"
         - "Configure reward tiers"
         - "Check loyalty balance"
+      single_clear:
+        - "I need to manage the loyalty program. Set up loyalty program"
+        - "I need to manage the loyalty program. Add points to customer"
+        - "I need to manage the loyalty program. Configure reward tiers"
+        - "I need to manage the loyalty program. Check loyalty balance"
 
   - name: generate_product_feed
     descriptions:
@@ -1164,6 +1294,11 @@ tools:
         - "Create Facebook product catalog"
         - "Export products for Amazon"
         - "Build product feed"
+      single_clear:
+        - "I need to generate a product feed. Generate Google Shopping feed"
+        - "I need to generate a product feed. Create Facebook product catalog"
+        - "I need to generate a product feed. Export products for Amazon"
+        - "I need to generate a product feed. Build product feed"
 
   - name: manage_subscriptions
     descriptions:
@@ -1210,3 +1345,8 @@ tools:
         - "Pause subscription"
         - "Cancel recurring order"
         - "Skip next delivery"
+      single_clear:
+        - "I need to manage subscriptions. Create subscription"
+        - "I need to manage subscriptions. Pause subscription"
+        - "I need to manage subscriptions. Cancel recurring order"
+        - "I need to manage subscriptions. Skip next delivery"

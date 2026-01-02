@@ -50,6 +50,11 @@ tools:
         - "Run Docker container"
         - "Start container from image"
         - "Spin up a container"
+      single_clear:
+        - "I need to create a new Docker container. Create a container"
+        - "I need to create a new Docker container. Run Docker container"
+        - "I need to create a new Docker container. Start container from image"
+        - "I need to create a new Docker container. Spin up a container"
 
   - name: stop_container
     descriptions:
@@ -85,6 +90,11 @@ tools:
         - "Kill Docker container"
         - "Shutdown container"
         - "Stop running container"
+      single_clear:
+        - "Please stop a running container. Stop the container"
+        - "Please stop a running container. Kill Docker container"
+        - "Please stop a running container. Shutdown container"
+        - "Please stop a running container. Stop running container"
 
   - name: list_containers
     descriptions:
@@ -120,6 +130,11 @@ tools:
         - "Show running containers"
         - "Docker ps"
         - "Get container list"
+      single_clear:
+        - "I need to list all containers. List all containers"
+        - "I need to list all containers. Show running containers"
+        - "I need to list all containers. Docker ps"
+        - "I need to list all containers. Get container list"
 
   - name: get_container_logs
     descriptions:
@@ -159,6 +174,11 @@ tools:
         - "Show Docker logs"
         - "View container output"
         - "Tail container logs"
+      single_clear:
+        - "I need to retrieve container logs. Get container logs"
+        - "I need to retrieve container logs. Show Docker logs"
+        - "I need to retrieve container logs. View container output"
+        - "I need to retrieve container logs. Tail container logs"
 
   - name: exec_in_container
     descriptions:
@@ -200,6 +220,11 @@ tools:
         - "Execute in Docker"
         - "Shell into container"
         - "Exec command inside container"
+      single_clear:
+        - "I need to execute a command inside a container. Run command in container"
+        - "I need to execute a command inside a container. Execute in Docker"
+        - "I need to execute a command inside a container. Shell into container"
+        - "I need to execute a command inside a container. Exec command inside container"
 
   - name: build_image
     descriptions:
@@ -246,6 +271,11 @@ tools:
         - "Build container image"
         - "Docker build"
         - "Create image from Dockerfile"
+      single_clear:
+        - "I need to build a Docker image. Build Docker image"
+        - "I need to build a Docker image. Build container image"
+        - "I need to build a Docker image. Docker build"
+        - "I need to build a Docker image. Create image from Dockerfile"
 
   - name: push_image
     descriptions:
@@ -275,6 +305,11 @@ tools:
         - "Push to registry"
         - "Upload container image"
         - "Publish image to ECR"
+      single_clear:
+        - "I need to push an image to a registry. Push Docker image"
+        - "I need to push an image to a registry. Push to registry"
+        - "I need to push an image to a registry. Upload container image"
+        - "I need to push an image to a registry. Publish image to ECR"
 
   - name: deploy_kubernetes
     descriptions:
@@ -319,6 +354,11 @@ tools:
         - "Apply K8s manifest"
         - "Deploy application"
         - "Kubernetes deployment"
+      single_clear:
+        - "I need to deploy to a Kubernetes cluster. Deploy to Kubernetes"
+        - "I need to deploy to a Kubernetes cluster. Apply K8s manifest"
+        - "I need to deploy to a Kubernetes cluster. Deploy application"
+        - "I need to deploy to a Kubernetes cluster. Kubernetes deployment"
 
   - name: scale_deployment
     descriptions:
@@ -357,6 +397,11 @@ tools:
         - "Scale to 5 replicas"
         - "Increase pod count"
         - "Scale Kubernetes deployment"
+      single_clear:
+        - "I need to scale a Kubernetes deployment. Scale deployment"
+        - "I need to scale a Kubernetes deployment. Scale to 5 replicas"
+        - "I need to scale a Kubernetes deployment. Increase pod count"
+        - "I need to scale a Kubernetes deployment. Scale Kubernetes deployment"
 
   - name: get_pod_status
     descriptions:
@@ -396,3 +441,8 @@ tools:
         - "Check Kubernetes pods"
         - "Show pod details"
         - "K8s pod health"
+      single_clear:
+        - "I need to check the status of Kubernetes pods. Get pod status"
+        - "I need to check the status of Kubernetes pods. Check Kubernetes pods"
+        - "I need to check the status of Kubernetes pods. Show pod details"
+        - "I need to check the status of Kubernetes pods. K8s pod health"

@@ -40,6 +40,11 @@ tools:
         - "Share on LinkedIn"
         - "Publish to social media"
         - "Schedule a post for tomorrow"
+      single_clear:
+        - "I need to post content to social media. Post this to Twitter"
+        - "I need to post content to social media. Share on LinkedIn"
+        - "I need to post content to social media. Publish to social media"
+        - "I need to post content to social media. Schedule a post for tomorrow"
 
   - name: get_analytics
     descriptions:
@@ -78,6 +83,11 @@ tools:
         - "Show Instagram engagement"
         - "How many followers did we gain?"
         - "Get social media metrics"
+      single_clear:
+        - "I need to get social media analytics. Get Twitter analytics"
+        - "I need to get social media analytics. Show Instagram engagement"
+        - "I need to get social media analytics. How many followers did we gain?"
+        - "I need to get social media analytics. Get social media metrics"
 
   - name: schedule_posts
     descriptions:
@@ -112,6 +122,11 @@ tools:
         - "Queue up social content"
         - "Schedule at optimal times"
         - "Plan the content calendar"
+      single_clear:
+        - "I need to schedule social media posts. Schedule posts for the week"
+        - "I need to schedule social media posts. Queue up social content"
+        - "I need to schedule social media posts. Schedule at optimal times"
+        - "I need to schedule social media posts. Plan the content calendar"
 
   - name: reply_to_comment
     descriptions:
@@ -145,6 +160,11 @@ tools:
         - "Respond to the mention"
         - "Answer the Twitter reply"
         - "Reply to feedback"
+      single_clear:
+        - "I need to reply to a social media comment. Reply to this comment"
+        - "I need to reply to a social media comment. Respond to the mention"
+        - "I need to reply to a social media comment. Answer the Twitter reply"
+        - "I need to reply to a social media comment. Reply to feedback"
 
   - name: get_mentions
     descriptions:
@@ -183,6 +203,11 @@ tools:
         - "Show recent Twitter mentions"
         - "Monitor brand keywords"
         - "Find negative mentions"
+      single_clear:
+        - "I need to get social media mentions. Get all mentions of our brand"
+        - "I need to get social media mentions. Show recent Twitter mentions"
+        - "I need to get social media mentions. Monitor brand keywords"
+        - "I need to get social media mentions. Find negative mentions"
 
   - name: manage_followers
     descriptions:
@@ -216,6 +241,11 @@ tools:
         - "Analyze our followers"
         - "Block the spam account"
         - "Get follower list"
+      single_clear:
+        - "I need to manage follower interactions. Follow this account"
+        - "I need to manage follower interactions. Analyze our followers"
+        - "I need to manage follower interactions. Block the spam account"
+        - "I need to manage follower interactions. Get follower list"
 
   - name: create_campaign
     descriptions:
@@ -260,6 +290,11 @@ tools:
         - "Set up a social media campaign"
         - "Launch a marketing campaign"
         - "Coordinate posts for the event"
+      single_clear:
+        - "I need to create a social media campaign. Create a product launch campaign"
+        - "I need to create a social media campaign. Set up a social media campaign"
+        - "I need to create a social media campaign. Launch a marketing campaign"
+        - "I need to create a social media campaign. Coordinate posts for the event"
 
   - name: generate_content
     descriptions:
@@ -305,6 +340,11 @@ tools:
         - "Generate LinkedIn post content"
         - "Create social media copy"
         - "Suggest post ideas for launch"
+      single_clear:
+        - "I need to generate social media content. Write a tweet about our new feature"
+        - "I need to generate social media content. Generate LinkedIn post content"
+        - "I need to generate social media content. Create social media copy"
+        - "I need to generate social media content. Suggest post ideas for launch"
 
   - name: analyze_competitor
     descriptions:
@@ -342,6 +382,11 @@ tools:
         - "Compare our engagement to competitors"
         - "Benchmark against competitors"
         - "Analyze their social strategy"
+      single_clear:
+        - "I need to analyze competitor social media. Analyze competitor's Twitter"
+        - "I need to analyze competitor social media. Compare our engagement to competitors"
+        - "I need to analyze competitor social media. Benchmark against competitors"
+        - "I need to analyze competitor social media. Analyze their social strategy"
 
   - name: moderate_content
     descriptions:
@@ -379,6 +424,11 @@ tools:
         - "Hide the inappropriate comment"
         - "Set up auto-moderation"
         - "Ban the troll account"
+      single_clear:
+        - "I need to moderate social media content. Delete these spam comments"
+        - "I need to moderate social media content. Hide the inappropriate comment"
+        - "I need to moderate social media content. Set up auto-moderation"
+        - "I need to moderate social media content. Ban the troll account"
   - name: create_social_campaign
     descriptions:
       minimal: "Create campaign"
@@ -422,6 +472,11 @@ tools:
         - "Launch multi-platform campaign"
         - "Set up product promotion"
         - "Create coordinated posts"
+      single_clear:
+        - "I need to create a coordinated social campaign. Create social media campaign"
+        - "I need to create a coordinated social campaign. Launch multi-platform campaign"
+        - "I need to create a coordinated social campaign. Set up product promotion"
+        - "I need to create a coordinated social campaign. Create coordinated posts"
 
   - name: analyze_sentiment
     descriptions:
@@ -466,6 +521,11 @@ tools:
         - "Check social media mood"
         - "Track sentiment trend"
         - "Measure public opinion"
+      single_clear:
+        - "I need to analyze social sentiment. Analyze brand sentiment"
+        - "I need to analyze social sentiment. Check social media mood"
+        - "I need to analyze social sentiment. Track sentiment trend"
+        - "I need to analyze social sentiment. Measure public opinion"
 
   - name: find_influencers
     descriptions:
@@ -513,6 +573,11 @@ tools:
         - "Search for micro-influencers"
         - "Discover brand ambassadors"
         - "Find influencers in niche"
+      single_clear:
+        - "I need to find relevant influencers. Find fitness influencers"
+        - "I need to find relevant influencers. Search for micro-influencers"
+        - "I need to find relevant influencers. Discover brand ambassadors"
+        - "I need to find relevant influencers. Find influencers in niche"
 
   - name: manage_social_ads
     descriptions:
@@ -551,6 +616,11 @@ tools:
         - "Pause Instagram ads"
         - "Update ad budget"
         - "Analyze ad performance"
+      single_clear:
+        - "I need to manage social media ads. Create Facebook ad campaign"
+        - "I need to manage social media ads. Pause Instagram ads"
+        - "I need to manage social media ads. Update ad budget"
+        - "I need to manage social media ads. Analyze ad performance"
 
   - name: track_hashtag
     descriptions:
@@ -589,6 +659,11 @@ tools:
         - "Monitor hashtag performance"
         - "Analyze hashtag reach"
         - "Compare hashtag usage"
+      single_clear:
+        - "I need to track hashtag performance. Track our campaign hashtag"
+        - "I need to track hashtag performance. Monitor hashtag performance"
+        - "I need to track hashtag performance. Analyze hashtag reach"
+        - "I need to track hashtag performance. Compare hashtag usage"
 
   - name: generate_social_report
     descriptions:
@@ -627,6 +702,11 @@ tools:
         - "Create social media summary"
         - "Export analytics report"
         - "Build performance report"
+      single_clear:
+        - "I need to generate a social media report. Generate monthly report"
+        - "I need to generate a social media report. Create social media summary"
+        - "I need to generate a social media report. Export analytics report"
+        - "I need to generate a social media report. Build performance report"
 
   - name: manage_social_inbox
     descriptions:
@@ -669,6 +749,11 @@ tools:
         - "Reply to customer inquiry"
         - "Assign message to team"
         - "Archive resolved messages"
+      single_clear:
+        - "I need to manage the social inbox. Show unread messages"
+        - "I need to manage the social inbox. Reply to customer inquiry"
+        - "I need to manage the social inbox. Assign message to team"
+        - "I need to manage the social inbox. Archive resolved messages"
 
   - name: schedule_content_calendar
     descriptions:
@@ -711,6 +796,11 @@ tools:
         - "Schedule next week posts"
         - "Plan monthly content"
         - "Update scheduled post"
+      single_clear:
+        - "I need to manage the content calendar. Show content calendar"
+        - "I need to manage the content calendar. Schedule next week posts"
+        - "I need to manage the content calendar. Plan monthly content"
+        - "I need to manage the content calendar. Update scheduled post"
 
   - name: create_social_ad
     descriptions:
@@ -759,6 +849,11 @@ tools:
         - "Set up Instagram advertising"
         - "Launch paid social campaign"
         - "Create sponsored post"
+      single_clear:
+        - "I need to create a social media advertisement. Create a Facebook ad"
+        - "I need to create a social media advertisement. Set up Instagram advertising"
+        - "I need to create a social media advertisement. Launch paid social campaign"
+        - "I need to create a social media advertisement. Create sponsored post"
 
   - name: analyze_competitor
     descriptions:
@@ -798,6 +893,11 @@ tools:
         - "How is our competitor doing on Instagram?"
         - "Compare our social presence to rivals"
         - "Get competitor insights"
+      single_clear:
+        - "I need to analyze competitor social presence. Analyze competitor's Twitter"
+        - "I need to analyze competitor social presence. How is our competitor doing on Instagram?"
+        - "I need to analyze competitor social presence. Compare our social presence to rivals"
+        - "I need to analyze competitor social presence. Get competitor insights"
 
   - name: create_poll
     descriptions:
@@ -836,6 +936,11 @@ tools:
         - "Set up a vote on Instagram"
         - "Post a poll to LinkedIn"
         - "Create engagement poll"
+      single_clear:
+        - "I need to create a social media poll. Create a Twitter poll"
+        - "I need to create a social media poll. Set up a vote on Instagram"
+        - "I need to create a social media poll. Post a poll to LinkedIn"
+        - "I need to create a social media poll. Create engagement poll"
 
   - name: manage_followers
     descriptions:
@@ -880,6 +985,11 @@ tools:
         - "Export follower list"
         - "Block a user"
         - "Unfollow inactive accounts"
+      single_clear:
+        - "I need to manage social media followers. Show my followers"
+        - "I need to manage social media followers. Export follower list"
+        - "I need to manage social media followers. Block a user"
+        - "I need to manage social media followers. Unfollow inactive accounts"
 
   - name: generate_report
     descriptions:
@@ -924,6 +1034,11 @@ tools:
         - "Create performance report PDF"
         - "Export analytics report"
         - "Build quarterly social media report"
+      single_clear:
+        - "I need to generate a social media report. Generate monthly social report"
+        - "I need to generate a social media report. Create performance report PDF"
+        - "I need to generate a social media report. Export analytics report"
+        - "I need to generate a social media report. Build quarterly social media report"
 
   - name: curate_content
     descriptions:
@@ -967,6 +1082,11 @@ tools:
         - "Curate industry news"
         - "Discover trending articles"
         - "Find shareable content"
+      single_clear:
+        - "I need to curate content for sharing. Find content to share"
+        - "I need to curate content for sharing. Curate industry news"
+        - "I need to curate content for sharing. Discover trending articles"
+        - "I need to curate content for sharing. Find shareable content"
 
   - name: run_social_contest
     descriptions:
@@ -1015,6 +1135,11 @@ tools:
         - "Run a contest on Twitter"
         - "Set up hashtag challenge"
         - "Start a photo contest"
+      single_clear:
+        - "I need to run a social media contest. Create Instagram giveaway"
+        - "I need to run a social media contest. Run a contest on Twitter"
+        - "I need to run a social media contest. Set up hashtag challenge"
+        - "I need to run a social media contest. Start a photo contest"
 
   - name: track_brand_mentions
     descriptions:
@@ -1052,6 +1177,11 @@ tools:
         - "Monitor social media for our name"
         - "Set up mention alerts"
         - "Find who's talking about us"
+      single_clear:
+        - "I need to track brand mentions. Track brand mentions"
+        - "I need to track brand mentions. Monitor social media for our name"
+        - "I need to track brand mentions. Set up mention alerts"
+        - "I need to track brand mentions. Find who's talking about us"
 
   - name: manage_user_generated_content
     descriptions:
@@ -1099,3 +1229,8 @@ tools:
         - "Request permission to repost"
         - "Share customer photos"
         - "Browse UGC library"
+      single_clear:
+        - "I need to manage user-generated content. Find user-generated content"
+        - "I need to manage user-generated content. Request permission to repost"
+        - "I need to manage user-generated content. Share customer photos"
+        - "I need to manage user-generated content. Browse UGC library"

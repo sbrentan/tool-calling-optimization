@@ -29,6 +29,11 @@ tools:
         - "Query the orders table for orders from last month"
         - "Find all products with price greater than 100"
         - "Select the top 10 customers by total purchases"
+      single_clear:
+        - "I need to query the database. Get all users from the database"
+        - "I need to query the database. Query the orders table for orders from last month"
+        - "I need to query the database. Find all products with price greater than 100"
+        - "I need to query the database. Select the top 10 customers by total purchases"
       multi:
         - prompt: "Get all inactive users and then delete them from the database"
           required_tools: ["query_database", "delete_records"]
@@ -60,6 +65,11 @@ tools:
         - "Insert a new product called 'Widget' with price 29.99"
         - "Create a new order record for customer ID 123"
         - "Add an entry to the logs table with message 'System started'"
+      single_clear:
+        - "I need to insert a record into the database. Add a new user named John with email john@test.com to the users table"
+        - "I need to insert a record into the database. Insert a new product called 'Widget' with price 29.99"
+        - "I need to insert a record into the database. Create a new order record for customer ID 123"
+        - "I need to insert a record into the database. Add an entry to the logs table with message 'System started'"
 
   - name: update_records
     descriptions:
@@ -92,6 +102,11 @@ tools:
         - "Set all products in category 'electronics' to have a 10% discount"
         - "Mark all orders from yesterday as processed"
         - "Change the status of user john@test.com to inactive"
+      single_clear:
+        - "I need to update records in the database. Update the email of user with ID 5 to newemail@test.com"
+        - "I need to update records in the database. Set all products in category 'electronics' to have a 10% discount"
+        - "I need to update records in the database. Mark all orders from yesterday as processed"
+        - "I need to update records in the database. Change the status of user john@test.com to inactive"
 
   - name: delete_records
     descriptions:
@@ -120,6 +135,11 @@ tools:
         - "Remove all users who haven't logged in for a year"
         - "Delete the order with ID 12345"
         - "Remove all test records from the database"
+      single_clear:
+        - "I need to delete records from the database. Delete all expired sessions from the sessions table"
+        - "I need to delete records from the database. Remove all users who haven't logged in for a year"
+        - "I need to delete records from the database. Delete the order with ID 12345"
+        - "I need to delete records from the database. Remove all test records from the database"
 
   - name: create_table
     descriptions:
@@ -152,6 +172,10 @@ tools:
         - "Create a new table called 'customers' with id, name, and email columns"
         - "Make a products table with columns for id, name, price, and stock"
         - "Create an orders table with foreign key to users"
+      single_clear:
+        - "I need to create a database table. Create a new table called 'customers' with id, name, and email columns"
+        - "I need to create a database table. Make a products table with columns for id, name, price, and stock"
+        - "I need to create a database table. Create an orders table with foreign key to users"
 
   - name: list_tables
     descriptions:
@@ -175,6 +199,10 @@ tools:
         - "Show me all tables in the production database"
         - "List the tables in the analytics database"
         - "What tables exist in the main database?"
+      single_clear:
+        - "I need to list database tables. Show me all tables in the production database"
+        - "I need to list database tables. List the tables in the analytics database"
+        - "I need to list database tables. What tables exist in the main database?"
 
   - name: describe_table
     descriptions:
@@ -199,6 +227,11 @@ tools:
         - "What columns does the orders table have?"
         - "Show me the schema of the products table"
         - "Get the column definitions for the customers table"
+      single_clear:
+        - "I need to describe a database table. Describe the structure of the users table"
+        - "I need to describe a database table. What columns does the orders table have?"
+        - "I need to describe a database table. Show me the schema of the products table"
+        - "I need to describe a database table. Get the column definitions for the customers table"
 
   - name: count_records
     descriptions:
@@ -227,6 +260,11 @@ tools:
         - "Count the number of pending orders"
         - "How many products have stock greater than zero?"
         - "Count active subscriptions in the subscriptions table"
+      single_clear:
+        - "I need to count records in the database. How many users are in the database?"
+        - "I need to count records in the database. Count the number of pending orders"
+        - "I need to count records in the database. How many products have stock greater than zero?"
+        - "I need to count records in the database. Count active subscriptions in the subscriptions table"
 
   - name: export_data
     descriptions:
@@ -260,6 +298,10 @@ tools:
         - "Export all users to a CSV file"
         - "Save the orders data to orders_backup.json"
         - "Export the products table to a CSV file named products.csv"
+      single_clear:
+        - "I need to export data from the database. Export all users to a CSV file"
+        - "I need to export data from the database. Save the orders data to orders_backup.json"
+        - "I need to export data from the database. Export the products table to a CSV file named products.csv"
 
   - name: import_data
     descriptions:
@@ -298,6 +340,10 @@ tools:
         - "Import users.csv into the users table"
         - "Load data from products.json into the products table"
         - "Import the backup file into the orders table"
+      single_clear:
+        - "I need to import data into the database. Import users.csv into the users table"
+        - "I need to import data into the database. Load data from products.json into the products table"
+        - "I need to import data into the database. Import the backup file into the orders table"
 
   - name: execute_transaction
     descriptions:
@@ -328,6 +374,11 @@ tools:
         - "Execute these queries as a single transaction"
         - "Run the order creation and inventory update together"
         - "Perform a transactional update on multiple tables"
+      single_clear:
+        - "I need to execute a database transaction. Transfer money between accounts atomically"
+        - "I need to execute a database transaction. Execute these queries as a single transaction"
+        - "I need to execute a database transaction. Run the order creation and inventory update together"
+        - "I need to execute a database transaction. Perform a transactional update on multiple tables"
 
   - name: backup_database
     descriptions:
@@ -368,6 +419,11 @@ tools:
         - "Dump the database to a backup file"
         - "Make a compressed backup of the users database"
         - "Create a schema-only backup"
+      single_clear:
+        - "I need to backup the database. Create a backup of the production database"
+        - "I need to backup the database. Dump the database to a backup file"
+        - "I need to backup the database. Make a compressed backup of the users database"
+        - "I need to backup the database. Create a schema-only backup"
 
   - name: restore_database
     descriptions:
@@ -401,6 +457,11 @@ tools:
         - "Load the backup into a new database"
         - "Restore only the users table from backup"
         - "Recover the production database from backup"
+      single_clear:
+        - "I need to restore a database from backup. Restore the database from the backup file"
+        - "I need to restore a database from backup. Load the backup into a new database"
+        - "I need to restore a database from backup. Restore only the users table from backup"
+        - "I need to restore a database from backup. Recover the production database from backup"
 
   - name: create_index
     descriptions:
@@ -444,6 +505,11 @@ tools:
         - "Add a unique index to the users table"
         - "Create a composite index on user_id and created_at"
         - "Index the orders table for faster lookups"
+      single_clear:
+        - "I need to create a database index. Create an index on the email column"
+        - "I need to create a database index. Add a unique index to the users table"
+        - "I need to create a database index. Create a composite index on user_id and created_at"
+        - "I need to create a database index. Index the orders table for faster lookups"
 
   - name: drop_index
     descriptions:
@@ -476,6 +542,10 @@ tools:
         - "Drop the index on the email column"
         - "Remove the old index from the users table"
         - "Delete the unused index"
+      single_clear:
+        - "I need to drop a database index. Drop the index on the email column"
+        - "I need to drop a database index. Remove the old index from the users table"
+        - "I need to drop a database index. Delete the unused index"
 
   - name: aggregate_query
     descriptions:
@@ -521,6 +591,11 @@ tools:
         - "Count users by country"
         - "Get the average order value per customer"
         - "Find the maximum and minimum prices"
+      single_clear:
+        - "I need to run an aggregate query. Calculate the total sales amount"
+        - "I need to run an aggregate query. Count users by country"
+        - "I need to run an aggregate query. Get the average order value per customer"
+        - "I need to run an aggregate query. Find the maximum and minimum prices"
 
   - name: join_tables
     descriptions:
@@ -568,6 +643,11 @@ tools:
         - "Get order details with product names"
         - "Left join users with their orders"
         - "Combine the invoices and payments tables"
+      single_clear:
+        - "I need to join database tables. Join orders with customers table"
+        - "I need to join database tables. Get order details with product names"
+        - "I need to join database tables. Left join users with their orders"
+        - "I need to join database tables. Combine the invoices and payments tables"
 
   - name: upsert_record
     descriptions:
@@ -604,6 +684,11 @@ tools:
         - "Upsert the product record by SKU"
         - "Add or update the configuration entry"
         - "Merge the new data with existing records"
+      single_clear:
+        - "I need to upsert a database record. Insert the user or update if email exists"
+        - "I need to upsert a database record. Upsert the product record by SKU"
+        - "I need to upsert a database record. Add or update the configuration entry"
+        - "I need to upsert a database record. Merge the new data with existing records"
 
   - name: clone_table
     descriptions:
@@ -642,6 +727,11 @@ tools:
         - "Clone the orders table for testing"
         - "Make a backup of the products table"
         - "Copy the table structure without data"
+      single_clear:
+        - "I need to clone a database table. Create a copy of the users table"
+        - "I need to clone a database table. Clone the orders table for testing"
+        - "I need to clone a database table. Make a backup of the products table"
+        - "I need to clone a database table. Copy the table structure without data"
 
   - name: truncate_table
     descriptions:
@@ -676,6 +766,11 @@ tools:
         - "Truncate the sessions table"
         - "Remove all rows from the cache table"
         - "Empty the temporary data table"
+      single_clear:
+        - "I need to truncate a database table. Clear all data from the logs table"
+        - "I need to truncate a database table. Truncate the sessions table"
+        - "I need to truncate a database table. Remove all rows from the cache table"
+        - "I need to truncate a database table. Empty the temporary data table"
 
   - name: add_column
     descriptions:
@@ -717,6 +812,11 @@ tools:
         - "Create a new status column in orders"
         - "Add an updated_at timestamp column"
         - "Add a boolean active column to products"
+      single_clear:
+        - "I need to add a column to a table. Add a phone column to the users table"
+        - "I need to add a column to a table. Create a new status column in orders"
+        - "I need to add a column to a table. Add an updated_at timestamp column"
+        - "I need to add a column to a table. Add a boolean active column to products"
 
   - name: drop_column
     descriptions:
@@ -749,6 +849,10 @@ tools:
         - "Remove the deprecated column from users"
         - "Drop the old_status column"
         - "Delete the unused field from the table"
+      single_clear:
+        - "I need to drop a column from a table. Remove the deprecated column from users"
+        - "I need to drop a column from a table. Drop the old_status column"
+        - "I need to drop a column from a table. Delete the unused field from the table"
 
   - name: rename_column
     descriptions:
@@ -780,6 +884,10 @@ tools:
         - "Rename the user_name column to username"
         - "Change the column name from old to new"
         - "Rename product_name to title"
+      single_clear:
+        - "I need to rename a column in a table. Rename the user_name column to username"
+        - "I need to rename a column in a table. Change the column name from old to new"
+        - "I need to rename a column in a table. Rename product_name to title"
 
   - name: get_database_stats
     descriptions:
@@ -810,6 +918,11 @@ tools:
         - "Show me the database size and table counts"
         - "Get performance metrics for the database"
         - "Analyze the database statistics"
+      single_clear:
+        - "I need to get database statistics. Get statistics for the production database"
+        - "I need to get database statistics. Show me the database size and table counts"
+        - "I need to get database statistics. Get performance metrics for the database"
+        - "I need to get database statistics. Analyze the database statistics"
 
   - name: optimize_table
     descriptions:
@@ -844,6 +957,11 @@ tools:
         - "Rebuild indexes on the users table"
         - "Run maintenance on the large table"
         - "Vacuum and analyze the logs table"
+      single_clear:
+        - "I need to optimize a database table. Optimize the orders table"
+        - "I need to optimize a database table. Rebuild indexes on the users table"
+        - "I need to optimize a database table. Run maintenance on the large table"
+        - "I need to optimize a database table. Vacuum and analyze the logs table"
 
   - name: create_view
     descriptions:
@@ -882,6 +1000,11 @@ tools:
         - "Make a view combining orders and products"
         - "Create a summary view for reporting"
         - "Set up a view for the dashboard data"
+      single_clear:
+        - "I need to create a database view. Create a view for active users"
+        - "I need to create a database view. Make a view combining orders and products"
+        - "I need to create a database view. Create a summary view for reporting"
+        - "I need to create a database view. Set up a view for the dashboard data"
 
   - name: drop_table
     descriptions:
@@ -916,6 +1039,11 @@ tools:
         - "Drop the old backup table"
         - "Remove the deprecated table from the database"
         - "Delete the test table and its data"
+      single_clear:
+        - "I need to drop a database table. Delete the temporary table"
+        - "I need to drop a database table. Drop the old backup table"
+        - "I need to drop a database table. Remove the deprecated table from the database"
+        - "I need to drop a database table. Delete the test table and its data"
 
   - name: import_csv
     descriptions:
@@ -963,6 +1091,11 @@ tools:
         - "Load data from users.csv into the users table"
         - "Import the sales data from the CSV"
         - "Upload the CSV to the database"
+      single_clear:
+        - "I need to import a CSV file. Import the CSV file into the database"
+        - "I need to import a CSV file. Load data from users.csv into the users table"
+        - "I need to import a CSV file. Import the sales data from the CSV"
+        - "I need to import a CSV file. Upload the CSV to the database"
 
   - name: export_csv
     descriptions:
@@ -1006,6 +1139,11 @@ tools:
         - "Download query results as CSV"
         - "Export the data to a CSV file"
         - "Save the database table as CSV"
+      single_clear:
+        - "I need to export data to a CSV file. Export the users table to a CSV"
+        - "I need to export data to a CSV file. Download query results as CSV"
+        - "I need to export data to a CSV file. Export the data to a CSV file"
+        - "I need to export data to a CSV file. Save the database table as CSV"
 
   - name: aggregate_data
     descriptions:
@@ -1046,6 +1184,11 @@ tools:
         - "Count users by country"
         - "Calculate average order value by customer"
         - "Aggregate the data by category"
+      single_clear:
+        - "I need to aggregate data. Sum the sales by region"
+        - "I need to aggregate data. Count users by country"
+        - "I need to aggregate data. Calculate average order value by customer"
+        - "I need to aggregate data. Aggregate the data by category"
 
   - name: join_tables
     descriptions:
@@ -1088,6 +1231,11 @@ tools:
         - "Combine customer and sales data"
         - "Left join products with inventory"
         - "Merge the tables on customer ID"
+      single_clear:
+        - "I need to join tables together. Join users and orders tables"
+        - "I need to join tables together. Combine customer and sales data"
+        - "I need to join tables together. Left join products with inventory"
+        - "I need to join tables together. Merge the tables on customer ID"
 
   - name: pivot_data
     descriptions:
@@ -1128,6 +1276,11 @@ tools:
         - "Create a cross-tab of products vs months"
         - "Transform rows to columns for the report"
         - "Pivot the data for analysis"
+      single_clear:
+        - "I need to pivot data. Pivot sales data by region and quarter"
+        - "I need to pivot data. Create a cross-tab of products vs months"
+        - "I need to pivot data. Transform rows to columns for the report"
+        - "I need to pivot data. Pivot the data for analysis"
 
   - name: deduplicate_data
     descriptions:
@@ -1171,6 +1324,11 @@ tools:
         - "Find and delete duplicate records"
         - "Deduplicate the contacts table"
         - "Clean up duplicate entries"
+      single_clear:
+        - "I need to deduplicate data. Remove duplicate emails from the list"
+        - "I need to deduplicate data. Find and delete duplicate records"
+        - "I need to deduplicate data. Deduplicate the contacts table"
+        - "I need to deduplicate data. Clean up duplicate entries"
 
   - name: transform_data
     descriptions:
@@ -1208,6 +1366,11 @@ tools:
         - "Calculate total with tax"
         - "Format the dates in the table"
         - "Transform the data columns"
+      single_clear:
+        - "I need to transform data. Convert names to uppercase"
+        - "I need to transform data. Calculate total with tax"
+        - "I need to transform data. Format the dates in the table"
+        - "I need to transform data. Transform the data columns"
 
   - name: validate_data
     descriptions:
@@ -1245,6 +1408,11 @@ tools:
         - "Check data quality against the rules"
         - "Validate required fields are not null"
         - "Run validation on the imported data"
+      single_clear:
+        - "I need to validate data against rules. Validate the email format in users table"
+        - "I need to validate data against rules. Check data quality against the rules"
+        - "I need to validate data against rules. Validate required fields are not null"
+        - "I need to validate data against rules. Run validation on the imported data"
 
   - name: sample_data
     descriptions:
@@ -1292,6 +1460,11 @@ tools:
         - "Sample 10% of the orders"
         - "Get a representative sample of the data"
         - "Extract random records for testing"
+      single_clear:
+        - "I need to sample data. Get a random sample of 100 users"
+        - "I need to sample data. Sample 10% of the orders"
+        - "I need to sample data. Get a representative sample of the data"
+        - "I need to sample data. Extract random records for testing"
 
   - name: archive_data
     descriptions:
@@ -1339,3 +1512,8 @@ tools:
         - "Move old logs to the archive table"
         - "Archive completed records"
         - "Clean up and archive old data"
+      single_clear:
+        - "I need to archive data. Archive orders older than one year"
+        - "I need to archive data. Move old logs to the archive table"
+        - "I need to archive data. Archive completed records"
+        - "I need to archive data. Clean up and archive old data"

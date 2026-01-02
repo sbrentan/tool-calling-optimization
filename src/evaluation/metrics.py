@@ -5,8 +5,9 @@ Measures:
 - Tool selection accuracy (correct tool called)
 - Parameter accuracy (correct parameters extracted)
 - Latency statistics
+- Methodology-specific metrics (steps, backtracks, category accuracy)
 """
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 from dataclasses import dataclass, field
 from collections import defaultdict
 
@@ -14,7 +15,10 @@ import pandas as pd
 from loguru import logger
 
 from src.tools.base import TestCase
-from src.clients.gemini_client import CallResult
+from src.clients.base import CallResult
+
+if TYPE_CHECKING:
+    from src.methodologies.base import MethodologyResult
 
 
 @dataclass
@@ -24,6 +28,15 @@ class TestResult:
     call_result: CallResult
     tool_correct: bool
     params_correct: Optional[bool] = None
+    
+    # Methodology-specific fields
+    methodology: str = "mcp"
+    steps_count: int = 1
+    backtrack_count: int = 0
+    declined_tool_call: bool = False
+    category_correct: Optional[bool] = None  # True if correct category was selected
+    final_category: Optional[str] = None
+    categories_visited: list[str] = field(default_factory=list)
     
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for analysis."""
@@ -37,7 +50,15 @@ class TestResult:
             "category": self.test_case.category,
             "difficulty": self.test_case.difficulty,
             "model": self.call_result.model,
-            "error": self.call_result.error
+            "error": self.call_result.error,
+            # Methodology-specific
+            "methodology": self.methodology,
+            "steps_count": self.steps_count,
+            "backtrack_count": self.backtrack_count,
+            "declined_tool_call": self.declined_tool_call,
+            "category_correct": self.category_correct,
+            "final_category": self.final_category,
+            "categories_visited": self.categories_visited,
         }
 
 
@@ -64,6 +85,14 @@ class EvaluationResult:
     # Experiment metadata
     experiment_config: dict[str, Any] = field(default_factory=dict)
     
+    # Methodology-specific metrics
+    methodology: str = "mcp"
+    avg_steps_per_call: float = 1.0
+    total_backtracks: int = 0
+    avg_backtracks_per_call: float = 0.0
+    declined_tool_calls: int = 0
+    category_selection_accuracy: float = 0.0  # For clustering: correct category rate
+    
     @property
     def accuracy(self) -> float:
         """Overall tool selection accuracy."""
@@ -80,7 +109,7 @@ class EvaluationResult:
     
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
-        return {
+        result = {
             "total_tests": self.total_tests,
             "tool_correct": self.tool_correct,
             "tool_incorrect": self.tool_incorrect,
@@ -92,8 +121,16 @@ class EvaluationResult:
             "min_latency_ms": self.min_latency_ms,
             "max_latency_ms": self.max_latency_ms,
             "category_accuracy": self.category_accuracy,
-            "experiment_config": self.experiment_config
+            "experiment_config": self.experiment_config,
+            # Methodology-specific
+            "methodology": self.methodology,
+            "avg_steps_per_call": self.avg_steps_per_call,
+            "total_backtracks": self.total_backtracks,
+            "avg_backtracks_per_call": self.avg_backtracks_per_call,
+            "declined_tool_calls": self.declined_tool_calls,
+            "category_selection_accuracy": self.category_selection_accuracy,
         }
+        return result
     
     def to_dataframe(self) -> pd.DataFrame:
         """Convert detailed results to pandas DataFrame."""
@@ -105,6 +142,7 @@ class EvaluationResult:
             "=" * 50,
             "EVALUATION RESULTS",
             "=" * 50,
+            f"Methodology: {self.methodology}",
             f"Total Tests: {self.total_tests}",
             f"Tool Selection Accuracy: {self.accuracy:.2%}",
             f"Tool Call Rate: {self.call_rate:.2%}",
@@ -112,12 +150,23 @@ class EvaluationResult:
             f"Correct: {self.tool_correct}",
             f"Incorrect: {self.tool_incorrect}",
             f"No Tool Called: {self.no_tool_called}",
+            f"Declined Tool Calls: {self.declined_tool_calls}",
             f"Errors: {self.errors}",
             "",
             f"Avg Latency: {self.avg_latency_ms:.1f}ms",
             f"Min Latency: {self.min_latency_ms:.1f}ms",
             f"Max Latency: {self.max_latency_ms:.1f}ms",
         ]
+        
+        # Add methodology-specific stats
+        if self.methodology != "mcp":
+            lines.append("")
+            lines.append("Methodology Stats:")
+            lines.append(f"  Avg Steps per Call: {self.avg_steps_per_call:.2f}")
+            lines.append(f"  Total Backtracks: {self.total_backtracks}")
+            lines.append(f"  Avg Backtracks per Call: {self.avg_backtracks_per_call:.2f}")
+            if self.methodology == "clustering":
+                lines.append(f"  Category Selection Accuracy: {self.category_selection_accuracy:.2%}")
         
         if self.category_accuracy:
             lines.append("")
@@ -150,7 +199,8 @@ class ToolCallEvaluator:
     def evaluate_single(
         self,
         test_case: TestCase,
-        call_result: CallResult
+        call_result: CallResult,
+        methodology_result: Optional["MethodologyResult"] = None,
     ) -> TestResult:
         """
         Evaluate a single test case.
@@ -158,6 +208,7 @@ class ToolCallEvaluator:
         Args:
             test_case: Expected test case
             call_result: Actual result from API call
+            methodology_result: Optional methodology-specific result
             
         Returns:
             TestResult with evaluation details
@@ -176,11 +227,39 @@ class ToolCallEvaluator:
                 call_result.called_args or {}
             )
         
+        # Extract methodology-specific info
+        methodology = "mcp"
+        steps_count = 1
+        backtrack_count = 0
+        declined_tool_call = False
+        category_correct = None
+        final_category = None
+        categories_visited = []
+        
+        if methodology_result is not None:
+            methodology = methodology_result.methodology
+            steps_count = len(methodology_result.steps)
+            backtrack_count = methodology_result.backtrack_count
+            declined_tool_call = methodology_result.declined_tool_call
+            final_category = methodology_result.final_category
+            categories_visited = methodology_result.categories_selected
+            
+            # Check if correct category was selected (for clustering)
+            if methodology == "clustering" and final_category is not None:
+                category_correct = (final_category == test_case.category)
+        
         result = TestResult(
             test_case=test_case,
             call_result=call_result,
             tool_correct=tool_correct,
-            params_correct=params_correct
+            params_correct=params_correct,
+            methodology=methodology,
+            steps_count=steps_count,
+            backtrack_count=backtrack_count,
+            declined_tool_call=declined_tool_call,
+            category_correct=category_correct,
+            final_category=final_category,
+            categories_visited=categories_visited,
         )
         
         self.results.append(result)
@@ -259,6 +338,33 @@ class ToolCallEvaluator:
             for cat, counts in category_counts.items()
         }
         
+        # Methodology-specific metrics
+        methodology = self.results[0].methodology if self.results else "mcp"
+        
+        # Steps and backtracks
+        total_steps = sum(r.steps_count for r in self.results)
+        avg_steps = total_steps / total if total > 0 else 1.0
+        
+        total_backtracks = sum(r.backtrack_count for r in self.results)
+        avg_backtracks = total_backtracks / total if total > 0 else 0.0
+        
+        # Declined calls
+        declined_count = sum(1 for r in self.results if r.declined_tool_call)
+        
+        # Category selection accuracy (for clustering)
+        category_selection_accuracy = 0.0
+        if methodology == "clustering":
+            category_correct_count = sum(
+                1 for r in self.results 
+                if r.category_correct is True
+            )
+            category_total = sum(
+                1 for r in self.results 
+                if r.category_correct is not None
+            )
+            if category_total > 0:
+                category_selection_accuracy = category_correct_count / category_total
+        
         return EvaluationResult(
             total_tests=total,
             tool_correct=correct,
@@ -270,7 +376,14 @@ class ToolCallEvaluator:
             min_latency_ms=min_latency,
             max_latency_ms=max_latency,
             category_accuracy=category_accuracy,
-            experiment_config=experiment_config or {}
+            experiment_config=experiment_config or {},
+            # Methodology-specific
+            methodology=methodology,
+            avg_steps_per_call=avg_steps,
+            total_backtracks=total_backtracks,
+            avg_backtracks_per_call=avg_backtracks,
+            declined_tool_calls=declined_count,
+            category_selection_accuracy=category_selection_accuracy,
         )
     
     def reset(self) -> None:

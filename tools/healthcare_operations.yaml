@@ -50,6 +50,11 @@ tools:
         - "Register a new patient"
         - "Add patient to the system"
         - "Set up new patient file"
+      single_clear:
+        - "I need to create a new patient record in the EHR system. Create a new patient record"
+        - "I need to create a new patient record in the EHR system. Register a new patient"
+        - "I need to create a new patient record in the EHR system. Add patient to the system"
+        - "I need to create a new patient record in the EHR system. Set up new patient file"
 
   - name: schedule_appointment
     descriptions:
@@ -101,6 +106,11 @@ tools:
         - "Book a follow-up visit"
         - "Set up telehealth appointment"
         - "Schedule patient with specialist"
+      single_clear:
+        - "Please schedule a patient appointment. Schedule a doctor's appointment"
+        - "Please schedule a patient appointment. Book a follow-up visit"
+        - "Please schedule a patient appointment. Set up telehealth appointment"
+        - "Please schedule a patient appointment. Schedule patient with specialist"
 
   - name: record_vital_signs
     descriptions:
@@ -159,6 +169,11 @@ tools:
         - "Enter blood pressure reading"
         - "Log patient vitals"
         - "Add vital signs to chart"
+      single_clear:
+        - "I need to document patient vital sign measurements. Record patient vital signs"
+        - "I need to document patient vital sign measurements. Enter blood pressure reading"
+        - "I need to document patient vital sign measurements. Log patient vitals"
+        - "I need to document patient vital sign measurements. Add vital signs to chart"
 
   - name: prescribe_medication
     descriptions:
@@ -217,6 +232,11 @@ tools:
         - "Create a new prescription"
         - "Write Rx for blood pressure medication"
         - "Send prescription to pharmacy"
+      single_clear:
+        - "I need to prescribe medication for a patient. Prescribe medication for patient"
+        - "I need to prescribe medication for a patient. Create a new prescription"
+        - "I need to prescribe medication for a patient. Write Rx for blood pressure medication"
+        - "I need to prescribe medication for a patient. Send prescription to pharmacy"
 
   - name: order_lab_test
     descriptions:
@@ -264,6 +284,11 @@ tools:
         - "Request lab tests"
         - "Order CBC and metabolic panel"
         - "Send lab order to LabCorp"
+      single_clear:
+        - "I need to order laboratory tests for a patient. Order blood work for patient"
+        - "I need to order laboratory tests for a patient. Request lab tests"
+        - "I need to order laboratory tests for a patient. Order CBC and metabolic panel"
+        - "I need to order laboratory tests for a patient. Send lab order to LabCorp"
 
   - name: document_clinical_note
     descriptions:
@@ -324,6 +349,11 @@ tools:
         - "Write a progress note"
         - "Create clinical documentation"
         - "Add SOAP note to chart"
+      single_clear:
+        - "I need to document clinical notes for a patient encounter. Document the patient visit"
+        - "I need to document clinical notes for a patient encounter. Write a progress note"
+        - "I need to document clinical notes for a patient encounter. Create clinical documentation"
+        - "I need to document clinical notes for a patient encounter. Add SOAP note to chart"
 
   - name: submit_insurance_claim
     descriptions:
@@ -370,6 +400,11 @@ tools:
         - "Bill the patient's insurance"
         - "Process medical claim"
         - "Send claim to payer"
+      single_clear:
+        - "I need to submit a medical insurance claim for services rendered. Submit insurance claim"
+        - "I need to submit a medical insurance claim for services rendered. Bill the patient's insurance"
+        - "I need to submit a medical insurance claim for services rendered. Process medical claim"
+        - "I need to submit a medical insurance claim for services rendered. Send claim to payer"
 
   - name: request_referral
     descriptions:
@@ -417,6 +452,11 @@ tools:
         - "Request specialist consultation"
         - "Create a referral for the patient"
         - "Send patient to orthopedics"
+      single_clear:
+        - "I need to request a referral to a specialist. Refer patient to cardiologist"
+        - "I need to request a referral to a specialist. Request specialist consultation"
+        - "I need to request a referral to a specialist. Create a referral for the patient"
+        - "I need to request a referral to a specialist. Send patient to orthopedics"
 
   - name: retrieve_medical_history
     descriptions:
@@ -460,6 +500,11 @@ tools:
         - "Show medication history"
         - "Retrieve patient records"
         - "Pull up the patient's chart"
+      single_clear:
+        - "I need to retrieve a patient's medical record. Get patient's medical history"
+        - "I need to retrieve a patient's medical record. Show medication history"
+        - "I need to retrieve a patient's medical record. Retrieve patient records"
+        - "I need to retrieve a patient's medical record. Pull up the patient's chart"
 
   - name: check_drug_interaction
     descriptions:
@@ -500,6 +545,11 @@ tools:
         - "Are these medications safe together?"
         - "Screen medications for interactions"
         - "Check if Warfarin interacts with other meds"
+      single_clear:
+        - "I need to check for potential drug interactions. Check for drug interactions"
+        - "I need to check for potential drug interactions. Are these medications safe together?"
+        - "I need to check for potential drug interactions. Screen medications for interactions"
+        - "I need to check for potential drug interactions. Check if Warfarin interacts with other meds"
 
   - name: order_imaging_study
     descriptions:
@@ -553,6 +603,11 @@ tools:
         - "Schedule a CT scan"
         - "Request chest X-ray"
         - "Order diagnostic imaging"
+      single_clear:
+        - "I need to order a diagnostic imaging study. Order an MRI for the patient"
+        - "I need to order a diagnostic imaging study. Schedule a CT scan"
+        - "I need to order a diagnostic imaging study. Request chest X-ray"
+        - "I need to order a diagnostic imaging study. Order diagnostic imaging"
 
   - name: update_allergy_list
     descriptions:
@@ -605,6 +660,11 @@ tools:
         - "Update patient allergies"
         - "Document drug allergy"
         - "Remove allergy from record"
+      single_clear:
+        - "I need to update a patient's allergy list. Add allergy to patient chart"
+        - "I need to update a patient's allergy list. Update patient allergies"
+        - "I need to update a patient's allergy list. Document drug allergy"
+        - "I need to update a patient's allergy list. Remove allergy from record"
 
   - name: generate_discharge_summary
     descriptions:
@@ -659,6 +719,11 @@ tools:
         - "Generate discharge paperwork"
         - "Prepare patient for discharge"
         - "Complete discharge documentation"
+      single_clear:
+        - "I need to generate a patient discharge summary. Create discharge summary"
+        - "I need to generate a patient discharge summary. Generate discharge paperwork"
+        - "I need to generate a patient discharge summary. Prepare patient for discharge"
+        - "I need to generate a patient discharge summary. Complete discharge documentation"
 
   - name: record_immunization
     descriptions:
@@ -717,6 +782,11 @@ tools:
         - "Document vaccination"
         - "Add immunization to record"
         - "Enter vaccine administration"
+      single_clear:
+        - "I need to record a patient immunization. Record flu shot"
+        - "I need to record a patient immunization. Document vaccination"
+        - "I need to record a patient immunization. Add immunization to record"
+        - "I need to record a patient immunization. Enter vaccine administration"
 
   - name: create_care_plan
     descriptions:
@@ -765,6 +835,11 @@ tools:
         - "Set up chronic disease management"
         - "Develop patient care plan"
         - "Build treatment plan"
+      single_clear:
+        - "I need to create a patient care plan with goals and interventions. Create a care plan for diabetes"
+        - "I need to create a patient care plan with goals and interventions. Set up chronic disease management"
+        - "I need to create a patient care plan with goals and interventions. Develop patient care plan"
+        - "I need to create a patient care plan with goals and interventions. Build treatment plan"
 
   - name: send_patient_message
     descriptions:
@@ -811,6 +886,11 @@ tools:
         - "Notify patient about lab results"
         - "Message patient through portal"
         - "Contact patient securely"
+      single_clear:
+        - "I need to send a secure message to a patient. Send message to patient"
+        - "I need to send a secure message to a patient. Notify patient about lab results"
+        - "I need to send a secure message to a patient. Message patient through portal"
+        - "I need to send a secure message to a patient. Contact patient securely"
 
   - name: verify_insurance_eligibility
     descriptions:
@@ -852,6 +932,11 @@ tools:
         - "Verify patient coverage"
         - "Confirm insurance benefits"
         - "Check if patient is covered"
+      single_clear:
+        - "I need to verify a patient's insurance eligibility. Check insurance eligibility"
+        - "I need to verify a patient's insurance eligibility. Verify patient coverage"
+        - "I need to verify a patient's insurance eligibility. Confirm insurance benefits"
+        - "I need to verify a patient's insurance eligibility. Check if patient is covered"
 
   - name: reconcile_medications
     descriptions:
@@ -896,6 +981,11 @@ tools:
         - "Compare medication lists"
         - "Update medication list"
         - "Perform med rec"
+      single_clear:
+        - "I need to perform medication reconciliation for a patient. Reconcile patient medications"
+        - "I need to perform medication reconciliation for a patient. Compare medication lists"
+        - "I need to perform medication reconciliation for a patient. Update medication list"
+        - "I need to perform medication reconciliation for a patient. Perform med rec"
 
   - name: calculate_clinical_score
     descriptions:
@@ -930,6 +1020,11 @@ tools:
         - "Compute CHADS2-VASc"
         - "Get patient PHQ-9 score"
         - "Calculate clinical risk assessment"
+      single_clear:
+        - "I need to calculate a clinical risk score for a patient. Calculate stroke risk score"
+        - "I need to calculate a clinical risk score for a patient. Compute CHADS2-VASc"
+        - "I need to calculate a clinical risk score for a patient. Get patient PHQ-9 score"
+        - "I need to calculate a clinical risk score for a patient. Calculate clinical risk assessment"
 
   - name: manage_prior_authorization
     descriptions:
@@ -986,6 +1081,11 @@ tools:
         - "Check prior auth status"
         - "Request medication approval"
         - "Appeal denied authorization"
+      single_clear:
+        - "I need to manage a prior authorization request. Submit prior authorization"
+        - "I need to manage a prior authorization request. Check prior auth status"
+        - "I need to manage a prior authorization request. Request medication approval"
+        - "I need to manage a prior authorization request. Appeal denied authorization"
   - name: create_clinical_note
     descriptions:
       minimal: "Create note"
@@ -1040,6 +1140,11 @@ tools:
         - "Document patient visit"
         - "Write clinical note"
         - "Create SOAP note"
+      single_clear:
+        - "I need to create a clinical documentation note. Create progress note"
+        - "I need to create a clinical documentation note. Document patient visit"
+        - "I need to create a clinical documentation note. Write clinical note"
+        - "I need to create a clinical documentation note. Create SOAP note"
 
   - name: order_imaging
     descriptions:
@@ -1094,6 +1199,11 @@ tools:
         - "Request chest X-ray"
         - "Order MRI"
         - "Schedule imaging study"
+      single_clear:
+        - "I need to order an imaging study for a patient. Order CT scan"
+        - "I need to order an imaging study for a patient. Request chest X-ray"
+        - "I need to order an imaging study for a patient. Order MRI"
+        - "I need to order an imaging study for a patient. Schedule imaging study"
 
   - name: refer_patient
     descriptions:
@@ -1140,6 +1250,11 @@ tools:
         - "Create specialist referral"
         - "Send patient to specialist"
         - "Generate referral"
+      single_clear:
+        - "I need to create a patient referral to another provider. Refer to cardiologist"
+        - "I need to create a patient referral to another provider. Create specialist referral"
+        - "I need to create a patient referral to another provider. Send patient to specialist"
+        - "I need to create a patient referral to another provider. Generate referral"
 
   - name: document_procedure
     descriptions:
@@ -1197,6 +1312,11 @@ tools:
         - "Record biopsy"
         - "Log procedure details"
         - "Enter procedure note"
+      single_clear:
+        - "I need to document a medical procedure performed on a patient. Document procedure"
+        - "I need to document a medical procedure performed on a patient. Record biopsy"
+        - "I need to document a medical procedure performed on a patient. Log procedure details"
+        - "I need to document a medical procedure performed on a patient. Enter procedure note"
 
   - name: check_drug_interactions
     descriptions:
@@ -1241,6 +1361,11 @@ tools:
         - "Screen for interactions"
         - "Is this medication safe"
         - "Check medication conflicts"
+      single_clear:
+        - "I need to check for drug-drug interactions in a patient's medications. Check drug interactions"
+        - "I need to check for drug-drug interactions in a patient's medications. Screen for interactions"
+        - "I need to check for drug-drug interactions in a patient's medications. Is this medication safe"
+        - "I need to check for drug-drug interactions in a patient's medications. Check medication conflicts"
 
   - name: schedule_follow_up
     descriptions:
@@ -1287,6 +1412,11 @@ tools:
         - "Book return appointment"
         - "Set up next visit"
         - "Schedule 2 week follow-up"
+      single_clear:
+        - "I need to schedule a follow-up appointment for a patient. Schedule follow-up"
+        - "I need to schedule a follow-up appointment for a patient. Book return appointment"
+        - "I need to schedule a follow-up appointment for a patient. Set up next visit"
+        - "I need to schedule a follow-up appointment for a patient. Schedule 2 week follow-up"
 
   - name: generate_patient_summary
     descriptions:
@@ -1331,6 +1461,11 @@ tools:
         - "Create CCD document"
         - "Export patient record"
         - "Prepare referral summary"
+      single_clear:
+        - "I need to generate a comprehensive patient summary document. Generate patient summary"
+        - "I need to generate a comprehensive patient summary document. Create CCD document"
+        - "I need to generate a comprehensive patient summary document. Export patient record"
+        - "I need to generate a comprehensive patient summary document. Prepare referral summary"
 
   - name: record_vital_signs
     descriptions:
@@ -1383,6 +1518,11 @@ tools:
         - "Enter blood pressure"
         - "Log patient vitals"
         - "Document temperature"
+      single_clear:
+        - "I need to record patient vital signs measurements. Record vital signs"
+        - "I need to record patient vital signs measurements. Enter blood pressure"
+        - "I need to record patient vital signs measurements. Log patient vitals"
+        - "I need to record patient vital signs measurements. Document temperature"
 
   - name: close_encounter
     descriptions:
@@ -1430,3 +1570,8 @@ tools:
         - "Finalize visit"
         - "Complete patient encounter"
         - "End appointment"
+      single_clear:
+        - "I need to close and finalize a patient encounter. Close encounter"
+        - "I need to close and finalize a patient encounter. Finalize visit"
+        - "I need to close and finalize a patient encounter. Complete patient encounter"
+        - "I need to close and finalize a patient encounter. End appointment"

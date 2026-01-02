@@ -5,8 +5,9 @@ name: breaking_point
 description: "Test with increasing number of tools to find breaking point"
 
 # Tool configuration
-num_tools: 250
-doc_length: verbose
+num_tools: 20
+doc_length: medium
+prompt_type: concise  # concise or clear
 num_similar_tools: 0
 categories: null
 

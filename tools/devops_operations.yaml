@@ -50,6 +50,11 @@ tools:
         - "Release version 2.0 to staging"
         - "Deploy with blue-green strategy"
         - "Roll out the new version"
+      single_clear:
+        - "I need to deploy an application. Deploy the app to production"
+        - "I need to deploy an application. Release version 2.0 to staging"
+        - "I need to deploy an application. Deploy with blue-green strategy"
+        - "I need to deploy an application. Roll out the new version"
 
   - name: rollback_deployment
     descriptions:
@@ -87,6 +92,11 @@ tools:
         - "Revert to the previous version"
         - "Rollback production to v1.5"
         - "Undo the last deployment"
+      single_clear:
+        - "Please rollback a deployment. Rollback the deployment"
+        - "Please rollback a deployment. Revert to the previous version"
+        - "Please rollback a deployment. Rollback production to v1.5"
+        - "Please rollback a deployment. Undo the last deployment"
 
   - name: run_pipeline
     descriptions:
@@ -130,6 +140,11 @@ tools:
         - "Trigger CI for main branch"
         - "Start the deployment pipeline"
         - "Run the test pipeline"
+      single_clear:
+        - "I need to run a CI/CD pipeline. Run the build pipeline"
+        - "I need to run a CI/CD pipeline. Trigger CI for main branch"
+        - "I need to run a CI/CD pipeline. Start the deployment pipeline"
+        - "I need to run a CI/CD pipeline. Run the test pipeline"
 
   - name: get_pipeline_status
     descriptions:
@@ -160,6 +175,11 @@ tools:
         - "Is the build finished?"
         - "Get the CI run status"
         - "Show pipeline logs"
+      single_clear:
+        - "I need to check the pipeline status. Check the pipeline status"
+        - "I need to check the pipeline status. Is the build finished?"
+        - "I need to check the pipeline status. Get the CI run status"
+        - "I need to check the pipeline status. Show pipeline logs"
 
   - name: manage_container
     descriptions:
@@ -199,6 +219,11 @@ tools:
         - "Stop the Docker container"
         - "Get container logs"
         - "Remove the container"
+      single_clear:
+        - "I need to manage a Docker container. Restart the container"
+        - "I need to manage a Docker container. Stop the Docker container"
+        - "I need to manage a Docker container. Get container logs"
+        - "I need to manage a Docker container. Remove the container"
 
   - name: scale_service
     descriptions:
@@ -238,6 +263,11 @@ tools:
         - "Add more instances"
         - "Scale down to 2 pods"
         - "Increase capacity"
+      single_clear:
+        - "I need to scale a service. Scale the service to 5 replicas"
+        - "I need to scale a service. Add more instances"
+        - "I need to scale a service. Scale down to 2 pods"
+        - "I need to scale a service. Increase capacity"
 
   - name: create_infrastructure
     descriptions:
@@ -277,6 +307,11 @@ tools:
         - "Create the infrastructure"
         - "Run terraform plan"
         - "Provision the environment"
+      single_clear:
+        - "I need to create infrastructure resources. Apply the Terraform changes"
+        - "I need to create infrastructure resources. Create the infrastructure"
+        - "I need to create infrastructure resources. Run terraform plan"
+        - "I need to create infrastructure resources. Provision the environment"
 
   - name: manage_secrets
     descriptions:
@@ -315,6 +350,11 @@ tools:
         - "Store this API key"
         - "Rotate the secrets"
         - "List all secrets"
+      single_clear:
+        - "I need to manage application secrets. Get the database password"
+        - "I need to manage application secrets. Store this API key"
+        - "I need to manage application secrets. Rotate the secrets"
+        - "I need to manage application secrets. List all secrets"
 
   - name: monitor_metrics
     descriptions:
@@ -355,6 +395,11 @@ tools:
         - "Get the p99 latency"
         - "Monitor error rates"
         - "Check memory metrics"
+      single_clear:
+        - "I need to monitor application metrics. Show CPU usage for the last hour"
+        - "I need to monitor application metrics. Get the p99 latency"
+        - "I need to monitor application metrics. Monitor error rates"
+        - "I need to monitor application metrics. Check memory metrics"
 
   - name: manage_logs
     descriptions:
@@ -400,6 +445,11 @@ tools:
         - "Search logs for 'connection refused'"
         - "Get logs for the payment service"
         - "Tail the application logs"
+      single_clear:
+        - "I need to manage application logs. Show error logs from the last hour"
+        - "I need to manage application logs. Search logs for 'connection refused'"
+        - "I need to manage application logs. Get logs for the payment service"
+        - "I need to manage application logs. Tail the application logs"
   - name: create_kubernetes_resource
     descriptions:
       minimal: "Create K8s resource"
@@ -442,6 +492,11 @@ tools:
         - "Add a new service to the cluster"
         - "Create a configmap in Kubernetes"
         - "Deploy a new pod to production namespace"
+      single_clear:
+        - "I need to create a Kubernetes resource. Create a Kubernetes deployment"
+        - "I need to create a Kubernetes resource. Add a new service to the cluster"
+        - "I need to create a Kubernetes resource. Create a configmap in Kubernetes"
+        - "I need to create a Kubernetes resource. Deploy a new pod to production namespace"
 
   - name: manage_infrastructure
     descriptions:
@@ -485,6 +540,11 @@ tools:
         - "Plan infrastructure updates"
         - "Provision new resources"
         - "Destroy the staging environment"
+      single_clear:
+        - "I need to manage infrastructure resources. Apply Terraform changes"
+        - "I need to manage infrastructure resources. Plan infrastructure updates"
+        - "I need to manage infrastructure resources. Provision new resources"
+        - "I need to manage infrastructure resources. Destroy the staging environment"
 
   - name: manage_container_registry
     descriptions:
@@ -524,6 +584,11 @@ tools:
         - "Scan container for vulnerabilities"
         - "List images in the registry"
         - "Tag and push new version"
+      single_clear:
+        - "I need to manage container images. Push Docker image to registry"
+        - "I need to manage container images. Scan container for vulnerabilities"
+        - "I need to manage container images. List images in the registry"
+        - "I need to manage container images. Tag and push new version"
 
   - name: configure_load_balancer
     descriptions:
@@ -565,6 +630,11 @@ tools:
         - "Configure HTTPS listener"
         - "Add servers to load balancer"
         - "Update load balancer health checks"
+      single_clear:
+        - "I need to configure a load balancer. Set up a load balancer"
+        - "I need to configure a load balancer. Configure HTTPS listener"
+        - "I need to configure a load balancer. Add servers to load balancer"
+        - "I need to configure a load balancer. Update load balancer health checks"
 
   - name: manage_dns
     descriptions:
@@ -613,6 +683,11 @@ tools:
         - "Update A record to new IP"
         - "Create CNAME for www"
         - "Set up MX records for email"
+      single_clear:
+        - "I need to manage DNS records. Add DNS record for subdomain"
+        - "I need to manage DNS records. Update A record to new IP"
+        - "I need to manage DNS records. Create CNAME for www"
+        - "I need to manage DNS records. Set up MX records for email"
 
   - name: setup_monitoring_alert
     descriptions:
@@ -661,6 +736,11 @@ tools:
         - "Set up error rate monitoring"
         - "Configure disk space alert"
         - "Alert when service is down"
+      single_clear:
+        - "I need to set up a monitoring alert. Create alert for high CPU usage"
+        - "I need to set up a monitoring alert. Set up error rate monitoring"
+        - "I need to set up a monitoring alert. Configure disk space alert"
+        - "I need to set up a monitoring alert. Alert when service is down"
 
   - name: run_database_migration
     descriptions:
@@ -701,6 +781,11 @@ tools:
         - "Rollback last migration"
         - "Check migration status"
         - "Apply schema changes"
+      single_clear:
+        - "I need to run database migrations. Run pending database migrations"
+        - "I need to run database migrations. Rollback last migration"
+        - "I need to run database migrations. Check migration status"
+        - "I need to run database migrations. Apply schema changes"
 
   - name: manage_ssl_certificate
     descriptions:
@@ -743,6 +828,11 @@ tools:
         - "Renew expiring certificates"
         - "Check certificate expiration"
         - "Import SSL certificate"
+      single_clear:
+        - "I need to manage SSL certificates. Generate SSL certificate for domain"
+        - "I need to manage SSL certificates. Renew expiring certificates"
+        - "I need to manage SSL certificates. Check certificate expiration"
+        - "I need to manage SSL certificates. Import SSL certificate"
 
   - name: backup_service
     descriptions:
@@ -786,6 +876,11 @@ tools:
         - "Create filesystem backup"
         - "Schedule daily backups"
         - "Backup to S3"
+      single_clear:
+        - "I need to create a backup. Backup the production database"
+        - "I need to create a backup. Create filesystem backup"
+        - "I need to create a backup. Schedule daily backups"
+        - "I need to create a backup. Backup to S3"
 
   - name: manage_kubernetes_deployment
     descriptions:
@@ -842,6 +937,11 @@ tools:
         - "Scale up the deployment"
         - "Rollback to previous version"
         - "Check deployment status"
+      single_clear:
+        - "I need to manage a Kubernetes deployment. Deploy to Kubernetes"
+        - "I need to manage a Kubernetes deployment. Scale up the deployment"
+        - "I need to manage a Kubernetes deployment. Rollback to previous version"
+        - "I need to manage a Kubernetes deployment. Check deployment status"
 
   - name: configure_load_balancer
     descriptions:
@@ -891,6 +991,11 @@ tools:
         - "Add server to load balancer"
         - "Configure health checks"
         - "Set up SSL termination"
+      single_clear:
+        - "I need to configure a load balancer. Create load balancer"
+        - "I need to configure a load balancer. Add server to load balancer"
+        - "I need to configure a load balancer. Configure health checks"
+        - "I need to configure a load balancer. Set up SSL termination"
 
   - name: manage_infrastructure_as_code
     descriptions:
@@ -938,6 +1043,11 @@ tools:
         - "Apply infrastructure changes"
         - "Initialize Terraform"
         - "Destroy test environment"
+      single_clear:
+        - "I need to manage infrastructure as code. Run Terraform plan"
+        - "I need to manage infrastructure as code. Apply infrastructure changes"
+        - "I need to manage infrastructure as code. Initialize Terraform"
+        - "I need to manage infrastructure as code. Destroy test environment"
 
   - name: configure_auto_scaling
     descriptions:
@@ -988,6 +1098,11 @@ tools:
         - "Configure scale based on CPU"
         - "Set min and max instances"
         - "Schedule scaling for business hours"
+      single_clear:
+        - "I need to configure auto scaling. Set up auto scaling"
+        - "I need to configure auto scaling. Configure scale based on CPU"
+        - "I need to configure auto scaling. Set min and max instances"
+        - "I need to configure auto scaling. Schedule scaling for business hours"
 
   - name: manage_secrets
     descriptions:
@@ -1036,6 +1151,11 @@ tools:
         - "Retrieve database password"
         - "Rotate secret"
         - "List all secrets"
+      single_clear:
+        - "I need to manage application secrets. Store API key securely"
+        - "I need to manage application secrets. Retrieve database password"
+        - "I need to manage application secrets. Rotate secret"
+        - "I need to manage application secrets. List all secrets"
 
   - name: configure_service_mesh
     descriptions:
@@ -1083,6 +1203,11 @@ tools:
         - "Configure circuit breaker"
         - "Enable mTLS for service"
         - "Create retry policy"
+      single_clear:
+        - "I need to configure a service mesh. Set up canary routing"
+        - "I need to configure a service mesh. Configure circuit breaker"
+        - "I need to configure a service mesh. Enable mTLS for service"
+        - "I need to configure a service mesh. Create retry policy"
 
   - name: manage_container_registry
     descriptions:
@@ -1130,6 +1255,11 @@ tools:
         - "List container images"
         - "Scan image for vulnerabilities"
         - "Delete old images"
+      single_clear:
+        - "I need to manage container images. Push image to ECR"
+        - "I need to manage container images. List container images"
+        - "I need to manage container images. Scan image for vulnerabilities"
+        - "I need to manage container images. Delete old images"
 
   - name: manage_feature_flags
     descriptions:
@@ -1178,6 +1308,11 @@ tools:
         - "Enable feature for 10%"
         - "Toggle feature flag"
         - "Set targeting rules"
+      single_clear:
+        - "I need to manage feature flags. Create feature flag"
+        - "I need to manage feature flags. Enable feature for 10%"
+        - "I need to manage feature flags. Toggle feature flag"
+        - "I need to manage feature flags. Set targeting rules"
 
   - name: manage_ssl_certificates
     descriptions:
@@ -1229,3 +1364,8 @@ tools:
         - "Renew expiring certificate"
         - "Install certificate on server"
         - "List all certificates"
+      single_clear:
+        - "I need to manage SSL certificates. Create SSL certificate"
+        - "I need to manage SSL certificates. Renew expiring certificate"
+        - "I need to manage SSL certificates. Install certificate on server"
+        - "I need to manage SSL certificates. List all certificates"

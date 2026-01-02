@@ -33,6 +33,11 @@ tools:
         - "What's the latitude and longitude of the Eiffel Tower?"
         - "Geocode this address"
         - "Convert the address to GPS coordinates"
+      single_clear:
+        - "I need to convert an address to coordinates. Get the coordinates for 123 Main Street"
+        - "I need to convert an address to coordinates. What's the latitude and longitude of the Eiffel Tower?"
+        - "I need to convert an address to coordinates. Geocode this address"
+        - "I need to convert an address to coordinates. Convert the address to GPS coordinates"
 
   - name: reverse_geocode
     descriptions:
@@ -67,6 +72,11 @@ tools:
         - "Convert latitude 40.7128, longitude -74.0060 to an address"
         - "Reverse geocode this location"
         - "Find the address at this GPS position"
+      single_clear:
+        - "Please convert coordinates to an address. What address is at these coordinates?"
+        - "Please convert coordinates to an address. Convert latitude 40.7128, longitude -74.0060 to an address"
+        - "Please convert coordinates to an address. Reverse geocode this location"
+        - "Please convert coordinates to an address. Find the address at this GPS position"
 
   - name: calculate_distance
     descriptions:
@@ -107,6 +117,11 @@ tools:
         - "Calculate the driving distance between the two addresses"
         - "What's the distance between these coordinates?"
         - "How long would it take to drive from A to B?"
+      single_clear:
+        - "I need to calculate distance between locations. How far is it from New York to Boston?"
+        - "I need to calculate distance between locations. Calculate the driving distance between the two addresses"
+        - "I need to calculate distance between locations. What's the distance between these coordinates?"
+        - "I need to calculate distance between locations. How long would it take to drive from A to B?"
 
   - name: get_directions
     descriptions:
@@ -154,6 +169,11 @@ tools:
         - "How do I get to Central Park from here?"
         - "Give me walking directions to the restaurant"
         - "Navigate from A to B via C"
+      single_clear:
+        - "I need turn-by-turn navigation directions. Get directions from the office to the airport"
+        - "I need turn-by-turn navigation directions. How do I get to Central Park from here?"
+        - "I need turn-by-turn navigation directions. Give me walking directions to the restaurant"
+        - "I need turn-by-turn navigation directions. Navigate from A to B via C"
 
   - name: search_places
     descriptions:
@@ -196,6 +216,11 @@ tools:
         - "Search for restaurants in the area"
         - "What hotels are near the airport?"
         - "Find pharmacies within 1km"
+      single_clear:
+        - "I want to search for nearby places. Find coffee shops near me"
+        - "I want to search for nearby places. Search for restaurants in the area"
+        - "I want to search for nearby places. What hotels are near the airport?"
+        - "I want to search for nearby places. Find pharmacies within 1km"
 
   - name: get_place_details
     descriptions:
@@ -230,6 +255,11 @@ tools:
         - "What are the opening hours?"
         - "Show reviews for the hotel"
         - "Get contact info for the business"
+      single_clear:
+        - "I need detailed information about a place. Get details about this restaurant"
+        - "I need detailed information about a place. What are the opening hours?"
+        - "I need detailed information about a place. Show reviews for the hotel"
+        - "I need detailed information about a place. Get contact info for the business"
 
   - name: get_timezone
     descriptions:
@@ -262,6 +292,11 @@ tools:
         - "Get the timezone for these coordinates"
         - "What's the UTC offset for London?"
         - "Is Tokyo currently in daylight saving time?"
+      single_clear:
+        - "I need to get timezone information for a location. What timezone is New York in?"
+        - "I need to get timezone information for a location. Get the timezone for these coordinates"
+        - "I need to get timezone information for a location. What's the UTC offset for London?"
+        - "I need to get timezone information for a location. Is Tokyo currently in daylight saving time?"
 
   - name: get_elevation
     descriptions:
@@ -297,6 +332,11 @@ tools:
         - "Get the altitude of Mount Everest base camp"
         - "Find the elevation profile along this route"
         - "How high is this location above sea level?"
+      single_clear:
+        - "I need to get elevation data for coordinates. What's the elevation at these coordinates?"
+        - "I need to get elevation data for coordinates. Get the altitude of Mount Everest base camp"
+        - "I need to get elevation data for coordinates. Find the elevation profile along this route"
+        - "I need to get elevation data for coordinates. How high is this location above sea level?"
 
   - name: validate_address
     descriptions:
@@ -331,6 +371,11 @@ tools:
         - "Validate and format the shipping address"
         - "Check if this is a real address"
         - "Standardize the address format"
+      single_clear:
+        - "I need to validate and standardize an address. Is this address valid?"
+        - "I need to validate and standardize an address. Validate and format the shipping address"
+        - "I need to validate and standardize an address. Check if this is a real address"
+        - "I need to validate and standardize an address. Standardize the address format"
 
   - name: get_weather
     descriptions:
@@ -371,6 +416,11 @@ tools:
         - "Get the 5-day forecast for New York"
         - "What's the temperature right now?"
         - "Will it rain tomorrow in Seattle?"
+      single_clear:
+        - "I need to get weather information for a location. What's the weather in London?"
+        - "I need to get weather information for a location. Get the 5-day forecast for New York"
+        - "I need to get weather information for a location. What's the temperature right now?"
+        - "I need to get weather information for a location. Will it rain tomorrow in Seattle?"
   - name: optimize_route
     descriptions:
       minimal: "Optimize route"
@@ -415,6 +465,11 @@ tools:
         - "Optimize delivery route"
         - "Plan efficient multi-stop trip"
         - "Order these stops optimally"
+      single_clear:
+        - "I need to optimize a multi-stop route. Find best order for deliveries"
+        - "I need to optimize a multi-stop route. Optimize delivery route"
+        - "I need to optimize a multi-stop route. Plan efficient multi-stop trip"
+        - "I need to optimize a multi-stop route. Order these stops optimally"
 
   - name: create_geofence
     descriptions:
@@ -460,6 +515,11 @@ tools:
         - "Set up location trigger"
         - "Define geo boundary"
         - "Alert when user enters area"
+      single_clear:
+        - "I need to create a geographic boundary for location-based events. Create geofence around office"
+        - "I need to create a geographic boundary for location-based events. Set up location trigger"
+        - "I need to create a geographic boundary for location-based events. Define geo boundary"
+        - "I need to create a geographic boundary for location-based events. Alert when user enters area"
 
   - name: search_places_nearby
     descriptions:
@@ -507,6 +567,11 @@ tools:
         - "Search for gas stations"
         - "Find ATMs near me"
         - "Coffee shops within 500m"
+      single_clear:
+        - "I want to find places of a specific type nearby. Find restaurants nearby"
+        - "I want to find places of a specific type nearby. Search for gas stations"
+        - "I want to find places of a specific type nearby. Find ATMs near me"
+        - "I want to find places of a specific type nearby. Coffee shops within 500m"
 
   - name: get_place_details
     descriptions:
@@ -541,6 +606,11 @@ tools:
         - "Show place information"
         - "Get business hours"
         - "Show reviews for place"
+      single_clear:
+        - "I need detailed information about a place. Get restaurant details"
+        - "I need detailed information about a place. Show place information"
+        - "I need detailed information about a place. Get business hours"
+        - "I need detailed information about a place. Show reviews for place"
 
   - name: calculate_isochrone
     descriptions:
@@ -579,6 +649,11 @@ tools:
         - "Calculate reachable area"
         - "Where can I drive in 15 minutes"
         - "Generate isochrone map"
+      single_clear:
+        - "I need to calculate the area reachable within a travel time. Show 30 minute driving radius"
+        - "I need to calculate the area reachable within a travel time. Calculate reachable area"
+        - "I need to calculate the area reachable within a travel time. Where can I drive in 15 minutes"
+        - "I need to calculate the area reachable within a travel time. Generate isochrone map"
 
   - name: validate_address
     descriptions:
@@ -613,6 +688,11 @@ tools:
         - "Check if address is correct"
         - "Format address properly"
         - "Standardize shipping address"
+      single_clear:
+        - "I need to validate and standardize an address. Validate this address"
+        - "I need to validate and standardize an address. Check if address is correct"
+        - "I need to validate and standardize an address. Format address properly"
+        - "I need to validate and standardize an address. Standardize shipping address"
 
   - name: batch_geocode
     descriptions:
@@ -647,6 +727,11 @@ tools:
         - "Convert addresses to coordinates"
         - "Batch geocode CSV"
         - "Get lat/lng for addresses"
+      single_clear:
+        - "I need to geocode multiple addresses at once. Geocode list of addresses"
+        - "I need to geocode multiple addresses at once. Convert addresses to coordinates"
+        - "I need to geocode multiple addresses at once. Batch geocode CSV"
+        - "I need to geocode multiple addresses at once. Get lat/lng for addresses"
 
   - name: calculate_elevation
     descriptions:
@@ -684,6 +769,11 @@ tools:
         - "Show elevation profile"
         - "What's the altitude here"
         - "Calculate path elevation"
+      single_clear:
+        - "I need elevation data for a location. Get elevation of location"
+        - "I need elevation data for a location. Show elevation profile"
+        - "I need elevation data for a location. What's the altitude here"
+        - "I need elevation data for a location. Calculate path elevation"
 
   - name: track_location
     descriptions:
@@ -724,6 +814,11 @@ tools:
         - "Get location history"
         - "Track delivery truck"
         - "Show current position"
+      single_clear:
+        - "I need to track a device location over time. Start tracking device"
+        - "I need to track a device location over time. Get location history"
+        - "I need to track a device location over time. Track delivery truck"
+        - "I need to track a device location over time. Show current position"
 
   - name: find_nearest_location
     descriptions:
@@ -767,6 +862,11 @@ tools:
         - "Closest hospital to me"
         - "Nearby restaurants"
         - "Find ATM near location"
+      single_clear:
+        - "I need to find the nearest point of interest. Find nearest gas station"
+        - "I need to find the nearest point of interest. Closest hospital to me"
+        - "I need to find the nearest point of interest. Nearby restaurants"
+        - "I need to find the nearest point of interest. Find ATM near location"
 
   - name: create_isochrone
     descriptions:
@@ -809,6 +909,11 @@ tools:
         - "Show 30-minute driving range"
         - "Generate travel time polygon"
         - "What area can I reach in 15 minutes"
+      single_clear:
+        - "I need to generate a travel time isochrone map. Create isochrone map"
+        - "I need to generate a travel time isochrone map. Show 30-minute driving range"
+        - "I need to generate a travel time isochrone map. Generate travel time polygon"
+        - "I need to generate a travel time isochrone map. What area can I reach in 15 minutes"
 
   - name: snap_to_road
     descriptions:
@@ -839,6 +944,11 @@ tools:
         - "Match coordinates to road"
         - "Clean GPS trace"
         - "Road snap these points"
+      single_clear:
+        - "I need to snap GPS coordinates to the nearest road. Snap GPS to road"
+        - "I need to snap GPS coordinates to the nearest road. Match coordinates to road"
+        - "I need to snap GPS coordinates to the nearest road. Clean GPS trace"
+        - "I need to snap GPS coordinates to the nearest road. Road snap these points"
 
   - name: get_elevation
     descriptions:
@@ -869,6 +979,11 @@ tools:
         - "What's the altitude here"
         - "Elevation along route"
         - "Get terrain height"
+      single_clear:
+        - "I need to get elevation data for coordinates. Get elevation for coordinates"
+        - "I need to get elevation data for coordinates. What's the altitude here"
+        - "I need to get elevation data for coordinates. Elevation along route"
+        - "I need to get elevation data for coordinates. Get terrain height"
 
   - name: validate_address
     descriptions:
@@ -903,6 +1018,11 @@ tools:
         - "Check if address is valid"
         - "Standardize address format"
         - "Verify postal address"
+      single_clear:
+        - "I need to validate and standardize an address. Validate this address"
+        - "I need to validate and standardize an address. Check if address is valid"
+        - "I need to validate and standardize an address. Standardize address format"
+        - "I need to validate and standardize an address. Verify postal address"
 
   - name: create_geofence
     descriptions:
@@ -949,6 +1069,11 @@ tools:
         - "Set up location boundary"
         - "Define geo zone"
         - "Create location trigger"
+      single_clear:
+        - "I need to create a geographic boundary for location-based events. Create geofence"
+        - "I need to create a geographic boundary for location-based events. Set up location boundary"
+        - "I need to create a geographic boundary for location-based events. Define geo zone"
+        - "I need to create a geographic boundary for location-based events. Create location trigger"
 
   - name: batch_geocode
     descriptions:
@@ -983,6 +1108,11 @@ tools:
         - "Batch geocode list"
         - "Bulk address lookup"
         - "Convert addresses to coordinates"
+      single_clear:
+        - "I need to geocode multiple addresses at once. Geocode multiple addresses"
+        - "I need to geocode multiple addresses at once. Batch geocode list"
+        - "I need to geocode multiple addresses at once. Bulk address lookup"
+        - "I need to geocode multiple addresses at once. Convert addresses to coordinates"
 
   - name: get_speed_limit
     descriptions:
@@ -1016,6 +1146,11 @@ tools:
         - "What's the speed limit"
         - "Speed limit for this road"
         - "Check road speed limit"
+      single_clear:
+        - "I need to get the speed limit for a road. Get speed limit here"
+        - "I need to get the speed limit for a road. What's the speed limit"
+        - "I need to get the speed limit for a road. Speed limit for this road"
+        - "I need to get the speed limit for a road. Check road speed limit"
 
   - name: get_static_map
     descriptions:
@@ -1074,3 +1209,8 @@ tools:
         - "Create map image"
         - "Get map with markers"
         - "Make a map snapshot"
+      single_clear:
+        - "I need to generate a static map image. Generate static map"
+        - "I need to generate a static map image. Create map image"
+        - "I need to generate a static map image. Get map with markers"
+        - "I need to generate a static map image. Make a map snapshot"

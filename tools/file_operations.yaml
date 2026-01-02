@@ -25,6 +25,11 @@ tools:
         - "Show me what's in the README.md file"
         - "Open and display the content of /var/log/app.log"
         - "Get the text from document.txt"
+      single_clear:
+        - "I need to read and display the text contents of a file from the filesystem. Read the contents of config.json"
+        - "I need to read and display the text contents of a file from the filesystem. Show me what's in the README.md file"
+        - "I need to read and display the text contents of a file from the filesystem. Open and display the content of /var/log/app.log"
+        - "I need to read and display the text contents of a file from the filesystem. Get the text from document.txt"
       multi:
         - prompt: "Read config.json and then write its contents to backup.json"
           required_tools: ["read_file", "write_file"]
@@ -57,6 +62,11 @@ tools:
         - "Save the text 'Configuration updated' to config.log"
         - "Create a file called notes.txt with the content 'Meeting at 3pm'"
         - "Append 'New line' to the end of log.txt"
+      single_clear:
+        - "Please write text content to a file on the filesystem, creating it if it doesn't exist. Write 'Hello World' to output.txt"
+        - "Please write text content to a file on the filesystem, creating it if it doesn't exist. Save the text 'Configuration updated' to config.log"
+        - "Please write text content to a file on the filesystem, creating it if it doesn't exist. Create a file called notes.txt with the content 'Meeting at 3pm'"
+        - "Please write text content to a file on the filesystem, creating it if it doesn't exist. Append 'New line' to the end of log.txt"
 
   - name: delete_file
     descriptions:
@@ -81,6 +91,10 @@ tools:
         - "Delete the file temp.txt"
         - "Remove the old backup file backup.old"
         - "Delete cache.dat without asking for confirmation"
+      single_clear:
+        - "I need to permanently delete a file from the filesystem. Delete the file temp.txt"
+        - "I need to permanently delete a file from the filesystem. Remove the old backup file backup.old"
+        - "I need to permanently delete a file from the filesystem. Delete cache.dat without asking for confirmation"
 
   - name: copy_file
     descriptions:
@@ -109,6 +123,10 @@ tools:
         - "Copy config.json to config.backup.json"
         - "Make a copy of report.pdf in the archive folder"
         - "Duplicate the data.csv file to backup/data.csv"
+      single_clear:
+        - "Please copy a file to a new location while keeping the original intact. Copy config.json to config.backup.json"
+        - "Please copy a file to a new location while keeping the original intact. Make a copy of report.pdf in the archive folder"
+        - "Please copy a file to a new location while keeping the original intact. Duplicate the data.csv file to backup/data.csv"
 
   - name: move_file
     descriptions:
@@ -137,6 +155,10 @@ tools:
         - "Move report.pdf to the archive folder"
         - "Rename old_config.json to new_config.json"
         - "Move the downloaded file from downloads to documents"
+      single_clear:
+        - "I need to move or rename a file to a different location. Move report.pdf to the archive folder"
+        - "I need to move or rename a file to a different location. Rename old_config.json to new_config.json"
+        - "I need to move or rename a file to a different location. Move the downloaded file from downloads to documents"
 
   - name: list_directory
     descriptions:
@@ -166,6 +188,11 @@ tools:
         - "List the contents of the current directory"
         - "Find all Python files in the project directory"
         - "What files are in /var/log?"
+      single_clear:
+        - "Please list all the files and subdirectories in a directory. Show me all files in the src folder"
+        - "Please list all the files and subdirectories in a directory. List the contents of the current directory"
+        - "Please list all the files and subdirectories in a directory. Find all Python files in the project directory"
+        - "Please list all the files and subdirectories in a directory. What files are in /var/log?"
 
   - name: create_directory
     descriptions:
@@ -195,6 +222,10 @@ tools:
         - "Create a new folder called 'backup'"
         - "Make a directory at project/src/components"
         - "Create the output directory if it doesn't exist"
+      single_clear:
+        - "I need to create a new directory/folder on the filesystem. Create a new folder called 'backup'"
+        - "I need to create a new directory/folder on the filesystem. Make a directory at project/src/components"
+        - "I need to create a new directory/folder on the filesystem. Create the output directory if it doesn't exist"
 
   - name: get_file_info
     descriptions:
@@ -215,6 +246,11 @@ tools:
         - "When was config.json last modified?"
         - "Get information about the log file"
         - "Show me the metadata for document.docx"
+      single_clear:
+        - "Please get detailed metadata about a file including size, dates, and permissions. What is the size of report.pdf?"
+        - "Please get detailed metadata about a file including size, dates, and permissions. When was config.json last modified?"
+        - "Please get detailed metadata about a file including size, dates, and permissions. Get information about the log file"
+        - "Please get detailed metadata about a file including size, dates, and permissions. Show me the metadata for document.docx"
 
   - name: search_files
     descriptions:
@@ -244,6 +280,11 @@ tools:
         - "Search for Python files in the project"
         - "Find all files named 'config' in the system"
         - "Look for any JSON files in the data folder"
+      single_clear:
+        - "I need to search for files matching a pattern in a directory. Find all .log files in the logs directory"
+        - "I need to search for files matching a pattern in a directory. Search for Python files in the project"
+        - "I need to search for files matching a pattern in a directory. Find all files named 'config' in the system"
+        - "I need to search for files matching a pattern in a directory. Look for any JSON files in the data folder"
 
   - name: compress_files
     descriptions:
@@ -279,6 +320,11 @@ tools:
         - "Create a tar.gz archive of the logs directory"
         - "Zip up all the document files"
         - "Make a backup archive of the project"
+      single_clear:
+        - "Please compress files or directories into an archive. Compress the src folder into a zip file"
+        - "Please compress files or directories into an archive. Create a tar.gz archive of the logs directory"
+        - "Please compress files or directories into an archive. Zip up all the document files"
+        - "Please compress files or directories into an archive. Make a backup archive of the project"
 
   - name: extract_archive
     descriptions:
@@ -312,6 +358,11 @@ tools:
         - "Unzip the archive to the current directory"
         - "Extract only the CSV files from the archive"
         - "Decompress the tar.gz backup file"
+      single_clear:
+        - "I need to extract files from a compressed archive. Extract the zip file to the downloads folder"
+        - "I need to extract files from a compressed archive. Unzip the archive to the current directory"
+        - "I need to extract files from a compressed archive. Extract only the CSV files from the archive"
+        - "I need to extract files from a compressed archive. Decompress the tar.gz backup file"
 
   - name: rename_files_batch
     descriptions:
@@ -358,6 +409,11 @@ tools:
         - "Replace spaces with underscores in all filenames"
         - "Batch rename the photos with a date prefix"
         - "Change all file extensions from .txt to .md"
+      single_clear:
+        - "I need to batch rename multiple files at once using patterns or numbering. Rename all jpg files with sequential numbers"
+        - "I need to batch rename multiple files at once using patterns or numbering. Replace spaces with underscores in all filenames"
+        - "I need to batch rename multiple files at once using patterns or numbering. Batch rename the photos with a date prefix"
+        - "I need to batch rename multiple files at once using patterns or numbering. Change all file extensions from .txt to .md"
 
   - name: watch_directory
     descriptions:
@@ -392,6 +448,11 @@ tools:
         - "Monitor the config directory for changes"
         - "Set up a watcher for log file modifications"
         - "Alert me when files are deleted from the temp folder"
+      single_clear:
+        - "I need to monitor a directory for file changes in real-time. Watch the uploads folder for new files"
+        - "I need to monitor a directory for file changes in real-time. Monitor the config directory for changes"
+        - "I need to monitor a directory for file changes in real-time. Set up a watcher for log file modifications"
+        - "I need to monitor a directory for file changes in real-time. Alert me when files are deleted from the temp folder"
 
   - name: calculate_checksum
     descriptions:
@@ -418,6 +479,11 @@ tools:
         - "Get the MD5 hash of the ISO image"
         - "Verify the file checksum"
         - "Generate a checksum for the backup file"
+      single_clear:
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Calculate the SHA256 checksum of the downloaded file"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Get the MD5 hash of the ISO image"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Verify the file checksum"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Generate a checksum for the backup file"
 
   - name: sync_directories
     descriptions:
@@ -458,6 +524,11 @@ tools:
         - "Mirror the source directory to destination"
         - "Update the backup folder with new files"
         - "Synchronize the two directories"
+      single_clear:
+        - "I need to synchronize files between two directories, keeping them in sync. Sync the local folder to the backup drive"
+        - "I need to synchronize files between two directories, keeping them in sync. Mirror the source directory to destination"
+        - "I need to synchronize files between two directories, keeping them in sync. Update the backup folder with new files"
+        - "I need to synchronize files between two directories, keeping them in sync. Synchronize the two directories"
 
   - name: change_permissions
     descriptions:
@@ -487,6 +558,11 @@ tools:
         - "Change permissions to 644 on the config file"
         - "Set the folder permissions to 755"
         - "Remove write access from the log file"
+      single_clear:
+        - "I need to change file or directory permissions (read, write, execute). Make the script executable"
+        - "I need to change file or directory permissions (read, write, execute). Change permissions to 644 on the config file"
+        - "I need to change file or directory permissions (read, write, execute). Set the folder permissions to 755"
+        - "I need to change file or directory permissions (read, write, execute). Remove write access from the log file"
 
   - name: find_duplicates
     descriptions:
@@ -527,6 +603,11 @@ tools:
         - "Scan for duplicate documents"
         - "Find files with the same content in the directory"
         - "Identify duplicate images in the media library"
+      single_clear:
+        - "I need to find duplicate files in a directory based on content or size. Find duplicate files in my photos folder"
+        - "I need to find duplicate files in a directory based on content or size. Scan for duplicate documents"
+        - "I need to find duplicate files in a directory based on content or size. Find files with the same content in the directory"
+        - "I need to find duplicate files in a directory based on content or size. Identify duplicate images in the media library"
 
   - name: read_binary_file
     descriptions:
@@ -563,6 +644,11 @@ tools:
         - "Get the base64 encoding of the PDF"
         - "Read the first 100 bytes of the executable"
         - "Load the binary file as hex string"
+      single_clear:
+        - "I need to read a binary file and get its contents as base64 or hex encoded data. Read the binary content of the image file"
+        - "I need to read a binary file and get its contents as base64 or hex encoded data. Get the base64 encoding of the PDF"
+        - "I need to read a binary file and get its contents as base64 or hex encoded data. Read the first 100 bytes of the executable"
+        - "I need to read a binary file and get its contents as base64 or hex encoded data. Load the binary file as hex string"
 
   - name: write_binary_file
     descriptions:
@@ -598,6 +684,11 @@ tools:
         - "Write the binary data to a new file"
         - "Create a PDF from the encoded content"
         - "Save the hex string as a binary file"
+      single_clear:
+        - "I need to write binary data (base64 or hex encoded) to a file. Save the base64 data as an image file"
+        - "I need to write binary data (base64 or hex encoded) to a file. Write the binary data to a new file"
+        - "I need to write binary data (base64 or hex encoded) to a file. Create a PDF from the encoded content"
+        - "I need to write binary data (base64 or hex encoded) to a file. Save the hex string as a binary file"
 
   - name: get_disk_usage
     descriptions:
@@ -628,6 +719,11 @@ tools:
         - "Check the free space on the drive"
         - "Get disk usage for the home directory"
         - "Find the largest folders in the project"
+      single_clear:
+        - "I need to get disk space usage statistics for a file or directory. How much disk space is the logs folder using?"
+        - "I need to get disk space usage statistics for a file or directory. Check the free space on the drive"
+        - "I need to get disk space usage statistics for a file or directory. Get disk usage for the home directory"
+        - "I need to get disk space usage statistics for a file or directory. Find the largest folders in the project"
 
   - name: create_symlink
     descriptions:
@@ -657,6 +753,11 @@ tools:
         - "Make a symbolic link to the shared directory"
         - "Link the current config to the default config"
         - "Create a shortcut to the data folder"
+      single_clear:
+        - "I need to create a symbolic link that points to another file or directory. Create a symlink to the config file"
+        - "I need to create a symbolic link that points to another file or directory. Make a symbolic link to the shared directory"
+        - "I need to create a symbolic link that points to another file or directory. Link the current config to the default config"
+        - "I need to create a symbolic link that points to another file or directory. Create a shortcut to the data folder"
 
   - name: split_file
     descriptions:
@@ -689,6 +790,11 @@ tools:
         - "Divide the ISO into 5 equal parts"
         - "Break up the archive for email attachment"
         - "Split the video file into smaller pieces"
+      single_clear:
+        - "I need to split a large file into smaller chunks or parts. Split the large file into 100MB chunks"
+        - "I need to split a large file into smaller chunks or parts. Divide the ISO into 5 equal parts"
+        - "I need to split a large file into smaller chunks or parts. Break up the archive for email attachment"
+        - "I need to split a large file into smaller chunks or parts. Split the video file into smaller pieces"
 
   - name: join_files
     descriptions:
@@ -721,6 +827,11 @@ tools:
         - "Combine the chunks into the original file"
         - "Merge the file parts into one file"
         - "Reconstruct the ISO from the split pieces"
+      single_clear:
+        - "I need to join/combine split file parts back into the original file. Join the split file parts back together"
+        - "I need to join/combine split file parts back into the original file. Combine the chunks into the original file"
+        - "I need to join/combine split file parts back into the original file. Merge the file parts into one file"
+        - "I need to join/combine split file parts back into the original file. Reconstruct the ISO from the split pieces"
 
   - name: watch_file
     descriptions:
@@ -759,6 +870,11 @@ tools:
         - "Monitor the config directory"
         - "Notify me when the file is modified"
         - "Set up a file watcher on the logs folder"
+      single_clear:
+        - "I need to monitor a file for changes and trigger actions when modifications are detected. Watch this file for changes"
+        - "I need to monitor a file for changes and trigger actions when modifications are detected. Monitor the config directory"
+        - "I need to monitor a file for changes and trigger actions when modifications are detected. Notify me when the file is modified"
+        - "I need to monitor a file for changes and trigger actions when modifications are detected. Set up a file watcher on the logs folder"
 
   - name: get_file_checksum
     descriptions:
@@ -789,6 +905,11 @@ tools:
         - "Calculate the MD5 checksum"
         - "Verify the file against this hash"
         - "Check the file integrity"
+      single_clear:
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Get the SHA-256 hash of this file"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Calculate the MD5 checksum"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Verify the file against this hash"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Check the file integrity"
 
   - name: find_duplicates
     descriptions:
@@ -829,6 +950,11 @@ tools:
         - "Scan for duplicates in the backup directory"
         - "Identify duplicate files"
         - "Find files with the same content"
+      single_clear:
+        - "I need to find duplicate files in a directory based on content or size. Find duplicate files in my photos folder"
+        - "I need to find duplicate files in a directory based on content or size. Scan for duplicates in the backup directory"
+        - "I need to find duplicate files in a directory based on content or size. Identify duplicate files"
+        - "I need to find duplicate files in a directory based on content or size. Find files with the same content"
 
   - name: set_permissions
     descriptions:
@@ -862,6 +988,11 @@ tools:
         - "Set file permissions to 644"
         - "Change permissions on the directory"
         - "chmod 755 the file"
+      single_clear:
+        - "I need to set file or directory permissions (read, write, execute). Make the script executable"
+        - "I need to set file or directory permissions (read, write, execute). Set file permissions to 644"
+        - "I need to set file or directory permissions (read, write, execute). Change permissions on the directory"
+        - "I need to set file or directory permissions (read, write, execute). chmod 755 the file"
 
   - name: set_owner
     descriptions:
@@ -900,6 +1031,11 @@ tools:
         - "Set the group to www-data"
         - "Change ownership of the directory"
         - "chown the files to the web user"
+      single_clear:
+        - "I need to change the owner and/or group of a file or directory. Change the owner of this file to nginx"
+        - "I need to change the owner and/or group of a file or directory. Set the group to www-data"
+        - "I need to change the owner and/or group of a file or directory. Change ownership of the directory"
+        - "I need to change the owner and/or group of a file or directory. chown the files to the web user"
 
   - name: create_symlink
     descriptions:
@@ -934,6 +1070,11 @@ tools:
         - "Link 'current' to the latest version"
         - "Create a symbolic link"
         - "Make a shortcut to this directory"
+      single_clear:
+        - "I need to create a symbolic link that points to another file or directory. Create a symlink to the config file"
+        - "I need to create a symbolic link that points to another file or directory. Link 'current' to the latest version"
+        - "I need to create a symbolic link that points to another file or directory. Create a symbolic link"
+        - "I need to create a symbolic link that points to another file or directory. Make a shortcut to this directory"
 
   - name: get_disk_usage
     descriptions:
@@ -973,6 +1114,11 @@ tools:
         - "Get disk usage for /var/log"
         - "Calculate the size of this directory"
         - "Show disk usage breakdown by folder"
+      single_clear:
+        - "I need to get disk space usage statistics for a file or directory. How much space is the folder using?"
+        - "I need to get disk space usage statistics for a file or directory. Get disk usage for /var/log"
+        - "I need to get disk space usage statistics for a file or directory. Calculate the size of this directory"
+        - "I need to get disk space usage statistics for a file or directory. Show disk usage breakdown by folder"
 
   - name: search_file_content
     descriptions:
@@ -1025,6 +1171,11 @@ tools:
         - "Find all files containing 'TODO'"
         - "Grep for the pattern in the source code"
         - "Search for this text in the directory"
+      single_clear:
+        - "I need to search for text or patterns within files, similar to grep. Search for 'error' in the log files"
+        - "I need to search for text or patterns within files, similar to grep. Find all files containing 'TODO'"
+        - "I need to search for text or patterns within files, similar to grep. Grep for the pattern in the source code"
+        - "I need to search for text or patterns within files, similar to grep. Search for this text in the directory"
 
   - name: tail_file
     descriptions:
@@ -1067,3 +1218,8 @@ tools:
         - "Tail the log file"
         - "Follow the application log"
         - "Watch the log file for new entries"
+      single_clear:
+        - "I need to display the last lines of a file, optionally following for new content. Show the last 100 lines of the log"
+        - "I need to display the last lines of a file, optionally following for new content. Tail the log file"
+        - "I need to display the last lines of a file, optionally following for new content. Follow the application log"
+        - "I need to display the last lines of a file, optionally following for new content. Watch the log file for new entries"

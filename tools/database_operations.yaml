@@ -38,6 +38,11 @@ tools:
         - "Execute SELECT * FROM users"
         - "Query the database"
         - "Run an INSERT statement"
+      single_clear:
+        - "I need to execute a SQL query against a database and retrieve the results. Run this SQL query"
+        - "I need to execute a SQL query against a database and retrieve the results. Execute SELECT * FROM users"
+        - "I need to execute a SQL query against a database and retrieve the results. Query the database"
+        - "I need to execute a SQL query against a database and retrieve the results. Run an INSERT statement"
 
   - name: create_table
     descriptions:
@@ -75,6 +80,11 @@ tools:
         - "Define a new table with these columns"
         - "Create the orders table"
         - "Set up a new database table"
+      single_clear:
+        - "Please create a new database table with specified columns and data types. Create a users table"
+        - "Please create a new database table with specified columns and data types. Define a new table with these columns"
+        - "Please create a new database table with specified columns and data types. Create the orders table"
+        - "Please create a new database table with specified columns and data types. Set up a new database table"
 
   - name: backup_database
     descriptions:
@@ -120,6 +130,11 @@ tools:
         - "Create a database dump"
         - "Export the database to SQL"
         - "Make a backup of the users table"
+      single_clear:
+        - "I need to create a backup dump of the database. Backup the database"
+        - "I need to create a backup dump of the database. Create a database dump"
+        - "I need to create a backup dump of the database. Export the database to SQL"
+        - "I need to create a backup dump of the database. Make a backup of the users table"
 
   - name: restore_database
     descriptions:
@@ -158,6 +173,11 @@ tools:
         - "Import the SQL dump"
         - "Restore from this backup file"
         - "Recover the database"
+      single_clear:
+        - "Please restore a database from a backup file. Restore the database from backup"
+        - "Please restore a database from a backup file. Import the SQL dump"
+        - "Please restore a database from a backup file. Restore from this backup file"
+        - "Please restore a database from a backup file. Recover the database"
 
   - name: create_index
     descriptions:
@@ -206,6 +226,11 @@ tools:
         - "Add an index to the users table"
         - "Create a composite index"
         - "Add a unique index"
+      single_clear:
+        - "I need to create a database index on columns for faster queries. Create an index on the email column"
+        - "I need to create a database index on columns for faster queries. Add an index to the users table"
+        - "I need to create a database index on columns for faster queries. Create a composite index"
+        - "I need to create a database index on columns for faster queries. Add a unique index"
 
   - name: analyze_query
     descriptions:
@@ -246,6 +271,11 @@ tools:
         - "Analyze the query performance"
         - "Show the execution plan"
         - "Why is this query slow?"
+      single_clear:
+        - "Please analyze a SQL query's execution plan for optimization. Explain this query"
+        - "Please analyze a SQL query's execution plan for optimization. Analyze the query performance"
+        - "Please analyze a SQL query's execution plan for optimization. Show the execution plan"
+        - "Please analyze a SQL query's execution plan for optimization. Why is this query slow?"
 
   - name: manage_connection_pool
     descriptions:
@@ -286,6 +316,11 @@ tools:
         - "Resize the connection pool"
         - "Create a connection pool"
         - "Drain idle connections"
+      single_clear:
+        - "I need to manage database connection pool settings. Show connection pool stats"
+        - "I need to manage database connection pool settings. Resize the connection pool"
+        - "I need to manage database connection pool settings. Create a connection pool"
+        - "I need to manage database connection pool settings. Drain idle connections"
 
   - name: migrate_database
     descriptions:
@@ -325,6 +360,11 @@ tools:
         - "Rollback the last migration"
         - "Check migration status"
         - "Create a new migration"
+      single_clear:
+        - "I need to run database schema migrations. Run pending migrations"
+        - "I need to run database schema migrations. Rollback the last migration"
+        - "I need to run database schema migrations. Check migration status"
+        - "I need to run database schema migrations. Create a new migration"
 
   - name: replicate_database
     descriptions:
@@ -364,6 +404,11 @@ tools:
         - "Check replication status"
         - "Promote the replica to primary"
         - "Configure master-slave replication"
+      single_clear:
+        - "I need to configure database replication between primary and replica servers. Set up database replication"
+        - "I need to configure database replication between primary and replica servers. Check replication status"
+        - "I need to configure database replication between primary and replica servers. Promote the replica to primary"
+        - "I need to configure database replication between primary and replica servers. Configure master-slave replication"
 
   - name: vacuum_database
     descriptions:
@@ -403,6 +448,11 @@ tools:
         - "Update table statistics"
         - "Optimize the users table"
         - "Run database maintenance"
+      single_clear:
+        - "I need to vacuum and optimize database tables to reclaim space. Vacuum the database"
+        - "I need to vacuum and optimize database tables to reclaim space. Update table statistics"
+        - "I need to vacuum and optimize database tables to reclaim space. Optimize the users table"
+        - "I need to vacuum and optimize database tables to reclaim space. Run database maintenance"
   - name: execute_transaction
     descriptions:
       minimal: "Execute transaction"
@@ -442,6 +492,11 @@ tools:
         - "Run atomic database operation"
         - "Process transfer as transaction"
         - "Execute SQL with rollback on error"
+      single_clear:
+        - "I need to execute multiple SQL statements within a single atomic transaction. Execute statements in a transaction"
+        - "I need to execute multiple SQL statements within a single atomic transaction. Run atomic database operation"
+        - "I need to execute multiple SQL statements within a single atomic transaction. Process transfer as transaction"
+        - "I need to execute multiple SQL statements within a single atomic transaction. Execute SQL with rollback on error"
 
   - name: create_database_user
     descriptions:
@@ -486,6 +541,11 @@ tools:
         - "Add a read-only user"
         - "Set up application database user"
         - "Create user with limited permissions"
+      single_clear:
+        - "I need to create a new database user with specified roles and permissions. Create a database user"
+        - "I need to create a new database user with specified roles and permissions. Add a read-only user"
+        - "I need to create a new database user with specified roles and permissions. Set up application database user"
+        - "I need to create a new database user with specified roles and permissions. Create user with limited permissions"
 
   - name: monitor_database_performance
     descriptions:
@@ -525,6 +585,11 @@ tools:
         - "Check database performance"
         - "Monitor active connections"
         - "Get database metrics"
+      single_clear:
+        - "I need to get database performance metrics and identify slow queries. Show slow database queries"
+        - "I need to get database performance metrics and identify slow queries. Check database performance"
+        - "I need to get database performance metrics and identify slow queries. Monitor active connections"
+        - "I need to get database performance metrics and identify slow queries. Get database metrics"
 
   - name: manage_database_connection_pool
     descriptions:
@@ -566,6 +631,11 @@ tools:
         - "Check pool status"
         - "Increase max connections"
         - "Reset connection pool"
+      single_clear:
+        - "I need to configure and monitor database connection pool settings. Configure connection pool"
+        - "I need to configure and monitor database connection pool settings. Check pool status"
+        - "I need to configure and monitor database connection pool settings. Increase max connections"
+        - "I need to configure and monitor database connection pool settings. Reset connection pool"
 
   - name: import_data
     descriptions:
@@ -613,6 +683,11 @@ tools:
         - "Load data from file"
         - "Bulk import products"
         - "Import JSON data"
+      single_clear:
+        - "I need to import data from files into database tables. Import CSV into database"
+        - "I need to import data from files into database tables. Load data from file"
+        - "I need to import data from files into database tables. Bulk import products"
+        - "I need to import data from files into database tables. Import JSON data"
 
   - name: export_data
     descriptions:
@@ -660,6 +735,11 @@ tools:
         - "Download query results"
         - "Export database data"
         - "Save table to JSON"
+      single_clear:
+        - "I need to export data from database tables to files. Export table to CSV"
+        - "I need to export data from database tables to files. Download query results"
+        - "I need to export data from database tables to files. Export database data"
+        - "I need to export data from database tables to files. Save table to JSON"
 
   - name: clone_database
     descriptions:
@@ -703,6 +783,11 @@ tools:
         - "Copy database for testing"
         - "Create database copy"
         - "Clone with anonymized data"
+      single_clear:
+        - "I need to create a copy of a database for testing or development. Clone production to staging"
+        - "I need to create a copy of a database for testing or development. Copy database for testing"
+        - "I need to create a copy of a database for testing or development. Create database copy"
+        - "I need to create a copy of a database for testing or development. Clone with anonymized data"
 
   - name: manage_database_schema
     descriptions:
@@ -741,6 +826,11 @@ tools:
         - "Show schema differences"
         - "Sync schema changes"
         - "Generate migration script"
+      single_clear:
+        - "I need to view, compare, or sync database schemas. Compare database schemas"
+        - "I need to view, compare, or sync database schemas. Show schema differences"
+        - "I need to view, compare, or sync database schemas. Sync schema changes"
+        - "I need to view, compare, or sync database schemas. Generate migration script"
 
   - name: query_explain
     descriptions:
@@ -780,6 +870,10 @@ tools:
         - "Explain this query"
         - "Show query execution plan"
         - "Analyze slow query"
+      single_clear:
+        - "I need to analyze a query execution plan for optimization. Explain this query"
+        - "I need to analyze a query execution plan for optimization. Show query execution plan"
+        - "I need to analyze a query execution plan for optimization. Analyze slow query"
 
   - name: manage_database_replication
     descriptions:
@@ -821,6 +915,11 @@ tools:
         - "Check replication status"
         - "Failover to replica"
         - "Add read replica"
+      single_clear:
+        - "I need to configure and manage database replication for high availability. Set up database replication"
+        - "I need to configure and manage database replication for high availability. Check replication status"
+        - "I need to configure and manage database replication for high availability. Failover to replica"
+        - "I need to configure and manage database replication for high availability. Add read replica"
 
   - name: manage_database_partitions
     descriptions:
@@ -867,6 +966,11 @@ tools:
         - "List partitions"
         - "Archive old partitions"
         - "Set up monthly partitioning"
+      single_clear:
+        - "I need to create and manage table partitions for large datasets. Create table partition"
+        - "I need to create and manage table partitions for large datasets. List partitions"
+        - "I need to create and manage table partitions for large datasets. Archive old partitions"
+        - "I need to create and manage table partitions for large datasets. Set up monthly partitioning"
 
   - name: manage_database_connections
     descriptions:
@@ -909,6 +1013,11 @@ tools:
         - "Kill blocking session"
         - "Configure connection pool"
         - "Show connection stats"
+      single_clear:
+        - "I need to monitor and manage database connection pools. List database connections"
+        - "I need to monitor and manage database connection pools. Kill blocking session"
+        - "I need to monitor and manage database connection pools. Configure connection pool"
+        - "I need to monitor and manage database connection pools. Show connection stats"
 
   - name: manage_database_locks
     descriptions:
@@ -952,6 +1061,11 @@ tools:
         - "Find blocking queries"
         - "Detect deadlocks"
         - "Kill blocking lock"
+      single_clear:
+        - "I need to monitor and manage database locks and deadlocks. Show database locks"
+        - "I need to monitor and manage database locks and deadlocks. Find blocking queries"
+        - "I need to monitor and manage database locks and deadlocks. Detect deadlocks"
+        - "I need to monitor and manage database locks and deadlocks. Kill blocking lock"
 
   - name: manage_database_schema_changes
     descriptions:
@@ -994,6 +1108,11 @@ tools:
         - "Rollback schema change"
         - "Check migration status"
         - "Generate new migration"
+      single_clear:
+        - "I need to execute and track database schema migrations. Apply database migration"
+        - "I need to execute and track database schema migrations. Rollback schema change"
+        - "I need to execute and track database schema migrations. Check migration status"
+        - "I need to execute and track database schema migrations. Generate new migration"
 
   - name: manage_database_audit
     descriptions:
@@ -1037,6 +1156,11 @@ tools:
         - "Query audit logs"
         - "Export audit data"
         - "Configure audit settings"
+      single_clear:
+        - "I need to configure and query database audit logs. Enable database auditing"
+        - "I need to configure and query database audit logs. Query audit logs"
+        - "I need to configure and query database audit logs. Export audit data"
+        - "I need to configure and query database audit logs. Configure audit settings"
 
   - name: manage_database_triggers
     descriptions:
@@ -1083,6 +1207,11 @@ tools:
         - "List table triggers"
         - "Disable trigger"
         - "Set up audit trigger"
+      single_clear:
+        - "I need to create and manage database triggers for automated actions. Create database trigger"
+        - "I need to create and manage database triggers for automated actions. List table triggers"
+        - "I need to create and manage database triggers for automated actions. Disable trigger"
+        - "I need to create and manage database triggers for automated actions. Set up audit trigger"
 
   - name: analyze_database_performance
     descriptions:
@@ -1129,6 +1258,11 @@ tools:
         - "Find slow queries"
         - "Check index usage"
         - "Generate performance report"
+      single_clear:
+        - "I need to analyze database performance metrics and identify issues. Analyze database performance"
+        - "I need to analyze database performance metrics and identify issues. Find slow queries"
+        - "I need to analyze database performance metrics and identify issues. Check index usage"
+        - "I need to analyze database performance metrics and identify issues. Generate performance report"
 
   - name: manage_database_encryption
     descriptions:
@@ -1176,3 +1310,9 @@ tools:
         - "Configure TLS"
         - "Encrypt sensitive column"
         - "Get query plan with timing"
+      single_clear:
+        - "I need to configure data encryption at rest and in transit. Enable database encryption"
+        - "I need to configure data encryption at rest and in transit. Rotate encryption key"
+        - "I need to configure data encryption at rest and in transit. Configure TLS"
+        - "I need to configure data encryption at rest and in transit. Encrypt sensitive column"
+        - "I need to configure data encryption at rest and in transit. Get query plan with timing"

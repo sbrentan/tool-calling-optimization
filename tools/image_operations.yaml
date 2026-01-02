@@ -44,6 +44,11 @@ tools:
         - "Scale down the photo to fit within 1920x1080"
         - "Make the image 50% smaller"
         - "Resize the picture while keeping aspect ratio"
+      single_clear:
+        - "I need to resize an image to different dimensions. Resize the image to 800x600"
+        - "I need to resize an image to different dimensions. Scale down the photo to fit within 1920x1080"
+        - "I need to resize an image to different dimensions. Make the image 50% smaller"
+        - "I need to resize an image to different dimensions. Resize the picture while keeping aspect ratio"
 
   - name: crop_image
     descriptions:
@@ -94,6 +99,11 @@ tools:
         - "Cut out the center 500x500 pixels"
         - "Crop the photo to 16:9 aspect ratio"
         - "Remove the edges of the image"
+      single_clear:
+        - "Please crop an image to specific bounds. Crop the image to a 1:1 square"
+        - "Please crop an image to specific bounds. Cut out the center 500x500 pixels"
+        - "Please crop an image to specific bounds. Crop the photo to 16:9 aspect ratio"
+        - "Please crop an image to specific bounds. Remove the edges of the image"
 
   - name: rotate_image
     descriptions:
@@ -132,6 +142,11 @@ tools:
         - "Turn the photo 45 degrees"
         - "Flip the image upside down (rotate 180)"
         - "Rotate the image by 15 degrees"
+      single_clear:
+        - "I need to rotate an image by a certain angle. Rotate the image 90 degrees clockwise"
+        - "I need to rotate an image by a certain angle. Turn the photo 45 degrees"
+        - "I need to rotate an image by a certain angle. Flip the image upside down (rotate 180)"
+        - "I need to rotate an image by a certain angle. Rotate the image by 15 degrees"
 
   - name: flip_image
     descriptions:
@@ -161,6 +176,11 @@ tools:
         - "Mirror the photo"
         - "Flip the image upside down"
         - "Create a mirror image"
+      single_clear:
+        - "I want to flip or mirror an image. Flip the image horizontally"
+        - "I want to flip or mirror an image. Mirror the photo"
+        - "I want to flip or mirror an image. Flip the image upside down"
+        - "I want to flip or mirror an image. Create a mirror image"
 
   - name: convert_image_format
     descriptions:
@@ -200,6 +220,11 @@ tools:
         - "Change the image format to WebP"
         - "Save the image as a GIF"
         - "Convert the photo to PNG format"
+      single_clear:
+        - "Please convert an image to a different format. Convert the PNG to JPEG"
+        - "Please convert an image to a different format. Change the image format to WebP"
+        - "Please convert an image to a different format. Save the image as a GIF"
+        - "Please convert an image to a different format. Convert the photo to PNG format"
 
   - name: compress_image
     descriptions:
@@ -243,6 +268,11 @@ tools:
         - "Optimize the photo for web"
         - "Reduce the image size to under 500KB"
         - "Compress all images in the folder"
+      single_clear:
+        - "I need to compress an image to reduce its file size. Compress the image to reduce file size"
+        - "I need to compress an image to reduce its file size. Optimize the photo for web"
+        - "I need to compress an image to reduce its file size. Reduce the image size to under 500KB"
+        - "I need to compress an image to reduce its file size. Compress all images in the folder"
 
   - name: apply_filter
     descriptions:
@@ -281,6 +311,11 @@ tools:
         - "Apply a sepia filter to the photo"
         - "Blur the image slightly"
         - "Sharpen the photo"
+      single_clear:
+        - "I want to apply a visual filter to an image. Convert the image to grayscale"
+        - "I want to apply a visual filter to an image. Apply a sepia filter to the photo"
+        - "I want to apply a visual filter to an image. Blur the image slightly"
+        - "I want to apply a visual filter to an image. Sharpen the photo"
 
   - name: add_watermark
     descriptions:
@@ -339,6 +374,11 @@ tools:
         - "Put my logo on the image"
         - "Add 'DRAFT' watermark to the document image"
         - "Watermark the image with my website"
+      single_clear:
+        - "I need to add a watermark to an image. Add a copyright watermark to the photo"
+        - "I need to add a watermark to an image. Put my logo on the image"
+        - "I need to add a watermark to an image. Add 'DRAFT' watermark to the document image"
+        - "I need to add a watermark to an image. Watermark the image with my website"
 
   - name: get_image_info
     descriptions:
@@ -369,6 +409,11 @@ tools:
         - "What format is this image?"
         - "Show me the EXIF data for the photo"
         - "Get the image resolution and color mode"
+      single_clear:
+        - "I need to get information about an image. Get the dimensions of the image"
+        - "I need to get information about an image. What format is this image?"
+        - "I need to get information about an image. Show me the EXIF data for the photo"
+        - "I need to get information about an image. Get the image resolution and color mode"
 
   - name: create_thumbnail
     descriptions:
@@ -409,6 +454,11 @@ tools:
         - "Generate 150px thumbnails for all images"
         - "Make a small preview image"
         - "Create a square thumbnail for the gallery"
+      single_clear:
+        - "I want to create a thumbnail from an image. Create a thumbnail of the photo"
+        - "I want to create a thumbnail from an image. Generate 150px thumbnails for all images"
+        - "I want to create a thumbnail from an image. Make a small preview image"
+        - "I want to create a thumbnail from an image. Create a square thumbnail for the gallery"
 
   - name: overlay_images
     descriptions:
@@ -458,6 +508,11 @@ tools:
         - "Overlay the frame on the image"
         - "Combine the two images"
         - "Add the overlay with 50% opacity"
+      single_clear:
+        - "I need to overlay one image on top of another. Put the logo on top of the photo"
+        - "I need to overlay one image on top of another. Overlay the frame on the image"
+        - "I need to overlay one image on top of another. Combine the two images"
+        - "I need to overlay one image on top of another. Add the overlay with 50% opacity"
 
   - name: extract_colors
     descriptions:
@@ -499,6 +554,11 @@ tools:
         - "Extract the color palette from the photo"
         - "What are the dominant colors in this image?"
         - "Find the 5 most common colors"
+      single_clear:
+        - "I want to extract the dominant colors from an image. Get the main colors from the image"
+        - "I want to extract the dominant colors from an image. Extract the color palette from the photo"
+        - "I want to extract the dominant colors from an image. What are the dominant colors in this image?"
+        - "I want to extract the dominant colors from an image. Find the 5 most common colors"
 
   - name: ocr_image
     descriptions:
@@ -540,6 +600,11 @@ tools:
         - "Read the text in this image"
         - "OCR the scanned document"
         - "Get the text from the photo of the sign"
+      single_clear:
+        - "I need to extract text from an image using OCR. Extract text from the screenshot"
+        - "I need to extract text from an image using OCR. Read the text in this image"
+        - "I need to extract text from an image using OCR. OCR the scanned document"
+        - "I need to extract text from an image using OCR. Get the text from the photo of the sign"
 
   - name: generate_qr_code
     descriptions:
@@ -589,6 +654,11 @@ tools:
         - "Create a QR code with the Wi-Fi password"
         - "Make a QR code for this text"
         - "Generate a QR code with my logo"
+      single_clear:
+        - "I want to generate a QR code image. Generate a QR code for my website URL"
+        - "I want to generate a QR code image. Create a QR code with the Wi-Fi password"
+        - "I want to generate a QR code image. Make a QR code for this text"
+        - "I want to generate a QR code image. Generate a QR code with my logo"
 
   - name: read_barcode
     descriptions:
@@ -618,6 +688,11 @@ tools:
         - "Read the QR code from the photo"
         - "Decode all barcodes in the image"
         - "Get the UPC code from the product photo"
+      single_clear:
+        - "I need to scan and decode a barcode from an image. Scan the barcode in the image"
+        - "I need to scan and decode a barcode from an image. Read the QR code from the photo"
+        - "I need to scan and decode a barcode from an image. Decode all barcodes in the image"
+        - "I need to scan and decode a barcode from an image. Get the UPC code from the product photo"
 
   - name: create_collage
     descriptions:
@@ -668,6 +743,11 @@ tools:
         - "Combine the images into a grid"
         - "Make a photo collage with 3 columns"
         - "Create a horizontal collage of the pictures"
+      single_clear:
+        - "I want to create a collage from multiple images. Create a collage from these 4 photos"
+        - "I want to create a collage from multiple images. Combine the images into a grid"
+        - "I want to create a collage from multiple images. Make a photo collage with 3 columns"
+        - "I want to create a collage from multiple images. Create a horizontal collage of the pictures"
 
   - name: compare_images
     descriptions:
@@ -712,6 +792,11 @@ tools:
         - "Find the differences between the images"
         - "Calculate the similarity of the two photos"
         - "Create a diff image showing changes"
+      single_clear:
+        - "I need to compare two images for differences. Compare these two screenshots"
+        - "I need to compare two images for differences. Find the differences between the images"
+        - "I need to compare two images for differences. Calculate the similarity of the two photos"
+        - "I need to compare two images for differences. Create a diff image showing changes"
 
   - name: detect_faces
     descriptions:
@@ -753,6 +838,11 @@ tools:
         - "Detect faces in the group picture"
         - "How many people are in this image?"
         - "Locate the faces and their positions"
+      single_clear:
+        - "I want to detect faces in an image. Find all faces in this photo"
+        - "I want to detect faces in an image. Detect faces in the group picture"
+        - "I want to detect faces in an image. How many people are in this image?"
+        - "I want to detect faces in an image. Locate the faces and their positions"
 
   - name: remove_background
     descriptions:
@@ -797,6 +887,11 @@ tools:
         - "Make the background transparent"
         - "Cut out the person from the image"
         - "Create a product image with no background"
+      single_clear:
+        - "I need to remove the background from an image. Remove the background from this photo"
+        - "I need to remove the background from an image. Make the background transparent"
+        - "I need to remove the background from an image. Cut out the person from the image"
+        - "I need to remove the background from an image. Create a product image with no background"
 
   - name: apply_filter
     descriptions:
@@ -831,6 +926,11 @@ tools:
         - "Apply a vintage filter"
         - "Add a warm filter to the image"
         - "Make the photo black and white"
+      single_clear:
+        - "I want to apply an aesthetic filter to an image. Make this photo sepia"
+        - "I want to apply an aesthetic filter to an image. Apply a vintage filter"
+        - "I want to apply an aesthetic filter to an image. Add a warm filter to the image"
+        - "I want to apply an aesthetic filter to an image. Make the photo black and white"
 
   - name: create_collage
     descriptions:
@@ -876,6 +976,11 @@ tools:
         - "Combine images in a grid"
         - "Make a photo mosaic"
         - "Arrange these pictures in a collage"
+      single_clear:
+        - "I want to create a photo collage. Create a collage from these photos"
+        - "I want to create a photo collage. Combine images in a grid"
+        - "I want to create a photo collage. Make a photo mosaic"
+        - "I want to create a photo collage. Arrange these pictures in a collage"
 
   - name: create_gif
     descriptions:
@@ -923,6 +1028,11 @@ tools:
         - "Convert this video to GIF"
         - "Make an animated GIF"
         - "Create a looping GIF animation"
+      single_clear:
+        - "I want to create an animated GIF. Create a GIF from these images"
+        - "I want to create an animated GIF. Convert this video to GIF"
+        - "I want to create an animated GIF. Make an animated GIF"
+        - "I want to create an animated GIF. Create a looping GIF animation"
 
   - name: upscale_image
     descriptions:
@@ -968,6 +1078,11 @@ tools:
         - "Increase the resolution"
         - "Enhance this low-res photo"
         - "Make the image bigger without losing quality"
+      single_clear:
+        - "I need to upscale an image to higher resolution. Upscale this image to 4x"
+        - "I need to upscale an image to higher resolution. Increase the resolution"
+        - "I need to upscale an image to higher resolution. Enhance this low-res photo"
+        - "I need to upscale an image to higher resolution. Make the image bigger without losing quality"
 
   - name: add_border
     descriptions:
@@ -1013,6 +1128,11 @@ tools:
         - "Put a frame around the photo"
         - "Add a polaroid-style border"
         - "Create a rounded border"
+      single_clear:
+        - "I want to add a border or frame to an image. Add a black border to this image"
+        - "I want to add a border or frame to an image. Put a frame around the photo"
+        - "I want to add a border or frame to an image. Add a polaroid-style border"
+        - "I want to add a border or frame to an image. Create a rounded border"
 
   - name: extract_colors
     descriptions:
@@ -1055,6 +1175,11 @@ tools:
         - "Get the color palette"
         - "What are the dominant colors?"
         - "Create a color scheme from this photo"
+      single_clear:
+        - "I want to extract the dominant colors to create a palette. Extract the main colors from this image"
+        - "I want to extract the dominant colors to create a palette. Get the color palette"
+        - "I want to extract the dominant colors to create a palette. What are the dominant colors?"
+        - "I want to extract the dominant colors to create a palette. Create a color scheme from this photo"
 
   - name: detect_objects
     descriptions:
@@ -1096,3 +1221,8 @@ tools:
         - "Detect all objects in the photo"
         - "Find and label the objects"
         - "Identify items in this picture"
+      single_clear:
+        - "I need to detect and identify objects in an image. What objects are in this image?"
+        - "I need to detect and identify objects in an image. Detect all objects in the photo"
+        - "I need to detect and identify objects in an image. Find and label the objects"
+        - "I need to detect and identify objects in an image. Identify items in this picture"

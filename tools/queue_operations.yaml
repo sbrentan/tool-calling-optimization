@@ -44,6 +44,11 @@ tools:
         - "Queue the email"
         - "Enqueue background task"
         - "Schedule async job"
+      single_clear:
+        - "I need to add a job to the queue for processing. Add job to queue"
+        - "I need to add a job to the queue for processing. Queue the email"
+        - "I need to add a job to the queue for processing. Enqueue background task"
+        - "I need to add a job to the queue for processing. Schedule async job"
 
   - name: process_jobs
     descriptions:
@@ -83,6 +88,11 @@ tools:
         - "Run the worker"
         - "Process queue messages"
         - "Consume from queue"
+      single_clear:
+        - "I want to start processing jobs from the queue. Start processing jobs"
+        - "I want to start processing jobs from the queue. Run the worker"
+        - "I want to start processing jobs from the queue. Process queue messages"
+        - "I want to start processing jobs from the queue. Consume from queue"
 
   - name: get_queue_stats
     descriptions:
@@ -113,6 +123,11 @@ tools:
         - "How many jobs are pending?"
         - "Check queue status"
         - "Show queue metrics"
+      single_clear:
+        - "I need to retrieve statistics about the queue. Get queue statistics"
+        - "I need to retrieve statistics about the queue. How many jobs are pending?"
+        - "I need to retrieve statistics about the queue. Check queue status"
+        - "I need to retrieve statistics about the queue. Show queue metrics"
 
   - name: retry_failed_jobs
     descriptions:
@@ -151,6 +166,11 @@ tools:
         - "Reprocess failed emails"
         - "Move from dead-letter queue"
         - "Retry the timeout failures"
+      single_clear:
+        - "I want to retry jobs that have failed processing. Retry failed jobs"
+        - "I want to retry jobs that have failed processing. Reprocess failed emails"
+        - "I want to retry jobs that have failed processing. Move from dead-letter queue"
+        - "I want to retry jobs that have failed processing. Retry the timeout failures"
 
   - name: purge_queue
     descriptions:
@@ -189,6 +209,11 @@ tools:
         - "Clear all pending jobs"
         - "Delete old completed jobs"
         - "Clean up failed jobs"
+      single_clear:
+        - "I need to delete messages from the queue. Purge the queue"
+        - "I need to delete messages from the queue. Clear all pending jobs"
+        - "I need to delete messages from the queue. Delete old completed jobs"
+        - "I need to delete messages from the queue. Clean up failed jobs"
 
   - name: pause_queue
     descriptions:
@@ -224,6 +249,11 @@ tools:
         - "Stop processing jobs"
         - "Resume the email queue"
         - "Pause for maintenance"
+      single_clear:
+        - "I want to pause or resume queue processing. Pause the queue"
+        - "I want to pause or resume queue processing. Stop processing jobs"
+        - "I want to pause or resume queue processing. Resume the email queue"
+        - "I want to pause or resume queue processing. Pause for maintenance"
 
   - name: schedule_recurring
     descriptions:
@@ -266,6 +296,11 @@ tools:
         - "Create recurring task"
         - "Set up cron job"
         - "Schedule hourly cleanup"
+      single_clear:
+        - "I need to create a recurring scheduled job. Schedule a daily job"
+        - "I need to create a recurring scheduled job. Create recurring task"
+        - "I need to create a recurring scheduled job. Set up cron job"
+        - "I need to create a recurring scheduled job. Schedule hourly cleanup"
 
   - name: get_job_status
     descriptions:
@@ -296,6 +331,11 @@ tools:
         - "Is the job done?"
         - "Get job progress"
         - "Track job completion"
+      single_clear:
+        - "I want to check the status of a specific job. Check job status"
+        - "I want to check the status of a specific job. Is the job done?"
+        - "I want to check the status of a specific job. Get job progress"
+        - "I want to check the status of a specific job. Track job completion"
 
   - name: create_queue
     descriptions:
@@ -335,6 +375,11 @@ tools:
         - "Set up message queue"
         - "Create orders queue"
         - "Configure new queue"
+      single_clear:
+        - "I need to create a new message queue. Create a new queue"
+        - "I need to create a new message queue. Set up message queue"
+        - "I need to create a new message queue. Create orders queue"
+        - "I need to create a new message queue. Configure new queue"
 
   - name: delete_queue
     descriptions:
@@ -364,6 +409,11 @@ tools:
         - "Remove old queue"
         - "Clean up unused queue"
         - "Delete deprecated queue"
+      single_clear:
+        - "I want to delete a message queue and its messages. Delete the queue"
+        - "I want to delete a message queue and its messages. Remove old queue"
+        - "I want to delete a message queue and its messages. Clean up unused queue"
+        - "I want to delete a message queue and its messages. Delete deprecated queue"
   - name: schedule_message
     descriptions:
       minimal: "Schedule message"
@@ -395,6 +445,11 @@ tools:
         - "Send delayed message"
         - "Queue message in 1 hour"
         - "Schedule reminder message"
+      single_clear:
+        - "I need to schedule a message for future delivery. Schedule message for later"
+        - "I need to schedule a message for future delivery. Send delayed message"
+        - "I need to schedule a message for future delivery. Queue message in 1 hour"
+        - "I need to schedule a message for future delivery. Schedule reminder message"
 
   - name: configure_dead_letter_queue
     descriptions:
@@ -436,6 +491,11 @@ tools:
         - "Configure DLQ for failures"
         - "Handle failed messages"
         - "Create failure queue"
+      single_clear:
+        - "I want to configure a dead letter queue for failed messages. Set up dead letter queue"
+        - "I want to configure a dead letter queue for failed messages. Configure DLQ for failures"
+        - "I want to configure a dead letter queue for failed messages. Handle failed messages"
+        - "I want to configure a dead letter queue for failed messages. Create failure queue"
 
   - name: batch_send_messages
     descriptions:
@@ -465,6 +525,11 @@ tools:
         - "Queue multiple messages"
         - "Bulk send to queue"
         - "Batch enqueue messages"
+      single_clear:
+        - "I need to send multiple messages to the queue at once. Send batch of messages"
+        - "I need to send multiple messages to the queue at once. Queue multiple messages"
+        - "I need to send multiple messages to the queue at once. Bulk send to queue"
+        - "I need to send multiple messages to the queue at once. Batch enqueue messages"
 
   - name: redrive_messages
     descriptions:
@@ -503,6 +568,11 @@ tools:
         - "Retry DLQ messages"
         - "Move messages back to queue"
         - "Reprocess failed items"
+      single_clear:
+        - "I want to move messages from the dead letter queue back to the source. Redrive failed messages"
+        - "I want to move messages from the dead letter queue back to the source. Retry DLQ messages"
+        - "I want to move messages from the dead letter queue back to the source. Move messages back to queue"
+        - "I want to move messages from the dead letter queue back to the source. Reprocess failed items"
 
   - name: set_queue_attributes
     descriptions:
@@ -544,6 +614,11 @@ tools:
         - "Update retention period"
         - "Configure queue settings"
         - "Set message size limit"
+      single_clear:
+        - "I need to configure queue settings like retention and visibility. Change queue timeout"
+        - "I need to configure queue settings like retention and visibility. Update retention period"
+        - "I need to configure queue settings like retention and visibility. Configure queue settings"
+        - "I need to configure queue settings like retention and visibility. Set message size limit"
 
   - name: subscribe_to_queue
     descriptions:
@@ -581,6 +656,11 @@ tools:
         - "Add queue subscriber"
         - "Push messages to endpoint"
         - "Create queue subscription"
+      single_clear:
+        - "I want to subscribe an endpoint to receive messages from the queue. Subscribe webhook to queue"
+        - "I want to subscribe an endpoint to receive messages from the queue. Add queue subscriber"
+        - "I want to subscribe an endpoint to receive messages from the queue. Push messages to endpoint"
+        - "I want to subscribe an endpoint to receive messages from the queue. Create queue subscription"
 
   - name: get_queue_metrics
     descriptions:
@@ -616,6 +696,11 @@ tools:
         - "Get message statistics"
         - "Check queue throughput"
         - "Monitor queue performance"
+      single_clear:
+        - "I need to retrieve metrics and performance data for the queue. Show queue metrics"
+        - "I need to retrieve metrics and performance data for the queue. Get message statistics"
+        - "I need to retrieve metrics and performance data for the queue. Check queue throughput"
+        - "I need to retrieve metrics and performance data for the queue. Monitor queue performance"
 
   - name: set_queue_policy
     descriptions:
@@ -640,6 +725,11 @@ tools:
         - "Restrict queue access"
         - "Allow service to send"
         - "Configure queue permissions"
+      single_clear:
+        - "I want to configure access control policy for the queue. Set queue access policy"
+        - "I want to configure access control policy for the queue. Restrict queue access"
+        - "I want to configure access control policy for the queue. Allow service to send"
+        - "I want to configure access control policy for the queue. Configure queue permissions"
 
   - name: replay_messages
     descriptions:
@@ -677,6 +767,11 @@ tools:
         - "Reprocess from archive"
         - "Replay event stream"
         - "Restore messages from backup"
+      single_clear:
+        - "I need to replay archived messages for reprocessing. Replay yesterday's messages"
+        - "I need to replay archived messages for reprocessing. Reprocess from archive"
+        - "I need to replay archived messages for reprocessing. Replay event stream"
+        - "I need to replay archived messages for reprocessing. Restore messages from backup"
 
   - name: create_fifo_queue
     descriptions:
@@ -718,6 +813,11 @@ tools:
         - "Create ordered queue"
         - "Make exactly-once queue"
         - "Set up FIFO processing"
+      single_clear:
+        - "I want to create a FIFO queue with guaranteed message ordering. Create FIFO queue"
+        - "I want to create a FIFO queue with guaranteed message ordering. Create ordered queue"
+        - "I want to create a FIFO queue with guaranteed message ordering. Make exactly-once queue"
+        - "I want to create a FIFO queue with guaranteed message ordering. Set up FIFO processing"
 
   - name: batch_send_messages
     descriptions:
@@ -742,6 +842,11 @@ tools:
         - "Send multiple messages"
         - "Bulk queue messages"
         - "Send message batch"
+      single_clear:
+        - "I need to send multiple messages to the queue in a single batch. Batch send messages"
+        - "I need to send multiple messages to the queue in a single batch. Send multiple messages"
+        - "I need to send multiple messages to the queue in a single batch. Bulk queue messages"
+        - "I need to send multiple messages to the queue in a single batch. Send message batch"
 
   - name: batch_receive_messages
     descriptions:
@@ -781,6 +886,11 @@ tools:
         - "Get multiple messages"
         - "Poll queue for batch"
         - "Receive message batch"
+      single_clear:
+        - "I want to receive multiple messages from the queue at once. Batch receive messages"
+        - "I want to receive multiple messages from the queue at once. Get multiple messages"
+        - "I want to receive multiple messages from the queue at once. Poll queue for batch"
+        - "I want to receive multiple messages from the queue at once. Receive message batch"
 
   - name: batch_delete_messages
     descriptions:
@@ -805,6 +915,11 @@ tools:
         - "Delete multiple messages"
         - "Bulk acknowledge messages"
         - "Remove processed messages"
+      single_clear:
+        - "I need to delete multiple messages from the queue at once. Batch delete messages"
+        - "I need to delete multiple messages from the queue at once. Delete multiple messages"
+        - "I need to delete multiple messages from the queue at once. Bulk acknowledge messages"
+        - "I need to delete multiple messages from the queue at once. Remove processed messages"
 
   - name: change_message_visibility
     descriptions:
@@ -833,6 +948,11 @@ tools:
         - "Change visibility timeout"
         - "Give more processing time"
         - "Release message early"
+      single_clear:
+        - "I want to extend or shorten the visibility timeout of a message. Extend message timeout"
+        - "I want to extend or shorten the visibility timeout of a message. Change visibility timeout"
+        - "I want to extend or shorten the visibility timeout of a message. Give more processing time"
+        - "I want to extend or shorten the visibility timeout of a message. Release message early"
 
   - name: tag_queue
     descriptions:
@@ -857,6 +977,11 @@ tools:
         - "Add queue tags"
         - "Label queue for billing"
         - "Set queue metadata"
+      single_clear:
+        - "I need to add metadata tags to the queue. Tag the queue"
+        - "I need to add metadata tags to the queue. Add queue tags"
+        - "I need to add metadata tags to the queue. Label queue for billing"
+        - "I need to add metadata tags to the queue. Set queue metadata"
 
   - name: get_queue_url
     descriptions:
@@ -881,6 +1006,11 @@ tools:
         - "Find queue endpoint"
         - "Resolve queue name"
         - "What's the queue URL"
+      single_clear:
+        - "I want to retrieve the URL endpoint for a queue. Get queue URL"
+        - "I want to retrieve the URL endpoint for a queue. Find queue endpoint"
+        - "I want to retrieve the URL endpoint for a queue. Resolve queue name"
+        - "I want to retrieve the URL endpoint for a queue. What's the queue URL"
 
   - name: set_redrive_policy
     descriptions:
@@ -909,6 +1039,11 @@ tools:
         - "Configure DLQ"
         - "Set redrive policy"
         - "Move failed messages to DLQ"
+      single_clear:
+        - "I need to configure the dead letter queue redrive policy. Set up dead letter queue"
+        - "I need to configure the dead letter queue redrive policy. Configure DLQ"
+        - "I need to configure the dead letter queue redrive policy. Set redrive policy"
+        - "I need to configure the dead letter queue redrive policy. Move failed messages to DLQ"
 
   - name: redrive_messages
     descriptions:
@@ -946,6 +1081,11 @@ tools:
         - "Move messages from dead letter"
         - "Reprocess failed messages"
         - "Retry DLQ messages"
+      single_clear:
+        - "I want to move messages from the dead letter queue back to the source queue. Redrive DLQ messages"
+        - "I want to move messages from the dead letter queue back to the source queue. Move messages from dead letter"
+        - "I want to move messages from the dead letter queue back to the source queue. Reprocess failed messages"
+        - "I want to move messages from the dead letter queue back to the source queue. Retry DLQ messages"
 
   - name: schedule_message
     descriptions:
@@ -982,3 +1122,8 @@ tools:
         - "Send delayed message"
         - "Queue future message"
         - "Deliver message tomorrow"
+      single_clear:
+        - "I need to schedule a message to be delivered at a specific time. Schedule message for later"
+        - "I need to schedule a message to be delivered at a specific time. Send delayed message"
+        - "I need to schedule a message to be delivered at a specific time. Queue future message"
+        - "I need to schedule a message to be delivered at a specific time. Deliver message tomorrow"

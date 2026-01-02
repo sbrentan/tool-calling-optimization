@@ -113,3 +113,4 @@ class TestCase(BaseModel):
     category: str = Field(default="general", description="Test category")
     difficulty: str = Field(default="easy", description="Difficulty: easy, medium, hard")
     description: str = Field(default="", description="Description of what this test verifies")
+    prompt_type: str = Field(default="concise", description="Prompt type: concise or clear")

@@ -37,6 +37,11 @@ tools:
         - "Store in cache"
         - "Set cache with 1 hour TTL"
         - "Save to Redis"
+      single_clear:
+        - "I need to store a value in the cache. Cache this value"
+        - "I need to store a value in the cache. Store in cache"
+        - "I need to store a value in the cache. Set cache with 1 hour TTL"
+        - "I need to store a value in the cache. Save to Redis"
 
   - name: cache_get
     descriptions:
@@ -66,6 +71,11 @@ tools:
         - "Retrieve from cache"
         - "Check the cache"
         - "Get from Redis"
+      single_clear:
+        - "Please retrieve a value from the cache. Get cached value"
+        - "Please retrieve a value from the cache. Retrieve from cache"
+        - "Please retrieve a value from the cache. Check the cache"
+        - "Please retrieve a value from the cache. Get from Redis"
 
   - name: cache_invalidate
     descriptions:
@@ -99,6 +109,11 @@ tools:
         - "Invalidate user cache"
         - "Delete cached data"
         - "Flush Redis cache"
+      single_clear:
+        - "I need to remove a value from the cache. Clear the cache"
+        - "I need to remove a value from the cache. Invalidate user cache"
+        - "I need to remove a value from the cache. Delete cached data"
+        - "I need to remove a value from the cache. Flush Redis cache"
 
   - name: cache_stats
     descriptions:
@@ -128,6 +143,11 @@ tools:
         - "Show cache hit rate"
         - "Check Redis stats"
         - "Cache performance metrics"
+      single_clear:
+        - "I need to view cache performance statistics. Get cache statistics"
+        - "I need to view cache performance statistics. Show cache hit rate"
+        - "I need to view cache performance statistics. Check Redis stats"
+        - "I need to view cache performance statistics. Cache performance metrics"
 
   - name: cache_warm
     descriptions:
@@ -167,6 +187,11 @@ tools:
         - "Pre-load cache data"
         - "Populate cache from database"
         - "Initialize cache"
+      single_clear:
+        - "I need to pre-populate the cache with data. Warm the cache"
+        - "I need to pre-populate the cache with data. Pre-load cache data"
+        - "I need to pre-populate the cache with data. Populate cache from database"
+        - "I need to pre-populate the cache with data. Initialize cache"
 
   - name: cache_lock
     descriptions:
@@ -206,6 +231,11 @@ tools:
         - "Release the lock"
         - "Create distributed lock"
         - "Lock the resource"
+      single_clear:
+        - "I need to manage a distributed lock in the cache. Acquire a lock"
+        - "I need to manage a distributed lock in the cache. Release the lock"
+        - "I need to manage a distributed lock in the cache. Create distributed lock"
+        - "I need to manage a distributed lock in the cache. Lock the resource"
 
   - name: cache_increment
     descriptions:
@@ -244,6 +274,11 @@ tools:
         - "Increase view count"
         - "Decrement inventory"
         - "Update rate limit counter"
+      single_clear:
+        - "I need to atomically increment a counter in the cache. Increment the counter"
+        - "I need to atomically increment a counter in the cache. Increase view count"
+        - "I need to atomically increment a counter in the cache. Decrement inventory"
+        - "I need to atomically increment a counter in the cache. Update rate limit counter"
 
   - name: cache_list_ops
     descriptions:
@@ -289,6 +324,11 @@ tools:
         - "Pop from list"
         - "Get recent notifications"
         - "Push to Redis list"
+      single_clear:
+        - "I need to perform list operations in the cache. Add to the queue"
+        - "I need to perform list operations in the cache. Pop from list"
+        - "I need to perform list operations in the cache. Get recent notifications"
+        - "I need to perform list operations in the cache. Push to Redis list"
 
   - name: cache_hash_ops
     descriptions:
@@ -322,6 +362,11 @@ tools:
         - "Get hash fields"
         - "Update session hash"
         - "Set Redis hash"
+      single_clear:
+        - "I need to perform hash operations for structured data. Store user data in hash"
+        - "I need to perform hash operations for structured data. Get hash fields"
+        - "I need to perform hash operations for structured data. Update session hash"
+        - "I need to perform hash operations for structured data. Set Redis hash"
 
   - name: cache_pubsub
     descriptions:
@@ -356,6 +401,11 @@ tools:
         - "Subscribe to channel"
         - "Send cache invalidation"
         - "Broadcast message"
+      single_clear:
+        - "I need to use pub/sub messaging via the cache. Publish an event"
+        - "I need to use pub/sub messaging via the cache. Subscribe to channel"
+        - "I need to use pub/sub messaging via the cache. Send cache invalidation"
+        - "I need to use pub/sub messaging via the cache. Broadcast message"
   - name: configure_cache_cluster
     descriptions:
       minimal: "Configure cluster"
@@ -399,6 +449,11 @@ tools:
         - "Configure replication"
         - "Check cluster status"
         - "Rebalance cache nodes"
+      single_clear:
+        - "I need to configure the distributed cache cluster. Scale cache cluster"
+        - "I need to configure the distributed cache cluster. Configure replication"
+        - "I need to configure the distributed cache cluster. Check cluster status"
+        - "I need to configure the distributed cache cluster. Rebalance cache nodes"
 
   - name: warm_cache
     descriptions:
@@ -443,6 +498,11 @@ tools:
         - "Pre-populate cache"
         - "Load data into cache"
         - "Prepare cache for traffic"
+      single_clear:
+        - "I need to warm up the cache before traffic. Warm the cache"
+        - "I need to warm up the cache before traffic. Pre-populate cache"
+        - "I need to warm up the cache before traffic. Load data into cache"
+        - "I need to warm up the cache before traffic. Prepare cache for traffic"
 
   - name: analyze_cache_performance
     descriptions:
@@ -479,6 +539,11 @@ tools:
         - "Check cache performance"
         - "Show cache metrics"
         - "Monitor cache health"
+      single_clear:
+        - "I need to analyze cache performance metrics. Analyze cache hit rate"
+        - "I need to analyze cache performance metrics. Check cache performance"
+        - "I need to analyze cache performance metrics. Show cache metrics"
+        - "I need to analyze cache performance metrics. Monitor cache health"
 
   - name: manage_cache_policy
     descriptions:
@@ -514,6 +579,11 @@ tools:
         - "Configure eviction policy"
         - "Update cache policy"
         - "Set LRU eviction"
+      single_clear:
+        - "I need to configure cache eviction and memory policies. Set cache memory limit"
+        - "I need to configure cache eviction and memory policies. Configure eviction policy"
+        - "I need to configure cache eviction and memory policies. Update cache policy"
+        - "I need to configure cache eviction and memory policies. Set LRU eviction"
 
   - name: replicate_cache
     descriptions:
@@ -549,6 +619,11 @@ tools:
         - "Add cache replica"
         - "Configure primary-replica"
         - "Enable high availability"
+      single_clear:
+        - "I need to set up cache replication for high availability. Set up cache replication"
+        - "I need to set up cache replication for high availability. Add cache replica"
+        - "I need to set up cache replication for high availability. Configure primary-replica"
+        - "I need to set up cache replication for high availability. Enable high availability"
 
   - name: backup_cache
     descriptions:
@@ -589,6 +664,11 @@ tools:
         - "Create cache snapshot"
         - "Schedule cache backup"
         - "Export cache to S3"
+      single_clear:
+        - "I need to create a backup of the cache data. Backup cache data"
+        - "I need to create a backup of the cache data. Create cache snapshot"
+        - "I need to create a backup of the cache data. Schedule cache backup"
+        - "I need to create a backup of the cache data. Export cache to S3"
 
   - name: restore_cache
     descriptions:
@@ -622,6 +702,11 @@ tools:
         - "Recover cache data"
         - "Load backup into cache"
         - "Restore yesterday's cache"
+      single_clear:
+        - "I need to restore cache data from a backup. Restore cache from backup"
+        - "I need to restore cache data from a backup. Recover cache data"
+        - "I need to restore cache data from a backup. Load backup into cache"
+        - "I need to restore cache data from a backup. Restore yesterday's cache"
 
   - name: manage_cache_locks
     descriptions:
@@ -661,6 +746,11 @@ tools:
         - "Release the lock"
         - "Check lock status"
         - "Extend lock TTL"
+      single_clear:
+        - "I need to manage distributed locks for coordination. Acquire distributed lock"
+        - "I need to manage distributed locks for coordination. Release the lock"
+        - "I need to manage distributed locks for coordination. Check lock status"
+        - "I need to manage distributed locks for coordination. Extend lock TTL"
 
   - name: scan_cache_keys
     descriptions:
@@ -700,6 +790,10 @@ tools:
         - "Find keys matching pattern"
         - "List user session keys"
         - "Scan cache for keys"
+      single_clear:
+        - "I need to scan and list cache keys by pattern. Find keys matching pattern"
+        - "I need to scan and list cache keys by pattern. List user session keys"
+        - "I need to scan and list cache keys by pattern. Scan cache for keys"
 
   - name: configure_cache_cluster
     descriptions:
@@ -744,6 +838,11 @@ tools:
         - "Rebalance cache shards"
         - "Configure cluster replication"
         - "Check cluster status"
+      single_clear:
+        - "I need to manage cache cluster nodes and configuration. Add node to cache cluster"
+        - "I need to manage cache cluster nodes and configuration. Rebalance cache shards"
+        - "I need to manage cache cluster nodes and configuration. Configure cluster replication"
+        - "I need to manage cache cluster nodes and configuration. Check cluster status"
 
   - name: manage_cache_policy
     descriptions:
@@ -784,6 +883,11 @@ tools:
         - "Configure LRU eviction"
         - "Set memory limit"
         - "Enable LFU caching"
+      single_clear:
+        - "I need to configure cache eviction policy and memory settings. Set cache eviction policy"
+        - "I need to configure cache eviction policy and memory settings. Configure LRU eviction"
+        - "I need to configure cache eviction policy and memory settings. Set memory limit"
+        - "I need to configure cache eviction policy and memory settings. Enable LFU caching"
 
   - name: create_cache_index
     descriptions:
@@ -827,6 +931,11 @@ tools:
         - "Index cached products"
         - "Add full-text search to cache"
         - "Create secondary index"
+      single_clear:
+        - "I need to create a search index on cached data. Create cache search index"
+        - "I need to create a search index on cached data. Index cached products"
+        - "I need to create a search index on cached data. Add full-text search to cache"
+        - "I need to create a search index on cached data. Create secondary index"
 
   - name: configure_cache_persistence
     descriptions:
@@ -868,6 +977,11 @@ tools:
         - "Configure RDB snapshots"
         - "Set up AOF logging"
         - "Configure cache durability"
+      single_clear:
+        - "I need to configure cache persistence for data durability. Enable cache persistence"
+        - "I need to configure cache persistence for data durability. Configure RDB snapshots"
+        - "I need to configure cache persistence for data durability. Set up AOF logging"
+        - "I need to configure cache persistence for data durability. Configure cache durability"
 
   - name: manage_cache_streams
     descriptions:
@@ -918,6 +1032,11 @@ tools:
         - "Read from cache stream"
         - "Create consumer group"
         - "Trim stream size"
+      single_clear:
+        - "I need to manage cache streams for event processing. Add event to stream"
+        - "I need to manage cache streams for event processing. Read from cache stream"
+        - "I need to manage cache streams for event processing. Create consumer group"
+        - "I need to manage cache streams for event processing. Trim stream size"
 
   - name: export_cache_data
     descriptions:
@@ -963,6 +1082,11 @@ tools:
         - "Backup cache data"
         - "Export keys to JSON"
         - "Create cache backup"
+      single_clear:
+        - "I need to export cache data to a file. Export cache to file"
+        - "I need to export cache data to a file. Backup cache data"
+        - "I need to export cache data to a file. Export keys to JSON"
+        - "I need to export cache data to a file. Create cache backup"
 
   - name: import_cache_data
     descriptions:
@@ -1009,6 +1133,11 @@ tools:
         - "Restore cache data"
         - "Load JSON into cache"
         - "Migrate cache data"
+      single_clear:
+        - "I need to import cache data from an external source. Import cache from backup"
+        - "I need to import cache data from an external source. Restore cache data"
+        - "I need to import cache data from an external source. Load JSON into cache"
+        - "I need to import cache data from an external source. Migrate cache data"
 
   - name: configure_cache_replication
     descriptions:
@@ -1053,6 +1182,11 @@ tools:
         - "Add cache replica"
         - "Promote replica to master"
         - "Configure replication settings"
+      single_clear:
+        - "I need to configure master-replica replication for cache. Set up cache replication"
+        - "I need to configure master-replica replication for cache. Add cache replica"
+        - "I need to configure master-replica replication for cache. Promote replica to master"
+        - "I need to configure master-replica replication for cache. Configure replication settings"
 
   - name: manage_cache_lua_scripts
     descriptions:
@@ -1094,5 +1228,10 @@ tools:
         - "Execute cache script"
         - "Run atomic operation"
         - "Manage cache scripts"
+      single_clear:
+        - "I need to manage Lua scripts for atomic cache operations. Load Lua script"
+        - "I need to manage Lua scripts for atomic cache operations. Execute cache script"
+        - "I need to manage Lua scripts for atomic cache operations. Run atomic operation"
+        - "I need to manage Lua scripts for atomic cache operations. Manage cache scripts"
 
         - "Search cache keys"

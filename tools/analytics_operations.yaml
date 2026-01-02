@@ -42,6 +42,11 @@ tools:
         - "Query the sales data"
         - "Get revenue by region"
         - "Execute the report query"
+      single_clear:
+        - "I need to run an analytics query. Run this analytics query"
+        - "I need to run an analytics query. Query the sales data"
+        - "I need to run an analytics query. Get revenue by region"
+        - "I need to run an analytics query. Execute the report query"
 
   - name: create_dashboard
     descriptions:
@@ -80,6 +85,11 @@ tools:
         - "Build a metrics dashboard"
         - "Set up a KPI dashboard"
         - "Create visualization charts"
+      single_clear:
+        - "I need to create an analytics dashboard. Create a sales dashboard"
+        - "I need to create an analytics dashboard. Build a metrics dashboard"
+        - "I need to create an analytics dashboard. Set up a KPI dashboard"
+        - "I need to create an analytics dashboard. Create visualization charts"
 
   - name: generate_report
     descriptions:
@@ -119,6 +129,11 @@ tools:
         - "Create a sales report PDF"
         - "Export the analytics to Excel"
         - "Send the quarterly report"
+      single_clear:
+        - "Please generate an analytics report. Generate the monthly report"
+        - "Please generate an analytics report. Create a sales report PDF"
+        - "Please generate an analytics report. Export the analytics to Excel"
+        - "Please generate an analytics report. Send the quarterly report"
 
   - name: track_event
     descriptions:
@@ -155,6 +170,11 @@ tools:
         - "Log user signup"
         - "Record this conversion"
         - "Track the button click"
+      single_clear:
+        - "I need to track an analytics event. Track a purchase event"
+        - "I need to track an analytics event. Log user signup"
+        - "I need to track an analytics event. Record this conversion"
+        - "I need to track an analytics event. Track the button click"
 
   - name: create_funnel
     descriptions:
@@ -188,6 +208,11 @@ tools:
         - "Analyze the signup conversion"
         - "Build a user journey funnel"
         - "Track the checkout funnel"
+      single_clear:
+        - "I need to create a conversion funnel. Create a purchase funnel"
+        - "I need to create a conversion funnel. Analyze the signup conversion"
+        - "I need to create a conversion funnel. Build a user journey funnel"
+        - "I need to create a conversion funnel. Track the checkout funnel"
 
   - name: create_cohort
     descriptions:
@@ -231,6 +256,11 @@ tools:
         - "Analyze user retention by week"
         - "Build a cohort analysis"
         - "Track monthly retention"
+      single_clear:
+        - "I need to create a cohort analysis. Create a retention cohort"
+        - "I need to create a cohort analysis. Analyze user retention by week"
+        - "I need to create a cohort analysis. Build a cohort analysis"
+        - "I need to create a cohort analysis. Track monthly retention"
 
   - name: calculate_metrics
     descriptions:
@@ -264,6 +294,11 @@ tools:
         - "What's our churn rate?"
         - "Get the LTV metrics"
         - "Calculate business KPIs"
+      single_clear:
+        - "I need to calculate business metrics. Calculate MRR"
+        - "I need to calculate business metrics. What's our churn rate?"
+        - "I need to calculate business metrics. Get the LTV metrics"
+        - "I need to calculate business metrics. Calculate business KPIs"
 
   - name: segment_users
     descriptions:
@@ -297,6 +332,11 @@ tools:
         - "Segment users by plan type"
         - "Create an audience segment"
         - "Define a user cohort"
+      single_clear:
+        - "I need to create a user segment. Create a power users segment"
+        - "I need to create a user segment. Segment users by plan type"
+        - "I need to create a user segment. Create an audience segment"
+        - "I need to create a user segment. Define a user cohort"
 
   - name: ab_test_analyze
     descriptions:
@@ -330,6 +370,11 @@ tools:
         - "Is the experiment statistically significant?"
         - "Check the test conversion rates"
         - "Get experiment results"
+      single_clear:
+        - "I need to analyze A/B test results. Analyze the A/B test results"
+        - "I need to analyze A/B test results. Is the experiment statistically significant?"
+        - "I need to analyze A/B test results. Check the test conversion rates"
+        - "I need to analyze A/B test results. Get experiment results"
 
   - name: export_data
     descriptions:
@@ -369,6 +414,11 @@ tools:
         - "Download events to CSV"
         - "Export to S3"
         - "Schedule a daily data export"
+      single_clear:
+        - "I need to export analytics data. Export the analytics data"
+        - "I need to export analytics data. Download events to CSV"
+        - "I need to export analytics data. Export to S3"
+        - "I need to export analytics data. Schedule a daily data export"
   - name: create_funnel_analysis
     descriptions:
       minimal: "Create funnel"
@@ -410,6 +460,11 @@ tools:
         - "Analyze conversion funnel"
         - "Build signup funnel"
         - "Track user journey through steps"
+      single_clear:
+        - "I need to create a funnel analysis. Create checkout funnel"
+        - "I need to create a funnel analysis. Analyze conversion funnel"
+        - "I need to create a funnel analysis. Build signup funnel"
+        - "I need to create a funnel analysis. Track user journey through steps"
 
   - name: analyze_retention
     descriptions:
@@ -454,6 +509,11 @@ tools:
         - "Show retention by cohort"
         - "Analyze weekly retention"
         - "Track user return rates"
+      single_clear:
+        - "I need to analyze user retention. Calculate user retention"
+        - "I need to analyze user retention. Show retention by cohort"
+        - "I need to analyze user retention. Analyze weekly retention"
+        - "I need to analyze user retention. Track user return rates"
 
   - name: create_dashboard
     descriptions:
@@ -492,6 +552,11 @@ tools:
         - "Build marketing dashboard"
         - "Set up analytics dashboard"
         - "Create executive summary dashboard"
+      single_clear:
+        - "I need to create an analytics dashboard. Create a KPI dashboard"
+        - "I need to create an analytics dashboard. Build marketing dashboard"
+        - "I need to create an analytics dashboard. Set up analytics dashboard"
+        - "I need to create an analytics dashboard. Create executive summary dashboard"
 
   - name: segment_users
     descriptions:
@@ -532,6 +597,11 @@ tools:
         - "Define high-value customers"
         - "Segment inactive users"
         - "Create user cohort"
+      single_clear:
+        - "I need to create a user segment. Create power users segment"
+        - "I need to create a user segment. Define high-value customers"
+        - "I need to create a user segment. Segment inactive users"
+        - "I need to create a user segment. Create user cohort"
 
   - name: run_experiment_analysis
     descriptions:
@@ -571,6 +641,11 @@ tools:
         - "Check experiment significance"
         - "Evaluate test variants"
         - "Run experiment analysis"
+      single_clear:
+        - "I need to run an experiment analysis. Analyze A/B test results"
+        - "I need to run an experiment analysis. Check experiment significance"
+        - "I need to run an experiment analysis. Evaluate test variants"
+        - "I need to run an experiment analysis. Run experiment analysis"
 
   - name: compute_attribution
     descriptions:
@@ -610,6 +685,11 @@ tools:
         - "Analyze marketing ROI"
         - "Run attribution analysis"
         - "Attribute conversions to channels"
+      single_clear:
+        - "I need to compute marketing attribution. Calculate channel attribution"
+        - "I need to compute marketing attribution. Analyze marketing ROI"
+        - "I need to compute marketing attribution. Run attribution analysis"
+        - "I need to compute marketing attribution. Attribute conversions to channels"
 
   - name: forecast_metric
     descriptions:
@@ -649,6 +729,11 @@ tools:
         - "Predict user growth"
         - "Forecast metric trends"
         - "Project future signups"
+      single_clear:
+        - "I need to forecast an analytics metric. Forecast next month's revenue"
+        - "I need to forecast an analytics metric. Predict user growth"
+        - "I need to forecast an analytics metric. Forecast metric trends"
+        - "I need to forecast an analytics metric. Project future signups"
 
   - name: analyze_user_paths
     descriptions:
@@ -691,6 +776,11 @@ tools:
         - "Analyze navigation patterns"
         - "Find conversion paths"
         - "Discover user journeys"
+      single_clear:
+        - "I need to analyze user paths. Show common user paths"
+        - "I need to analyze user paths. Analyze navigation patterns"
+        - "I need to analyze user paths. Find conversion paths"
+        - "I need to analyze user paths. Discover user journeys"
 
   - name: alert_on_metric
     descriptions:
@@ -740,6 +830,11 @@ tools:
         - "Notify on high error rate"
         - "Set up metric alert"
         - "Create conversion alert"
+      single_clear:
+        - "I need to set up a metric alert. Alert if signups drop"
+        - "I need to set up a metric alert. Notify on high error rate"
+        - "I need to set up a metric alert. Set up metric alert"
+        - "I need to set up a metric alert. Create conversion alert"
 
   - name: create_ab_test
     descriptions:
@@ -786,6 +881,11 @@ tools:
         - "Set up split test"
         - "Start experiment on homepage"
         - "Test new checkout flow"
+      single_clear:
+        - "I need to create an A/B test experiment. Create an A/B test"
+        - "I need to create an A/B test experiment. Set up split test"
+        - "I need to create an A/B test experiment. Start experiment on homepage"
+        - "I need to create an A/B test experiment. Test new checkout flow"
 
   - name: analyze_cohort
     descriptions:
@@ -831,6 +931,11 @@ tools:
         - "Show retention by signup month"
         - "Analyze user cohorts"
         - "Compare cohort performance"
+      single_clear:
+        - "I need to analyze user cohorts. Run cohort analysis"
+        - "I need to analyze user cohorts. Show retention by signup month"
+        - "I need to analyze user cohorts. Analyze user cohorts"
+        - "I need to analyze user cohorts. Compare cohort performance"
 
   - name: calculate_attribution
     descriptions:
@@ -869,6 +974,11 @@ tools:
         - "Show channel attribution"
         - "Which channel drives conversions?"
         - "Run attribution analysis"
+      single_clear:
+        - "I need to calculate marketing attribution. Calculate marketing attribution"
+        - "I need to calculate marketing attribution. Show channel attribution"
+        - "I need to calculate marketing attribution. Which channel drives conversions?"
+        - "I need to calculate marketing attribution. Run attribution analysis"
 
   - name: predict_churn
     descriptions:
@@ -913,6 +1023,11 @@ tools:
         - "Who is likely to cancel?"
         - "Show churn risk scores"
         - "Identify at-risk customers"
+      single_clear:
+        - "I need to predict customer churn. Predict customer churn"
+        - "I need to predict customer churn. Who is likely to cancel?"
+        - "I need to predict customer churn. Show churn risk scores"
+        - "I need to predict customer churn. Identify at-risk customers"
 
   - name: calculate_ltv
     descriptions:
@@ -960,6 +1075,11 @@ tools:
         - "What's the lifetime value?"
         - "Show LTV by segment"
         - "Predict customer value"
+      single_clear:
+        - "I need to calculate customer lifetime value. Calculate customer LTV"
+        - "I need to calculate customer lifetime value. What's the lifetime value?"
+        - "I need to calculate customer lifetime value. Show LTV by segment"
+        - "I need to calculate customer lifetime value. Predict customer value"
 
   - name: analyze_user_journey
     descriptions:
@@ -1009,6 +1129,11 @@ tools:
         - "Show path to purchase"
         - "Map conversion journey"
         - "Trace user flow"
+      single_clear:
+        - "I need to analyze the user journey. Analyze user journey"
+        - "I need to analyze the user journey. Show path to purchase"
+        - "I need to analyze the user journey. Map conversion journey"
+        - "I need to analyze the user journey. Trace user flow"
 
   - name: generate_analytics_report
     descriptions:
@@ -1058,6 +1183,11 @@ tools:
         - "Create weekly metrics report"
         - "Send monthly analytics to team"
         - "Build KPI report"
+      single_clear:
+        - "I need to generate an analytics report. Generate analytics report"
+        - "I need to generate an analytics report. Create weekly metrics report"
+        - "I need to generate an analytics report. Send monthly analytics to team"
+        - "I need to generate an analytics report. Build KPI report"
 
   - name: configure_data_pipeline
     descriptions:
@@ -1097,6 +1227,11 @@ tools:
         - "Configure analytics ingestion"
         - "Connect Segment to BigQuery"
         - "Create ETL pipeline"
+      single_clear:
+        - "I need to configure a data pipeline. Set up data pipeline"
+        - "I need to configure a data pipeline. Configure analytics ingestion"
+        - "I need to configure a data pipeline. Connect Segment to BigQuery"
+        - "I need to configure a data pipeline. Create ETL pipeline"
 
   - name: monitor_data_quality
     descriptions:
@@ -1136,3 +1271,8 @@ tools:
         - "Check for data freshness"
         - "Alert on data anomalies"
         - "Validate analytics data"
+      single_clear:
+        - "I need to monitor data quality. Monitor data quality"
+        - "I need to monitor data quality. Check for data freshness"
+        - "I need to monitor data quality. Alert on data anomalies"
+        - "I need to monitor data quality. Validate analytics data"

@@ -63,6 +63,11 @@ tools:
         - "Schedule a team standup for Monday at 9am"
         - "Add a birthday reminder on March 15th"
         - "Create a weekly recurring meeting called 'Sync'"
+      single_clear:
+        - "I need to create a new calendar event with title, date, time, and optional attendees. Create a meeting for tomorrow at 3pm called 'Project Review'"
+        - "I need to create a new calendar event with title, date, time, and optional attendees. Schedule a team standup for Monday at 9am"
+        - "I need to create a new calendar event with title, date, time, and optional attendees. Add a birthday reminder on March 15th"
+        - "I need to create a new calendar event with title, date, time, and optional attendees. Create a weekly recurring meeting called 'Sync'"
 
   - name: delete_event
     descriptions:
@@ -105,6 +110,11 @@ tools:
         - "Remove the 'Team Sync' event from my calendar"
         - "Cancel all occurrences of the weekly standup"
         - "Delete the event with ID evt_12345"
+      single_clear:
+        - "Please delete an existing calendar event. Delete the meeting scheduled for tomorrow"
+        - "Please delete an existing calendar event. Remove the 'Team Sync' event from my calendar"
+        - "Please delete an existing calendar event. Cancel all occurrences of the weekly standup"
+        - "Please delete an existing calendar event. Delete the event with ID evt_12345"
 
   - name: update_event
     descriptions:
@@ -163,6 +173,11 @@ tools:
         - "Change the location of tomorrow's event to Room C"
         - "Add john@example.com to the meeting attendees"
         - "Reschedule the project review to next Monday"
+      single_clear:
+        - "I need to modify the details of an existing calendar event. Move the meeting to 3pm instead"
+        - "I need to modify the details of an existing calendar event. Change the location of tomorrow's event to Room C"
+        - "I need to modify the details of an existing calendar event. Add john@example.com to the meeting attendees"
+        - "I need to modify the details of an existing calendar event. Reschedule the project review to next Monday"
 
   - name: list_events
     descriptions:
@@ -209,6 +224,11 @@ tools:
         - "List my meetings for January"
         - "What events do I have tomorrow?"
         - "Find all events with 'review' in the title"
+      single_clear:
+        - "Please list all calendar events within a date range. Show all events for next week"
+        - "Please list all calendar events within a date range. List my meetings for January"
+        - "Please list all calendar events within a date range. What events do I have tomorrow?"
+        - "Please list all calendar events within a date range. Find all events with 'review' in the title"
 
   - name: check_availability
     descriptions:
@@ -251,6 +271,11 @@ tools:
         - "Find a free time slot for a 1-hour meeting with the team"
         - "Check if 2pm tomorrow works for everyone"
         - "Show me the availability of alice@company.com"
+      single_clear:
+        - "I need to check when a person or room is available for a meeting. When is John available for a meeting this week?"
+        - "I need to check when a person or room is available for a meeting. Find a free time slot for a 1-hour meeting with the team"
+        - "I need to check when a person or room is available for a meeting. Check if 2pm tomorrow works for everyone"
+        - "I need to check when a person or room is available for a meeting. Show me the availability of alice@company.com"
 
   - name: set_reminder
     descriptions:
@@ -290,6 +315,11 @@ tools:
         - "Set a reminder for the meeting in 30 minutes"
         - "Create a daily reminder to check emails at 9am"
         - "Remind me to submit the report tomorrow morning"
+      single_clear:
+        - "I need to set a standalone reminder that triggers at a specified time. Remind me to call mom at 5pm"
+        - "I need to set a standalone reminder that triggers at a specified time. Set a reminder for the meeting in 30 minutes"
+        - "I need to set a standalone reminder that triggers at a specified time. Create a daily reminder to check emails at 9am"
+        - "I need to set a standalone reminder that triggers at a specified time. Remind me to submit the report tomorrow morning"
 
   - name: get_event_details
     descriptions:
@@ -324,6 +354,11 @@ tools:
         - "Get information about event ID evt_12345"
         - "What are the attendees for the project review meeting?"
         - "Show full details of the conference call"
+      single_clear:
+        - "I need to retrieve complete information about a specific calendar event. Show me the details of the meeting tomorrow"
+        - "I need to retrieve complete information about a specific calendar event. Get information about event ID evt_12345"
+        - "I need to retrieve complete information about a specific calendar event. What are the attendees for the project review meeting?"
+        - "I need to retrieve complete information about a specific calendar event. Show full details of the conference call"
 
   - name: respond_to_event
     descriptions:
@@ -357,6 +392,11 @@ tools:
         - "Decline the event for tomorrow"
         - "Mark myself as tentative for the team lunch"
         - "RSVP yes to the conference"
+      single_clear:
+        - "I need to respond to a calendar event invitation with accept, decline, or tentative. Accept the meeting invitation from John"
+        - "I need to respond to a calendar event invitation with accept, decline, or tentative. Decline the event for tomorrow"
+        - "I need to respond to a calendar event invitation with accept, decline, or tentative. Mark myself as tentative for the team lunch"
+        - "I need to respond to a calendar event invitation with accept, decline, or tentative. RSVP yes to the conference"
 
   - name: create_calendar
     descriptions:
@@ -393,6 +433,11 @@ tools:
         - "Add a personal calendar with blue color"
         - "Create a calendar for the marketing team"
         - "Set up a new calendar for family events"
+      single_clear:
+        - "I need to create a new calendar with a name, color, and timezone settings. Create a new calendar called 'Work Projects'"
+        - "I need to create a new calendar with a name, color, and timezone settings. Add a personal calendar with blue color"
+        - "I need to create a new calendar with a name, color, and timezone settings. Create a calendar for the marketing team"
+        - "I need to create a new calendar with a name, color, and timezone settings. Set up a new calendar for family events"
 
   - name: share_calendar
     descriptions:
@@ -431,6 +476,11 @@ tools:
         - "Give Jane edit access to the project calendar"
         - "Make the team calendar viewable by everyone"
         - "Share the event calendar with the marketing department"
+      single_clear:
+        - "I need to share a calendar with other users and set view or edit permissions. Share my work calendar with john@company.com"
+        - "I need to share a calendar with other users and set view or edit permissions. Give Jane edit access to the project calendar"
+        - "I need to share a calendar with other users and set view or edit permissions. Make the team calendar viewable by everyone"
+        - "I need to share a calendar with other users and set view or edit permissions. Share the event calendar with the marketing department"
   - name: set_working_hours
     descriptions:
       minimal: "Set working hours"
@@ -462,6 +512,11 @@ tools:
         - "Configure work schedule for Monday through Friday"
         - "Block off lunch time every day"
         - "Set up my available hours for scheduling"
+      single_clear:
+        - "I need to define my available working hours for each day to help with meeting scheduling. Set my working hours to 9am to 5pm"
+        - "I need to define my available working hours for each day to help with meeting scheduling. Configure work schedule for Monday through Friday"
+        - "I need to define my available working hours for each day to help with meeting scheduling. Block off lunch time every day"
+        - "I need to define my available working hours for each day to help with meeting scheduling. Set up my available hours for scheduling"
 
   - name: create_recurring_exception
     descriptions:
@@ -508,6 +563,11 @@ tools:
         - "Move this Friday's team meeting to Monday"
         - "Cancel just this occurrence of the weekly sync"
         - "Change the location for tomorrow's recurring meeting"
+      single_clear:
+        - "I need to modify or skip a single instance of a recurring event without affecting other occurrences. Skip next week's standup meeting"
+        - "I need to modify or skip a single instance of a recurring event without affecting other occurrences. Move this Friday's team meeting to Monday"
+        - "I need to modify or skip a single instance of a recurring event without affecting other occurrences. Cancel just this occurrence of the weekly sync"
+        - "I need to modify or skip a single instance of a recurring event without affecting other occurrences. Change the location for tomorrow's recurring meeting"
 
   - name: import_calendar
     descriptions:
@@ -547,6 +607,11 @@ tools:
         - "Add events from external calendar URL"
         - "Sync my Google Calendar events"
         - "Import holidays calendar"
+      single_clear:
+        - "I need to import calendar events from an ICS file or external calendar URL. Import calendar from ICS file"
+        - "I need to import calendar events from an ICS file or external calendar URL. Add events from external calendar URL"
+        - "I need to import calendar events from an ICS file or external calendar URL. Sync my Google Calendar events"
+        - "I need to import calendar events from an ICS file or external calendar URL. Import holidays calendar"
 
   - name: export_calendar
     descriptions:
@@ -586,6 +651,11 @@ tools:
         - "Backup all calendar events"
         - "Download calendar as CSV"
         - "Export this year's events"
+      single_clear:
+        - "I need to export calendar events to ICS format for backup or sharing. Export my calendar to ICS file"
+        - "I need to export calendar events to ICS format for backup or sharing. Backup all calendar events"
+        - "I need to export calendar events to ICS format for backup or sharing. Download calendar as CSV"
+        - "I need to export calendar events to ICS format for backup or sharing. Export this year's events"
 
   - name: schedule_meeting_poll
     descriptions:
@@ -628,6 +698,11 @@ tools:
         - "Send scheduling poll to team"
         - "Find availability for project kickoff meeting"
         - "Let attendees vote on meeting times"
+      single_clear:
+        - "I need to create a meeting poll with multiple time options for attendees to vote on. Create a poll to find the best meeting time"
+        - "I need to create a meeting poll with multiple time options for attendees to vote on. Send scheduling poll to team"
+        - "I need to create a meeting poll with multiple time options for attendees to vote on. Find availability for project kickoff meeting"
+        - "I need to create a meeting poll with multiple time options for attendees to vote on. Let attendees vote on meeting times"
 
   - name: book_room
     descriptions:
@@ -672,6 +747,11 @@ tools:
         - "Reserve a meeting room for tomorrow"
         - "Find and book a room with video conferencing"
         - "Schedule the board room for 2 hours"
+      single_clear:
+        - "I need to reserve a meeting room or resource for a specific time and duration. Book the conference room for 2pm"
+        - "I need to reserve a meeting room or resource for a specific time and duration. Reserve a meeting room for tomorrow"
+        - "I need to reserve a meeting room or resource for a specific time and duration. Find and book a room with video conferencing"
+        - "I need to reserve a meeting room or resource for a specific time and duration. Schedule the board room for 2 hours"
 
   - name: set_out_of_office
     descriptions:
@@ -714,6 +794,11 @@ tools:
         - "Configure vacation auto-reply"
         - "Block my calendar for the holidays"
         - "Enable out of office with meeting decline"
+      single_clear:
+        - "I need to configure out of office status with automatic meeting decline and email response. Set out of office for next week"
+        - "I need to configure out of office status with automatic meeting decline and email response. Configure vacation auto-reply"
+        - "I need to configure out of office status with automatic meeting decline and email response. Block my calendar for the holidays"
+        - "I need to configure out of office status with automatic meeting decline and email response. Enable out of office with meeting decline"
 
   - name: sync_calendars
     descriptions:
@@ -760,6 +845,11 @@ tools:
         - "Set up calendar synchronization"
         - "Mirror work calendar to personal"
         - "Enable two-way calendar sync"
+      single_clear:
+        - "I need to synchronize events between multiple calendar accounts or services. Sync my Google and Outlook calendars"
+        - "I need to synchronize events between multiple calendar accounts or services. Set up calendar synchronization"
+        - "I need to synchronize events between multiple calendar accounts or services. Mirror work calendar to personal"
+        - "I need to synchronize events between multiple calendar accounts or services. Enable two-way calendar sync"
 
   - name: analyze_calendar_usage
     descriptions:
@@ -801,6 +891,11 @@ tools:
         - "Show calendar usage statistics"
         - "How much time do I spend in meetings?"
         - "Generate calendar productivity report"
+      single_clear:
+        - "I need to generate analytics on meeting time, frequency, and patterns from calendar data. Analyze my meeting time this month"
+        - "I need to generate analytics on meeting time, frequency, and patterns from calendar data. Show calendar usage statistics"
+        - "I need to generate analytics on meeting time, frequency, and patterns from calendar data. How much time do I spend in meetings?"
+        - "I need to generate analytics on meeting time, frequency, and patterns from calendar data. Generate calendar productivity report"
 
   - name: create_booking_page
     descriptions:
@@ -856,6 +951,11 @@ tools:
         - "Set up appointment scheduling"
         - "Create Calendly-like page"
         - "Make public scheduling link"
+      single_clear:
+        - "I need to create a public booking page with available time slots for external scheduling. Create booking page"
+        - "I need to create a public booking page with available time slots for external scheduling. Set up appointment scheduling"
+        - "I need to create a public booking page with available time slots for external scheduling. Create Calendly-like page"
+        - "I need to create a public booking page with available time slots for external scheduling. Make public scheduling link"
 
   - name: manage_calendar_subscription
     descriptions:
@@ -903,6 +1003,11 @@ tools:
         - "Add external calendar"
         - "Import iCal feed"
         - "Manage calendar subscriptions"
+      single_clear:
+        - "I need to subscribe to or manage external calendar feeds. Subscribe to calendar feed"
+        - "I need to subscribe to or manage external calendar feeds. Add external calendar"
+        - "I need to subscribe to or manage external calendar feeds. Import iCal feed"
+        - "I need to subscribe to or manage external calendar feeds. Manage calendar subscriptions"
 
   - name: configure_working_hours
     descriptions:
@@ -945,6 +1050,11 @@ tools:
         - "Configure availability"
         - "Set up work schedule"
         - "Block lunch time"
+      single_clear:
+        - "I need to configure my working hours and availability preferences for scheduling. Set my working hours"
+        - "I need to configure my working hours and availability preferences for scheduling. Configure availability"
+        - "I need to configure my working hours and availability preferences for scheduling. Set up work schedule"
+        - "I need to configure my working hours and availability preferences for scheduling. Block lunch time"
 
   - name: create_event_template
     descriptions:
@@ -994,6 +1104,11 @@ tools:
         - "Save meeting template"
         - "Create reusable event"
         - "Set up standup template"
+      single_clear:
+        - "I need to create a reusable template for frequently scheduled meeting types. Create event template"
+        - "I need to create a reusable template for frequently scheduled meeting types. Save meeting template"
+        - "I need to create a reusable template for frequently scheduled meeting types. Create reusable event"
+        - "I need to create a reusable template for frequently scheduled meeting types. Set up standup template"
 
   - name: manage_calendar_permissions
     descriptions:
@@ -1039,6 +1154,11 @@ tools:
         - "Give calendar access"
         - "Revoke calendar sharing"
         - "Check calendar permissions"
+      single_clear:
+        - "I need to manage who can view or edit my calendar and configure sharing permissions. Share my calendar"
+        - "I need to manage who can view or edit my calendar and configure sharing permissions. Give calendar access"
+        - "I need to manage who can view or edit my calendar and configure sharing permissions. Revoke calendar sharing"
+        - "I need to manage who can view or edit my calendar and configure sharing permissions. Check calendar permissions"
 
   - name: detect_scheduling_conflicts
     descriptions:
@@ -1083,6 +1203,11 @@ tools:
         - "Check for double bookings"
         - "Detect calendar conflicts"
         - "Will this time conflict?"
+      single_clear:
+        - "I need to find double-bookings and scheduling conflicts in my calendar. Find scheduling conflicts"
+        - "I need to find double-bookings and scheduling conflicts in my calendar. Check for double bookings"
+        - "I need to find double-bookings and scheduling conflicts in my calendar. Detect calendar conflicts"
+        - "I need to find double-bookings and scheduling conflicts in my calendar. Will this time conflict?"
 
   - name: sync_calendars
     descriptions:
@@ -1128,6 +1253,11 @@ tools:
         - "Copy events to work calendar"
         - "Synchronize my calendars"
         - "Set up calendar sync"
+      single_clear:
+        - "I need to synchronize events between multiple calendar accounts. Sync Google and Outlook calendars"
+        - "I need to synchronize events between multiple calendar accounts. Copy events to work calendar"
+        - "I need to synchronize events between multiple calendar accounts. Synchronize my calendars"
+        - "I need to synchronize events between multiple calendar accounts. Set up calendar sync"
 
   - name: export_calendar
     descriptions:
@@ -1171,6 +1301,11 @@ tools:
         - "Download calendar as ICS"
         - "Backup calendar events"
         - "Export calendar to CSV"
+      single_clear:
+        - "I need to export calendar events to a file or external format. Export my calendar"
+        - "I need to export calendar events to a file or external format. Download calendar as ICS"
+        - "I need to export calendar events to a file or external format. Backup calendar events"
+        - "I need to export calendar events to a file or external format. Export calendar to CSV"
 
   - name: manage_calendar_notifications
     descriptions:
@@ -1215,3 +1350,8 @@ tools:
         - "Configure notifications"
         - "Enable daily agenda email"
         - "Set quiet hours"
+      single_clear:
+        - "I need to configure calendar notification preferences and default reminders. Set calendar reminders"
+        - "I need to configure calendar notification preferences and default reminders. Configure notifications"
+        - "I need to configure calendar notification preferences and default reminders. Enable daily agenda email"
+        - "I need to configure calendar notification preferences and default reminders. Set quiet hours"

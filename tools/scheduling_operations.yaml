@@ -60,6 +60,11 @@ tools:
         - "Set up cron job"
         - "Schedule nightly task"
         - "Create recurring job"
+      single_clear:
+        - "I need to create a scheduled job. Create scheduled job"
+        - "I need to create a scheduled job. Set up cron job"
+        - "I need to create a scheduled job. Schedule nightly task"
+        - "I need to create a scheduled job. Create recurring job"
 
   - name: list_scheduled_jobs
     descriptions:
@@ -104,6 +109,11 @@ tools:
         - "Show all cron jobs"
         - "Get scheduled tasks"
         - "View active jobs"
+      single_clear:
+        - "I want to list scheduled jobs. List scheduled jobs"
+        - "I want to list scheduled jobs. Show all cron jobs"
+        - "I want to list scheduled jobs. Get scheduled tasks"
+        - "I want to list scheduled jobs. View active jobs"
 
   - name: run_job_now
     descriptions:
@@ -142,6 +152,11 @@ tools:
         - "Trigger scheduled job"
         - "Execute job manually"
         - "Start job immediately"
+      single_clear:
+        - "I need to run a job now. Run job now"
+        - "I need to run a job now. Trigger scheduled job"
+        - "I need to run a job now. Execute job manually"
+        - "I need to run a job now. Start job immediately"
 
   - name: pause_scheduled_job
     descriptions:
@@ -175,6 +190,11 @@ tools:
         - "Suspend cron job"
         - "Stop job temporarily"
         - "Pause task scheduling"
+      single_clear:
+        - "I want to pause a scheduled job. Pause scheduled job"
+        - "I want to pause a scheduled job. Suspend cron job"
+        - "I want to pause a scheduled job. Stop job temporarily"
+        - "I want to pause a scheduled job. Pause task scheduling"
 
   - name: resume_scheduled_job
     descriptions:
@@ -200,6 +220,11 @@ tools:
         - "Unpause cron job"
         - "Restart paused task"
         - "Enable paused job"
+      single_clear:
+        - "I need to resume a scheduled job. Resume scheduled job"
+        - "I need to resume a scheduled job. Unpause cron job"
+        - "I need to resume a scheduled job. Restart paused task"
+        - "I need to resume a scheduled job. Enable paused job"
 
   - name: get_job_history
     descriptions:
@@ -243,6 +268,11 @@ tools:
         - "Show job run history"
         - "View past executions"
         - "Get failed runs"
+      single_clear:
+        - "I want to get job history. Get job history"
+        - "I want to get job history. Show job run history"
+        - "I want to get job history. View past executions"
+        - "I want to get job history. Get failed runs"
 
   - name: update_job_schedule
     descriptions:
@@ -275,6 +305,11 @@ tools:
         - "Change cron time"
         - "Reschedule job"
         - "Modify job timing"
+      single_clear:
+        - "I need to update a job schedule. Update job schedule"
+        - "I need to update a job schedule. Change cron time"
+        - "I need to update a job schedule. Reschedule job"
+        - "I need to update a job schedule. Modify job timing"
 
   - name: delete_scheduled_job
     descriptions:
@@ -305,6 +340,11 @@ tools:
         - "Remove cron job"
         - "Delete task"
         - "Remove scheduled task"
+      single_clear:
+        - "I want to delete a scheduled job. Delete scheduled job"
+        - "I want to delete a scheduled job. Remove cron job"
+        - "I want to delete a scheduled job. Delete task"
+        - "I want to delete a scheduled job. Remove scheduled task"
 
   - name: create_job_dependency
     descriptions:
@@ -346,6 +386,11 @@ tools:
         - "Set job to run after another"
         - "Chain scheduled jobs"
         - "Make job dependent on another"
+      single_clear:
+        - "I need to create a job dependency. Create job dependency"
+        - "I need to create a job dependency. Set job to run after another"
+        - "I need to create a job dependency. Chain scheduled jobs"
+        - "I need to create a job dependency. Make job dependent on another"
 
   - name: get_next_run_times
     descriptions:
@@ -375,3 +420,8 @@ tools:
         - "Get next run times"
         - "Show upcoming runs"
         - "Preview job schedule"
+      single_clear:
+        - "I want to get the next run times. When will job run next"
+        - "I want to get the next run times. Get next run times"
+        - "I want to get the next run times. Show upcoming runs"
+        - "I want to get the next run times. Preview job schedule"

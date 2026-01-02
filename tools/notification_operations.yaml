@@ -43,6 +43,11 @@ tools:
         - "Notify the user about the update"
         - "Send an alert to all users"
         - "Push a notification to mobile"
+      single_clear:
+        - "I need to send a notification. Send a push notification"
+        - "I need to send a notification. Notify the user about the update"
+        - "I need to send a notification. Send an alert to all users"
+        - "I need to send a notification. Push a notification to mobile"
 
   - name: create_alert_rule
     descriptions:
@@ -96,6 +101,11 @@ tools:
         - "Set up monitoring alerts"
         - "Alert me when errors exceed 10"
         - "Create a threshold alert"
+      single_clear:
+        - "I need to create an alert rule. Create an alert for high CPU usage"
+        - "I need to create an alert rule. Set up monitoring alerts"
+        - "I need to create an alert rule. Alert me when errors exceed 10"
+        - "I need to create an alert rule. Create a threshold alert"
 
   - name: manage_subscription
     descriptions:
@@ -129,6 +139,11 @@ tools:
         - "Subscribe to order notifications"
         - "List my notification subscriptions"
         - "Update notification preferences"
+      single_clear:
+        - "Please manage my subscription. Unsubscribe user from marketing emails"
+        - "Please manage my subscription. Subscribe to order notifications"
+        - "Please manage my subscription. List my notification subscriptions"
+        - "Please manage my subscription. Update notification preferences"
 
   - name: schedule_notification
     descriptions:
@@ -170,6 +185,11 @@ tools:
         - "Send the alert at 9 AM"
         - "Set up a weekly notification"
         - "Delay the notification by 1 hour"
+      single_clear:
+        - "I want to schedule a notification. Schedule this notification for tomorrow"
+        - "I want to schedule a notification. Send the alert at 9 AM"
+        - "I want to schedule a notification. Set up a weekly notification"
+        - "I want to schedule a notification. Delay the notification by 1 hour"
 
   - name: create_notification_template
     descriptions:
@@ -209,6 +229,11 @@ tools:
         - "Make a notification template"
         - "Set up a reusable message template"
         - "Create an order confirmation template"
+      single_clear:
+        - "Please create a notification template. Create a welcome email template"
+        - "Please create a notification template. Make a notification template"
+        - "Please create a notification template. Set up a reusable message template"
+        - "Please create a notification template. Create an order confirmation template"
 
   - name: get_notification_status
     descriptions:
@@ -234,6 +259,11 @@ tools:
         - "Get notification status"
         - "Was the email read?"
         - "Track the push notification"
+      single_clear:
+        - "I need to get the notification status. Check if the notification was delivered"
+        - "I need to get the notification status. Get notification status"
+        - "I need to get the notification status. Was the email read?"
+        - "I need to get the notification status. Track the push notification"
 
   - name: cancel_notification
     descriptions:
@@ -258,6 +288,11 @@ tools:
         - "Stop the pending email"
         - "Cancel all scheduled promos"
         - "Remove the queued notification"
+      single_clear:
+        - "I want to cancel a notification. Cancel the scheduled notification"
+        - "I want to cancel a notification. Stop the pending email"
+        - "I want to cancel a notification. Cancel all scheduled promos"
+        - "I want to cancel a notification. Remove the queued notification"
 
   - name: set_quiet_hours
     descriptions:
@@ -301,6 +336,11 @@ tools:
         - "Enable do not disturb"
         - "Block notifications at night"
         - "Set up quiet hours for weekends"
+      single_clear:
+        - "I need to set quiet hours. Set quiet hours from 10pm to 7am"
+        - "I need to set quiet hours. Enable do not disturb"
+        - "I need to set quiet hours. Block notifications at night"
+        - "I need to set quiet hours. Set up quiet hours for weekends"
 
   - name: register_device
     descriptions:
@@ -340,6 +380,11 @@ tools:
         - "Save the push notification token"
         - "Update the device token"
         - "Unregister the device"
+      single_clear:
+        - "Please register a device. Register this device for push"
+        - "Please register a device. Save the push notification token"
+        - "Please register a device. Update the device token"
+        - "Please register a device. Unregister the device"
 
   - name: get_notification_analytics
     descriptions:
@@ -374,6 +419,11 @@ tools:
         - "What's the email open rate?"
         - "Get campaign performance metrics"
         - "How many notifications were delivered?"
+      single_clear:
+        - "I want to get notification analytics. Show notification analytics"
+        - "I want to get notification analytics. What's the email open rate?"
+        - "I want to get notification analytics. Get campaign performance metrics"
+        - "I want to get notification analytics. How many notifications were delivered?"
   - name: create_notification_campaign
     descriptions:
       minimal: "Create campaign"
@@ -419,6 +469,11 @@ tools:
         - "Set up product launch notifications"
         - "Create multi-channel campaign"
         - "Launch email and push campaign"
+      single_clear:
+        - "I need to create a notification campaign. Create a notification campaign"
+        - "I need to create a notification campaign. Set up product launch notifications"
+        - "I need to create a notification campaign. Create multi-channel campaign"
+        - "I need to create a notification campaign. Launch email and push campaign"
 
   - name: set_notification_rules
     descriptions:
@@ -470,6 +525,11 @@ tools:
         - "Create abandoned cart reminder"
         - "Configure low stock alerts"
         - "Automate welcome notifications"
+      single_clear:
+        - "Please set notification rules. Set up notification rules"
+        - "Please set notification rules. Create abandoned cart reminder"
+        - "Please set notification rules. Configure low stock alerts"
+        - "Please set notification rules. Automate welcome notifications"
 
   - name: manage_notification_preferences
     descriptions:
@@ -507,6 +567,11 @@ tools:
         - "Opt out of marketing emails"
         - "Get notification preferences"
         - "Set quiet hours for notifications"
+      single_clear:
+        - "I want to manage notification preferences. Update user notification settings"
+        - "I want to manage notification preferences. Opt out of marketing emails"
+        - "I want to manage notification preferences. Get notification preferences"
+        - "I want to manage notification preferences. Set quiet hours for notifications"
 
   - name: send_digest_notification
     descriptions:
@@ -551,6 +616,11 @@ tools:
         - "Create weekly activity summary"
         - "Send notification digest"
         - "Bundle updates into digest"
+      single_clear:
+        - "Please send a digest notification. Send daily digest email"
+        - "Please send a digest notification. Create weekly activity summary"
+        - "Please send a digest notification. Send notification digest"
+        - "Please send a digest notification. Bundle updates into digest"
 
   - name: create_notification_template
     descriptions:
@@ -597,6 +667,11 @@ tools:
         - "Make a push notification template"
         - "Design order confirmation template"
         - "Create reusable notification"
+      single_clear:
+        - "Please create a notification template. Create email notification template"
+        - "Please create a notification template. Make a push notification template"
+        - "Please create a notification template. Design order confirmation template"
+        - "Please create a notification template. Create reusable notification"
 
   - name: schedule_notification
     descriptions:
@@ -644,6 +719,11 @@ tools:
         - "Send reminder at 9am"
         - "Schedule weekly notification"
         - "Queue notification for next week"
+      single_clear:
+        - "I want to schedule a notification. Schedule notification for tomorrow"
+        - "I want to schedule a notification. Send reminder at 9am"
+        - "I want to schedule a notification. Schedule weekly notification"
+        - "I want to schedule a notification. Queue notification for next week"
 
   - name: test_notification
     descriptions:
@@ -687,6 +767,11 @@ tools:
         - "Preview the notification template"
         - "Test push notification"
         - "Verify email template"
+      single_clear:
+        - "I need to test a notification. Send a test email"
+        - "I need to test a notification. Preview the notification template"
+        - "I need to test a notification. Test push notification"
+        - "I need to test a notification. Verify email template"
 
   - name: manage_notification_channel
     descriptions:
@@ -729,6 +814,11 @@ tools:
         - "Set up push notification channel"
         - "Add SMS provider credentials"
         - "Test notification channel"
+      single_clear:
+        - "Please manage a notification channel. Configure email provider"
+        - "Please manage a notification channel. Set up push notification channel"
+        - "Please manage a notification channel. Add SMS provider credentials"
+        - "Please manage a notification channel. Test notification channel"
 
   - name: track_notification_engagement
     descriptions:
@@ -770,6 +860,11 @@ tools:
         - "Record notification click"
         - "Log conversion from notification"
         - "Track push notification engagement"
+      single_clear:
+        - "I want to track notification engagement. Track email open"
+        - "I want to track notification engagement. Record notification click"
+        - "I want to track notification engagement. Log conversion from notification"
+        - "I want to track notification engagement. Track push notification engagement"
 
   - name: manage_notification_templates
     descriptions:
@@ -816,6 +911,11 @@ tools:
         - "Update email template"
         - "Preview template"
         - "List all templates"
+      single_clear:
+        - "Please manage notification templates. Create notification template"
+        - "Please manage notification templates. Update email template"
+        - "Please manage notification templates. Preview template"
+        - "Please manage notification templates. List all templates"
 
   - name: configure_notification_channel
     descriptions:
@@ -861,6 +961,11 @@ tools:
         - "Set up Twilio SMS"
         - "Configure push notifications"
         - "Add webhook channel"
+      single_clear:
+        - "I need to configure a notification channel. Configure SendGrid"
+        - "I need to configure a notification channel. Set up Twilio SMS"
+        - "I need to configure a notification channel. Configure push notifications"
+        - "I need to configure a notification channel. Add webhook channel"
 
   - name: create_notification_workflow
     descriptions:
@@ -906,6 +1011,11 @@ tools:
         - "Build cart abandonment flow"
         - "Set up drip campaign"
         - "Create notification workflow"
+      single_clear:
+        - "Please create a notification workflow. Create onboarding sequence"
+        - "Please create a notification workflow. Build cart abandonment flow"
+        - "Please create a notification workflow. Set up drip campaign"
+        - "Please create a notification workflow. Create notification workflow"
 
   - name: manage_notification_segments
     descriptions:
@@ -950,6 +1060,11 @@ tools:
         - "Estimate segment size"
         - "Build targeting criteria"
         - "List notification segments"
+      single_clear:
+        - "I want to manage notification segments. Create user segment"
+        - "I want to manage notification segments. Estimate segment size"
+        - "I want to manage notification segments. Build targeting criteria"
+        - "I want to manage notification segments. List notification segments"
 
   - name: configure_quiet_hours
     descriptions:
@@ -999,6 +1114,11 @@ tools:
         - "Configure do not disturb"
         - "Block nighttime notifications"
         - "Set notification timing"
+      single_clear:
+        - "Please configure quiet hours. Set up quiet hours"
+        - "Please configure quiet hours. Configure do not disturb"
+        - "Please configure quiet hours. Block nighttime notifications"
+        - "Please configure quiet hours. Set notification timing"
 
   - name: manage_notification_digest
     descriptions:
@@ -1048,6 +1168,11 @@ tools:
         - "Set up weekly summary"
         - "Batch notifications together"
         - "Send notification digest"
+      single_clear:
+        - "I need to manage a notification digest. Configure daily digest"
+        - "I need to manage a notification digest. Set up weekly summary"
+        - "I need to manage a notification digest. Batch notifications together"
+        - "I need to manage a notification digest. Send notification digest"
 
   - name: analyze_notification_performance
     descriptions:
@@ -1096,6 +1221,11 @@ tools:
         - "Analyze email performance"
         - "Get open and click rates"
         - "Compare notification performance"
+      single_clear:
+        - "I want to analyze notification performance. Show notification analytics"
+        - "I want to analyze notification performance. Analyze email performance"
+        - "I want to analyze notification performance. Get open and click rates"
+        - "I want to analyze notification performance. Compare notification performance"
 
   - name: configure_notification_throttling
     descriptions:
@@ -1138,6 +1268,11 @@ tools:
         - "Configure daily notification cap"
         - "Limit SMS frequency"
         - "Set up throttling rules"
+      single_clear:
+        - "Please configure notification throttling. Set notification rate limits"
+        - "Please configure notification throttling. Configure daily notification cap"
+        - "Please configure notification throttling. Limit SMS frequency"
+        - "Please configure notification throttling. Set up throttling rules"
 
   - name: manage_push_subscriptions
     descriptions:
@@ -1184,3 +1319,8 @@ tools:
         - "List user devices"
         - "Clean up invalid tokens"
         - "Update push preferences"
+      single_clear:
+        - "I need to manage push subscriptions. Register push token"
+        - "I need to manage push subscriptions. List user devices"
+        - "I need to manage push subscriptions. Clean up invalid tokens"
+        - "I need to manage push subscriptions. Update push preferences"
