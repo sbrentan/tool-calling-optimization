@@ -5,14 +5,18 @@ This module loads tool definitions from YAML files and generates Tool objects wi
 - Configurable documentation length (minimal to verbose)
 - Multi-tool test scenarios
 - Similar tool variants for testing
+- No-tool test scenarios (where no tool should be called)
 """
 import os
 import random
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 import yaml
 from loguru import logger
-from .base import Tool, ToolParameter, TestCase
+from .base import Tool, ToolParameter, TestCase, MultiToolTestCase
+
+# Type alias for any test case
+AnyTestCase = Union[TestCase, MultiToolTestCase]
 
 
 class ToolGenerator:
@@ -290,20 +294,22 @@ class ToolGenerator:
         self,
         tools: list[Tool],
         include_multi_tool: bool = False,
+        include_no_tool: bool = False,
         prompt_type: str = "concise"
-    ) -> list[TestCase]:
+    ) -> list[AnyTestCase]:
         """
         Generate test cases for the given tools.
         
         Args:
             tools: List of tools to generate tests for
             include_multi_tool: Whether to include multi-tool test scenarios
+            include_no_tool: Whether to include no-tool test scenarios
             prompt_type: Type of prompts to use ('concise' or 'clear')
             
         Returns:
-            List of TestCase objects
+            List of TestCase and MultiToolTestCase objects
         """
-        test_cases = []
+        test_cases: list[AnyTestCase] = []
         tool_name_to_category = {t.name: t.category for t in tools}
         
         for tool in tools:
@@ -332,6 +338,11 @@ class ToolGenerator:
                 description=f"Test: {prompt}",
                 prompt_type=prompt_type
             ))
+        
+        # Add no-tool test cases if requested
+        if include_no_tool:
+            no_tool_cases = self._generate_no_tool_cases(tools, prompt_type)
+            test_cases.extend(no_tool_cases)
         
         # Add multi-tool test cases if requested
         if include_multi_tool:
@@ -368,9 +379,133 @@ class ToolGenerator:
                 return "hard"
             return "expert"
     
-    def _generate_multi_tool_cases(self, tools: list[Tool], prompt_type: str = "concise") -> list[TestCase]:
+    def _generate_no_tool_cases(self, tools: list[Tool], prompt_type: str = "concise") -> list[TestCase]:
+        """
+        Generate no-tool test cases where no tool should be called.
+        
+        Categories of no-tool tests:
+        1. Informational: Asking about tool capabilities
+        2. Clarification: Vague requests needing more info
+        3. Out-of-scope: Requests for tools not available
+        4. Conversational: General conversation, greetings, thanks
+        
+        Args:
+            tools: List of available tools (used for context-aware generation)
+            prompt_type: Type of prompts to use ('concise' or 'clear')
+            
+        Returns:
+            List of TestCase objects with expected_tool=None
+        """
+        no_tool_cases = []
+        
+        # 1. Informational prompts - asking about tools
+        informational_prompts = [
+            ("What does the {tool_name} function do?", "informational", "Asking about tool functionality"),
+            ("Can you explain how {tool_name} works?", "informational", "Requesting tool explanation"),
+            ("What parameters does {tool_name} accept?", "informational", "Asking about tool parameters"),
+            ("What are all the available tools I can use?", "informational", "Asking about available tools"),
+            ("List the tools you have access to", "informational", "Listing available tools"),
+            ("What can you help me with?", "informational", "General capability inquiry"),
+        ]
+        
+        # 2. Clarification-needed prompts - too vague
+        clarification_prompts = [
+            ("I want to do something with files", "clarification", "Vague file request"),
+            ("Help me with data", "clarification", "Vague data request"),
+            ("Can you process this?", "clarification", "Unclear processing request"),
+            ("I need to work with some information", "clarification", "Vague information request"),
+            ("Do something useful", "clarification", "Completely vague request"),
+            ("Handle my request", "clarification", "No specific action mentioned"),
+        ]
+        
+        # 3. Out-of-scope prompts - no matching tool
+        out_of_scope_prompts = [
+            ("What's the weather in Paris?", "out_of_scope", "Weather request - no weather tool"),
+            ("Translate this text to French: Hello world", "out_of_scope", "Translation request - no translate tool"),
+            ("Book a flight to New York", "out_of_scope", "Booking request - no booking tool"),
+            ("Order a pizza for me", "out_of_scope", "Food order - no ordering tool"),
+            ("Play some music", "out_of_scope", "Music request - no music tool"),
+            ("Set an alarm for 7am", "out_of_scope", "Alarm request - no alarm tool"),
+        ]
+        
+        # 4. Conversational prompts - no action needed
+        conversational_prompts = [
+            ("Hello!", "conversational", "Greeting"),
+            ("Thanks for your help!", "conversational", "Thank you message"),
+            ("That's great, goodbye!", "conversational", "Farewell message"),
+            ("You're doing a great job", "conversational", "Compliment"),
+            ("How are you today?", "conversational", "Small talk"),
+            ("I appreciate your assistance", "conversational", "Appreciation"),
+        ]
+        
+        # Generate informational cases using actual tool names
+        if tools:
+            sample_tools = random.sample(tools, min(3, len(tools)))
+            for tool in sample_tools:
+                prompt_template, category, reason = random.choice(informational_prompts[:3])
+                no_tool_cases.append(TestCase(
+                    prompt=prompt_template.format(tool_name=tool.name.replace("_", " ")),
+                    expected_tool=None,
+                    no_tool_reason=reason,
+                    category="no_tool",
+                    difficulty="medium",
+                    description=f"No-tool test ({category}): {reason}",
+                    prompt_type=prompt_type
+                ))
+        
+        # Add general informational cases
+        for prompt, category, reason in informational_prompts[3:]:
+            no_tool_cases.append(TestCase(
+                prompt=prompt,
+                expected_tool=None,
+                no_tool_reason=reason,
+                category="no_tool",
+                difficulty="easy",
+                description=f"No-tool test ({category}): {reason}",
+                prompt_type=prompt_type
+            ))
+        
+        # Add clarification-needed cases
+        for prompt, category, reason in clarification_prompts:
+            no_tool_cases.append(TestCase(
+                prompt=prompt,
+                expected_tool=None,
+                no_tool_reason=reason,
+                category="no_tool",
+                difficulty="hard",
+                description=f"No-tool test ({category}): {reason}",
+                prompt_type=prompt_type
+            ))
+        
+        # Add out-of-scope cases
+        for prompt, category, reason in out_of_scope_prompts:
+            no_tool_cases.append(TestCase(
+                prompt=prompt,
+                expected_tool=None,
+                no_tool_reason=reason,
+                category="no_tool",
+                difficulty="medium",
+                description=f"No-tool test ({category}): {reason}",
+                prompt_type=prompt_type
+            ))
+        
+        # Add conversational cases
+        for prompt, category, reason in conversational_prompts:
+            no_tool_cases.append(TestCase(
+                prompt=prompt,
+                expected_tool=None,
+                no_tool_reason=reason,
+                category="no_tool",
+                difficulty="easy",
+                description=f"No-tool test ({category}): {reason}",
+                prompt_type=prompt_type
+            ))
+        
+        return no_tool_cases
+    
+    def _generate_multi_tool_cases(self, tools: list[Tool], prompt_type: str = "concise") -> list[MultiToolTestCase]:
         """Generate multi-tool test cases from YAML definitions."""
-        multi_cases = []
+        multi_cases: list[MultiToolTestCase] = []
         tool_names = {t.name for t in tools}
         
         for category, tool_defs in self._tools_cache.items():
@@ -387,13 +522,14 @@ class ToolGenerator:
                     if isinstance(multi, dict):
                         prompt = multi.get("prompt", "")
                         required_tools = multi.get("required_tools", [])
+                        require_sequence = multi.get("require_sequence", False)
                         
                         # Only include if all required tools are in our set
-                        if all(rt in tool_names for rt in required_tools):
-                            # For multi-tool, we expect the first tool
-                            multi_cases.append(TestCase(
+                        if all(rt in tool_names for rt in required_tools) and len(required_tools) >= 2:
+                            multi_cases.append(MultiToolTestCase(
                                 prompt=prompt,
-                                expected_tool=required_tools[0] if required_tools else tool_def["name"],
+                                expected_tools=required_tools,
+                                require_sequence=require_sequence,
                                 category=category,
                                 difficulty="hard",
                                 description=f"Multi-tool test requiring: {', '.join(required_tools)}",

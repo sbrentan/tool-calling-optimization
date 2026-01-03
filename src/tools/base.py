@@ -108,9 +108,44 @@ class Tool(BaseModel):
 class TestCase(BaseModel):
     """A test case for tool calling evaluation."""
     prompt: str = Field(..., description="User prompt to send to the model")
-    expected_tool: str = Field(..., description="Name of the expected tool to be called")
+    expected_tool: Optional[str] = Field(default=None, description="Name of the expected tool to be called. None means no tool should be called.")
     expected_params: Optional[dict[str, Any]] = Field(default=None, description="Expected parameters")
     category: str = Field(default="general", description="Test category")
     difficulty: str = Field(default="easy", description="Difficulty: easy, medium, hard")
     description: str = Field(default="", description="Description of what this test verifies")
     prompt_type: str = Field(default="concise", description="Prompt type: concise or clear")
+    
+    # No-tool test case fields
+    no_tool_reason: Optional[str] = Field(default=None, description="Why no tool should be called (for no-tool test cases)")
+    
+    @property
+    def expects_tool_call(self) -> bool:
+        """Whether this test case expects a tool to be called."""
+        return self.expected_tool is not None
+
+
+class MultiToolTestCase(BaseModel):
+    """
+    A test case that expects multiple tools to be called.
+    
+    Used for testing scenarios where a user request requires
+    calling multiple tools in sequence or parallel.
+    """
+    prompt: str = Field(..., description="User prompt to send to the model")
+    expected_tools: list[str] = Field(..., description="Ordered list of expected tools to be called")
+    expected_params: Optional[list[dict[str, Any]]] = Field(default=None, description="Expected parameters for each tool (same order as expected_tools)")
+    require_sequence: bool = Field(default=False, description="If True, tools must be called in exact order. If False, treated as a set.")
+    category: str = Field(default="multi_tool", description="Test category")
+    difficulty: str = Field(default="hard", description="Difficulty: easy, medium, hard")
+    description: str = Field(default="", description="Description of what this test verifies")
+    prompt_type: str = Field(default="concise", description="Prompt type: concise or clear")
+    
+    @property
+    def expects_tool_call(self) -> bool:
+        """Multi-tool test cases always expect at least one tool call."""
+        return len(self.expected_tools) > 0
+    
+    @property
+    def primary_tool(self) -> Optional[str]:
+        """Return the first expected tool (for compatibility with single-tool metrics)."""
+        return self.expected_tools[0] if self.expected_tools else None

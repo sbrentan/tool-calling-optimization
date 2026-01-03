@@ -6,25 +6,30 @@ Measures:
 - Parameter accuracy (correct parameters extracted)
 - Latency statistics
 - Methodology-specific metrics (steps, backtracks, category accuracy)
+- No-tool test case evaluation (false positive rate)
+- Multi-tool test case evaluation (sequence/set matching)
 """
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 from dataclasses import dataclass, field
 from collections import defaultdict
 
 import pandas as pd
 from loguru import logger
 
-from src.tools.base import TestCase
+from src.tools.base import TestCase, MultiToolTestCase
 from src.clients.base import CallResult
 
 if TYPE_CHECKING:
     from src.methodologies.base import MethodologyResult
 
+# Type alias for any test case
+AnyTestCase = Union[TestCase, MultiToolTestCase]
+
 
 @dataclass
 class TestResult:
     """Result of a single test case evaluation."""
-    test_case: TestCase
+    test_case: AnyTestCase
     call_result: CallResult
     tool_correct: bool
     params_correct: Optional[bool] = None
@@ -38,11 +43,31 @@ class TestResult:
     final_category: Optional[str] = None
     categories_visited: list[str] = field(default_factory=list)
     
+    # No-tool test case fields
+    is_no_tool_test: bool = False  # True if this was a no-tool expected test
+    false_positive: bool = False   # True if tool was called when none expected
+    
+    # Multi-tool test case fields
+    is_multi_tool_test: bool = False  # True if this was a multi-tool test
+    tools_called: list[str] = field(default_factory=list)  # All tools called
+    completion_rate: Optional[float] = None  # % of expected tools called
+    sequence_correct: Optional[bool] = None  # True if tools called in correct order
+    extra_calls: int = 0  # Number of unexpected tool calls
+    
+    # Per-parameter accuracy
+    param_details: dict[str, bool] = field(default_factory=dict)  # param_name -> correct
+    
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for analysis."""
+        # Handle both TestCase and MultiToolTestCase
+        if isinstance(self.test_case, MultiToolTestCase):
+            expected_tool = ",".join(self.test_case.expected_tools)
+        else:
+            expected_tool = self.test_case.expected_tool
+        
         return {
             "prompt": self.test_case.prompt,
-            "expected_tool": self.test_case.expected_tool,
+            "expected_tool": expected_tool,
             "called_tool": self.call_result.called_tool,
             "tool_correct": self.tool_correct,
             "params_correct": self.params_correct,
@@ -59,6 +84,17 @@ class TestResult:
             "category_correct": self.category_correct,
             "final_category": self.final_category,
             "categories_visited": self.categories_visited,
+            # No-tool metrics
+            "is_no_tool_test": self.is_no_tool_test,
+            "false_positive": self.false_positive,
+            # Multi-tool metrics
+            "is_multi_tool_test": self.is_multi_tool_test,
+            "tools_called": self.tools_called,
+            "completion_rate": self.completion_rate,
+            "sequence_correct": self.sequence_correct,
+            "extra_calls": self.extra_calls,
+            # Per-parameter accuracy
+            "param_details": self.param_details,
         }
 
 
@@ -92,6 +128,24 @@ class EvaluationResult:
     avg_backtracks_per_call: float = 0.0
     declined_tool_calls: int = 0
     category_selection_accuracy: float = 0.0  # For clustering: correct category rate
+    
+    # No-tool test metrics
+    no_tool_tests: int = 0  # Number of no-tool test cases
+    no_tool_correct: int = 0  # Correctly didn't call a tool
+    false_positive_count: int = 0  # Called a tool when none expected
+    false_positive_rate: float = 0.0  # FP / no_tool_tests
+    
+    # Multi-tool test metrics
+    multi_tool_tests: int = 0  # Number of multi-tool test cases
+    multi_tool_correct: int = 0  # All expected tools called correctly
+    avg_completion_rate: float = 0.0  # Average % of expected tools called
+    avg_sequence_accuracy: float = 0.0  # Average sequence correctness (for require_sequence tests)
+    avg_extra_calls: float = 0.0  # Average unnecessary tool calls per multi-tool test
+    
+    # Parameter accuracy metrics
+    params_tested: int = 0  # Number of tests with expected params
+    params_correct: int = 0  # Number with all params correct
+    params_accuracy: float = 0.0  # params_correct / params_tested
     
     @property
     def accuracy(self) -> float:
@@ -129,6 +183,21 @@ class EvaluationResult:
             "avg_backtracks_per_call": self.avg_backtracks_per_call,
             "declined_tool_calls": self.declined_tool_calls,
             "category_selection_accuracy": self.category_selection_accuracy,
+            # No-tool metrics
+            "no_tool_tests": self.no_tool_tests,
+            "no_tool_correct": self.no_tool_correct,
+            "false_positive_count": self.false_positive_count,
+            "false_positive_rate": self.false_positive_rate,
+            # Multi-tool metrics
+            "multi_tool_tests": self.multi_tool_tests,
+            "multi_tool_correct": self.multi_tool_correct,
+            "avg_completion_rate": self.avg_completion_rate,
+            "avg_sequence_accuracy": self.avg_sequence_accuracy,
+            "avg_extra_calls": self.avg_extra_calls,
+            # Parameter accuracy
+            "params_tested": self.params_tested,
+            "params_correct": self.params_correct,
+            "params_accuracy": self.params_accuracy,
         }
         return result
     
@@ -157,6 +226,33 @@ class EvaluationResult:
             f"Min Latency: {self.min_latency_ms:.1f}ms",
             f"Max Latency: {self.max_latency_ms:.1f}ms",
         ]
+        
+        # Add no-tool test stats
+        if self.no_tool_tests > 0:
+            lines.append("")
+            lines.append("No-Tool Test Results:")
+            lines.append(f"  No-Tool Tests: {self.no_tool_tests}")
+            lines.append(f"  Correct (no tool called): {self.no_tool_correct}")
+            lines.append(f"  False Positives: {self.false_positive_count}")
+            lines.append(f"  False Positive Rate: {self.false_positive_rate:.2%}")
+        
+        # Add multi-tool test stats
+        if self.multi_tool_tests > 0:
+            lines.append("")
+            lines.append("Multi-Tool Test Results:")
+            lines.append(f"  Multi-Tool Tests: {self.multi_tool_tests}")
+            lines.append(f"  Fully Correct: {self.multi_tool_correct}")
+            lines.append(f"  Avg Completion Rate: {self.avg_completion_rate:.2%}")
+            lines.append(f"  Avg Sequence Accuracy: {self.avg_sequence_accuracy:.2%}")
+            lines.append(f"  Avg Extra Calls: {self.avg_extra_calls:.2f}")
+        
+        # Add parameter accuracy stats
+        if self.params_tested > 0:
+            lines.append("")
+            lines.append("Parameter Accuracy:")
+            lines.append(f"  Tests with Expected Params: {self.params_tested}")
+            lines.append(f"  Fully Correct Params: {self.params_correct}")
+            lines.append(f"  Parameter Accuracy: {self.params_accuracy:.2%}")
         
         # Add methodology-specific stats
         if self.methodology != "mcp":
@@ -189,7 +285,10 @@ class ToolCallEvaluator:
     Evaluator for tool calling accuracy.
     
     Compares expected tool calls against actual model responses
-    and computes various metrics.
+    and computes various metrics. Supports:
+    - Single-tool test cases
+    - No-tool test cases (expecting no tool call)
+    - Multi-tool test cases (expecting multiple tools)
     """
     
     def __init__(self):
@@ -198,31 +297,46 @@ class ToolCallEvaluator:
     
     def evaluate_single(
         self,
-        test_case: TestCase,
+        test_case: AnyTestCase,
         call_result: CallResult,
         methodology_result: Optional["MethodologyResult"] = None,
     ) -> TestResult:
         """
-        Evaluate a single test case.
+        Evaluate a single test case (single-tool or no-tool).
         
         Args:
-            test_case: Expected test case
+            test_case: Expected test case (TestCase or MultiToolTestCase)
             call_result: Actual result from API call
             methodology_result: Optional methodology-specific result
             
         Returns:
             TestResult with evaluation details
         """
-        # Check if correct tool was called
-        tool_correct = (
-            call_result.called_tool is not None and
-            call_result.called_tool == test_case.expected_tool
-        )
+        # Handle multi-tool test cases separately
+        if isinstance(test_case, MultiToolTestCase):
+            return self.evaluate_multi_tool(test_case, call_result, methodology_result)
         
-        # Check parameters if expected
+        # Determine if this is a no-tool test case
+        is_no_tool_test = test_case.expected_tool is None
+        
+        # Check if correct tool was called
+        if is_no_tool_test:
+            # For no-tool tests: correct if no tool was called
+            tool_correct = call_result.called_tool is None
+            false_positive = call_result.called_tool is not None
+        else:
+            # For regular tests: correct if expected tool was called
+            tool_correct = (
+                call_result.called_tool is not None and
+                call_result.called_tool == test_case.expected_tool
+            )
+            false_positive = False
+        
+        # Check parameters if expected (with improved checking)
         params_correct = None
+        param_details = {}
         if tool_correct and test_case.expected_params is not None:
-            params_correct = self._check_params(
+            params_correct, param_details = self._check_params_detailed(
                 test_case.expected_params,
                 call_result.called_args or {}
             )
@@ -260,6 +374,101 @@ class ToolCallEvaluator:
             category_correct=category_correct,
             final_category=final_category,
             categories_visited=categories_visited,
+            # No-tool fields
+            is_no_tool_test=is_no_tool_test,
+            false_positive=false_positive,
+            # Per-parameter accuracy
+            param_details=param_details,
+        )
+        
+        self.results.append(result)
+        return result
+    
+    def evaluate_multi_tool(
+        self,
+        test_case: MultiToolTestCase,
+        call_result: CallResult,
+        methodology_result: Optional["MethodologyResult"] = None,
+    ) -> TestResult:
+        """
+        Evaluate a multi-tool test case.
+        
+        Args:
+            test_case: Multi-tool test case with expected_tools list
+            call_result: Actual result from API call
+            methodology_result: Optional methodology-specific result
+            
+        Returns:
+            TestResult with multi-tool evaluation details
+        """
+        # Get all tools called from methodology result if available
+        tools_called = []
+        if methodology_result is not None and methodology_result.all_calls:
+            tools_called = [
+                call.get("tool") or call.get("name", "")
+                for call in methodology_result.all_calls
+                if call.get("tool") or call.get("name")
+            ]
+        elif call_result.called_tool:
+            tools_called = [call_result.called_tool]
+        
+        expected_tools = test_case.expected_tools
+        expected_set = set(expected_tools)
+        called_set = set(tools_called)
+        
+        # Calculate metrics
+        matched_tools = expected_set & called_set
+        completion_rate = len(matched_tools) / len(expected_tools) if expected_tools else 0.0
+        extra_calls = len(called_set - expected_set)
+        
+        # Check sequence if required
+        sequence_correct = None
+        if test_case.require_sequence and tools_called:
+            # Filter called_tools to only include expected tools, preserving order
+            filtered_calls = [t for t in tools_called if t in expected_set]
+            # Check if the order matches the expected order
+            sequence_correct = filtered_calls == expected_tools[:len(filtered_calls)]
+        
+        # All expected tools were called (order may or may not matter)
+        if test_case.require_sequence:
+            tool_correct = (tools_called == expected_tools)
+        else:
+            tool_correct = (expected_set == matched_tools and len(matched_tools) == len(expected_tools))
+        
+        # Extract methodology-specific info
+        methodology = "mcp"
+        steps_count = 1
+        backtrack_count = 0
+        declined_tool_call = False
+        final_category = None
+        categories_visited = []
+        
+        if methodology_result is not None:
+            methodology = methodology_result.methodology
+            steps_count = len(methodology_result.steps)
+            backtrack_count = methodology_result.backtrack_count
+            declined_tool_call = methodology_result.declined_tool_call
+            final_category = methodology_result.final_category
+            categories_visited = methodology_result.categories_selected
+        
+        result = TestResult(
+            test_case=test_case,
+            call_result=call_result,
+            tool_correct=tool_correct,
+            params_correct=None,  # TODO: Multi-tool param checking
+            methodology=methodology,
+            steps_count=steps_count,
+            backtrack_count=backtrack_count,
+            declined_tool_call=declined_tool_call,
+            category_correct=None,
+            final_category=final_category,
+            categories_visited=categories_visited,
+            # Multi-tool fields
+            is_multi_tool_test=True,
+            tools_called=tools_called,
+            completion_rate=completion_rate,
+            sequence_correct=sequence_correct,
+            extra_calls=extra_calls,
         )
         
         self.results.append(result)
@@ -267,14 +476,14 @@ class ToolCallEvaluator:
     
     def evaluate_batch(
         self,
-        test_cases: list[TestCase],
+        test_cases: list[AnyTestCase],
         call_results: list[CallResult]
     ) -> list[TestResult]:
         """
         Evaluate a batch of test cases.
         
         Args:
-            test_cases: List of expected test cases
+            test_cases: List of expected test cases (TestCase or MultiToolTestCase)
             call_results: List of actual results from API calls
             
         Returns:
@@ -365,6 +574,37 @@ class ToolCallEvaluator:
             if category_total > 0:
                 category_selection_accuracy = category_correct_count / category_total
         
+        # No-tool test metrics
+        no_tool_results = [r for r in self.results if r.is_no_tool_test]
+        no_tool_tests = len(no_tool_results)
+        no_tool_correct = sum(1 for r in no_tool_results if r.tool_correct)
+        false_positive_count = sum(1 for r in no_tool_results if r.false_positive)
+        false_positive_rate = false_positive_count / no_tool_tests if no_tool_tests > 0 else 0.0
+        
+        # Multi-tool test metrics
+        multi_tool_results = [r for r in self.results if r.is_multi_tool_test]
+        multi_tool_tests = len(multi_tool_results)
+        multi_tool_correct = sum(1 for r in multi_tool_results if r.tool_correct)
+        
+        avg_completion_rate = 0.0
+        avg_sequence_accuracy = 0.0
+        avg_extra_calls = 0.0
+        if multi_tool_tests > 0:
+            completion_rates = [r.completion_rate for r in multi_tool_results if r.completion_rate is not None]
+            avg_completion_rate = sum(completion_rates) / len(completion_rates) if completion_rates else 0.0
+            
+            sequence_results = [r.sequence_correct for r in multi_tool_results if r.sequence_correct is not None]
+            avg_sequence_accuracy = sum(1 for s in sequence_results if s) / len(sequence_results) if sequence_results else 0.0
+            
+            extra_calls_list = [r.extra_calls for r in multi_tool_results]
+            avg_extra_calls = sum(extra_calls_list) / len(extra_calls_list) if extra_calls_list else 0.0
+        
+        # Parameter accuracy metrics
+        params_results = [r for r in self.results if r.params_correct is not None]
+        params_tested = len(params_results)
+        params_correct_count = sum(1 for r in params_results if r.params_correct)
+        params_accuracy = params_correct_count / params_tested if params_tested > 0 else 0.0
+        
         return EvaluationResult(
             total_tests=total,
             tool_correct=correct,
@@ -384,6 +624,21 @@ class ToolCallEvaluator:
             avg_backtracks_per_call=avg_backtracks,
             declined_tool_calls=declined_count,
             category_selection_accuracy=category_selection_accuracy,
+            # No-tool metrics
+            no_tool_tests=no_tool_tests,
+            no_tool_correct=no_tool_correct,
+            false_positive_count=false_positive_count,
+            false_positive_rate=false_positive_rate,
+            # Multi-tool metrics
+            multi_tool_tests=multi_tool_tests,
+            multi_tool_correct=multi_tool_correct,
+            avg_completion_rate=avg_completion_rate,
+            avg_sequence_accuracy=avg_sequence_accuracy,
+            avg_extra_calls=avg_extra_calls,
+            # Parameter accuracy
+            params_tested=params_tested,
+            params_correct=params_correct_count,
+            params_accuracy=params_accuracy,
         )
     
     def reset(self) -> None:
@@ -395,10 +650,80 @@ class ToolCallEvaluator:
         expected: dict[str, Any],
         actual: dict[str, Any]
     ) -> bool:
-        """Check if actual parameters match expected."""
+        """Check if actual parameters match expected (simple equality check)."""
         for key, value in expected.items():
             if key not in actual:
                 return False
             if actual[key] != value:
                 return False
         return True
+    
+    def _check_params_detailed(
+        self,
+        expected: dict[str, Any],
+        actual: dict[str, Any]
+    ) -> tuple[bool, dict[str, bool]]:
+        """
+        Check if actual parameters match expected with detailed per-parameter results.
+        
+        Supports:
+        - Exact matching
+        - Type coercion (string "123" matches int 123)
+        - Case-insensitive string matching
+        
+        Args:
+            expected: Expected parameter values
+            actual: Actual parameter values from model
+            
+        Returns:
+            Tuple of (all_correct, {param_name: correct})
+        """
+        param_details = {}
+        all_correct = True
+        
+        for key, expected_value in expected.items():
+            if key not in actual:
+                param_details[key] = False
+                all_correct = False
+                continue
+            
+            actual_value = actual[key]
+            
+            # Try exact match first
+            if actual_value == expected_value:
+                param_details[key] = True
+                continue
+            
+            # Try type coercion for common cases
+            matched = False
+            
+            # String to number coercion
+            if isinstance(expected_value, (int, float)) and isinstance(actual_value, str):
+                try:
+                    if isinstance(expected_value, int):
+                        matched = int(actual_value) == expected_value
+                    else:
+                        matched = float(actual_value) == expected_value
+                except (ValueError, TypeError):
+                    pass
+            
+            # Number to string coercion
+            elif isinstance(expected_value, str) and isinstance(actual_value, (int, float)):
+                matched = str(actual_value) == expected_value
+            
+            # Case-insensitive string matching
+            elif isinstance(expected_value, str) and isinstance(actual_value, str):
+                matched = expected_value.lower() == actual_value.lower()
+            
+            # Boolean coercion
+            elif isinstance(expected_value, bool):
+                if isinstance(actual_value, str):
+                    matched = actual_value.lower() in ("true", "1", "yes") if expected_value else actual_value.lower() in ("false", "0", "no")
+                elif isinstance(actual_value, (int, float)):
+                    matched = bool(actual_value) == expected_value
+            
+            param_details[key] = matched
+            if not matched:
+                all_correct = False
+        
+        return all_correct, param_details

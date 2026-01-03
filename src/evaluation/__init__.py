@@ -1,4 +1,4 @@
 """Evaluation metrics and scoring."""
-from .metrics import ToolCallEvaluator, EvaluationResult
+from .metrics import ToolCallEvaluator, EvaluationResult, TestResult, AnyTestCase
 
-__all__ = ["ToolCallEvaluator", "EvaluationResult"]
+__all__ = ["ToolCallEvaluator", "EvaluationResult", "TestResult", "AnyTestCase"]

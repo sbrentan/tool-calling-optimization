@@ -1,0 +1,39 @@
+# Phase 1 Testing Foundation Configuration
+# Tests the new no-tool and multi-tool test case evaluation
+
+name: phase1_testing
+description: >
+  Phase 1 experiment validating new testing infrastructure:
+  - No-tool test cases (false positive rate measurement)
+  - Multi-tool test cases (sequence/completion metrics)
+  - Enhanced parameter accuracy tracking
+
+# Tool configuration
+num_tools: 20
+doc_length: medium  # minimal, short, medium, long, verbose
+prompt_type: concise  # concise or clear
+num_similar_tools: 0
+categories: null  # null = all categories
+
+# Model configuration
+model: llama-3.3-70b  # Cerebras model (free tier!)
+provider: cerebras    # Or: gemini, openai
+temperature: 0.0
+
+# Test configuration
+num_test_samples: null  # null = test all generated cases
+seed: 42
+
+# Phase 1 test case options
+include_multi_tool: true   # Include multi-tool test scenarios
+include_no_tool: true      # Include no-tool test scenarios (negative tests)
+
+# Output configuration
+output_dir: experiments/results
+save_raw_responses: false
+
+# Methodology configuration
+methodology: mcp  # Start with MCP for baseline
+max_steps: 10
+allow_backtrack: true
+allow_no_tool_call: true  # IMPORTANT: Must be true for no-tool tests!

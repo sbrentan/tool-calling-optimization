@@ -31,6 +31,8 @@ class ExperimentConfig:
         # Test configuration
         num_test_samples: Number of test cases to run
         seed: Random seed for reproducibility
+        include_multi_tool: Include multi-tool test cases
+        include_no_tool: Include no-tool test cases
         
         # Output configuration
         output_dir: Directory for results
@@ -55,6 +57,8 @@ class ExperimentConfig:
     # Test configuration
     num_test_samples: Optional[int] = None  # None = test all generated tools
     seed: int = 42
+    include_multi_tool: bool = False  # Include multi-tool test scenarios
+    include_no_tool: bool = False  # Include no-tool test scenarios (negative tests)
     
     # Output configuration
     output_dir: str = "experiments/results"
@@ -84,6 +88,8 @@ class ExperimentConfig:
             "temperature": self.temperature,
             "num_test_samples": self.num_test_samples,
             "seed": self.seed,
+            "include_multi_tool": self.include_multi_tool,
+            "include_no_tool": self.include_no_tool,
             "output_dir": self.output_dir,
             "save_raw_responses": self.save_raw_responses,
             "methodology": self.methodology,

@@ -118,20 +118,46 @@ def run_experiment(config: ExperimentConfig) -> dict:
         categories_count[tool.category] = categories_count.get(tool.category, 0) + 1
     logger.debug(f"Tools by category: {categories_count}")
     
-    # Generate test cases
+    # Generate test cases with new options
     prompt_type = getattr(config, 'prompt_type', 'concise')
+    include_multi_tool = getattr(config, 'include_multi_tool', False)
+    include_no_tool = getattr(config, 'include_no_tool', False)
+    
     logger.info(f"Using prompt type: {prompt_type}")
-    test_cases = generator.generate_test_cases(tools, prompt_type=prompt_type)
+    logger.info(f"Include multi-tool tests: {include_multi_tool}")
+    logger.info(f"Include no-tool tests: {include_no_tool}")
+    
+    test_cases = generator.generate_test_cases(
+        tools,
+        include_multi_tool=include_multi_tool,
+        include_no_tool=include_no_tool,
+        prompt_type=prompt_type
+    )
     if config.num_test_samples is not None:
         test_cases = test_cases[:config.num_test_samples]
+    
+    # Log test case breakdown
+    from src.tools.base import MultiToolTestCase
+    single_tool_count = sum(1 for tc in test_cases if not isinstance(tc, MultiToolTestCase) and tc.expected_tool is not None)
+    no_tool_count = sum(1 for tc in test_cases if not isinstance(tc, MultiToolTestCase) and tc.expected_tool is None)
+    multi_tool_count = sum(1 for tc in test_cases if isinstance(tc, MultiToolTestCase))
+    
     logger.info(f"Running {len(test_cases)} test cases...")
+    logger.info(f"  - Single-tool tests: {single_tool_count}")
+    logger.info(f"  - No-tool tests: {no_tool_count}")
+    logger.info(f"  - Multi-tool tests: {multi_tool_count}")
     
     # Run tests using methodology
     for i, test_case in enumerate(test_cases):
         logger.info(f"")
         logger.info(f"======== Test {i+1}/{len(test_cases)} ========")
         logger.debug(f"Prompt: {test_case.prompt}")
-        logger.debug(f"Expected tool: {test_case.expected_tool}")
+        
+        # Handle different test case types for logging
+        if isinstance(test_case, MultiToolTestCase):
+            logger.debug(f"Expected tools: {test_case.expected_tools}")
+        else:
+            logger.debug(f"Expected tool: {test_case.expected_tool}")
         logger.debug(f"Expected category: {test_case.category}")
         
         # Use methodology to run the test
