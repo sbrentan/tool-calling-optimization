@@ -1,0 +1,51 @@
+# Confidence-based Fallback Methodology Experiment
+# Tries methodologies in order of speed, falling back when confidence is low
+
+name: confidence_baseline
+description: "Confidence methodology - RAG->Clustering->MCP fallback chain based on confidence estimation"
+
+# Tool configuration
+num_tools: 50
+doc_length: medium
+prompt_type: clear  # concise or clear
+num_similar_tools: 0
+categories: null  # Use all categories
+
+# Model configuration
+model: llama-3.3-70b
+provider: cerebras
+temperature: 0.0
+
+# Test configuration
+num_test_samples: 10
+seed: 42
+
+# Output configuration
+output_dir: experiments/results
+save_raw_responses: false
+
+# Methodology configuration
+methodology: confidence
+allow_no_tool_call: false
+
+# Confidence-specific configuration
+confidence_config:
+  # Minimum confidence to accept RAG result (0-1)
+  # Higher = more likely to fall back to clustering
+  rag_confidence_threshold: 0.7
+  
+  # Minimum confidence to accept Clustering result (0-1)
+  # Higher = more likely to fall back to MCP
+  clustering_confidence_threshold: 0.6
+  
+  # RAG sub-methodology configuration
+  rag_config:
+    embedding_model: all-MiniLM-L6-v2
+    top_k: 10
+    similarity_threshold: 0.0
+    cache_embeddings: true
+  
+  # Clustering sub-methodology configuration
+  clustering_config:
+    allow_backtrack: true
+    max_steps: 10

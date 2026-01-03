@@ -15,6 +15,9 @@ from .factory import MethodologyFactory, create_methodology
 from .mcp import MCPMethodology
 from .clustering import ClusteringMethodology
 from .rag import RAGMethodology
+from .hybrid import HybridMethodology
+from .adaptive_rag import AdaptiveRAGMethodology
+from .confidence import ConfidenceMethodology
 
 __all__ = [
     "BaseMethodology",
@@ -26,4 +29,7 @@ __all__ = [
     "MCPMethodology",
     "ClusteringMethodology",
     "RAGMethodology",
+    "HybridMethodology",
+    "AdaptiveRAGMethodology",
+    "ConfidenceMethodology",
 ]

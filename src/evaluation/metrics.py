@@ -57,6 +57,13 @@ class TestResult:
     # Per-parameter accuracy
     param_details: dict[str, bool] = field(default_factory=dict)  # param_name -> correct
     
+    # Phase 2 methodology fields
+    confidence_score: Optional[float] = None  # Confidence methodology score
+    fallback_method_used: Optional[str] = None  # Which method was used in confidence fallback
+    num_fallbacks: int = 0  # Number of fallbacks in confidence methodology
+    adaptive_k_used: Optional[int] = None  # Adaptive RAG: k value used
+    adaptive_strategy: Optional[str] = None  # Adaptive RAG: strategy used (elbow/threshold)
+    
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for analysis."""
         # Handle both TestCase and MultiToolTestCase
@@ -95,6 +102,12 @@ class TestResult:
             "extra_calls": self.extra_calls,
             # Per-parameter accuracy
             "param_details": self.param_details,
+            # Phase 2 methodology metrics
+            "confidence_score": self.confidence_score,
+            "fallback_method_used": self.fallback_method_used,
+            "num_fallbacks": self.num_fallbacks,
+            "adaptive_k_used": self.adaptive_k_used,
+            "adaptive_strategy": self.adaptive_strategy,
         }
 
 
@@ -147,6 +160,19 @@ class EvaluationResult:
     params_correct: int = 0  # Number with all params correct
     params_accuracy: float = 0.0  # params_correct / params_tested
     
+    # Phase 2 methodology metrics
+    # Confidence methodology
+    fallback_rate: float = 0.0  # Rate at which fallback was needed
+    method_used_distribution: dict[str, int] = field(default_factory=dict)  # Count per method used
+    avg_num_fallbacks: float = 0.0  # Average fallbacks per call
+    avg_confidence_score: float = 0.0  # Average confidence when accepted
+    
+    # Adaptive RAG methodology
+    adaptive_k_stats: dict[str, float] = field(default_factory=dict)  # min/max/avg k used
+    adaptive_strategy_distribution: dict[str, int] = field(default_factory=dict)  # Count per strategy
+    
+    # Hybrid methodology (uses category_selection_accuracy already defined)
+    
     @property
     def accuracy(self) -> float:
         """Overall tool selection accuracy."""
@@ -198,6 +224,13 @@ class EvaluationResult:
             "params_tested": self.params_tested,
             "params_correct": self.params_correct,
             "params_accuracy": self.params_accuracy,
+            # Phase 2 methodology metrics
+            "fallback_rate": self.fallback_rate,
+            "method_used_distribution": self.method_used_distribution,
+            "avg_num_fallbacks": self.avg_num_fallbacks,
+            "avg_confidence_score": self.avg_confidence_score,
+            "adaptive_k_stats": self.adaptive_k_stats,
+            "adaptive_strategy_distribution": self.adaptive_strategy_distribution,
         }
         return result
     
@@ -261,8 +294,30 @@ class EvaluationResult:
             lines.append(f"  Avg Steps per Call: {self.avg_steps_per_call:.2f}")
             lines.append(f"  Total Backtracks: {self.total_backtracks}")
             lines.append(f"  Avg Backtracks per Call: {self.avg_backtracks_per_call:.2f}")
-            if self.methodology == "clustering":
+            if self.methodology in ("clustering", "hybrid"):
                 lines.append(f"  Category Selection Accuracy: {self.category_selection_accuracy:.2%}")
+        
+        # Add Phase 2 methodology stats
+        if self.methodology == "confidence" and self.method_used_distribution:
+            lines.append("")
+            lines.append("Confidence Methodology Stats:")
+            lines.append(f"  Fallback Rate: {self.fallback_rate:.2%}")
+            lines.append(f"  Avg Fallbacks per Call: {self.avg_num_fallbacks:.2f}")
+            lines.append(f"  Avg Confidence Score: {self.avg_confidence_score:.3f}")
+            lines.append("  Method Distribution:")
+            for method, count in sorted(self.method_used_distribution.items()):
+                lines.append(f"    {method}: {count}")
+        
+        if self.methodology == "adaptive_rag" and self.adaptive_k_stats:
+            lines.append("")
+            lines.append("Adaptive RAG Stats:")
+            lines.append(f"  Min K Used: {self.adaptive_k_stats.get('min_k', 0):.0f}")
+            lines.append(f"  Max K Used: {self.adaptive_k_stats.get('max_k', 0):.0f}")
+            lines.append(f"  Avg K Used: {self.adaptive_k_stats.get('avg_k', 0):.1f}")
+            if self.adaptive_strategy_distribution:
+                lines.append("  Strategy Distribution:")
+                for strategy, count in sorted(self.adaptive_strategy_distribution.items()):
+                    lines.append(f"    {strategy}: {count}")
         
         if self.category_accuracy:
             lines.append("")
@@ -358,9 +413,33 @@ class ToolCallEvaluator:
             final_category = methodology_result.final_category
             categories_visited = methodology_result.categories_selected
             
-            # Check if correct category was selected (for clustering)
-            if methodology == "clustering" and final_category is not None:
+            # Check if correct category was selected (for clustering/hybrid)
+            if methodology in ("clustering", "hybrid") and final_category is not None:
                 category_correct = (final_category == test_case.category)
+        
+        # Extract Phase 2 methodology-specific metrics
+        confidence_score = None
+        fallback_method_used = None
+        num_fallbacks = 0
+        adaptive_k_used = None
+        adaptive_strategy = None
+        
+        if methodology_result is not None:
+            # Confidence methodology metrics
+            if hasattr(methodology_result, '_confidence_metadata') and methodology_result._confidence_metadata:
+                conf_meta = methodology_result._confidence_metadata
+                fallback_method_used = conf_meta.get('final_method')
+                num_fallbacks = conf_meta.get('num_fallbacks', 0)
+                # Get confidence of the method that was accepted
+                confidences = conf_meta.get('confidences', {})
+                if fallback_method_used and fallback_method_used in confidences:
+                    confidence_score = confidences[fallback_method_used]
+            
+            # Adaptive RAG methodology metrics
+            if hasattr(methodology_result, '_adaptive_metadata') and methodology_result._adaptive_metadata:
+                adapt_meta = methodology_result._adaptive_metadata
+                adaptive_k_used = adapt_meta.get('adaptive_k_used')
+                adaptive_strategy = adapt_meta.get('strategy_used')
         
         result = TestResult(
             test_case=test_case,
@@ -379,6 +458,12 @@ class ToolCallEvaluator:
             false_positive=false_positive,
             # Per-parameter accuracy
             param_details=param_details,
+            # Phase 2 methodology fields
+            confidence_score=confidence_score,
+            fallback_method_used=fallback_method_used,
+            num_fallbacks=num_fallbacks,
+            adaptive_k_used=adaptive_k_used,
+            adaptive_strategy=adaptive_strategy,
         )
         
         self.results.append(result)
@@ -560,9 +645,9 @@ class ToolCallEvaluator:
         # Declined calls
         declined_count = sum(1 for r in self.results if r.declined_tool_call)
         
-        # Category selection accuracy (for clustering)
+        # Category selection accuracy (for clustering and hybrid)
         category_selection_accuracy = 0.0
-        if methodology == "clustering":
+        if methodology in ("clustering", "hybrid"):
             category_correct_count = sum(
                 1 for r in self.results 
                 if r.category_correct is True
@@ -605,6 +690,52 @@ class ToolCallEvaluator:
         params_correct_count = sum(1 for r in params_results if r.params_correct)
         params_accuracy = params_correct_count / params_tested if params_tested > 0 else 0.0
         
+        # Phase 2 methodology metrics
+        # Confidence methodology metrics
+        fallback_rate = 0.0
+        method_used_distribution: dict[str, int] = {}
+        avg_num_fallbacks = 0.0
+        avg_confidence_score = 0.0
+        
+        confidence_results = [r for r in self.results if r.fallback_method_used is not None]
+        if confidence_results:
+            # Count fallbacks (when more than one method was tried)
+            fallback_count = sum(1 for r in confidence_results if r.num_fallbacks > 0)
+            fallback_rate = fallback_count / len(confidence_results)
+            
+            # Distribution of final methods used
+            for r in confidence_results:
+                method = r.fallback_method_used
+                method_used_distribution[method] = method_used_distribution.get(method, 0) + 1
+            
+            # Average number of fallbacks
+            total_fallbacks = sum(r.num_fallbacks for r in confidence_results)
+            avg_num_fallbacks = total_fallbacks / len(confidence_results)
+            
+            # Average confidence score
+            confidence_scores = [r.confidence_score for r in confidence_results if r.confidence_score is not None]
+            if confidence_scores:
+                avg_confidence_score = sum(confidence_scores) / len(confidence_scores)
+        
+        # Adaptive RAG methodology metrics
+        adaptive_k_stats: dict[str, float] = {}
+        adaptive_strategy_distribution: dict[str, int] = {}
+        
+        adaptive_results = [r for r in self.results if r.adaptive_k_used is not None]
+        if adaptive_results:
+            k_values = [r.adaptive_k_used for r in adaptive_results]
+            adaptive_k_stats = {
+                "min_k": float(min(k_values)),
+                "max_k": float(max(k_values)),
+                "avg_k": sum(k_values) / len(k_values),
+            }
+            
+            # Distribution of strategies used
+            for r in adaptive_results:
+                if r.adaptive_strategy:
+                    strategy = r.adaptive_strategy
+                    adaptive_strategy_distribution[strategy] = adaptive_strategy_distribution.get(strategy, 0) + 1
+        
         return EvaluationResult(
             total_tests=total,
             tool_correct=correct,
@@ -639,6 +770,13 @@ class ToolCallEvaluator:
             params_tested=params_tested,
             params_correct=params_correct_count,
             params_accuracy=params_accuracy,
+            # Phase 2 methodology metrics
+            fallback_rate=fallback_rate,
+            method_used_distribution=method_used_distribution,
+            avg_num_fallbacks=avg_num_fallbacks,
+            avg_confidence_score=avg_confidence_score,
+            adaptive_k_stats=adaptive_k_stats,
+            adaptive_strategy_distribution=adaptive_strategy_distribution,
         )
     
     def reset(self) -> None:

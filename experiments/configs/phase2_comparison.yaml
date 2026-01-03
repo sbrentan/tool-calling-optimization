@@ -1,0 +1,53 @@
+# Phase 2 Methodology Comparison Experiment
+# Compares all Phase 2 methodologies against baselines
+
+name: phase2_comparison
+description: "Comparative experiment for Phase 2 methodologies: Hybrid, Adaptive RAG, Confidence vs baselines"
+
+# Tool configuration
+num_tools: 50
+doc_length: medium
+prompt_type: clear
+num_similar_tools: 0
+categories: null
+
+# Model configuration
+model: llama-3.3-70b
+provider: cerebras
+temperature: 0.0
+
+# Test configuration
+num_test_samples: 20
+seed: 42
+include_multi_tool: false
+include_no_tool: true
+
+# Output configuration
+output_dir: experiments/results
+save_raw_responses: false
+
+# Note: This config runs with default MCP methodology
+# To compare methodologies, run multiple experiments:
+#
+# 1. MCP baseline:
+#    python scripts/run_experiment.py run --config experiments/configs/baseline.yaml
+#
+# 2. RAG baseline:
+#    python scripts/run_experiment.py run --config experiments/configs/rag.yaml
+#
+# 3. Clustering baseline:
+#    python scripts/run_experiment.py run --config experiments/configs/clustering.yaml
+#
+# 4. Hybrid (Phase 2):
+#    python scripts/run_experiment.py run --config experiments/configs/hybrid.yaml
+#
+# 5. Adaptive RAG (Phase 2):
+#    python scripts/run_experiment.py run --config experiments/configs/adaptive_rag.yaml
+#
+# 6. Confidence (Phase 2):
+#    python scripts/run_experiment.py run --config experiments/configs/confidence.yaml
+#
+# Compare results using the analysis scripts or metrics from each run
+
+methodology: mcp
+allow_no_tool_call: true

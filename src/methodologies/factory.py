@@ -7,6 +7,9 @@ from .base import BaseMethodology
 from .mcp import MCPMethodology
 from .clustering import ClusteringMethodology
 from .rag import RAGMethodology
+from .hybrid import HybridMethodology
+from .adaptive_rag import AdaptiveRAGMethodology
+from .confidence import ConfidenceMethodology
 
 
 # Registry of available methodologies
@@ -14,6 +17,9 @@ METHODOLOGY_REGISTRY: dict[str, Type[BaseMethodology]] = {
     "mcp": MCPMethodology,
     "clustering": ClusteringMethodology,
     "rag": RAGMethodology,
+    "hybrid": HybridMethodology,
+    "adaptive_rag": AdaptiveRAGMethodology,
+    "confidence": ConfidenceMethodology,
 }
 
 
@@ -107,6 +113,24 @@ def create_methodology(
             **kwargs,
         )
     elif name == "rag":
+        return MethodologyFactory.create(
+            name,
+            allow_no_tool_call=allow_decline,
+            **kwargs,
+        )
+    elif name == "hybrid":
+        return MethodologyFactory.create(
+            name,
+            allow_no_tool_call=allow_decline,
+            **kwargs,
+        )
+    elif name == "adaptive_rag":
+        return MethodologyFactory.create(
+            name,
+            allow_no_tool_call=allow_decline,
+            **kwargs,
+        )
+    elif name == "confidence":
         return MethodologyFactory.create(
             name,
             allow_no_tool_call=allow_decline,

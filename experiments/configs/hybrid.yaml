@@ -1,0 +1,45 @@
+# Hybrid RAG + Clustering Methodology Experiment
+# Combines semantic category selection with LLM tool selection
+
+name: hybrid_baseline
+description: "Hybrid methodology - uses embeddings to select categories, then LLM selects from tools in those categories"
+
+# Tool configuration
+num_tools: 50
+doc_length: medium
+prompt_type: clear  # concise or clear
+num_similar_tools: 0
+categories: null  # Use all categories
+
+# Model configuration
+model: llama-3.3-70b
+provider: cerebras
+temperature: 0.0
+
+# Test configuration
+num_test_samples: 10
+seed: 42
+
+# Output configuration
+output_dir: experiments/results
+save_raw_responses: false
+
+# Methodology configuration
+methodology: hybrid
+allow_no_tool_call: false
+
+# Hybrid-specific configuration
+hybrid_config:
+  # Embedding model from sentence-transformers
+  embedding_model: all-MiniLM-L6-v2
+  
+  # Number of categories to retrieve
+  top_k_categories: 3
+  
+  # Cache embeddings for speed
+  cache_embeddings: true
+  
+  # How to compute category embeddings:
+  # - "mean": Average of tool embeddings in category (captures tool-level semantics)
+  # - "description": Embed category description directly (faster, may miss nuances)
+  category_embedding_strategy: mean

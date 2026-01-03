@@ -73,6 +73,11 @@ class ExperimentConfig:
     # RAG methodology configuration
     rag_config: Optional[dict[str, Any]] = None  # RAG-specific settings
     
+    # Phase 2 methodology configurations
+    hybrid_config: Optional[dict[str, Any]] = None  # Hybrid methodology settings
+    adaptive_rag_config: Optional[dict[str, Any]] = None  # Adaptive RAG settings
+    confidence_config: Optional[dict[str, Any]] = None  # Confidence fallback settings
+    
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
@@ -97,6 +102,9 @@ class ExperimentConfig:
             "allow_backtrack": self.allow_backtrack,
             "allow_no_tool_call": self.allow_no_tool_call,
             "rag_config": self.rag_config,
+            "hybrid_config": self.hybrid_config,
+            "adaptive_rag_config": self.adaptive_rag_config,
+            "confidence_config": self.confidence_config,
         }
     
     @classmethod

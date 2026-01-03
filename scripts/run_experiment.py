@@ -87,6 +87,12 @@ def run_experiment(config: ExperimentConfig) -> dict:
         extra_kwargs = {}
         if config.methodology == "rag" and config.rag_config:
             extra_kwargs = config.rag_config
+        elif config.methodology == "hybrid" and config.hybrid_config:
+            extra_kwargs = config.hybrid_config
+        elif config.methodology == "adaptive_rag" and config.adaptive_rag_config:
+            extra_kwargs = config.adaptive_rag_config
+        elif config.methodology == "confidence" and config.confidence_config:
+            extra_kwargs = config.confidence_config
         
         methodology = create_methodology(
             name=config.methodology,
