@@ -64,6 +64,16 @@ class TestResult:
     adaptive_k_used: Optional[int] = None  # Adaptive RAG: k value used
     adaptive_strategy: Optional[str] = None  # Adaptive RAG: strategy used (elbow/threshold)
     
+    # Phase 3: Token tracking
+    tokens_input: Optional[int] = None   # Input tokens used
+    tokens_output: Optional[int] = None  # Output tokens used
+    tokens_total: Optional[int] = None   # Total tokens
+    
+    # Phase 3: Retrieval metrics (for RAG-based methodologies)
+    retrieval_recall: Optional[bool] = None  # Was correct tool in retrieved set?
+    retrieved_tools: list[str] = field(default_factory=list)  # Tools that were retrieved
+    retrieval_rank: Optional[int] = None  # Rank of correct tool in retrieved set (1-indexed)
+    
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for analysis."""
         # Handle both TestCase and MultiToolTestCase
@@ -108,6 +118,14 @@ class TestResult:
             "num_fallbacks": self.num_fallbacks,
             "adaptive_k_used": self.adaptive_k_used,
             "adaptive_strategy": self.adaptive_strategy,
+            # Phase 3: Token tracking
+            "tokens_input": self.tokens_input,
+            "tokens_output": self.tokens_output,
+            "tokens_total": self.tokens_total,
+            # Phase 3: Retrieval metrics
+            "retrieval_recall": self.retrieval_recall,
+            "retrieved_tools": self.retrieved_tools,
+            "retrieval_rank": self.retrieval_rank,
         }
 
 
@@ -173,6 +191,20 @@ class EvaluationResult:
     
     # Hybrid methodology (uses category_selection_accuracy already defined)
     
+    # Phase 3: Token usage metrics
+    total_tokens_input: int = 0    # Total input tokens across all tests
+    total_tokens_output: int = 0   # Total output tokens across all tests
+    total_tokens: int = 0          # Total tokens (input + output)
+    avg_tokens_input: float = 0.0  # Average input tokens per test
+    avg_tokens_output: float = 0.0 # Average output tokens per test
+    avg_tokens_total: float = 0.0  # Average total tokens per test
+    
+    # Phase 3: Retrieval metrics (for RAG-based methodologies)
+    retrieval_tests: int = 0       # Number of tests with retrieval data
+    retrieval_recall_count: int = 0  # Times correct tool was in retrieved set
+    retrieval_recall_rate: float = 0.0  # retrieval_recall_count / retrieval_tests
+    avg_retrieval_rank: float = 0.0  # Average rank of correct tool when retrieved
+    
     @property
     def accuracy(self) -> float:
         """Overall tool selection accuracy."""
@@ -231,6 +263,18 @@ class EvaluationResult:
             "avg_confidence_score": self.avg_confidence_score,
             "adaptive_k_stats": self.adaptive_k_stats,
             "adaptive_strategy_distribution": self.adaptive_strategy_distribution,
+            # Phase 3: Token usage metrics
+            "total_tokens_input": self.total_tokens_input,
+            "total_tokens_output": self.total_tokens_output,
+            "total_tokens": self.total_tokens,
+            "avg_tokens_input": self.avg_tokens_input,
+            "avg_tokens_output": self.avg_tokens_output,
+            "avg_tokens_total": self.avg_tokens_total,
+            # Phase 3: Retrieval metrics
+            "retrieval_tests": self.retrieval_tests,
+            "retrieval_recall_count": self.retrieval_recall_count,
+            "retrieval_recall_rate": self.retrieval_recall_rate,
+            "avg_retrieval_rank": self.avg_retrieval_rank,
         }
         return result
     
@@ -318,6 +362,25 @@ class EvaluationResult:
                 lines.append("  Strategy Distribution:")
                 for strategy, count in sorted(self.adaptive_strategy_distribution.items()):
                     lines.append(f"    {strategy}: {count}")
+        
+        # Phase 3: Token usage stats
+        if self.total_tokens > 0:
+            lines.append("")
+            lines.append("Token Usage:")
+            lines.append(f"  Total Input Tokens: {self.total_tokens_input:,}")
+            lines.append(f"  Total Output Tokens: {self.total_tokens_output:,}")
+            lines.append(f"  Total Tokens: {self.total_tokens:,}")
+            lines.append(f"  Avg Input Tokens/Test: {self.avg_tokens_input:.1f}")
+            lines.append(f"  Avg Output Tokens/Test: {self.avg_tokens_output:.1f}")
+            lines.append(f"  Avg Total Tokens/Test: {self.avg_tokens_total:.1f}")
+        
+        # Phase 3: Retrieval metrics (for RAG-based methodologies)
+        if self.retrieval_tests > 0:
+            lines.append("")
+            lines.append("Retrieval Metrics:")
+            lines.append(f"  Tests with Retrieval: {self.retrieval_tests}")
+            lines.append(f"  Retrieval Recall: {self.retrieval_recall_rate:.2%}")
+            lines.append(f"  Avg Rank of Correct Tool: {self.avg_retrieval_rank:.1f}")
         
         if self.category_accuracy:
             lines.append("")
@@ -736,6 +799,32 @@ class ToolCallEvaluator:
                     strategy = r.adaptive_strategy
                     adaptive_strategy_distribution[strategy] = adaptive_strategy_distribution.get(strategy, 0) + 1
         
+        # Phase 3: Token usage metrics
+        total_tokens_input = 0
+        total_tokens_output = 0
+        total_tokens_count = 0
+        token_results = [r for r in self.results if r.tokens_input is not None or r.tokens_output is not None]
+        for r in token_results:
+            if r.tokens_input is not None:
+                total_tokens_input += r.tokens_input
+            if r.tokens_output is not None:
+                total_tokens_output += r.tokens_output
+        total_tokens_count = total_tokens_input + total_tokens_output
+        
+        avg_tokens_input = total_tokens_input / len(token_results) if token_results else 0.0
+        avg_tokens_output = total_tokens_output / len(token_results) if token_results else 0.0
+        avg_tokens_total = total_tokens_count / len(token_results) if token_results else 0.0
+        
+        # Phase 3: Retrieval metrics (for RAG-based methodologies)
+        retrieval_results = [r for r in self.results if r.retrieval_recall is not None]
+        retrieval_tests = len(retrieval_results)
+        retrieval_recall_count = sum(1 for r in retrieval_results if r.retrieval_recall)
+        retrieval_recall_rate = retrieval_recall_count / retrieval_tests if retrieval_tests > 0 else 0.0
+        
+        # Average rank of correct tool when it was retrieved
+        rank_results = [r.retrieval_rank for r in retrieval_results if r.retrieval_rank is not None]
+        avg_retrieval_rank = sum(rank_results) / len(rank_results) if rank_results else 0.0
+        
         return EvaluationResult(
             total_tests=total,
             tool_correct=correct,
@@ -777,6 +866,18 @@ class ToolCallEvaluator:
             avg_confidence_score=avg_confidence_score,
             adaptive_k_stats=adaptive_k_stats,
             adaptive_strategy_distribution=adaptive_strategy_distribution,
+            # Phase 3: Token usage metrics
+            total_tokens_input=total_tokens_input,
+            total_tokens_output=total_tokens_output,
+            total_tokens=total_tokens_count,
+            avg_tokens_input=avg_tokens_input,
+            avg_tokens_output=avg_tokens_output,
+            avg_tokens_total=avg_tokens_total,
+            # Phase 3: Retrieval metrics
+            retrieval_tests=retrieval_tests,
+            retrieval_recall_count=retrieval_recall_count,
+            retrieval_recall_rate=retrieval_recall_rate,
+            avg_retrieval_rank=avg_retrieval_rank,
         )
     
     def reset(self) -> None:

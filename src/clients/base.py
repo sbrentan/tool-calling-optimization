@@ -22,6 +22,11 @@ class CallResult:
     model: str = ""
     provider: str = ""
     
+    # Token usage tracking (Phase 3)
+    tokens_input: Optional[int] = None   # Input/prompt tokens used
+    tokens_output: Optional[int] = None  # Output/completion tokens used
+    tokens_total: Optional[int] = None   # Total tokens (input + output)
+    
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
@@ -32,7 +37,10 @@ class CallResult:
             "latency_ms": self.latency_ms,
             "error": self.error,
             "model": self.model,
-            "provider": self.provider
+            "provider": self.provider,
+            "tokens_input": self.tokens_input,
+            "tokens_output": self.tokens_output,
+            "tokens_total": self.tokens_total,
         }
 
 

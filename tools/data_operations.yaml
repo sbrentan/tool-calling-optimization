@@ -1202,7 +1202,7 @@ tools:
         type: array
         description: "Tables to join"
         required: true
-      - name: on
+      - name: "on"
         type: string
         description: "Join condition (for simple join)"
         required: false

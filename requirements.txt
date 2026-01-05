@@ -25,3 +25,8 @@ loguru>=0.7.0
 # Testing
 pytest>=8.0.0
 pytest-asyncio>=0.23.0
+
+# Phase 3: Visualization and statistical analysis
+matplotlib>=3.7.0
+seaborn>=0.12.0
+scipy>=1.10.0

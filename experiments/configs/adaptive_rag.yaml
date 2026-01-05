@@ -5,9 +5,9 @@ name: adaptive_rag_baseline
 description: "Adaptive RAG methodology - dynamically determines k using elbow detection on similarity scores"
 
 # Tool configuration
-num_tools: 50
-doc_length: medium
-prompt_type: clear  # concise or clear
+num_tools: 985
+doc_length: verbose
+prompt_type: concise  # concise or clear
 num_similar_tools: 0
 categories: null  # Use all categories
 
@@ -18,7 +18,7 @@ temperature: 0.0
 
 # Test configuration
 num_test_samples: 10
-seed: 42
+seed: 30
 
 # Output configuration
 output_dir: experiments/results

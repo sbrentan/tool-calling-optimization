@@ -9,7 +9,7 @@ class ToolParameter(BaseModel):
     type: str = "string"
     description: str = ""
     required: bool = True
-    enum: Optional[list[str]] = None
+    enum: Optional[list[Any]] = None
     default: Optional[Any] = None
 
 
