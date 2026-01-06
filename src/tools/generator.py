@@ -13,10 +13,10 @@ from pathlib import Path
 from typing import Optional, Union
 import yaml
 from loguru import logger
-from .base import Tool, ToolParameter, TestCase, MultiToolTestCase
+from .base import Tool, ToolParameter, TestCase, MultiToolTestCase, AmbiguousTestCase
 
 # Type alias for any test case
-AnyTestCase = Union[TestCase, MultiToolTestCase]
+AnyTestCase = Union[TestCase, MultiToolTestCase, AmbiguousTestCase]
 
 
 class ToolGenerator:
@@ -295,6 +295,7 @@ class ToolGenerator:
         tools: list[Tool],
         include_multi_tool: bool = False,
         include_no_tool: bool = False,
+        include_ambiguous: bool = False,
         prompt_type: str = "concise"
     ) -> list[AnyTestCase]:
         """
@@ -304,10 +305,11 @@ class ToolGenerator:
             tools: List of tools to generate tests for
             include_multi_tool: Whether to include multi-tool test scenarios
             include_no_tool: Whether to include no-tool test scenarios
+            include_ambiguous: Whether to include ambiguous test scenarios
             prompt_type: Type of prompts to use ('concise' or 'clear')
             
         Returns:
-            List of TestCase and MultiToolTestCase objects
+            List of TestCase, MultiToolTestCase, and AmbiguousTestCase objects
         """
         test_cases: list[AnyTestCase] = []
         tool_name_to_category = {t.name: t.category for t in tools}
@@ -348,6 +350,11 @@ class ToolGenerator:
         if include_multi_tool:
             multi_tool_cases = self._generate_multi_tool_cases(tools, prompt_type)
             test_cases.extend(multi_tool_cases)
+        
+        # Add ambiguous test cases if requested
+        if include_ambiguous:
+            ambiguous_cases = self._generate_ambiguous_cases(tools, prompt_type)
+            test_cases.extend(ambiguous_cases)
         
         return test_cases
     
@@ -537,6 +544,167 @@ class ToolGenerator:
                             ))
         
         return multi_cases
+    
+    def _generate_ambiguous_cases(self, tools: list[Tool], prompt_type: str = "concise") -> list[AmbiguousTestCase]:
+        """Generate ambiguous test cases where multiple similar tools could apply.
+        
+        These cases test the clarification capability - when a request is vague
+        and could be fulfilled by multiple tools, the system should ask for clarification.
+        """
+        ambiguous_cases: list[AmbiguousTestCase] = []
+        tool_names = {t.name for t in tools}
+        
+        # Group tools by their tags to find similar tools
+        tag_to_tools: dict[str, list[Tool]] = {}
+        for tool in tools:
+            for tag in tool.tags:
+                if tag not in tag_to_tools:
+                    tag_to_tools[tag] = []
+                tag_to_tools[tag].append(tool)
+        
+        # Also group by category/prefix (e.g., all "file_*" tools)
+        prefix_to_tools: dict[str, list[Tool]] = {}
+        for tool in tools:
+            if "_" in tool.name:
+                prefix = tool.name.split("_")[0]
+                if prefix not in prefix_to_tools:
+                    prefix_to_tools[prefix] = []
+                prefix_to_tools[prefix].append(tool)
+        
+        # First, look for ambiguous prompts defined in YAML
+        for category, tool_defs in self._tools_cache.items():
+            for tool_def in tool_defs:
+                test_prompts = tool_def.get("test_prompts", {})
+                
+                # Check for ambiguous prompt definitions
+                ambiguous_prompts = test_prompts.get("ambiguous", [])
+                
+                for ambig in ambiguous_prompts:
+                    if isinstance(ambig, dict):
+                        prompt = ambig.get("prompt", "")
+                        candidate_tools = ambig.get("candidate_tools", [])
+                        correct_tool = ambig.get("correct_tool", tool_def["name"])
+                        ambiguity_type = ambig.get("ambiguity_type", "similar_function")
+                        
+                        # Only include if all candidate tools exist and correct tool is valid
+                        if (all(ct in tool_names for ct in candidate_tools) and 
+                            correct_tool in tool_names and 
+                            len(candidate_tools) >= 2):
+                            ambiguous_cases.append(AmbiguousTestCase(
+                                prompt=prompt,
+                                expected_candidate_tools=candidate_tools,
+                                correct_tool=correct_tool,
+                                ambiguity_type=ambiguity_type,
+                                category=category,
+                                difficulty="hard",
+                                description=f"Ambiguous test ({ambiguity_type}): could be {', '.join(candidate_tools)}",
+                                prompt_type=prompt_type
+                            ))
+        
+        # Generate synthetic ambiguous cases from similar tools
+        # Find groups of similar tools (sharing tags or prefix)
+        for tag, similar_tools in tag_to_tools.items():
+            if len(similar_tools) >= 2 and len(similar_tools) <= 5:
+                # Create an ambiguous prompt that could apply to any of these tools
+                tool_names_list = [t.name for t in similar_tools[:4]]  # Limit to 4
+                
+                # Create vague prompts based on the tag
+                vague_prompts = self._create_vague_prompts_for_tag(tag, similar_tools[:4])
+                
+                for prompt, ambiguity_type in vague_prompts:
+                    ambiguous_cases.append(AmbiguousTestCase(
+                        prompt=prompt,
+                        expected_candidate_tools=tool_names_list,
+                        correct_tool=tool_names_list[0],  # First tool as default correct
+                        ambiguity_type=ambiguity_type,
+                        category=similar_tools[0].category or "general",
+                        difficulty="hard",
+                        description=f"Synthetic ambiguous ({tag}): {', '.join(tool_names_list)}",
+                        prompt_type=prompt_type
+                    ))
+        
+        return ambiguous_cases
+    
+    def _create_vague_prompts_for_tag(self, tag: str, tools: list[Tool]) -> list[tuple[str, str]]:
+        """Create vague prompts that could apply to multiple tools with the same tag."""
+        prompts = []
+        
+        # Map common tags to vague request patterns
+        tag_patterns = {
+            "file": [
+                ("I need to do something with a file", "vague_action"),
+                ("Can you help me with file operations?", "underspecified"),
+                ("Handle this file for me", "vague_action"),
+            ],
+            "data": [
+                ("I need to work with some data", "vague_action"),
+                ("Process this data somehow", "underspecified"),
+                ("Do something with the data", "vague_action"),
+            ],
+            "search": [
+                ("Find something for me", "underspecified"),
+                ("I need to search", "vague_action"),
+                ("Look something up", "underspecified"),
+            ],
+            "create": [
+                ("Create something new", "underspecified"),
+                ("Make a new one", "vague_action"),
+                ("I need to create", "underspecified"),
+            ],
+            "delete": [
+                ("Remove this", "underspecified"),
+                ("Delete something", "vague_action"),
+                ("Get rid of it", "underspecified"),
+            ],
+            "update": [
+                ("Update this", "underspecified"),
+                ("Make some changes", "vague_action"),
+                ("Modify it somehow", "underspecified"),
+            ],
+            "send": [
+                ("Send something", "underspecified"),
+                ("I need to send a message", "underspecified"),
+                ("Dispatch this", "vague_action"),
+            ],
+            "get": [
+                ("Get me that thing", "underspecified"),
+                ("Retrieve something", "vague_action"),
+                ("Fetch the data", "underspecified"),
+            ],
+            "list": [
+                ("Show me what's there", "underspecified"),
+                ("List everything", "vague_action"),
+                ("What do I have?", "underspecified"),
+            ],
+            "convert": [
+                ("Convert this", "underspecified"),
+                ("Change the format", "underspecified"),
+                ("Transform it", "vague_action"),
+            ],
+            "async": [
+                ("Do this in the background", "underspecified"),
+                ("Run it asynchronously", "vague_action"),
+            ],
+            "batch": [
+                ("Process all of these", "underspecified"),
+                ("Do this for multiple items", "vague_action"),
+            ],
+        }
+        
+        # Check if the tag matches any pattern
+        for pattern_tag, patterns in tag_patterns.items():
+            if pattern_tag in tag.lower():
+                prompts.extend(patterns[:2])  # Add up to 2 patterns per tag
+                break
+        
+        # If no specific pattern, create generic ones based on tool descriptions
+        if not prompts and tools:
+            # Use first tool's description as a base for vague prompt
+            first_desc = tools[0].description[:50] if tools[0].description else ""
+            prompts.append((f"Help me with {tag} operations", "vague_action"))
+            prompts.append((f"I need {tag} functionality", "underspecified"))
+        
+        return prompts
     
     def list_all_tools(self) -> list[dict]:
         """List all available tools with their metadata."""

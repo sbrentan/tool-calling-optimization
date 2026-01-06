@@ -90,6 +90,7 @@ class ClusteringMethodology(StepBasedMethodology):
         max_steps: Optional[int] = None,
         allow_backtrack: bool = True,
         allow_decline: bool = False,
+        allow_clarification: bool = False,
         categories_file: Optional[str] = None,
     ):
         """
@@ -99,13 +100,15 @@ class ClusteringMethodology(StepBasedMethodology):
             max_steps: Maximum steps before forcing termination
             allow_backtrack: Whether to allow backtracking to category selection
             allow_decline: Whether to allow declining to call any tool
+            allow_clarification: Whether to allow requesting clarification
             categories_file: Path to YAML file with category descriptions
         """
         super().__init__(max_steps=max_steps)
         self.allow_backtrack = allow_backtrack
         self.allow_decline = allow_decline
+        self.allow_clarification = allow_clarification
         self.category_descriptions = self._load_category_descriptions(categories_file)
-        logger.debug(f"[Clustering] Initialized with max_steps={max_steps}, allow_backtrack={allow_backtrack}, allow_decline={allow_decline}")
+        logger.debug(f"[Clustering] Initialized with max_steps={max_steps}, allow_backtrack={allow_backtrack}, allow_decline={allow_decline}, allow_clarification={allow_clarification}")
         logger.debug(f"[Clustering] Loaded {len(self.category_descriptions)} category descriptions")
     
     def _load_category_descriptions(self, categories_file: Optional[str]) -> dict[str, str]:
@@ -176,6 +179,11 @@ class ClusteringMethodology(StepBasedMethodology):
             category_tools.append(self.get_decline_tool())
             logger.debug(f"[Clustering]   Added decline option")
         
+        # Add clarification option if enabled
+        if self.allow_clarification:
+            category_tools.append(self.get_clarification_tool())
+            logger.debug(f"[Clustering]   Added clarification option")
+        
         system_instruction = (
             "You are selecting from tool categories. Choose the category that best matches "
             "the user's request. After selecting a category, you will see the specific tools "
@@ -213,6 +221,9 @@ class ClusteringMethodology(StepBasedMethodology):
         
         if self.allow_decline:
             result_tools.append(self.get_decline_tool())
+        
+        if self.allow_clarification:
+            result_tools.append(self.get_clarification_tool())
         
         system_instruction = (
             f"You are now viewing tools in the '{category}' category. "
@@ -261,6 +272,11 @@ class ClusteringMethodology(StepBasedMethodology):
         if selection == self.DECLINE_TOOL:
             logger.debug(f"[Clustering]   -> DECLINE: LLM declined to call any tool")
             return None, StepType.DECLINE, current_state
+        
+        # Check for clarification
+        if selection == self.CLARIFICATION_TOOL:
+            logger.debug(f"[Clustering]   -> CLARIFICATION: LLM requested clarification")
+            return None, StepType.CLARIFICATION, current_state
         
         # Check if this is a category selection
         category = self._extract_category_from_tool_name(selection)
@@ -422,7 +438,7 @@ class ClusteringMethodology(StepBasedMethodology):
             
             # Check if we're done
             if next_options is None:
-                # Done - either tool selected or declined
+                # Done - either tool selected, declined, or clarification requested
                 if step_type == StepType.DECLINE:
                     logger.debug(f"[Clustering] ===== run_single END (declined) =====")
                     return MethodologyResult(
@@ -441,6 +457,36 @@ class ClusteringMethodology(StepBasedMethodology):
                         backtrack_count=backtrack_count,
                         declined_tool_call=True,
                         final_category=state.get("current_category"),
+                    )
+                elif step_type == StepType.CLARIFICATION:
+                    # Extract clarification details from args
+                    args = call_result.called_args or {}
+                    clarification_question = args.get("question", "")
+                    candidate_tools = args.get("candidate_tools", [])
+                    if isinstance(candidate_tools, str):
+                        candidate_tools = [candidate_tools]
+                    logger.debug(f"[Clustering] ===== run_single END (clarification requested) =====")
+                    logger.debug(f"[Clustering] Question: {clarification_question}")
+                    logger.debug(f"[Clustering] Candidates: {candidate_tools}")
+                    return MethodologyResult(
+                        success=True,
+                        called_tool=None,
+                        called_args=None,
+                        all_calls=[],
+                        latency_ms=total_latency,
+                        error=None,
+                        raw_response=call_result.raw_response,
+                        model=call_result.model,
+                        provider=call_result.provider,
+                        methodology=self.NAME,
+                        steps=steps,
+                        categories_selected=categories_selected,
+                        backtrack_count=backtrack_count,
+                        declined_tool_call=False,
+                        final_category=state.get("current_category"),
+                        clarification_requested=True,
+                        clarification_question=clarification_question,
+                        candidate_tools=candidate_tools,
                     )
                 else:
                     # Tool selected

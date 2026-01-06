@@ -16,14 +16,14 @@ from collections import defaultdict
 import pandas as pd
 from loguru import logger
 
-from src.tools.base import TestCase, MultiToolTestCase
+from src.tools.base import TestCase, MultiToolTestCase, AmbiguousTestCase
 from src.clients.base import CallResult
 
 if TYPE_CHECKING:
     from src.methodologies.base import MethodologyResult
 
 # Type alias for any test case
-AnyTestCase = Union[TestCase, MultiToolTestCase]
+AnyTestCase = Union[TestCase, MultiToolTestCase, AmbiguousTestCase]
 
 
 @dataclass
@@ -73,6 +73,15 @@ class TestResult:
     retrieval_recall: Optional[bool] = None  # Was correct tool in retrieved set?
     retrieved_tools: list[str] = field(default_factory=list)  # Tools that were retrieved
     retrieval_rank: Optional[int] = None  # Rank of correct tool in retrieved set (1-indexed)
+    
+    # Phase 4: Clarification metrics
+    is_ambiguous_test: bool = False  # True if this was an ambiguous/clarification test
+    clarification_requested: bool = False  # True if LLM requested clarification
+    clarification_correct: Optional[bool] = None  # True if correct tool was in candidates
+    clarification_score: Optional[float] = None  # Score based on candidate set size
+    clarification_question: Optional[str] = None  # The clarifying question asked
+    candidate_tools: list[str] = field(default_factory=list)  # Tools LLM suggested as candidates
+    expected_candidate_tools: list[str] = field(default_factory=list)  # Expected candidate tools for ambiguous tests
     
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for analysis."""
@@ -126,6 +135,14 @@ class TestResult:
             "retrieval_recall": self.retrieval_recall,
             "retrieved_tools": self.retrieved_tools,
             "retrieval_rank": self.retrieval_rank,
+            # Phase 4: Clarification metrics
+            "is_ambiguous_test": self.is_ambiguous_test,
+            "clarification_requested": self.clarification_requested,
+            "clarification_correct": self.clarification_correct,
+            "clarification_score": self.clarification_score,
+            "clarification_question": self.clarification_question,
+            "candidate_tools": self.candidate_tools,
+            "expected_candidate_tools": self.expected_candidate_tools,
         }
 
 
@@ -205,6 +222,15 @@ class EvaluationResult:
     retrieval_recall_rate: float = 0.0  # retrieval_recall_count / retrieval_tests
     avg_retrieval_rank: float = 0.0  # Average rank of correct tool when retrieved
     
+    # Phase 4: Clarification metrics
+    ambiguous_tests: int = 0  # Number of ambiguous test cases
+    ambiguous_correct: int = 0  # Correctly asked for clarification with correct tool in candidates
+    clarification_accuracy: float = 0.0  # ambiguous_correct / ambiguous_tests
+    avg_clarification_score: float = 0.0  # Average clarification score
+    false_clarification_count: int = 0  # Asked for clarification when not needed
+    false_clarification_rate: float = 0.0  # Rate of unnecessary clarification requests
+    clarification_requests: int = 0  # Total clarification requests across all tests
+    
     @property
     def accuracy(self) -> float:
         """Overall tool selection accuracy."""
@@ -275,6 +301,14 @@ class EvaluationResult:
             "retrieval_recall_count": self.retrieval_recall_count,
             "retrieval_recall_rate": self.retrieval_recall_rate,
             "avg_retrieval_rank": self.avg_retrieval_rank,
+            # Phase 4: Clarification metrics
+            "ambiguous_tests": self.ambiguous_tests,
+            "ambiguous_correct": self.ambiguous_correct,
+            "clarification_accuracy": self.clarification_accuracy,
+            "avg_clarification_score": self.avg_clarification_score,
+            "false_clarification_count": self.false_clarification_count,
+            "false_clarification_rate": self.false_clarification_rate,
+            "clarification_requests": self.clarification_requests,
         }
         return result
     
@@ -382,6 +416,21 @@ class EvaluationResult:
             lines.append(f"  Retrieval Recall: {self.retrieval_recall_rate:.2%}")
             lines.append(f"  Avg Rank of Correct Tool: {self.avg_retrieval_rank:.1f}")
         
+        # Phase 4: Clarification metrics
+        if self.ambiguous_tests > 0 or self.clarification_requests > 0:
+            lines.append("")
+            lines.append("Clarification Metrics:")
+            if self.ambiguous_tests > 0:
+                lines.append(f"  Ambiguous Tests: {self.ambiguous_tests}")
+                lines.append(f"  Correctly Handled: {self.ambiguous_correct}")
+                lines.append(f"  Clarification Accuracy: {self.clarification_accuracy:.2%}")
+                lines.append(f"  Avg Clarification Score: {self.avg_clarification_score:.3f}")
+            if self.clarification_requests > 0:
+                lines.append(f"  Total Clarification Requests: {self.clarification_requests}")
+            if self.false_clarification_count > 0:
+                lines.append(f"  False Clarifications: {self.false_clarification_count}")
+                lines.append(f"  False Clarification Rate: {self.false_clarification_rate:.2%}")
+        
         if self.category_accuracy:
             lines.append("")
             lines.append("Per-Category Accuracy:")
@@ -418,14 +467,16 @@ class ToolCallEvaluator:
         test_case: AnyTestCase,
         call_result: CallResult,
         methodology_result: Optional["MethodologyResult"] = None,
+        max_clarification_candidates: int = 3,
     ) -> TestResult:
         """
-        Evaluate a single test case (single-tool or no-tool).
+        Evaluate a single test case (single-tool, no-tool, or ambiguous).
         
         Args:
-            test_case: Expected test case (TestCase or MultiToolTestCase)
+            test_case: Expected test case (TestCase, MultiToolTestCase, or AmbiguousTestCase)
             call_result: Actual result from API call
             methodology_result: Optional methodology-specific result
+            max_clarification_candidates: Max candidates for full clarification score
             
         Returns:
             TestResult with evaluation details
@@ -434,16 +485,30 @@ class ToolCallEvaluator:
         if isinstance(test_case, MultiToolTestCase):
             return self.evaluate_multi_tool(test_case, call_result, methodology_result)
         
+        # Handle ambiguous test cases separately
+        if isinstance(test_case, AmbiguousTestCase):
+            return self.evaluate_ambiguous(test_case, call_result, methodology_result, max_clarification_candidates)
+        
         # Determine if this is a no-tool test case
         is_no_tool_test = test_case.expected_tool is None
         
+        # Extract clarification info from methodology result
+        clarification_requested = False
+        clarification_question = None
+        candidate_tools = []
+        if methodology_result is not None:
+            clarification_requested = methodology_result.clarification_requested
+            clarification_question = methodology_result.clarification_question
+            candidate_tools = methodology_result.candidate_tools
+        
         # Check if correct tool was called
         if is_no_tool_test:
-            # For no-tool tests: correct if no tool was called
+            # For no-tool tests: correct if no tool was called (clarification is also acceptable)
             tool_correct = call_result.called_tool is None
-            false_positive = call_result.called_tool is not None
+            false_positive = call_result.called_tool is not None and not clarification_requested
         else:
             # For regular tests: correct if expected tool was called
+            # Clarification on a non-ambiguous test is a false clarification
             tool_correct = (
                 call_result.called_tool is not None and
                 call_result.called_tool == test_case.expected_tool
@@ -527,6 +592,10 @@ class ToolCallEvaluator:
             num_fallbacks=num_fallbacks,
             adaptive_k_used=adaptive_k_used,
             adaptive_strategy=adaptive_strategy,
+            # Phase 4: Clarification fields
+            clarification_requested=clarification_requested,
+            clarification_question=clarification_question,
+            candidate_tools=candidate_tools,
         )
         
         self.results.append(result)
@@ -617,6 +686,120 @@ class ToolCallEvaluator:
             completion_rate=completion_rate,
             sequence_correct=sequence_correct,
             extra_calls=extra_calls,
+        )
+        
+        self.results.append(result)
+        return result
+    
+    def evaluate_ambiguous(
+        self,
+        test_case: AmbiguousTestCase,
+        call_result: CallResult,
+        methodology_result: Optional["MethodologyResult"] = None,
+        max_clarification_candidates: int = 3,
+    ) -> TestResult:
+        """
+        Evaluate an ambiguous test case where clarification is expected.
+        
+        Scoring formula:
+        - If clarification requested and correct tool in candidates:
+          - Score = 1.0 if len(candidates) <= max_clarification_candidates
+          - Score = 1.0 / len(candidates) otherwise (penalized for too many candidates)
+        - If clarification not requested: Score = 0
+        - If correct tool not in candidates: Score = 0
+        
+        Args:
+            test_case: Ambiguous test case with expected_candidate_tools
+            call_result: Actual result from API call
+            methodology_result: Optional methodology-specific result
+            max_clarification_candidates: Max candidates for full score
+            
+        Returns:
+            TestResult with clarification evaluation details
+        """
+        # Extract clarification info from methodology result
+        clarification_requested = False
+        clarification_question = None
+        candidate_tools = []
+        
+        if methodology_result is not None:
+            clarification_requested = methodology_result.clarification_requested
+            clarification_question = methodology_result.clarification_question
+            candidate_tools = methodology_result.candidate_tools
+        
+        # Check if any expected candidate tool is in the LLM's candidates
+        # The "correct" behavior is to include at least one of the expected candidates
+        expected_candidates = set(test_case.expected_candidate_tools)
+        actual_candidates = set(candidate_tools)
+        
+        # Check if the correct tool (if specified) is among candidates
+        correct_tool = test_case.correct_tool
+        has_correct_tool = False
+        if correct_tool:
+            has_correct_tool = correct_tool in actual_candidates
+        else:
+            # If no specific correct tool, check if any expected candidate is present
+            has_correct_tool = bool(expected_candidates & actual_candidates)
+        
+        # Compute clarification score
+        clarification_score = 0.0
+        clarification_correct = False
+        
+        if clarification_requested and has_correct_tool:
+            clarification_correct = True
+            num_candidates = len(candidate_tools)
+            if num_candidates <= max_clarification_candidates:
+                clarification_score = 1.0
+            else:
+                clarification_score = 1.0 / num_candidates
+        elif clarification_requested:
+            # Clarification requested but correct tool not in candidates
+            clarification_correct = False
+            clarification_score = 0.0
+        else:
+            # No clarification requested when it should have been
+            clarification_correct = False
+            clarification_score = 0.0
+        
+        # For ambiguous tests, tool_correct means handled correctly
+        tool_correct = clarification_correct
+        
+        # Extract methodology-specific info
+        methodology = "mcp"
+        steps_count = 1
+        backtrack_count = 0
+        declined_tool_call = False
+        final_category = None
+        categories_visited = []
+        
+        if methodology_result is not None:
+            methodology = methodology_result.methodology
+            steps_count = len(methodology_result.steps)
+            backtrack_count = methodology_result.backtrack_count
+            declined_tool_call = methodology_result.declined_tool_call
+            final_category = methodology_result.final_category
+            categories_visited = methodology_result.categories_selected
+        
+        result = TestResult(
+            test_case=test_case,
+            call_result=call_result,
+            tool_correct=tool_correct,
+            params_correct=None,
+            methodology=methodology,
+            steps_count=steps_count,
+            backtrack_count=backtrack_count,
+            declined_tool_call=declined_tool_call,
+            category_correct=None,
+            final_category=final_category,
+            categories_visited=categories_visited,
+            # Ambiguous test fields
+            is_ambiguous_test=True,
+            clarification_requested=clarification_requested,
+            clarification_correct=clarification_correct,
+            clarification_score=clarification_score,
+            clarification_question=clarification_question,
+            candidate_tools=candidate_tools,
+            expected_candidate_tools=list(expected_candidates),
         )
         
         self.results.append(result)
@@ -825,6 +1008,24 @@ class ToolCallEvaluator:
         rank_results = [r.retrieval_rank for r in retrieval_results if r.retrieval_rank is not None]
         avg_retrieval_rank = sum(rank_results) / len(rank_results) if rank_results else 0.0
         
+        # Phase 4: Clarification metrics
+        ambiguous_results = [r for r in self.results if r.is_ambiguous_test]
+        ambiguous_tests = len(ambiguous_results)
+        ambiguous_correct = sum(1 for r in ambiguous_results if r.clarification_correct)
+        clarification_accuracy = ambiguous_correct / ambiguous_tests if ambiguous_tests > 0 else 0.0
+        
+        # Average clarification score for ambiguous tests
+        clarification_scores = [r.clarification_score for r in ambiguous_results if r.clarification_score is not None]
+        avg_clarification_score = sum(clarification_scores) / len(clarification_scores) if clarification_scores else 0.0
+        
+        # Total clarification requests across all tests
+        clarification_requests = sum(1 for r in self.results if r.clarification_requested)
+        
+        # False clarifications (clarification on non-ambiguous tests)
+        non_ambiguous_results = [r for r in self.results if not r.is_ambiguous_test]
+        false_clarification_count = sum(1 for r in non_ambiguous_results if r.clarification_requested)
+        false_clarification_rate = false_clarification_count / len(non_ambiguous_results) if non_ambiguous_results else 0.0
+        
         return EvaluationResult(
             total_tests=total,
             tool_correct=correct,
@@ -878,6 +1079,14 @@ class ToolCallEvaluator:
             retrieval_recall_count=retrieval_recall_count,
             retrieval_recall_rate=retrieval_recall_rate,
             avg_retrieval_rank=avg_retrieval_rank,
+            # Phase 4: Clarification metrics
+            ambiguous_tests=ambiguous_tests,
+            ambiguous_correct=ambiguous_correct,
+            clarification_accuracy=clarification_accuracy,
+            avg_clarification_score=avg_clarification_score,
+            false_clarification_count=false_clarification_count,
+            false_clarification_rate=false_clarification_rate,
+            clarification_requests=clarification_requests,
         )
     
     def reset(self) -> None:

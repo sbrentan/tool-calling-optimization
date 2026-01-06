@@ -35,6 +35,7 @@ class HybridMethodology(BaseMethodology):
     
     NAME: str = "hybrid"
     DECLINE_TOOL: str = StepBasedMethodology.DECLINE_TOOL
+    CLARIFICATION_TOOL: str = StepBasedMethodology.CLARIFICATION_TOOL
     
     # Default embedding model
     DEFAULT_EMBEDDING_MODEL: str = "all-MiniLM-L6-v2"
@@ -44,6 +45,7 @@ class HybridMethodology(BaseMethodology):
         embedding_model: str = DEFAULT_EMBEDDING_MODEL,
         top_k_categories: int = 3,
         allow_no_tool_call: bool = False,
+        allow_clarification: bool = False,
         cache_embeddings: bool = True,
         category_embedding_strategy: str = "mean",  # "mean" or "description"
     ):
@@ -54,6 +56,7 @@ class HybridMethodology(BaseMethodology):
             embedding_model: Name of sentence-transformers model to use
             top_k_categories: Number of categories to retrieve
             allow_no_tool_call: If True, add a decline option
+            allow_clarification: If True, add a clarification option
             cache_embeddings: If True, cache embeddings between calls
             category_embedding_strategy: How to compute category embeddings:
                 - "mean": Average of tool embeddings in category
@@ -62,6 +65,7 @@ class HybridMethodology(BaseMethodology):
         self.embedding_model_name = embedding_model
         self.top_k_categories = top_k_categories
         self.allow_no_tool_call = allow_no_tool_call
+        self.allow_clarification = allow_clarification
         self.cache_embeddings = cache_embeddings
         self.category_embedding_strategy = category_embedding_strategy
         
@@ -360,6 +364,34 @@ class HybridMethodology(BaseMethodology):
             )
             tools_to_use.append(decline_tool)
         
+        # Optionally add clarification pseudo-tool
+        if self.allow_clarification:
+            from src.tools.base import ToolParameter
+            clarification_tool = Tool(
+                name=self.CLARIFICATION_TOOL,
+                description="Request clarification when the user's request is ambiguous "
+                           "and could match multiple tools. Use this when you cannot "
+                           "determine which tool the user wants with high confidence.",
+                category="system",
+                parameters=[
+                    ToolParameter(
+                        name="question",
+                        type="string",
+                        description="The clarifying question to ask the user",
+                        required=True,
+                    ),
+                    ToolParameter(
+                        name="candidate_tools",
+                        type="array",
+                        description="List of tool names that could potentially match the request",
+                        required=True,
+                    ),
+                ],
+                tags=["system"],
+                complexity="simple",
+            )
+            tools_to_use.append(clarification_tool)
+        
         # Step 4: Call LLM with relevant tools
         logger.debug(f"[Hybrid] Calling LLM with {len(tools_to_use)} tools...")
         
@@ -371,12 +403,27 @@ class HybridMethodology(BaseMethodology):
         
         total_latency = retrieval_latency + call_result.latency_ms
         
-        # Check for decline
+        # Check for decline or clarification
         declined = False
+        clarification_requested = False
+        clarification_question = None
+        candidate_tools = []
         called_tool = call_result.called_tool
+        step_type = StepType.SELECT_TOOL
+        
         if called_tool == self.DECLINE_TOOL:
             declined = True
             called_tool = None
+            step_type = StepType.DECLINE
+        elif called_tool == self.CLARIFICATION_TOOL:
+            clarification_requested = True
+            called_tool = None
+            step_type = StepType.CLARIFICATION
+            args = call_result.called_args or {}
+            clarification_question = args.get("question", "")
+            candidate_tools = args.get("candidate_tools", [])
+            if isinstance(candidate_tools, str):
+                candidate_tools = [candidate_tools]
         
         # Create step info
         retrieval_step = StepInfo(
@@ -390,7 +437,7 @@ class HybridMethodology(BaseMethodology):
         
         selection_step = StepInfo(
             step_number=2,
-            step_type=StepType.DECLINE if declined else StepType.SELECT_TOOL,
+            step_type=step_type,
             selection=call_result.called_tool,
             latency_ms=call_result.latency_ms,
             raw_response=call_result.raw_response,
@@ -421,6 +468,9 @@ class HybridMethodology(BaseMethodology):
             backtrack_count=0,
             declined_tool_call=declined,
             final_category=final_category,
+            clarification_requested=clarification_requested,
+            clarification_question=clarification_question,
+            candidate_tools=candidate_tools,
         )
         
         # Store hybrid-specific metadata

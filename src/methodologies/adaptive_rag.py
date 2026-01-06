@@ -43,6 +43,7 @@ class AdaptiveRAGMethodology(RAGMethodology):
         similarity_drop_threshold: float = 0.1,
         min_similarity: float = 0.3,
         allow_no_tool_call: bool = False,
+        allow_clarification: bool = False,
         cache_embeddings: bool = True,
         include_params_in_embedding: bool = False,
     ):
@@ -56,6 +57,7 @@ class AdaptiveRAGMethodology(RAGMethodology):
             similarity_drop_threshold: Minimum drop in similarity to trigger elbow
             min_similarity: Minimum similarity score for inclusion
             allow_no_tool_call: If True, add a decline option
+            allow_clarification: If True, add a clarification option
             cache_embeddings: If True, cache tool embeddings between calls
             include_params_in_embedding: If True, include parameter info in embeddings
         """
@@ -65,6 +67,7 @@ class AdaptiveRAGMethodology(RAGMethodology):
             top_k=max_k,
             similarity_threshold=0.0,  # We handle threshold ourselves
             allow_no_tool_call=allow_no_tool_call,
+            allow_clarification=allow_clarification,
             cache_embeddings=cache_embeddings,
             include_params_in_embedding=include_params_in_embedding,
         )

@@ -32,6 +32,7 @@ class RAGMethodology(BaseMethodology):
     
     NAME: str = "rag"
     DECLINE_TOOL: str = StepBasedMethodology.DECLINE_TOOL
+    CLARIFICATION_TOOL: str = StepBasedMethodology.CLARIFICATION_TOOL
     
     # Default embedding model (small, fast, good quality)
     DEFAULT_EMBEDDING_MODEL: str = "all-MiniLM-L6-v2"
@@ -42,6 +43,7 @@ class RAGMethodology(BaseMethodology):
         top_k: int = 10,
         similarity_threshold: float = 0.0,
         allow_no_tool_call: bool = False,
+        allow_clarification: bool = False,
         cache_embeddings: bool = True,
         include_params_in_embedding: bool = False,
     ):
@@ -54,6 +56,8 @@ class RAGMethodology(BaseMethodology):
             similarity_threshold: Minimum similarity score for retrieval (0.0 = no threshold)
             allow_no_tool_call: If True, add a decline option for cases
                                where no tool call is needed
+            allow_clarification: If True, add a clarification option for
+                                ambiguous requests
             cache_embeddings: If True, cache tool embeddings between calls
             include_params_in_embedding: If True, include parameter info in tool text for embedding
         """
@@ -61,6 +65,7 @@ class RAGMethodology(BaseMethodology):
         self.top_k = top_k
         self.similarity_threshold = similarity_threshold
         self.allow_no_tool_call = allow_no_tool_call
+        self.allow_clarification = allow_clarification
         self.cache_embeddings = cache_embeddings
         self.include_params_in_embedding = include_params_in_embedding
         
@@ -73,7 +78,8 @@ class RAGMethodology(BaseMethodology):
         
         logger.debug(
             f"[RAG] Initialized with model={embedding_model}, top_k={top_k}, "
-            f"threshold={similarity_threshold}, cache={cache_embeddings}"
+            f"threshold={similarity_threshold}, cache={cache_embeddings}, "
+            f"allow_clarification={allow_clarification}"
         )
     
     def _load_embedder(self):
@@ -323,6 +329,35 @@ class RAGMethodology(BaseMethodology):
             tools_to_use.append(decline_tool)
             logger.debug(f"[RAG] Added decline tool, total tools: {len(tools_to_use)}")
         
+        # Optionally add clarification pseudo-tool
+        if self.allow_clarification:
+            from src.tools.base import ToolParameter
+            clarification_tool = Tool(
+                name=self.CLARIFICATION_TOOL,
+                description="Request clarification when the user's request is ambiguous "
+                           "and could match multiple tools. Use this when you cannot "
+                           "determine which tool the user wants with high confidence.",
+                category="system",
+                parameters=[
+                    ToolParameter(
+                        name="question",
+                        type="string",
+                        description="The clarifying question to ask the user",
+                        required=True,
+                    ),
+                    ToolParameter(
+                        name="candidate_tools",
+                        type="array",
+                        description="List of tool names that could potentially match the request",
+                        required=True,
+                    ),
+                ],
+                tags=["system"],
+                complexity="simple",
+            )
+            tools_to_use.append(clarification_tool)
+            logger.debug(f"[RAG] Added clarification tool, total tools: {len(tools_to_use)}")
+        
         # Step 2: Call LLM with retrieved tools
         logger.debug(f"[RAG] Calling LLM with {len(tools_to_use)} tools...")
         
@@ -339,13 +374,31 @@ class RAGMethodology(BaseMethodology):
         # Total latency = retrieval + LLM call
         total_latency = retrieval_latency + call_result.latency_ms
         
-        # Check for decline
+        # Check for decline or clarification
         declined = False
+        clarification_requested = False
+        clarification_question = None
+        candidate_tools = []
         called_tool = call_result.called_tool
+        step_type = StepType.SELECT_TOOL
+        
         if called_tool == self.DECLINE_TOOL:
             declined = True
             called_tool = None
+            step_type = StepType.DECLINE
             logger.debug(f"[RAG] LLM declined to call any tool")
+        elif called_tool == self.CLARIFICATION_TOOL:
+            clarification_requested = True
+            called_tool = None
+            step_type = StepType.CLARIFICATION
+            # Extract clarification details from args
+            args = call_result.called_args or {}
+            clarification_question = args.get("question", "")
+            candidate_tools = args.get("candidate_tools", [])
+            if isinstance(candidate_tools, str):
+                candidate_tools = [candidate_tools]
+            logger.debug(f"[RAG] LLM requested clarification: {clarification_question}")
+            logger.debug(f"[RAG] Candidate tools: {candidate_tools}")
         
         # Create step info for retrieval
         retrieval_step = StepInfo(
@@ -360,7 +413,7 @@ class RAGMethodology(BaseMethodology):
         # Create step info for LLM selection
         selection_step = StepInfo(
             step_number=2,
-            step_type=StepType.DECLINE if declined else StepType.SELECT_TOOL,
+            step_type=step_type,
             selection=call_result.called_tool,
             latency_ms=call_result.latency_ms,
             raw_response=call_result.raw_response,
@@ -394,6 +447,9 @@ class RAGMethodology(BaseMethodology):
             backtrack_count=0,
             declined_tool_call=declined,
             final_category=final_category,
+            clarification_requested=clarification_requested,
+            clarification_question=clarification_question,
+            candidate_tools=candidate_tools,
         )
         
         # Store additional RAG-specific metadata in raw_response or separate field

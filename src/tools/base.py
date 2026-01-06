@@ -149,3 +149,31 @@ class MultiToolTestCase(BaseModel):
     def primary_tool(self) -> Optional[str]:
         """Return the first expected tool (for compatibility with single-tool metrics)."""
         return self.expected_tools[0] if self.expected_tools else None
+
+
+class AmbiguousTestCase(BaseModel):
+    """
+    A test case where the request is ambiguous and the LLM should ask for clarification.
+    
+    Used for testing scenarios where multiple tools could reasonably match
+    the user's request, and the correct behavior is to ask for clarification
+    rather than guess.
+    """
+    prompt: str = Field(..., description="Ambiguous user prompt that could match multiple tools")
+    expected_candidate_tools: list[str] = Field(..., description="List of tools that could reasonably match this request")
+    correct_tool: Optional[str] = Field(default=None, description="The actual correct tool (if determinable after clarification)")
+    category: str = Field(default="ambiguous", description="Test category")
+    difficulty: str = Field(default="medium", description="Difficulty: easy, medium, hard")
+    description: str = Field(default="", description="Description of what makes this request ambiguous")
+    prompt_type: str = Field(default="concise", description="Prompt type: concise or clear")
+    ambiguity_type: str = Field(default="semantic", description="Type of ambiguity: semantic, functional, or scope")
+    
+    @property
+    def expects_tool_call(self) -> bool:
+        """Ambiguous test cases expect clarification, not a direct tool call."""
+        return False
+    
+    @property
+    def expects_clarification(self) -> bool:
+        """Ambiguous test cases expect the LLM to request clarification."""
+        return True

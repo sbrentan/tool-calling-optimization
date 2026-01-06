@@ -24,17 +24,25 @@ class MCPMethodology(BaseMethodology):
     
     NAME: str = "mcp"
     DECLINE_TOOL: str = StepBasedMethodology.DECLINE_TOOL
+    CLARIFICATION_TOOL: str = StepBasedMethodology.CLARIFICATION_TOOL
     
-    def __init__(self, allow_no_tool_call: bool = False):
+    def __init__(
+        self,
+        allow_no_tool_call: bool = False,
+        allow_clarification: bool = False,
+    ):
         """
         Initialize MCP methodology.
         
         Args:
             allow_no_tool_call: If True, add a decline option for cases
                                where no tool call is needed.
+            allow_clarification: If True, add a clarification option for
+                                ambiguous requests.
         """
         self.allow_no_tool_call = allow_no_tool_call
-        logger.debug(f"[MCP] Initialized with allow_no_tool_call={allow_no_tool_call}")
+        self.allow_clarification = allow_clarification
+        logger.debug(f"[MCP] Initialized with allow_no_tool_call={allow_no_tool_call}, allow_clarification={allow_clarification}")
     
     def run_single(
         self,
@@ -61,8 +69,10 @@ class MCPMethodology(BaseMethodology):
         logger.debug(f"[MCP] Number of tools available: {len(tools)}")
         logger.debug(f"[MCP] Tool names: {[t.name for t in tools]}")
         
-        # Optionally add decline pseudo-tool
+        # Build tools list with optional pseudo-tools
         tools_to_use = list(tools)
+        
+        # Optionally add decline pseudo-tool
         if self.allow_no_tool_call:
             decline_tool = Tool(
                 name=self.DECLINE_TOOL,
@@ -74,6 +84,35 @@ class MCPMethodology(BaseMethodology):
             )
             tools_to_use.append(decline_tool)
             logger.debug(f"[MCP] Added decline tool, total tools: {len(tools_to_use)}")
+        
+        # Optionally add clarification pseudo-tool
+        if self.allow_clarification:
+            from src.tools.base import ToolParameter
+            clarification_tool = Tool(
+                name=self.CLARIFICATION_TOOL,
+                description="Request clarification when the user's request is ambiguous "
+                           "and could match multiple tools. Use this when you cannot "
+                           "determine which tool the user wants with high confidence.",
+                category="system",
+                parameters=[
+                    ToolParameter(
+                        name="question",
+                        type="string",
+                        description="The clarifying question to ask the user",
+                        required=True,
+                    ),
+                    ToolParameter(
+                        name="candidate_tools",
+                        type="array",
+                        description="List of tool names that could potentially match the request",
+                        required=True,
+                    ),
+                ],
+                tags=["system"],
+                complexity="simple",
+            )
+            tools_to_use.append(clarification_tool)
+            logger.debug(f"[MCP] Added clarification tool, total tools: {len(tools_to_use)}")
         
         if system_instruction:
             logger.debug(f"[MCP] System instruction: {system_instruction[:200]}...")
@@ -95,18 +134,37 @@ class MCPMethodology(BaseMethodology):
         if call_result.all_calls:
             logger.debug(f"[MCP] All calls: {call_result.all_calls}")
         
-        # Check for decline
+        # Check for decline or clarification
         declined = False
+        clarification_requested = False
+        clarification_question = None
+        candidate_tools = []
         called_tool = call_result.called_tool
+        step_type = StepType.SELECT_TOOL
+        
         if called_tool == self.DECLINE_TOOL:
             declined = True
             called_tool = None
+            step_type = StepType.DECLINE
             logger.debug(f"[MCP] LLM declined to call any tool")
+        elif called_tool == self.CLARIFICATION_TOOL:
+            clarification_requested = True
+            called_tool = None
+            step_type = StepType.CLARIFICATION
+            # Extract clarification details from args
+            args = call_result.called_args or {}
+            clarification_question = args.get("question", "")
+            candidate_tools = args.get("candidate_tools", [])
+            # Ensure candidate_tools is a list
+            if isinstance(candidate_tools, str):
+                candidate_tools = [candidate_tools]
+            logger.debug(f"[MCP] LLM requested clarification: {clarification_question}")
+            logger.debug(f"[MCP] Candidate tools: {candidate_tools}")
         
         # Create step info
         step = StepInfo(
             step_number=1,
-            step_type=StepType.DECLINE if declined else StepType.SELECT_TOOL,
+            step_type=step_type,
             selection=call_result.called_tool,
             latency_ms=call_result.latency_ms,
             raw_response=call_result.raw_response,
@@ -129,7 +187,10 @@ class MCPMethodology(BaseMethodology):
             backtrack_count=0,
             declined_tool_call=declined,
             final_category=None,
+            clarification_requested=clarification_requested,
+            clarification_question=clarification_question,
+            candidate_tools=candidate_tools,
         )
         
-        logger.debug(f"[MCP] Final result - tool: {result.called_tool}, success: {result.success}")
+        logger.debug(f"[MCP] Final result - tool: {result.called_tool}, success: {result.success}, clarification: {clarification_requested}")
         return result

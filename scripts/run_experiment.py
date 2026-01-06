@@ -99,6 +99,7 @@ def run_experiment(config: ExperimentConfig) -> dict:
             max_steps=config.max_steps,
             allow_backtrack=config.allow_backtrack,
             allow_decline=config.allow_no_tool_call,
+            allow_clarification=getattr(config, 'allow_clarification', False),
             **extra_kwargs,
         )
         logger.info(f"Using methodology: {methodology.NAME}")

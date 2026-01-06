@@ -83,6 +83,7 @@ def create_methodology(
     max_steps: Optional[int] = None,
     allow_backtrack: bool = True,
     allow_decline: bool = False,
+    allow_clarification: bool = False,
     **kwargs: Any,
 ) -> BaseMethodology:
     """
@@ -93,6 +94,7 @@ def create_methodology(
         max_steps: Maximum steps for multi-step methodologies
         allow_backtrack: Allow backtracking (for step-based methodologies)
         allow_decline: Allow declining to call any tool
+        allow_clarification: Allow requesting clarification for ambiguous requests
         **kwargs: Additional methodology-specific options
         
     Returns:
@@ -103,6 +105,7 @@ def create_methodology(
         return MethodologyFactory.create(
             name,
             allow_no_tool_call=allow_decline,
+            allow_clarification=allow_clarification,
         )
     elif name == "clustering":
         return MethodologyFactory.create(
@@ -110,30 +113,35 @@ def create_methodology(
             max_steps=max_steps,
             allow_backtrack=allow_backtrack,
             allow_decline=allow_decline,
+            allow_clarification=allow_clarification,
             **kwargs,
         )
     elif name == "rag":
         return MethodologyFactory.create(
             name,
             allow_no_tool_call=allow_decline,
+            allow_clarification=allow_clarification,
             **kwargs,
         )
     elif name == "hybrid":
         return MethodologyFactory.create(
             name,
             allow_no_tool_call=allow_decline,
+            allow_clarification=allow_clarification,
             **kwargs,
         )
     elif name == "adaptive_rag":
         return MethodologyFactory.create(
             name,
             allow_no_tool_call=allow_decline,
+            allow_clarification=allow_clarification,
             **kwargs,
         )
     elif name == "confidence":
         return MethodologyFactory.create(
             name,
             allow_no_tool_call=allow_decline,
+            allow_clarification=allow_clarification,
             **kwargs,
         )
     else:

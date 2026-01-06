@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from typing import Any, Optional
 from enum import Enum
 
-from src.tools.base import Tool, TestCase
+from src.tools.base import Tool, TestCase, ToolParameter
 from src.clients.base import BaseLLMClient, CallResult
 
 
@@ -20,6 +20,7 @@ class StepType(str, Enum):
     SELECT_TOOL = "select_tool"          # LLM selects a specific tool
     BACKTRACK = "backtrack"              # LLM decides to go back
     DECLINE = "decline"                  # LLM decides not to call any tool
+    CLARIFICATION = "clarification"      # LLM requests clarification
     ERROR = "error"                      # An error occurred
 
 
@@ -71,6 +72,11 @@ class MethodologyResult:
     declined_tool_call: bool = False  # True if LLM explicitly declined
     final_category: Optional[str] = None  # Category where tool was found
     
+    # Clarification fields (Phase 4)
+    clarification_requested: bool = False  # True if LLM asked for clarification
+    clarification_question: Optional[str] = None  # The clarification question asked
+    candidate_tools: list[str] = field(default_factory=list)  # Tools LLM considers ambiguous
+    
     def to_call_result(self) -> CallResult:
         """Convert to standard CallResult for compatibility."""
         return CallResult(
@@ -102,6 +108,10 @@ class MethodologyResult:
             "backtrack_count": self.backtrack_count,
             "declined_tool_call": self.declined_tool_call,
             "final_category": self.final_category,
+            # Clarification fields
+            "clarification_requested": self.clarification_requested,
+            "clarification_question": self.clarification_question,
+            "candidate_tools": self.candidate_tools,
         }
 
 
@@ -190,6 +200,7 @@ class StepBasedMethodology(BaseMethodology):
     # Pseudo-tool names for special actions
     BACKTRACK_TOOL: str = "__backtrack__"
     DECLINE_TOOL: str = "__decline_tool_call__"
+    CLARIFICATION_TOOL: str = "__request_clarification__"
     
     def __init__(self, max_steps: Optional[int] = None):
         """
@@ -263,4 +274,30 @@ class StepBasedMethodology(BaseMethodology):
             name=self.DECLINE_TOOL,
             description="Indicate that no tool call is needed for this request. "
                        "Use this if the user's request doesn't require any tool.",
+        )
+    
+    def get_clarification_tool(self) -> Tool:
+        """Get the pseudo-tool for requesting clarification."""
+        return Tool(
+            name=self.CLARIFICATION_TOOL,
+            description="Request clarification when the user's request is ambiguous "
+                       "and could match multiple tools. Provide a clarifying question "
+                       "and list the candidate tools you are considering.",
+            category="system",
+            parameters=[
+                ToolParameter(
+                    name="question",
+                    type="string",
+                    description="The clarifying question to ask the user",
+                    required=True,
+                ),
+                ToolParameter(
+                    name="candidate_tools",
+                    type="array",
+                    description="List of tool names that could potentially match the request",
+                    required=True,
+                ),
+            ],
+            tags=["system", "control"],
+            complexity="simple",
         )

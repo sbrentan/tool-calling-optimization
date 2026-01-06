@@ -46,6 +46,7 @@ class ConfidenceMethodology(BaseMethodology):
         rag_config: Optional[dict] = None,
         clustering_config: Optional[dict] = None,
         allow_no_tool_call: bool = False,
+        allow_clarification: bool = False,
     ):
         """
         Initialize Confidence methodology.
@@ -56,25 +57,33 @@ class ConfidenceMethodology(BaseMethodology):
             rag_config: Configuration dict for RAG methodology
             clustering_config: Configuration dict for Clustering methodology
             allow_no_tool_call: If True, allow declining to call any tool
+            allow_clarification: If True, allow requesting clarification
         """
         self.rag_confidence_threshold = rag_confidence_threshold
         self.clustering_confidence_threshold = clustering_confidence_threshold
         self.allow_no_tool_call = allow_no_tool_call
+        self.allow_clarification = allow_clarification
         
         # Initialize sub-methodologies
         rag_kwargs = rag_config or {}
         rag_kwargs.setdefault("allow_no_tool_call", allow_no_tool_call)
+        rag_kwargs.setdefault("allow_clarification", allow_clarification)
         self.rag = RAGMethodology(**rag_kwargs)
         
         clustering_kwargs = clustering_config or {}
         clustering_kwargs.setdefault("allow_decline", allow_no_tool_call)
+        clustering_kwargs.setdefault("allow_clarification", allow_clarification)
         self.clustering = ClusteringMethodology(**clustering_kwargs)
         
-        self.mcp = MCPMethodology(allow_no_tool_call=allow_no_tool_call)
+        self.mcp = MCPMethodology(
+            allow_no_tool_call=allow_no_tool_call,
+            allow_clarification=allow_clarification,
+        )
         
         logger.debug(
             f"[Confidence] Initialized with RAG threshold={rag_confidence_threshold}, "
-            f"Clustering threshold={clustering_confidence_threshold}"
+            f"Clustering threshold={clustering_confidence_threshold}, "
+            f"allow_clarification={allow_clarification}"
         )
     
     def _compute_rag_confidence(self, result: MethodologyResult) -> float:

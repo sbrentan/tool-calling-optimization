@@ -59,6 +59,7 @@ class ExperimentConfig:
     seed: int = 42
     include_multi_tool: bool = False  # Include multi-tool test scenarios
     include_no_tool: bool = False  # Include no-tool test scenarios (negative tests)
+    include_ambiguous: bool = False  # Include ambiguous test scenarios (clarification tests)
     
     # Output configuration
     output_dir: str = "experiments/results"
@@ -69,6 +70,8 @@ class ExperimentConfig:
     max_steps: int = 10  # Max steps for multi-step methodologies
     allow_backtrack: bool = True  # Allow backtracking in step-based methodologies
     allow_no_tool_call: bool = False  # Allow LLM to decline calling any tool
+    allow_clarification: bool = False  # Allow LLM to request clarification
+    max_clarification_candidates: int = 3  # Max candidates for full score (else penalized)
     
     # RAG methodology configuration
     rag_config: Optional[dict[str, Any]] = None  # RAG-specific settings
@@ -95,12 +98,15 @@ class ExperimentConfig:
             "seed": self.seed,
             "include_multi_tool": self.include_multi_tool,
             "include_no_tool": self.include_no_tool,
+            "include_ambiguous": self.include_ambiguous,
             "output_dir": self.output_dir,
             "save_raw_responses": self.save_raw_responses,
             "methodology": self.methodology,
             "max_steps": self.max_steps,
             "allow_backtrack": self.allow_backtrack,
             "allow_no_tool_call": self.allow_no_tool_call,
+            "allow_clarification": self.allow_clarification,
+            "max_clarification_candidates": self.max_clarification_candidates,
             "rag_config": self.rag_config,
             "hybrid_config": self.hybrid_config,
             "adaptive_rag_config": self.adaptive_rag_config,
