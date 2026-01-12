@@ -1,0 +1,41 @@
+# ============================================================
+# PHASE 7: Robustness - Confidence No-Tool Handling
+# ============================================================
+# Purpose: Test confidence fallback handling of no-tool scenarios
+# Hypothesis: Fallback may provide better no-tool detection
+# Rubric: Experiments - production no-tool handling
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase7_robust_confidence_notool
+description: "Confidence fallback with no-tool test scenarios"
+
+# --- Tool Configuration ---
+num_tools: 500
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+include_no_tool: true
+
+# --- Methodology ---
+methodology: confidence
+allow_no_tool_call: true
+confidence_config:
+  rag_confidence_threshold: 0.8
+  clustering_confidence_threshold: 0.7
+  rag_config:
+    top_k: 10
+    similarity_threshold: 0.0
+    cache_embeddings: true
+  clustering_config:
+    allow_backtrack: true
+    max_steps: 10
+
+# --- Output ---
+output_dir: experiments/results/plan

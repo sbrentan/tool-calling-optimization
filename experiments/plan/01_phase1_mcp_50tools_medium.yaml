@@ -1,0 +1,29 @@
+# ============================================================
+# PHASE 1: MCP Baseline - 50 Tools (Medium Scale)
+# ============================================================
+# Purpose: Test MCP at medium scale - typical real-world scenario
+# Hypothesis: May start seeing minor accuracy degradation
+# Rubric: Experiments - identifying transition point
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase1_mcp_50tools_medium
+description: "MCP baseline with 50 tools - medium scale test"
+
+# --- Tool Configuration ---
+num_tools: 50
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: mcp
+
+# --- Output ---
+output_dir: experiments/results/plan

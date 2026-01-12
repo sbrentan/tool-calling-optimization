@@ -1,0 +1,37 @@
+# ============================================================
+# PHASE 4: Adaptive RAG - 985 Tools (Clear Prompts)
+# ============================================================
+# Purpose: Test prompt_type impact on adaptive retrieval
+# Hypothesis: Clear prompts may improve retrieval quality
+# Rubric: Experiments - prompt_type exploration
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase4_adaptive_985tools_clear
+description: "Adaptive RAG with 985 tools, clear prompts"
+
+# --- Tool Configuration ---
+num_tools: 985
+doc_length: medium
+prompt_type: clear
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: adaptive_rag
+adaptive_rag_config:
+  embedding_model: all-MiniLM-L6-v2
+  min_k: 3
+  max_k: 20
+  similarity_drop_threshold: 0.1
+  min_similarity: 0.3
+  cache_embeddings: true
+  include_params_in_embedding: false
+
+# --- Output ---
+output_dir: experiments/results/plan

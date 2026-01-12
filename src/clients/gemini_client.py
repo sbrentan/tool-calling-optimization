@@ -13,6 +13,7 @@ from typing import Any, Optional
 from loguru import logger
 
 from .base import BaseLLMClient, CallResult
+from .rate_limit_handler import handle_api_error_with_retry, UserAbortError
 from src.tools.base import Tool
 from src.adapters.gemini_adapter import GeminiAdapter
 
@@ -97,64 +98,77 @@ class GeminiClient(BaseLLMClient):
         """
         from google.genai import types
         
-        start_time = time.time()
+        # Convert tools to Gemini format (only once, outside retry loop)
+        gemini_tools = GeminiAdapter.tools_to_gemini_tools(tools)
         
-        try:
-            # Convert tools to Gemini format
-            gemini_tools = GeminiAdapter.tools_to_gemini_tools(tools)
+        # Build config (only once, outside retry loop)
+        config = types.GenerateContentConfig(
+            tools=[gemini_tools],
+            temperature=self.temperature,
+        )
+        
+        if system_instruction:
+            config.system_instruction = system_instruction
+        
+        # Retry loop for rate limit handling
+        while True:
+            start_time = time.time()
             
-            # Build config
-            config = types.GenerateContentConfig(
-                tools=[gemini_tools],
-                temperature=self.temperature,
-            )
-            
-            if system_instruction:
-                config.system_instruction = system_instruction
-            
-            # Make API call
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents=prompt,
-                config=config
-            )
-            
-            latency_ms = (time.time() - start_time) * 1000
-            
-            # Extract function call
-            function_call = GeminiAdapter.extract_function_call(response)
-            all_calls = GeminiAdapter.extract_all_function_calls(response)
-            
-            if function_call:
+            try:
+                # Make API call
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=prompt,
+                    config=config
+                )
+                
+                latency_ms = (time.time() - start_time) * 1000
+                
+                # Extract function call
+                function_call = GeminiAdapter.extract_function_call(response)
+                all_calls = GeminiAdapter.extract_all_function_calls(response)
+                
+                if function_call:
+                    return CallResult(
+                        success=True,
+                        called_tool=function_call["name"],
+                        called_args=function_call["args"],
+                        all_calls=all_calls,
+                        latency_ms=latency_ms,
+                        raw_response=response,
+                        model=self.model,
+                        provider=self.PROVIDER_NAME
+                    )
+                else:
+                    # Model didn't call any tool
+                    return CallResult(
+                        success=True,
+                        called_tool=None,
+                        latency_ms=latency_ms,
+                        raw_response=response,
+                        model=self.model,
+                        provider=self.PROVIDER_NAME,
+                        error="Model did not call any tool"
+                    )
+                    
+            except UserAbortError:
+                # User chose to abort - re-raise to stop the experiment
+                raise
+                    
+            except Exception as e:
+                latency_ms = (time.time() - start_time) * 1000
+                logger.error(f"Gemini API call failed: {e}")
+                
+                # Check if this is a rate limit error and prompt user
+                if handle_api_error_with_retry(e, context="calling Gemini API"):
+                    # User chose to retry
+                    logger.info("Retrying Gemini API call...")
+                    continue
+                
                 return CallResult(
-                    success=True,
-                    called_tool=function_call["name"],
-                    called_args=function_call["args"],
-                    all_calls=all_calls,
+                    success=False,
+                    error=str(e),
                     latency_ms=latency_ms,
-                    raw_response=response,
                     model=self.model,
                     provider=self.PROVIDER_NAME
                 )
-            else:
-                # Model didn't call any tool
-                return CallResult(
-                    success=True,
-                    called_tool=None,
-                    latency_ms=latency_ms,
-                    raw_response=response,
-                    model=self.model,
-                    provider=self.PROVIDER_NAME,
-                    error="Model did not call any tool"
-                )
-                
-        except Exception as e:
-            latency_ms = (time.time() - start_time) * 1000
-            logger.error(f"Gemini API call failed: {e}")
-            return CallResult(
-                success=False,
-                error=str(e),
-                latency_ms=latency_ms,
-                model=self.model,
-                provider=self.PROVIDER_NAME
-            )

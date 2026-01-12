@@ -2,11 +2,42 @@
 Experiment configuration dataclass.
 
 Defines all configurable parameters for tool calling experiments.
+
+Environment Variables:
+    EXPERIMENT_NUM_SAMPLES: Override num_test_samples (use "__env__" in YAML)
+    EXPERIMENT_MODEL: Override model (use "__env__" in YAML)
+    EXPERIMENT_SEED: Override seed (use "__env__" in YAML)
 """
 from dataclasses import dataclass, field
 from typing import Any, Optional
+import os
 import yaml
 from pathlib import Path
+
+
+# Environment variable mappings for configurable parameters
+ENV_VAR_MAPPINGS = {
+    "num_test_samples": ("EXPERIMENT_NUM_SAMPLES", lambda x: int(x) if x else None),
+    "model": ("EXPERIMENT_MODEL", lambda x: x if x else "llama-3.3-70b"),
+    "seed": ("EXPERIMENT_SEED", lambda x: int(x) if x else 42),
+}
+
+
+def _resolve_env_vars(data: dict[str, Any]) -> dict[str, Any]:
+    """
+    Resolve environment variable placeholders in config data.
+    
+    Values set to "__env__" will be replaced with the corresponding
+    environment variable value, or the default if not set.
+    """
+    resolved = data.copy()
+    
+    for field_name, (env_var, converter) in ENV_VAR_MAPPINGS.items():
+        if field_name in resolved and resolved[field_name] == "__env__":
+            env_value = os.getenv(env_var)
+            resolved[field_name] = converter(env_value)
+    
+    return resolved
 
 
 @dataclass
@@ -115,12 +146,13 @@ class ExperimentConfig:
     
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "ExperimentConfig":
-        """Create from dictionary."""
-        return cls(**{k: v for k, v in data.items() if k in cls.__dataclass_fields__})
+        """Create from dictionary, resolving environment variable placeholders."""
+        resolved_data = _resolve_env_vars(data)
+        return cls(**{k: v for k, v in resolved_data.items() if k in cls.__dataclass_fields__})
     
     @classmethod
     def from_yaml(cls, path: str | Path) -> "ExperimentConfig":
-        """Load configuration from YAML file."""
+        """Load configuration from YAML file, resolving environment variable placeholders."""
         with open(path, "r") as f:
             data = yaml.safe_load(f)
         return cls.from_dict(data)

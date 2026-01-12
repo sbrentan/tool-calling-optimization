@@ -4,6 +4,7 @@ from .gemini_client import GeminiClient
 from .cerebras_client import CerebrasClient
 from .openai_client import OpenAIClient
 from .factory import create_client, get_available_providers, get_available_models
+from .rate_limit_handler import UserAbortError, is_rate_limit_error, handle_api_error_with_retry
 
 __all__ = [
     "BaseLLMClient",
@@ -14,4 +15,7 @@ __all__ = [
     "create_client",
     "get_available_providers",
     "get_available_models",
+    "UserAbortError",
+    "is_rate_limit_error",
+    "handle_api_error_with_retry",
 ]

@@ -14,6 +14,7 @@ from typing import Any, Optional
 from loguru import logger
 
 from .base import BaseLLMClient, CallResult
+from .rate_limit_handler import handle_api_error_with_retry, UserAbortError
 
 
 class OpenAIClient(BaseLLMClient):
@@ -137,74 +138,87 @@ class OpenAIClient(BaseLLMClient):
         Returns:
             CallResult with the tool call information
         """
-        start_time = time.time()
+        # Convert tools to OpenAI format (only once, outside retry loop)
+        openai_tools = self._convert_tools_to_openai_format(tools)
         
-        try:
-            # Convert tools to OpenAI format
-            openai_tools = self._convert_tools_to_openai_format(tools)
+        # Build messages (only once, outside retry loop)
+        messages = []
+        if system_instruction:
+            messages.append({"role": "system", "content": system_instruction})
+        messages.append({"role": "user", "content": prompt})
+        
+        # Retry loop for rate limit handling
+        while True:
+            start_time = time.time()
             
-            # Build messages
-            messages = []
-            if system_instruction:
-                messages.append({"role": "system", "content": system_instruction})
-            messages.append({"role": "user", "content": prompt})
-            
-            # Make API call
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                tools=openai_tools,
-                tool_choice="auto",
-                temperature=self.temperature,
-            )
-            
-            latency_ms = (time.time() - start_time) * 1000
-            
-            # Extract function calls
-            message = response.choices[0].message
-            
-            if message.tool_calls:
-                all_calls = []
-                for tc in message.tool_calls:
-                    try:
-                        args = json.loads(tc.function.arguments) if tc.function.arguments else {}
-                    except json.JSONDecodeError:
-                        args = {}
+            try:
+                # Make API call
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    tools=openai_tools,
+                    tool_choice="auto",
+                    temperature=self.temperature,
+                )
+                
+                latency_ms = (time.time() - start_time) * 1000
+                
+                # Extract function calls
+                message = response.choices[0].message
+                
+                if message.tool_calls:
+                    all_calls = []
+                    for tc in message.tool_calls:
+                        try:
+                            args = json.loads(tc.function.arguments) if tc.function.arguments else {}
+                        except json.JSONDecodeError:
+                            args = {}
+                        
+                        all_calls.append({
+                            "name": tc.function.name,
+                            "args": args
+                        })
                     
-                    all_calls.append({
-                        "name": tc.function.name,
-                        "args": args
-                    })
+                    return CallResult(
+                        success=True,
+                        called_tool=all_calls[0]["name"] if all_calls else None,
+                        called_args=all_calls[0]["args"] if all_calls else None,
+                        all_calls=all_calls,
+                        latency_ms=latency_ms,
+                        raw_response=response,
+                        model=self.model,
+                        provider=self.PROVIDER_NAME
+                    )
+                else:
+                    # Model didn't call any tool
+                    return CallResult(
+                        success=True,
+                        called_tool=None,
+                        latency_ms=latency_ms,
+                        raw_response=response,
+                        model=self.model,
+                        provider=self.PROVIDER_NAME,
+                        error="Model did not call any tool"
+                    )
+                    
+            except UserAbortError:
+                # User chose to abort - re-raise to stop the experiment
+                raise
+                    
+            except Exception as e:
+                latency_ms = (time.time() - start_time) * 1000
+                logger.error(f"OpenAI API call failed: {e}")
+                
+                # Check if this is a rate limit error and prompt user
+                if handle_api_error_with_retry(e, context="calling OpenAI API"):
+                    # User chose to retry
+                    logger.info("Retrying OpenAI API call...")
+                    continue
                 
                 return CallResult(
-                    success=True,
-                    called_tool=all_calls[0]["name"] if all_calls else None,
-                    called_args=all_calls[0]["args"] if all_calls else None,
-                    all_calls=all_calls,
+                    success=False,
+                    error=str(e),
                     latency_ms=latency_ms,
-                    raw_response=response,
                     model=self.model,
                     provider=self.PROVIDER_NAME
                 )
-            else:
-                # Model didn't call any tool
-                return CallResult(
-                    success=True,
-                    called_tool=None,
-                    latency_ms=latency_ms,
-                    raw_response=response,
-                    model=self.model,
-                    provider=self.PROVIDER_NAME,
-                    error="Model did not call any tool"
-                )
-                
-        except Exception as e:
-            latency_ms = (time.time() - start_time) * 1000
-            logger.error(f"OpenAI API call failed: {e}")
-            return CallResult(
-                success=False,
-                error=str(e),
-                latency_ms=latency_ms,
-                model=self.model,
-                provider=self.PROVIDER_NAME
-            )

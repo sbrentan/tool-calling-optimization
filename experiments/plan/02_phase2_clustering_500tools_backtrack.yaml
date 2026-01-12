@@ -1,0 +1,31 @@
+# ============================================================
+# PHASE 2: Clustering - 500 Tools (Backtrack Enabled)
+# ============================================================
+# Purpose: Test clustering at large scale
+# Hypothesis: Clustering should scale better than MCP
+# Rubric: Experiments - comparing with MCP baseline
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase2_clustering_500tools_backtrack
+description: "Clustering with 500 tools and backtracking enabled"
+
+# --- Tool Configuration ---
+num_tools: 500
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: clustering
+max_steps: 10
+allow_backtrack: true
+
+# --- Output ---
+output_dir: experiments/results/plan
