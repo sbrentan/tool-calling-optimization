@@ -41,7 +41,6 @@ from loguru import logger
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from rich.progress import Progress, SpinnerColumn, TextColumn
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -57,7 +56,7 @@ console = Console()
 
 def get_plan_configs() -> list[Path]:
     """Get all YAML config files from experiments/plan folder, sorted by name."""
-    plan_dir = project_root / "experiments" / "plan"
+    plan_dir = project_root / "experiments" / "plan_2"
     if not plan_dir.exists():
         console.print(f"[red]Error: Plan directory not found: {plan_dir}[/red]")
         raise typer.Exit(1)

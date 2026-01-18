@@ -552,6 +552,11 @@ class ToolCallEvaluator:
         adaptive_k_used = None
         adaptive_strategy = None
         
+        # Phase 3: Retrieval metrics (for RAG-based methodologies)
+        retrieved_tools = []
+        retrieval_recall = None
+        retrieval_rank = None
+        
         if methodology_result is not None:
             # Confidence methodology metrics
             if hasattr(methodology_result, '_confidence_metadata') and methodology_result._confidence_metadata:
@@ -568,6 +573,21 @@ class ToolCallEvaluator:
                 adapt_meta = methodology_result._adaptive_metadata
                 adaptive_k_used = adapt_meta.get('adaptive_k_used')
                 adaptive_strategy = adapt_meta.get('strategy_used')
+            
+            # RAG retrieval metrics (from _rag_metadata)
+            if hasattr(methodology_result, '_rag_metadata') and methodology_result._rag_metadata:
+                rag_meta = methodology_result._rag_metadata
+                retrieved_tools = rag_meta.get('retrieved_tools', [])
+                
+                # Check if expected tool was in the retrieved set
+                if not is_no_tool_test and test_case.expected_tool:
+                    retrieval_recall = test_case.expected_tool in retrieved_tools
+                    if retrieval_recall:
+                        # Find rank (1-indexed)
+                        try:
+                            retrieval_rank = retrieved_tools.index(test_case.expected_tool) + 1
+                        except ValueError:
+                            retrieval_rank = None
         
         result = TestResult(
             test_case=test_case,
@@ -592,6 +612,10 @@ class ToolCallEvaluator:
             num_fallbacks=num_fallbacks,
             adaptive_k_used=adaptive_k_used,
             adaptive_strategy=adaptive_strategy,
+            # Phase 3: Retrieval metrics
+            retrieval_recall=retrieval_recall,
+            retrieved_tools=retrieved_tools,
+            retrieval_rank=retrieval_rank,
             # Phase 4: Clarification fields
             clarification_requested=clarification_requested,
             clarification_question=clarification_question,

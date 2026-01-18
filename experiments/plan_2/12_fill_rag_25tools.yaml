@@ -1,0 +1,25 @@
+# ============================================================
+# Fill Heatmap: RAG at 25 tools
+# ============================================================
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+name: fill_rag_25tools
+description: "RAG at 25 tools to fill heatmap gap"
+
+num_tools: 25
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+methodology: rag
+rag_config:
+  embedding_model: all-MiniLM-L6-v2
+  top_k: 10
+  similarity_threshold: 0.0
+  cache_embeddings: true
+  include_params_in_embedding: false
+
+output_dir: experiments/results/plan_2

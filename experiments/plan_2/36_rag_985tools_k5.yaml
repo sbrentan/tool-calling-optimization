@@ -1,0 +1,25 @@
+# ============================================================
+# RAG Top-K Analysis: 985 tools, k=5
+# ============================================================
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+name: rag_985tools_k5
+description: "RAG with 985 tools and top_k=5 for top-k impact analysis"
+
+num_tools: 985
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+methodology: rag
+rag_config:
+  embedding_model: all-MiniLM-L6-v2
+  top_k: 5
+  similarity_threshold: 0.0
+  cache_embeddings: true
+  include_params_in_embedding: false
+
+output_dir: experiments/results/plan_2

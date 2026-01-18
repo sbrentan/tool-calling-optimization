@@ -1,32 +1,30 @@
 #!/usr/bin/env python
 """
-Phase 3: Analysis and Comparison Script
+Experiment Analysis and Visualization Script
 
-This script provides comprehensive analysis capabilities for experiment results:
-1. Side-by-side methodology comparison
-2. Statistical significance testing (paired t-test, bootstrap CI)
-3. Confusion matrix generation (category-level)
-4. Visualization generation (accuracy curves, latency distributions)
+This script provides comprehensive analysis and visualization capabilities:
+1. Aggregated methodology comparison (heatmaps, radar charts)
+2. Per-methodology parameter impact analysis
+3. Scaling analysis (accuracy vs. tool count)
+4. Error and robustness analysis
+5. Latency analysis with outlier filtering
+6. Automated report generation
 
 Usage:
-    # Compare all experiments in results directory
-    python scripts/analyze_results.py compare --results-dir experiments/results
+    # Generate all charts and report
+    python scripts/analyze_results.py generate-report --results-dir experiments/results/plan
+    
+    # Generate specific visualization types
+    python scripts/analyze_results.py overview --results-dir experiments/results/plan
+    python scripts/analyze_results.py methodology-analysis --methodology rag
+    python scripts/analyze_results.py scaling-analysis
     
     # Compare specific experiments
     python scripts/analyze_results.py compare --experiments exp1_summary.json exp2_summary.json
-    
-    # Generate visualizations
-    python scripts/analyze_results.py visualize --results-dir experiments/results --output-dir reports/figures
-    
-    # Generate confusion matrix
-    python scripts/analyze_results.py confusion --details-csv experiments/results/clustering_*.csv
-    
-    # Full analysis report
-    python scripts/analyze_results.py report --results-dir experiments/results --output reports/analysis.html
 """
 import sys
 import json
-import glob
+import re
 import warnings
 from pathlib import Path
 from datetime import datetime
@@ -43,11 +41,32 @@ import pandas as pd
 from loguru import logger
 from scipy import stats
 
-app = typer.Typer(help="Analyze and compare experiment results")
+app = typer.Typer(help="Analyze and visualize experiment results")
+
+# Methodology display names and colors for consistent styling
+METHODOLOGY_COLORS = {
+    "mcp": "#1f77b4",         # Blue
+    "clustering": "#ff7f0e",  # Orange
+    "rag": "#2ca02c",         # Green
+    "adaptive_rag": "#d62728", # Red
+    "hybrid": "#9467bd",       # Purple
+    "confidence": "#8c564b",   # Brown
+}
+
+METHODOLOGY_DISPLAY_NAMES = {
+    "mcp": "MCP (Baseline)",
+    "clustering": "Clustering",
+    "rag": "RAG",
+    "adaptive_rag": "Adaptive RAG",
+    "hybrid": "Hybrid",
+    "confidence": "Confidence",
+}
+
+DOC_LENGTH_ORDER = ["minimal", "medium", "clear", "verbose"]
 
 
 # =============================================================================
-# Data Loading
+# Data Loading and Aggregation
 # =============================================================================
 
 def load_experiment_summary(filepath: Path) -> dict:
@@ -66,712 +85,1190 @@ def find_experiments(results_dir: Path, pattern: str = "*_summary.json") -> list
     return sorted(results_dir.glob(pattern))
 
 
-def load_all_experiments(results_dir: Path) -> tuple[list[dict], list[pd.DataFrame]]:
-    """Load all experiments from a results directory."""
-    summaries = []
-    details = []
+def parse_experiment_name(name: str) -> dict:
+    """
+    Parse experiment name to extract configuration parameters.
+    
+    Examples:
+        phase1_mcp_100tools_medium -> {phase: 1, methodology: mcp, num_tools: 100, doc_length: medium}
+        phase3_rag_200tools_k10_t02 -> {phase: 3, methodology: rag, num_tools: 200, top_k: 10, threshold: 0.2}
+    """
+    params = {}
+    
+    # Extract phase
+    phase_match = re.search(r'phase(\d+)', name)
+    if phase_match:
+        params['phase'] = int(phase_match.group(1))
+    
+    # Extract num_tools
+    tools_match = re.search(r'(\d+)tools', name)
+    if tools_match:
+        params['num_tools'] = int(tools_match.group(1))
+    
+    # Extract doc_length
+    for doc_len in ['minimal', 'medium', 'clear', 'verbose']:
+        if doc_len in name:
+            params['doc_length'] = doc_len
+            break
+    
+    # Extract RAG-specific parameters
+    k_match = re.search(r'_k(\d+)', name)
+    if k_match:
+        params['top_k'] = int(k_match.group(1))
+    
+    threshold_match = re.search(r'_t0?(\d+)', name)
+    if threshold_match:
+        params['similarity_threshold'] = float(f"0.{threshold_match.group(1)}")
+    
+    # Extract adaptive RAG parameters
+    if 'mink' in name:
+        mink_match = re.search(r'mink(\d+)', name)
+        if mink_match:
+            params['min_k'] = int(mink_match.group(1))
+    
+    if 'maxk' in name:
+        maxk_match = re.search(r'maxk(\d+)', name)
+        if maxk_match:
+            params['max_k'] = int(maxk_match.group(1))
+    
+    if 'drop' in name:
+        drop_match = re.search(r'drop0?(\d+)', name)
+        if drop_match:
+            params['drop_threshold'] = float(f"0.{drop_match.group(1)}")
+    
+    if 'minsim' in name:
+        minsim_match = re.search(r'minsim0?(\d+)', name)
+        if minsim_match:
+            params['min_similarity'] = float(f"0.{minsim_match.group(1)}")
+    
+    # Extract clustering parameters
+    params['allow_backtrack'] = 'backtrack' in name and 'nobacktrack' not in name
+    
+    # Extract hybrid parameters
+    cat_match = re.search(r'_cat(\d+)', name)
+    if cat_match:
+        params['top_k_categories'] = int(cat_match.group(1))
+    
+    # Robustness tests
+    if 'similar' in name:
+        similar_match = re.search(r'similar(\d+)', name)
+        if similar_match:
+            params['num_similar_tools'] = int(similar_match.group(1))
+    
+    params['is_no_tool_test'] = 'notool' in name
+    
+    return params
+
+
+def load_all_experiments_as_dataframe(results_dir: Path) -> pd.DataFrame:
+    """
+    Load all experiments and aggregate into a unified DataFrame.
+    
+    Columns include:
+    - experiment_name, methodology, num_tools, doc_length
+    - accuracy, call_rate, avg_latency_ms
+    - methodology-specific parameters (top_k, allow_backtrack, etc.)
+    - methodology-specific metrics (category_accuracy, adaptive_k_stats, etc.)
+    """
+    rows = []
     
     for summary_path in find_experiments(results_dir):
-        summary = load_experiment_summary(summary_path)
-        summaries.append(summary)
+        try:
+            summary = load_experiment_summary(summary_path)
+        except Exception as e:
+            logger.warning(f"Failed to load {summary_path}: {e}")
+            continue
         
-        # Load corresponding details CSV
+        config = summary.get("experiment_config", {})
+        exp_name = config.get("name", summary_path.stem)
+        
+        # Parse parameters from experiment name
+        parsed = parse_experiment_name(exp_name)
+        
+        row = {
+            "experiment_name": exp_name,
+            "file_path": str(summary_path),
+            "methodology": summary.get("methodology", config.get("methodology", "unknown")),
+            "num_tools": config.get("num_tools", parsed.get("num_tools", 0)),
+            "doc_length": config.get("doc_length", parsed.get("doc_length", "medium")),
+            "prompt_type": config.get("prompt_type", "concise"),
+            
+            # Core metrics
+            "accuracy": summary.get("accuracy", 0.0),
+            "call_rate": summary.get("call_rate", 0.0),
+            "total_tests": summary.get("total_tests", 0),
+            "tool_correct": summary.get("tool_correct", 0),
+            "tool_incorrect": summary.get("tool_incorrect", 0),
+            "no_tool_called": summary.get("no_tool_called", 0),
+            "errors": summary.get("errors", 0),
+            
+            # Latency metrics
+            "avg_latency_ms": summary.get("avg_latency_ms", 0.0),
+            "min_latency_ms": summary.get("min_latency_ms", 0.0),
+            "max_latency_ms": summary.get("max_latency_ms", 0.0),
+            
+            # Methodology-specific metrics
+            "category_selection_accuracy": summary.get("category_selection_accuracy", 0.0),
+            "avg_steps_per_call": summary.get("avg_steps_per_call", 0.0),
+            "total_backtracks": summary.get("total_backtracks", 0),
+            "fallback_rate": summary.get("fallback_rate", 0.0),
+            
+            # Retrieval metrics (may be 0 for older results)
+            "retrieval_recall_rate": summary.get("retrieval_recall_rate", 0.0),
+            "avg_retrieval_rank": summary.get("avg_retrieval_rank", 0.0),
+            
+            # Token metrics
+            "avg_tokens_total": summary.get("avg_tokens_total", 0.0),
+            
+            # Parsed parameters
+            "phase": parsed.get("phase"),
+            "top_k": parsed.get("top_k"),
+            "similarity_threshold": parsed.get("similarity_threshold"),
+            "allow_backtrack": parsed.get("allow_backtrack"),
+            "top_k_categories": parsed.get("top_k_categories"),
+            "min_k": parsed.get("min_k"),
+            "max_k": parsed.get("max_k"),
+            "drop_threshold": parsed.get("drop_threshold"),
+            "min_similarity": parsed.get("min_similarity"),
+            "num_similar_tools": parsed.get("num_similar_tools", 0),
+            "is_no_tool_test": parsed.get("is_no_tool_test", False),
+        }
+        
+        # Add adaptive RAG stats
+        adaptive_stats = summary.get("adaptive_k_stats", {})
+        row["adaptive_k_avg"] = adaptive_stats.get("avg_k", 0.0)
+        row["adaptive_k_min"] = adaptive_stats.get("min_k", 0.0)
+        row["adaptive_k_max"] = adaptive_stats.get("max_k", 0.0)
+        
+        # Add adaptive strategy distribution
+        strategy_dist = summary.get("adaptive_strategy_distribution", {})
+        row["adaptive_threshold_count"] = strategy_dist.get("threshold", 0)
+        row["adaptive_bounded_count"] = strategy_dist.get("bounded", 0)
+        
+        # Store category_accuracy dict as JSON string
+        row["category_accuracy_json"] = json.dumps(summary.get("category_accuracy", {}))
+        
+        rows.append(row)
+    
+    df = pd.DataFrame(rows)
+    
+    # Sort by methodology and num_tools for consistent ordering
+    if not df.empty:
+        df = df.sort_values(["methodology", "num_tools", "experiment_name"]).reset_index(drop=True)
+    
+    return df
+
+
+def load_all_details_as_dataframe(results_dir: Path) -> pd.DataFrame:
+    """
+    Load all experiment details CSVs and combine into single DataFrame.
+    Adds experiment_name column for grouping.
+    """
+    all_details = []
+    
+    for summary_path in find_experiments(results_dir):
         details_path = summary_path.with_name(
             summary_path.name.replace("_summary.json", "_details.csv")
         )
-        if details_path.exists():
-            details.append(load_experiment_details(details_path))
-        else:
-            logger.warning(f"Details file not found: {details_path}")
-            details.append(None)
+        if not details_path.exists():
+            continue
+        
+        try:
+            details = load_experiment_details(details_path)
+            # Extract experiment name from summary
+            summary = load_experiment_summary(summary_path)
+            config = summary.get("experiment_config", {})
+            exp_name = config.get("name", summary_path.stem)
+            details["experiment_name"] = exp_name
+            all_details.append(details)
+        except Exception as e:
+            logger.warning(f"Failed to load {details_path}: {e}")
+            continue
     
-    return summaries, details
+    if all_details:
+        return pd.concat(all_details, ignore_index=True)
+    return pd.DataFrame()
 
 
 # =============================================================================
 # Statistical Analysis
 # =============================================================================
 
-def paired_t_test(accuracies_a: list[float], accuracies_b: list[float]) -> dict:
+def compute_confidence_interval(data: list[float], confidence: float = 0.95) -> tuple[float, float, float]:
     """
-    Perform paired t-test between two sets of per-test accuracies.
+    Compute bootstrap confidence interval.
     
     Returns:
-        dict with t-statistic, p-value, and significance at various levels
-    """
-    if len(accuracies_a) != len(accuracies_b):
-        raise ValueError("Sample sizes must match for paired t-test")
-    
-    # Check for zero variance (identical data) - t-test is undefined
-    diff = np.array(accuracies_a) - np.array(accuracies_b)
-    if np.var(diff) == 0:
-        # No difference between methods (or both perfect/identical)
-        return {
-            "t_statistic": 0.0,
-            "p_value": 1.0,  # No significant difference
-            "significant_0.05": False,
-            "significant_0.01": False,
-            "significant_0.001": False,
-            "n_samples": len(accuracies_a),
-            "note": "Zero variance in differences (identical results)"
-        }
-    
-    # Suppress expected warnings for near-identical data
-    with warnings.catch_warnings():
-        warnings.filterwarnings('ignore', message='.*Precision loss.*')
-        warnings.filterwarnings('ignore', message='.*divide by zero.*')
-        warnings.filterwarnings('ignore', message='.*invalid value.*')
-        t_stat, p_value = stats.ttest_rel(accuracies_a, accuracies_b)
-    
-    # Handle NaN p-values
-    if np.isnan(p_value):
-        p_value = 1.0
-        t_stat = 0.0 if np.isnan(t_stat) else t_stat
-    
-    return {
-        "t_statistic": float(t_stat),
-        "p_value": float(p_value),
-        "significant_0.05": p_value < 0.05,
-        "significant_0.01": p_value < 0.01,
-        "significant_0.001": p_value < 0.001,
-        "n_samples": len(accuracies_a),
-    }
-
-
-def bootstrap_confidence_interval(
-    data: list[float],
-    n_bootstrap: int = 10000,
-    confidence_level: float = 0.95,
-    statistic: str = "mean"
-) -> dict:
-    """
-    Compute bootstrap confidence interval for a statistic.
-    
-    Args:
-        data: Sample data
-        n_bootstrap: Number of bootstrap samples
-        confidence_level: Confidence level (e.g., 0.95 for 95% CI)
-        statistic: 'mean' or 'median'
-    
-    Returns:
-        dict with point estimate, CI bounds, and standard error
+        (mean, ci_lower, ci_upper)
     """
     data = np.array(data)
-    n = len(data)
+    mean = np.mean(data)
     
-    # Compute point estimate
-    if statistic == "mean":
-        point_estimate = np.mean(data)
-        stat_func = np.mean
-    else:
-        point_estimate = np.median(data)
-        stat_func = np.median
+    if len(data) < 2:
+        return mean, mean, mean
     
-    # Bootstrap resampling
-    bootstrap_stats = []
+    # Bootstrap
+    n_bootstrap = 1000
     rng = np.random.default_rng(seed=42)
+    bootstrap_means = []
     
     for _ in range(n_bootstrap):
-        sample = rng.choice(data, size=n, replace=True)
-        bootstrap_stats.append(stat_func(sample))
+        sample = rng.choice(data, size=len(data), replace=True)
+        bootstrap_means.append(np.mean(sample))
     
-    bootstrap_stats = np.array(bootstrap_stats)
+    alpha = 1 - confidence
+    ci_lower = np.percentile(bootstrap_means, 100 * alpha / 2)
+    ci_upper = np.percentile(bootstrap_means, 100 * (1 - alpha / 2))
     
-    # Compute confidence interval (percentile method)
-    alpha = 1 - confidence_level
-    ci_lower = np.percentile(bootstrap_stats, 100 * alpha / 2)
-    ci_upper = np.percentile(bootstrap_stats, 100 * (1 - alpha / 2))
-    
-    return {
-        "point_estimate": float(point_estimate),
-        "ci_lower": float(ci_lower),
-        "ci_upper": float(ci_upper),
-        "confidence_level": confidence_level,
-        "standard_error": float(np.std(bootstrap_stats)),
-        "n_bootstrap": n_bootstrap,
-    }
+    return mean, ci_lower, ci_upper
 
 
-def compare_methodologies_statistical(
-    details_a: pd.DataFrame,
-    details_b: pd.DataFrame,
-    methodology_a: str,
-    methodology_b: str
-) -> dict:
+def filter_latency_outliers(latencies: pd.Series, method: str = "iqr", factor: float = 1.5) -> pd.Series:
     """
-    Comprehensive statistical comparison between two methodologies.
+    Filter outlier latencies using IQR or percentile method.
     
     Args:
-        details_a, details_b: DataFrames with per-test results
-        methodology_a, methodology_b: Names of methodologies
-    
-    Returns:
-        dict with t-test results, bootstrap CIs, and effect size
-    """
-    # Extract accuracy per test (tool_correct is boolean)
-    acc_a = details_a["tool_correct"].astype(float).tolist()
-    acc_b = details_b["tool_correct"].astype(float).tolist()
-    
-    # Paired t-test (if same tests)
-    if len(acc_a) == len(acc_b):
-        t_test = paired_t_test(acc_a, acc_b)
-    else:
-        # Use independent t-test if different number of tests
-        # Check for zero variance edge case
-        if np.var(acc_a) == 0 and np.var(acc_b) == 0:
-            t_stat, p_value = 0.0, 1.0
-        else:
-            with warnings.catch_warnings():
-                warnings.filterwarnings('ignore', message='.*Precision loss.*')
-                warnings.filterwarnings('ignore', message='.*divide by zero.*')
-                t_stat, p_value = stats.ttest_ind(acc_a, acc_b)
-            if np.isnan(p_value):
-                p_value = 1.0
-                t_stat = 0.0 if np.isnan(t_stat) else t_stat
+        latencies: Series of latency values
+        method: "iqr" for IQR-based, "percentile" for P5-P95
+        factor: IQR multiplier (default 1.5)
         
-        t_test = {
-            "t_statistic": float(t_stat),
-            "p_value": float(p_value),
-            "significant_0.05": p_value < 0.05,
-            "note": "Independent t-test (different sample sizes)"
-        }
-    
-    # Bootstrap CIs for each
-    ci_a = bootstrap_confidence_interval(acc_a)
-    ci_b = bootstrap_confidence_interval(acc_b)
-    
-    # Effect size (Cohen's d)
-    pooled_std = np.sqrt((np.var(acc_a) + np.var(acc_b)) / 2)
-    if pooled_std > 0:
-        cohens_d = (np.mean(acc_a) - np.mean(acc_b)) / pooled_std
-    else:
-        cohens_d = 0.0
-    
-    return {
-        "methodology_a": methodology_a,
-        "methodology_b": methodology_b,
-        "accuracy_a": float(np.mean(acc_a)),
-        "accuracy_b": float(np.mean(acc_b)),
-        "difference": float(np.mean(acc_a) - np.mean(acc_b)),
-        "t_test": t_test,
-        "bootstrap_ci_a": ci_a,
-        "bootstrap_ci_b": ci_b,
-        "cohens_d": float(cohens_d),
-        "effect_size_interpretation": interpret_cohens_d(cohens_d),
-    }
-
-
-def interpret_cohens_d(d: float) -> str:
-    """Interpret Cohen's d effect size."""
-    d = abs(d)
-    if d < 0.2:
-        return "negligible"
-    elif d < 0.5:
-        return "small"
-    elif d < 0.8:
-        return "medium"
-    else:
-        return "large"
-
-
-# =============================================================================
-# Confusion Matrix Analysis
-# =============================================================================
-
-def build_category_confusion_matrix(details_df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Build confusion matrix for category selection (clustering/hybrid methodologies).
-    
-    Args:
-        details_df: DataFrame with 'category' (expected) and 'final_category' (selected) columns
-    
     Returns:
-        DataFrame representing the confusion matrix
+        Filtered series
     """
-    # Filter to rows that have category information
-    df = details_df.dropna(subset=["category", "final_category"])
-    
-    if len(df) == 0:
-        logger.warning("No category data available for confusion matrix")
-        return pd.DataFrame()
-    
-    # Get unique categories
-    all_categories = sorted(set(df["category"].unique()) | set(df["final_category"].unique()))
-    
-    # Build confusion matrix
-    matrix = defaultdict(lambda: defaultdict(int))
-    for _, row in df.iterrows():
-        expected = row["category"]
-        actual = row["final_category"]
-        matrix[expected][actual] += 1
-    
-    # Convert to DataFrame
-    confusion_df = pd.DataFrame(0, index=all_categories, columns=all_categories)
-    for expected in matrix:
-        for actual in matrix[expected]:
-            confusion_df.loc[expected, actual] = matrix[expected][actual]
-    
-    return confusion_df
-
-
-def analyze_confusion_matrix(confusion_df: pd.DataFrame) -> dict:
-    """
-    Analyze confusion matrix to identify problematic category pairs.
-    
-    Returns:
-        dict with per-category accuracy, most confused pairs, etc.
-    """
-    if confusion_df.empty:
-        return {"error": "Empty confusion matrix"}
-    
-    # Per-category accuracy (diagonal / row sum)
-    category_accuracy = {}
-    for cat in confusion_df.index:
-        row_sum = confusion_df.loc[cat].sum()
-        if row_sum > 0:
-            category_accuracy[cat] = confusion_df.loc[cat, cat] / row_sum
-        else:
-            category_accuracy[cat] = 0.0
-    
-    # Find most confused pairs (off-diagonal elements)
-    confused_pairs = []
-    for expected in confusion_df.index:
-        for actual in confusion_df.columns:
-            if expected != actual and confusion_df.loc[expected, actual] > 0:
-                confused_pairs.append({
-                    "expected": expected,
-                    "selected": actual,
-                    "count": int(confusion_df.loc[expected, actual]),
-                })
-    
-    # Sort by count descending
-    confused_pairs.sort(key=lambda x: x["count"], reverse=True)
-    
-    # Overall accuracy
-    total_correct = sum(confusion_df.loc[c, c] for c in confusion_df.index)
-    total = confusion_df.values.sum()
-    overall_accuracy = total_correct / total if total > 0 else 0.0
-    
-    return {
-        "overall_accuracy": float(overall_accuracy),
-        "category_accuracy": category_accuracy,
-        "most_confused_pairs": confused_pairs[:10],  # Top 10
-        "total_samples": int(total),
-    }
+    if method == "iqr":
+        q1 = latencies.quantile(0.25)
+        q3 = latencies.quantile(0.75)
+        iqr = q3 - q1
+        lower_bound = q1 - factor * iqr
+        upper_bound = q3 + factor * iqr
+        return latencies[(latencies >= lower_bound) & (latencies <= upper_bound)]
+    else:  # percentile
+        p5 = latencies.quantile(0.05)
+        p95 = latencies.quantile(0.95)
+        return latencies[(latencies >= p5) & (latencies <= p95)]
 
 
 # =============================================================================
-# Visualization
+# Visualization Functions
 # =============================================================================
 
-def generate_accuracy_comparison_chart(
-    summaries: list[dict],
-    output_path: Optional[Path] = None
-):
+def setup_matplotlib():
+    """Configure matplotlib for consistent styling."""
+    import matplotlib.pyplot as plt
+    import matplotlib
+    matplotlib.use('Agg')  # Non-interactive backend for saving figures
+    plt.style.use('seaborn-v0_8-whitegrid')
+    plt.rcParams.update({
+        'figure.figsize': (12, 8),
+        'figure.dpi': 150,
+        'font.size': 11,
+        'axes.titlesize': 14,
+        'axes.labelsize': 12,
+        'legend.fontsize': 10,
+        'xtick.labelsize': 10,
+        'ytick.labelsize': 10,
+    })
+
+
+def generate_methodology_comparison_bar(df: pd.DataFrame, output_path: Path):
     """
-    Generate bar chart comparing accuracy across methodologies.
+    Generate grouped bar chart comparing methodologies by accuracy.
+    Groups experiments by methodology and shows mean accuracy with error bars.
     """
-    try:
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-    except ImportError:
-        logger.error("matplotlib and seaborn required for visualization")
-        return
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
     
-    # Extract data
-    methodologies = []
-    accuracies = []
+    # Aggregate by methodology
+    agg = df.groupby("methodology").agg({
+        "accuracy": ["mean", "std", "count"],
+        "avg_latency_ms": "mean",
+    }).reset_index()
+    agg.columns = ["methodology", "accuracy_mean", "accuracy_std", "count", "latency_mean"]
     
-    for summary in summaries:
-        methodology = summary.get("methodology", "unknown")
-        accuracy = summary.get("accuracy", 0.0)
-        methodologies.append(methodology)
-        accuracies.append(accuracy * 100)  # Convert to percentage
+    # Sort by accuracy
+    agg = agg.sort_values("accuracy_mean", ascending=False)
     
-    # Create chart
     fig, ax = plt.subplots(figsize=(10, 6))
-    colors = sns.color_palette("husl", len(methodologies))
-    bars = ax.bar(methodologies, accuracies, color=colors)
+    
+    x = np.arange(len(agg))
+    colors = [METHODOLOGY_COLORS.get(m, "#666666") for m in agg["methodology"]]
+    
+    bars = ax.bar(x, agg["accuracy_mean"] * 100, 
+                  yerr=agg["accuracy_std"] * 100, 
+                  capsize=5,
+                  color=colors, 
+                  edgecolor='white', 
+                  linewidth=1.5)
     
     # Add value labels
-    for bar, acc in zip(bars, accuracies):
-        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
-                f'{acc:.1f}%', ha='center', va='bottom', fontsize=10)
+    for bar, acc in zip(bars, agg["accuracy_mean"]):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 2,
+                f'{acc*100:.1f}%', ha='center', va='bottom', fontsize=11, fontweight='bold')
     
+    ax.set_xticks(x)
+    ax.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in agg["methodology"]], rotation=30, ha='right')
     ax.set_ylabel("Accuracy (%)")
     ax.set_xlabel("Methodology")
-    ax.set_title("Tool Selection Accuracy by Methodology")
-    ax.set_ylim(0, 105)
-    plt.xticks(rotation=45, ha='right')
+    ax.set_title("Average Accuracy by Methodology", fontsize=14, fontweight='bold')
+    ax.set_ylim(0, 110)
+    ax.axhline(y=100, color='gray', linestyle='--', alpha=0.3)
+    
+    # Add count annotations
+    for i, (bar, count) in enumerate(zip(bars, agg["count"])):
+        ax.text(bar.get_x() + bar.get_width()/2, 5,
+                f'n={count}', ha='center', va='bottom', fontsize=9, color='white')
+    
     plt.tight_layout()
-    
-    if output_path:
-        plt.savefig(output_path, dpi=150, bbox_inches='tight')
-        logger.info(f"Saved accuracy chart to {output_path}")
-    else:
-        plt.show()
-    
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
     plt.close()
+    logger.info(f"Saved: {output_path}")
 
 
-def generate_latency_boxplot(
-    details_list: list[pd.DataFrame],
-    methodology_names: list[str],
-    output_path: Optional[Path] = None
-):
+def generate_accuracy_heatmap(df: pd.DataFrame, output_path: Path):
     """
-    Generate boxplot comparing latency distributions across methodologies.
+    Generate heatmap of accuracy by methodology and num_tools.
     """
-    try:
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-    except ImportError:
-        logger.error("matplotlib and seaborn required for visualization")
-        return
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    setup_matplotlib()
     
-    # Combine data
-    all_data = []
-    for details, name in zip(details_list, methodology_names):
-        if details is not None and "latency_ms" in details.columns:
-            df = details[["latency_ms"]].copy()
-            df["methodology"] = name
-            all_data.append(df)
+    # Pivot for heatmap
+    pivot = df.pivot_table(
+        values="accuracy",
+        index="methodology",
+        columns="num_tools",
+        aggfunc="mean"
+    )
     
-    if not all_data:
-        logger.warning("No latency data available")
-        return
+    # Sort index by METHODOLOGY_DISPLAY_NAMES order
+    method_order = [m for m in METHODOLOGY_COLORS.keys() if m in pivot.index]
+    pivot = pivot.reindex(method_order)
     
-    combined = pd.concat(all_data, ignore_index=True)
+    # Sort columns numerically
+    pivot = pivot.reindex(columns=sorted(pivot.columns))
     
-    # Create boxplot
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.boxplot(data=combined, x="methodology", y="latency_ms", ax=ax, palette="husl")
+    fig, ax = plt.subplots(figsize=(12, 6))
     
-    ax.set_ylabel("Latency (ms)")
-    ax.set_xlabel("Methodology")
-    ax.set_title("Latency Distribution by Methodology")
-    plt.xticks(rotation=45, ha='right')
+    sns.heatmap(
+        pivot * 100, 
+        annot=True, 
+        fmt=".0f", 
+        cmap="RdYlGn",
+        vmin=0, 
+        vmax=100,
+        ax=ax,
+        cbar_kws={"label": "Accuracy (%)"},
+        linewidths=0.5,
+    )
+    
+    ax.set_yticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in pivot.index], rotation=0)
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Methodology")
+    ax.set_title("Accuracy Heatmap: Methodology × Tool Count", fontsize=14, fontweight='bold')
+    
     plt.tight_layout()
-    
-    if output_path:
-        plt.savefig(output_path, dpi=150, bbox_inches='tight')
-        logger.info(f"Saved latency boxplot to {output_path}")
-    else:
-        plt.show()
-    
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
     plt.close()
+    logger.info(f"Saved: {output_path}")
 
 
-def generate_accuracy_vs_tools_chart(
-    summaries: list[dict],
-    output_path: Optional[Path] = None
-):
+def generate_scaling_curves(df: pd.DataFrame, output_path: Path):
     """
-    Generate line chart showing accuracy vs number of tools.
+    Generate line chart showing accuracy vs. number of tools for each methodology.
     """
-    try:
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-    except ImportError:
-        logger.error("matplotlib and seaborn required for visualization")
-        return
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
     
-    # Group by methodology
-    methodology_data = defaultdict(list)
+    fig, ax = plt.subplots(figsize=(12, 7))
     
-    for summary in summaries:
-        methodology = summary.get("methodology", "unknown")
-        num_tools = summary.get("experiment_config", {}).get("num_tools", 0)
-        accuracy = summary.get("accuracy", 0.0)
-        methodology_data[methodology].append((num_tools, accuracy * 100))
-    
-    # Sort by num_tools within each methodology
-    for methodology in methodology_data:
-        methodology_data[methodology].sort(key=lambda x: x[0])
-    
-    # Create chart
-    fig, ax = plt.subplots(figsize=(10, 6))
-    colors = sns.color_palette("husl", len(methodology_data))
-    
-    for (methodology, data), color in zip(methodology_data.items(), colors):
-        x = [d[0] for d in data]
-        y = [d[1] for d in data]
-        ax.plot(x, y, marker='o', label=methodology, color=color, linewidth=2)
+    # Group by methodology and num_tools
+    for methodology in df["methodology"].unique():
+        meth_df = df[df["methodology"] == methodology]
+        
+        # Aggregate by num_tools
+        agg = meth_df.groupby("num_tools").agg({
+            "accuracy": ["mean", "std"]
+        }).reset_index()
+        agg.columns = ["num_tools", "accuracy_mean", "accuracy_std"]
+        agg = agg.sort_values("num_tools")
+        
+        color = METHODOLOGY_COLORS.get(methodology, "#666666")
+        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
+        
+        ax.plot(agg["num_tools"], agg["accuracy_mean"] * 100, 
+                marker='o', linewidth=2, markersize=8,
+                color=color, label=label)
+        
+        # Add error band if we have std
+        if agg["accuracy_std"].notna().any():
+            ax.fill_between(
+                agg["num_tools"],
+                (agg["accuracy_mean"] - agg["accuracy_std"]) * 100,
+                (agg["accuracy_mean"] + agg["accuracy_std"]) * 100,
+                alpha=0.2, color=color
+            )
     
     ax.set_xlabel("Number of Tools")
     ax.set_ylabel("Accuracy (%)")
-    ax.set_title("Tool Selection Accuracy vs. Tool Set Size")
-    ax.legend(loc='lower left')
+    ax.set_title("Accuracy Scaling by Methodology", fontsize=14, fontweight='bold')
     ax.set_ylim(0, 105)
+    ax.legend(loc='lower left', frameon=True)
     ax.grid(True, alpha=0.3)
+    
+    # Log scale for x-axis if range is large
+    if df["num_tools"].max() / df["num_tools"].min() > 10:
+        ax.set_xscale('log')
+        ax.set_xticks(sorted(df["num_tools"].unique()))
+        ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
+    
     plt.tight_layout()
-    
-    if output_path:
-        plt.savefig(output_path, dpi=150, bbox_inches='tight')
-        logger.info(f"Saved accuracy vs tools chart to {output_path}")
-    else:
-        plt.show()
-    
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
     plt.close()
+    logger.info(f"Saved: {output_path}")
 
 
-def generate_confidence_histogram(
-    details_df: pd.DataFrame,
-    methodology_name: str = "confidence",
-    output_path: Optional[Path] = None
-):
+def generate_latency_comparison(df: pd.DataFrame, details_df: pd.DataFrame, output_path: Path):
     """
-    Generate histogram of confidence scores for confidence-based methodology.
+    Generate latency boxplot comparison with and without outliers.
     """
-    try:
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-    except ImportError:
-        logger.error("matplotlib and seaborn required for visualization")
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    setup_matplotlib()
+    
+    if details_df.empty or "latency_ms" not in details_df.columns:
+        logger.warning("No latency data available")
         return
     
-    if "confidence_score" not in details_df.columns:
-        logger.warning("No confidence_score column found")
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    
+    # Left: Raw latency (with outliers)
+    ax1 = axes[0]
+    order = sorted(details_df["methodology"].unique(), 
+                   key=lambda x: METHODOLOGY_COLORS.get(x, "zzz"))
+    palette = {m: METHODOLOGY_COLORS.get(m, "#666666") for m in order}
+    
+    sns.boxplot(data=details_df, x="methodology", y="latency_ms", 
+                ax=ax1, order=order, hue="methodology", palette=palette, 
+                legend=False, showfliers=True)
+    ax1.set_title("Latency Distribution (with outliers)", fontweight='bold')
+    ax1.set_xlabel("Methodology")
+    ax1.set_ylabel("Latency (ms)")
+    ax1.set_xticks(range(len(order)))
+    ax1.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in order], rotation=30, ha='right')
+    
+    # Right: Filtered latency (without outliers)
+    ax2 = axes[1]
+    
+    # Filter outliers per methodology
+    filtered_data = []
+    for meth in order:
+        meth_data = details_df[details_df["methodology"] == meth]["latency_ms"]
+        filtered = filter_latency_outliers(meth_data, method="iqr", factor=1.5)
+        for val in filtered:
+            filtered_data.append({"methodology": meth, "latency_ms": val})
+    
+    filtered_df = pd.DataFrame(filtered_data)
+    
+    if not filtered_df.empty:
+        sns.boxplot(data=filtered_df, x="methodology", y="latency_ms", 
+                    ax=ax2, order=order, hue="methodology", palette=palette, 
+                    legend=False, showfliers=False)
+    ax2.set_title("Latency Distribution (outliers filtered)", fontweight='bold')
+    ax2.set_xlabel("Methodology")
+    ax2.set_ylabel("Latency (ms)")
+    ax2.set_xticks(range(len(order)))
+    ax2.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in order], rotation=30, ha='right')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_latency_vs_accuracy_scatter(df: pd.DataFrame, output_path: Path):
+    """
+    Generate scatter plot of latency vs accuracy colored by methodology.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    fig, ax = plt.subplots(figsize=(10, 7))
+    
+    for methodology in df["methodology"].unique():
+        meth_df = df[df["methodology"] == methodology]
+        color = METHODOLOGY_COLORS.get(methodology, "#666666")
+        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
+        
+        ax.scatter(
+            meth_df["avg_latency_ms"], 
+            meth_df["accuracy"] * 100,
+            c=color, 
+            label=label,
+            s=meth_df["num_tools"] / 5,  # Size by num_tools
+            alpha=0.7,
+            edgecolors='white',
+            linewidth=0.5
+        )
+    
+    ax.set_xlabel("Average Latency (ms)")
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_title("Accuracy vs. Latency Trade-off\n(point size = num_tools)", fontsize=14, fontweight='bold')
+    ax.legend(loc='lower right', frameon=True)
+    ax.grid(True, alpha=0.3)
+    ax.set_ylim(0, 105)
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_error_breakdown(df: pd.DataFrame, output_path: Path):
+    """
+    Generate stacked bar chart showing error breakdown by methodology.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Aggregate by methodology
+    agg = df.groupby("methodology").agg({
+        "tool_correct": "sum",
+        "tool_incorrect": "sum",
+        "no_tool_called": "sum",
+        "errors": "sum",
+        "total_tests": "sum",
+    }).reset_index()
+    
+    # Sort by total tests for better visualization
+    agg = agg.sort_values("total_tests", ascending=False)
+    
+    # Convert to percentages
+    for col in ["tool_correct", "tool_incorrect", "no_tool_called", "errors"]:
+        agg[f"{col}_pct"] = agg[col] / agg["total_tests"] * 100
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    x = np.arange(len(agg))
+    width = 0.6
+    
+    # Stacked bars
+    bottom = np.zeros(len(agg))
+    
+    colors = ["#2ecc71", "#e74c3c", "#f39c12", "#9b59b6"]
+    labels = ["Correct", "Incorrect", "No Tool Called", "Errors"]
+    
+    for i, (col, color, label) in enumerate(zip(
+        ["tool_correct_pct", "tool_incorrect_pct", "no_tool_called_pct", "errors_pct"],
+        colors, labels
+    )):
+        values = agg[col].values
+        ax.bar(x, values, width, bottom=bottom, label=label, color=color, edgecolor='white')
+        bottom += values
+    
+    ax.set_xticks(x)
+    ax.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in agg["methodology"]], rotation=30, ha='right')
+    ax.set_ylabel("Percentage (%)")
+    ax.set_xlabel("Methodology")
+    ax.set_title("Result Breakdown by Methodology", fontsize=14, fontweight='bold')
+    ax.legend(loc='upper right', frameon=True)
+    ax.set_ylim(0, 100)
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_doc_length_impact(df: pd.DataFrame, output_path: Path):
+    """
+    Generate grouped bar chart showing accuracy by doc_length for each methodology.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter to experiments that vary doc_length
+    df_filtered = df[df["doc_length"].notna()]
+    
+    if df_filtered.empty or df_filtered["doc_length"].nunique() < 2:
+        logger.warning("Not enough doc_length variation to plot")
         return
     
-    scores = details_df["confidence_score"].dropna()
-    if len(scores) == 0:
-        logger.warning("No confidence scores available")
+    # Pivot for grouped bars
+    pivot = df_filtered.pivot_table(
+        values="accuracy",
+        index="methodology",
+        columns="doc_length",
+        aggfunc="mean"
+    )
+    
+    # Reorder columns
+    doc_order = [d for d in DOC_LENGTH_ORDER if d in pivot.columns]
+    pivot = pivot[doc_order]
+    
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    x = np.arange(len(pivot.index))
+    width = 0.2
+    
+    for i, doc_len in enumerate(pivot.columns):
+        offset = (i - len(pivot.columns)/2 + 0.5) * width
+        bars = ax.bar(x + offset, pivot[doc_len] * 100, width, label=doc_len.capitalize())
+    
+    ax.set_xticks(x)
+    ax.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in pivot.index], rotation=30, ha='right')
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_xlabel("Methodology")
+    ax.set_title("Impact of Documentation Length on Accuracy", fontsize=14, fontweight='bold')
+    ax.legend(title="Doc Length", loc='upper right', frameon=True)
+    ax.set_ylim(0, 110)
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+# =============================================================================
+# Methodology-Specific Analysis Charts
+# =============================================================================
+
+def generate_rag_topk_analysis(df: pd.DataFrame, output_path: Path):
+    """
+    Generate line chart showing RAG accuracy vs. top_k parameter.
+    Averages multiple experiments with the same (num_tools, top_k) combination.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    rag_df = df[(df["methodology"] == "rag") & (df["top_k"].notna())]
+    
+    if rag_df.empty:
+        logger.warning("No RAG experiments with top_k parameter found")
         return
     
     fig, ax = plt.subplots(figsize=(10, 6))
-    sns.histplot(scores, bins=20, kde=True, ax=ax, color="steelblue")
     
-    ax.axvline(scores.mean(), color='red', linestyle='--', label=f'Mean: {scores.mean():.3f}')
-    ax.axvline(scores.median(), color='green', linestyle='--', label=f'Median: {scores.median():.3f}')
+    # Group by num_tools to show different lines
+    for num_tools in sorted(rag_df["num_tools"].unique()):
+        subset = rag_df[rag_df["num_tools"] == num_tools]
+        # Average accuracy for same top_k values
+        agg = subset.groupby("top_k").agg({
+            "accuracy": ["mean", "std"]
+        }).reset_index()
+        agg.columns = ["top_k", "accuracy_mean", "accuracy_std"]
+        agg = agg.sort_values("top_k")
+        
+        ax.plot(agg["top_k"], agg["accuracy_mean"] * 100, 
+                marker='o', linewidth=2, markersize=8,
+                label=f"{num_tools} tools")
+        
+        # Add error band if we have std
+        if agg["accuracy_std"].notna().any() and (agg["accuracy_std"] > 0).any():
+            ax.fill_between(
+                agg["top_k"],
+                (agg["accuracy_mean"] - agg["accuracy_std"]) * 100,
+                (agg["accuracy_mean"] + agg["accuracy_std"]) * 100,
+                alpha=0.2
+            )
     
-    ax.set_xlabel("Confidence Score")
-    ax.set_ylabel("Count")
-    ax.set_title(f"Confidence Score Distribution ({methodology_name})")
-    ax.legend()
+    ax.set_xlabel("Top-K Retrieved")
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_title("RAG: Impact of Top-K on Accuracy", fontsize=14, fontweight='bold')
+    ax.legend(title="Tool Count", loc='lower right', frameon=True)
+    ax.set_ylim(0, 105)
+    ax.grid(True, alpha=0.3)
+    
     plt.tight_layout()
-    
-    if output_path:
-        plt.savefig(output_path, dpi=150, bbox_inches='tight')
-        logger.info(f"Saved confidence histogram to {output_path}")
-    else:
-        plt.show()
-    
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
     plt.close()
+    logger.info(f"Saved: {output_path}")
 
 
-def generate_fallback_breakdown(
-    details_df: pd.DataFrame,
-    output_path: Optional[Path] = None
-):
+def generate_clustering_backtrack_analysis(df: pd.DataFrame, output_path: Path):
     """
-    Generate pie chart showing fallback method usage distribution.
+    Generate grouped bar chart comparing backtrack vs. no-backtrack.
     """
-    try:
-        import matplotlib.pyplot as plt
-    except ImportError:
-        logger.error("matplotlib required for visualization")
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    cluster_df = df[df["methodology"] == "clustering"].copy()
+    
+    if cluster_df.empty:
+        logger.warning("No clustering experiments found")
         return
     
-    if "fallback_method_used" not in details_df.columns:
-        logger.warning("No fallback_method_used column found")
-        return
+    # Group by num_tools and backtrack status
+    cluster_df["backtrack_label"] = cluster_df["allow_backtrack"].map({True: "Backtrack", False: "No Backtrack"})
     
-    method_counts = details_df["fallback_method_used"].value_counts()
-    if len(method_counts) == 0:
-        logger.warning("No fallback data available")
-        return
-    
-    fig, ax = plt.subplots(figsize=(8, 8))
-    colors = plt.cm.Pastel1(np.linspace(0, 1, len(method_counts)))
-    
-    wedges, texts, autotexts = ax.pie(
-        method_counts.values,
-        labels=method_counts.index,
-        autopct='%1.1f%%',
-        colors=colors,
-        startangle=90
+    pivot = cluster_df.pivot_table(
+        values="accuracy",
+        index="num_tools",
+        columns="backtrack_label",
+        aggfunc="mean"
     )
     
-    ax.set_title("Fallback Method Usage Distribution")
-    plt.tight_layout()
-    
-    if output_path:
-        plt.savefig(output_path, dpi=150, bbox_inches='tight')
-        logger.info(f"Saved fallback breakdown to {output_path}")
+    if pivot.empty or pivot.shape[1] < 2:
+        # Not enough variation - just show bar chart
+        fig, ax = plt.subplots(figsize=(10, 6))
+        agg = cluster_df.groupby("num_tools")["accuracy"].mean().reset_index()
+        ax.bar(range(len(agg)), agg["accuracy"] * 100, color=METHODOLOGY_COLORS["clustering"])
+        ax.set_xticks(range(len(agg)))
+        ax.set_xticklabels(agg["num_tools"])
+        ax.set_xlabel("Number of Tools")
+        ax.set_ylabel("Accuracy (%)")
+        ax.set_title("Clustering: Accuracy by Tool Count", fontsize=14, fontweight='bold')
     else:
-        plt.show()
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        x = np.arange(len(pivot.index))
+        width = 0.35
+        
+        if "Backtrack" in pivot.columns:
+            ax.bar(x - width/2, pivot["Backtrack"] * 100, width, label="Backtrack", color="#ff7f0e")
+        if "No Backtrack" in pivot.columns:
+            ax.bar(x + width/2, pivot["No Backtrack"] * 100, width, label="No Backtrack", color="#ffbb78")
+        
+        ax.set_xticks(x)
+        ax.set_xticklabels(pivot.index)
+        ax.set_xlabel("Number of Tools")
+        ax.set_ylabel("Accuracy (%)")
+        ax.set_title("Clustering: Backtrack vs. No Backtrack", fontsize=14, fontweight='bold')
+        ax.legend(loc='lower left', frameon=True)
     
+    ax.set_ylim(0, 105)
+    ax.grid(True, alpha=0.3, axis='y')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
     plt.close()
+    logger.info(f"Saved: {output_path}")
 
 
-def generate_confusion_heatmap(
-    confusion_df: pd.DataFrame,
-    output_path: Optional[Path] = None
-):
+def generate_adaptive_k_distribution(df: pd.DataFrame, details_df: pd.DataFrame, output_path: Path):
     """
-    Generate heatmap visualization of confusion matrix.
+    Generate histogram of adaptive_k_used values for adaptive RAG.
     """
-    try:
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-    except ImportError:
-        logger.error("matplotlib and seaborn required for visualization")
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    setup_matplotlib()
+    
+    adaptive_details = details_df[
+        (details_df["methodology"] == "adaptive_rag") & 
+        (details_df["adaptive_k_used"].notna()) &
+        (details_df["adaptive_k_used"] > 0)
+    ]
+    
+    if adaptive_details.empty:
+        logger.warning("No adaptive_k_used data available")
         return
     
-    if confusion_df.empty:
-        logger.warning("Empty confusion matrix")
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    # Left: Histogram of k values
+    ax1 = axes[0]
+    sns.histplot(adaptive_details["adaptive_k_used"], bins=20, kde=True, 
+                 ax=ax1, color=METHODOLOGY_COLORS["adaptive_rag"])
+    ax1.axvline(adaptive_details["adaptive_k_used"].mean(), color='red', linestyle='--', 
+                label=f'Mean: {adaptive_details["adaptive_k_used"].mean():.1f}')
+    ax1.set_xlabel("Adaptive K Value")
+    ax1.set_ylabel("Count")
+    ax1.set_title("Distribution of Adaptive K Values", fontweight='bold')
+    ax1.legend()
+    
+    # Right: Strategy distribution
+    ax2 = axes[1]
+    if "adaptive_strategy" in adaptive_details.columns:
+        strategy_counts = adaptive_details["adaptive_strategy"].value_counts()
+        colors = plt.cm.Set2(np.linspace(0, 1, len(strategy_counts)))
+        ax2.pie(strategy_counts.values, labels=strategy_counts.index, autopct='%1.1f%%',
+                colors=colors, startangle=90)
+        ax2.set_title("Adaptive Strategy Distribution", fontweight='bold')
+    else:
+        ax2.text(0.5, 0.5, "No strategy data available", ha='center', va='center')
+        ax2.set_title("Adaptive Strategy Distribution", fontweight='bold')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_hybrid_category_analysis(df: pd.DataFrame, output_path: Path):
+    """
+    Generate chart showing hybrid accuracy vs. top_k_categories.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    hybrid_df = df[(df["methodology"] == "hybrid") & (df["top_k_categories"].notna())]
+    
+    if hybrid_df.empty:
+        logger.warning("No hybrid experiments with top_k_categories found")
         return
     
-    # Normalize by row (expected category)
-    row_sums = confusion_df.sum(axis=1)
-    normalized = confusion_df.div(row_sums, axis=0).fillna(0)
+    fig, ax = plt.subplots(figsize=(10, 6))
     
-    fig, ax = plt.subplots(figsize=(12, 10))
+    # Group by num_tools
+    for num_tools in sorted(hybrid_df["num_tools"].unique()):
+        subset = hybrid_df[hybrid_df["num_tools"] == num_tools]
+        # Average accuracy for same top_k_categories values
+        agg = subset.groupby("top_k_categories").agg({
+            "accuracy": ["mean", "std"]
+        }).reset_index()
+        agg.columns = ["top_k_categories", "accuracy_mean", "accuracy_std"]
+        agg = agg.sort_values("top_k_categories")
+        
+        ax.plot(agg["top_k_categories"], agg["accuracy_mean"] * 100, 
+                marker='o', linewidth=2, markersize=8,
+                label=f"{num_tools} tools")
+        
+        # Add error band if we have std
+        if agg["accuracy_std"].notna().any() and (agg["accuracy_std"] > 0).any():
+            ax.fill_between(
+                agg["top_k_categories"],
+                (agg["accuracy_mean"] - agg["accuracy_std"]) * 100,
+                (agg["accuracy_mean"] + agg["accuracy_std"]) * 100,
+                alpha=0.2
+            )
+    
+    ax.set_xlabel("Top-K Categories")
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_title("Hybrid: Impact of Category Count on Accuracy", fontsize=14, fontweight='bold')
+    ax.legend(title="Tool Count", loc='lower right', frameon=True)
+    ax.set_ylim(0, 105)
+    ax.grid(True, alpha=0.3)
+    ax.set_xticks(sorted(hybrid_df["top_k_categories"].unique()))
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_category_accuracy_comparison(df: pd.DataFrame, output_path: Path):
+    """
+    Generate heatmap showing per-category accuracy across methodologies.
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    setup_matplotlib()
+    
+    # Parse category accuracy from JSON
+    all_cat_acc = []
+    for _, row in df.iterrows():
+        try:
+            cat_acc = json.loads(row.get("category_accuracy_json", "{}"))
+            for cat, acc in cat_acc.items():
+                all_cat_acc.append({
+                    "methodology": row["methodology"],
+                    "category": cat.replace("_operations", ""),
+                    "accuracy": acc
+                })
+        except:
+            continue
+    
+    if not all_cat_acc:
+        logger.warning("No category accuracy data available")
+        return
+    
+    cat_df = pd.DataFrame(all_cat_acc)
+    
+    # Pivot to heatmap format
+    pivot = cat_df.pivot_table(
+        values="accuracy",
+        index="category",
+        columns="methodology",
+        aggfunc="mean"
+    )
+    
+    # Sort by overall accuracy
+    pivot = pivot.loc[pivot.mean(axis=1).sort_values(ascending=False).index]
+    
+    # Order columns by methodology order
+    method_order = [m for m in METHODOLOGY_COLORS.keys() if m in pivot.columns]
+    pivot = pivot[method_order]
+    
+    fig, ax = plt.subplots(figsize=(12, max(8, len(pivot) * 0.5)))
+    
     sns.heatmap(
-        normalized,
-        annot=True,
-        fmt='.2f',
-        cmap='Blues',
+        pivot * 100, 
+        annot=True, 
+        fmt=".0f", 
+        cmap="RdYlGn",
+        vmin=0, 
+        vmax=100,
         ax=ax,
-        vmin=0,
-        vmax=1
+        cbar_kws={"label": "Accuracy (%)"},
+        linewidths=0.5,
     )
     
-    ax.set_xlabel("Predicted Category")
-    ax.set_ylabel("Expected Category")
-    ax.set_title("Category Confusion Matrix (Normalized)")
-    plt.xticks(rotation=45, ha='right')
-    plt.yticks(rotation=0)
+    ax.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in pivot.columns], rotation=30, ha='right')
+    ax.set_ylabel("Category")
+    ax.set_xlabel("Methodology")
+    ax.set_title("Per-Category Accuracy by Methodology", fontsize=14, fontweight='bold')
+    
     plt.tight_layout()
-    
-    if output_path:
-        plt.savefig(output_path, dpi=150, bbox_inches='tight')
-        logger.info(f"Saved confusion heatmap to {output_path}")
-    else:
-        plt.show()
-    
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
     plt.close()
+    logger.info(f"Saved: {output_path}")
 
 
-# =============================================================================
-# Comparison Report Generation
-# =============================================================================
-
-def generate_comparison_table(summaries: list[dict]) -> pd.DataFrame:
+def generate_radar_chart(df: pd.DataFrame, output_path: Path, num_tools_filter: int = None):
     """
-    Generate comparison table across all experiments.
+    Generate radar chart comparing methodologies on multiple metrics.
     """
-    rows = []
-    for summary in summaries:
-        config = summary.get("experiment_config", {})
-        row = {
-            "Experiment": config.get("name", "unknown"),
-            "Methodology": summary.get("methodology", "unknown"),
-            "Num Tools": config.get("num_tools", 0),
-            "Accuracy": f"{summary.get('accuracy', 0) * 100:.1f}%",
-            "Avg Latency (ms)": f"{summary.get('avg_latency_ms', 0):.1f}",
-            "Call Rate": f"{summary.get('call_rate', 0) * 100:.1f}%",
-            "Total Tests": summary.get("total_tests", 0),
-            "Errors": summary.get("errors", 0),
-        }
-        
-        # Add methodology-specific metrics
-        methodology = summary.get("methodology", "")
-        if methodology == "clustering" or methodology == "hybrid":
-            row["Category Accuracy"] = f"{summary.get('category_selection_accuracy', 0) * 100:.1f}%"
-        if methodology == "adaptive_rag":
-            k_stats = summary.get("adaptive_k_stats", {})
-            row["Avg K"] = f"{k_stats.get('avg_k', 0):.1f}"
-        if methodology == "confidence":
-            row["Fallback Rate"] = f"{summary.get('fallback_rate', 0) * 100:.1f}%"
-        
-        rows.append(row)
+    import matplotlib.pyplot as plt
+    from math import pi
+    setup_matplotlib()
     
-    return pd.DataFrame(rows)
+    # Filter by num_tools if specified
+    if num_tools_filter:
+        df_filtered = df[df["num_tools"] == num_tools_filter]
+    else:
+        df_filtered = df
+    
+    # Aggregate by methodology
+    agg = df_filtered.groupby("methodology").agg({
+        "accuracy": "mean",
+        "call_rate": "mean",
+        "avg_latency_ms": "mean",
+        "category_selection_accuracy": "mean",
+    }).reset_index()
+    
+    # Normalize latency (lower is better, so invert)
+    max_latency = agg["avg_latency_ms"].max()
+    if max_latency > 0:
+        agg["latency_score"] = 1 - (agg["avg_latency_ms"] / max_latency)
+    else:
+        agg["latency_score"] = 1.0
+    
+    # Metrics for radar
+    metrics = ["accuracy", "call_rate", "category_selection_accuracy", "latency_score"]
+    metric_labels = ["Accuracy", "Call Rate", "Category Accuracy", "Speed (normalized)"]
+    
+    # Number of variables
+    num_vars = len(metrics)
+    angles = [n / float(num_vars) * 2 * pi for n in range(num_vars)]
+    angles += angles[:1]  # Complete the loop
+    
+    fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
+    
+    for _, row in agg.iterrows():
+        methodology = row["methodology"]
+        values = [row[m] for m in metrics]
+        values += values[:1]  # Complete the loop
+        
+        color = METHODOLOGY_COLORS.get(methodology, "#666666")
+        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
+        
+        ax.plot(angles, values, 'o-', linewidth=2, color=color, label=label)
+        ax.fill(angles, values, alpha=0.1, color=color)
+    
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(metric_labels, size=11)
+    ax.set_ylim(0, 1)
+    
+    title = "Methodology Comparison Radar"
+    if num_tools_filter:
+        title += f" ({num_tools_filter} tools)"
+    ax.set_title(title, size=14, fontweight='bold', y=1.08)
+    
+    ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1), frameon=True)
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+# =============================================================================
+# Report Generation
+# =============================================================================
+
+def generate_summary_table(df: pd.DataFrame) -> pd.DataFrame:
+    """Generate summary statistics table."""
+    summary = df.groupby("methodology").agg({
+        "accuracy": ["mean", "std", "min", "max"],
+        "avg_latency_ms": ["mean", "min", "max"],
+        "total_tests": "sum",
+        "experiment_name": "count"
+    }).round(3)
+    
+    summary.columns = [
+        "Accuracy (Mean)", "Accuracy (Std)", "Accuracy (Min)", "Accuracy (Max)",
+        "Latency Mean (ms)", "Latency Min (ms)", "Latency Max (ms)",
+        "Total Tests", "Num Experiments"
+    ]
+    
+    return summary
 
 
 def generate_html_report(
-    summaries: list[dict],
-    details_list: list[pd.DataFrame],
-    output_path: Path,
-    figures_dir: Optional[Path] = None
+    df: pd.DataFrame, 
+    details_df: pd.DataFrame,
+    output_path: Path, 
+    figures_dir: Path
 ):
-    """
-    Generate comprehensive HTML report.
-    """
-    comparison_table = generate_comparison_table(summaries)
+    """Generate comprehensive HTML analysis report."""
+    summary_table = generate_summary_table(df)
+    
+    # Calculate key findings
+    best_accuracy = df.loc[df["accuracy"].idxmax()]
+    best_latency = df.loc[df["avg_latency_ms"].idxmin()]
+    
+    # Methodology rankings
+    meth_rankings = df.groupby("methodology")["accuracy"].mean().sort_values(ascending=False)
     
     html = f"""<!DOCTYPE html>
 <html>
 <head>
     <title>Tool Calling Experiment Analysis Report</title>
     <style>
-        body {{ font-family: Arial, sans-serif; margin: 40px; }}
-        h1 {{ color: #333; }}
-        h2 {{ color: #555; border-bottom: 2px solid #ddd; padding-bottom: 10px; }}
-        table {{ border-collapse: collapse; width: 100%; margin: 20px 0; }}
+        body {{ font-family: 'Segoe UI', Arial, sans-serif; margin: 40px; background: #f5f5f5; }}
+        .container {{ max-width: 1400px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }}
+        h1 {{ color: #333; border-bottom: 3px solid #4CAF50; padding-bottom: 15px; }}
+        h2 {{ color: #555; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-top: 40px; }}
+        table {{ border-collapse: collapse; width: 100%; margin: 20px 0; max-width: 1000px; margin: 20px auto; }}
         th, td {{ border: 1px solid #ddd; padding: 12px; text-align: left; }}
         th {{ background-color: #4CAF50; color: white; }}
-        tr:nth-child(even) {{ background-color: #f2f2f2; }}
-        .metric {{ font-size: 24px; font-weight: bold; color: #4CAF50; }}
-        .card {{ background: #f9f9f9; padding: 20px; margin: 20px 0; border-radius: 8px; }}
-        .figure {{ margin: 20px 0; text-align: center; }}
-        .figure img {{ max-width: 100%; height: auto; }}
+        tr:nth-child(even) {{ background-color: #f9f9f9; }}
+        tr:hover {{ background-color: #f5f5f5; }}
+        .metric {{ font-size: 28px; font-weight: bold; color: #4CAF50; }}
+        .card {{ background: #f9f9f9; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #4CAF50; }}
+        .card-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }}
+        .stat-card {{ background: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }}
+        .stat-card h3 {{ margin: 0 0 10px 0; color: #666; font-size: 14px; }}
+        .stat-card .value {{ font-size: 24px; font-weight: bold; color: #333; }}
+        .figure {{ margin: 30px 0; text-align: center; }}
+        .figure img {{ max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }}
+        .figure-caption {{ margin-top: 10px; color: #666; font-style: italic; }}
+        .ranking {{ display: flex; gap: 10px; flex-wrap: wrap; }}
+        .rank-badge {{ padding: 8px 16px; border-radius: 20px; color: white; font-weight: bold; }}
+        .rank-1 {{ background: #FFD700; color: #333; }}
+        .rank-2 {{ background: #C0C0C0; color: #333; }}
+        .rank-3 {{ background: #CD7F32; }}
+        .rank-other {{ background: #999; }}
+        .figure {{ max-width: 800px; margin: 20px auto; }}
+        .figure.hidden {{ display: none; }}
     </style>
 </head>
 <body>
-    <h1>Tool Calling Experiment Analysis Report</h1>
-    <p>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+    <div class="container">
+        <h1>🔧 Tool Calling Experiment Analysis Report</h1>
+        <p><strong>Generated:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+        <p><strong>Experiments analyzed:</strong> {len(df)} experiments across {df['methodology'].nunique()} methodologies</p>
+        
+        <h2>📊 Executive Summary</h2>
+        <div class="card-grid">
+            <div class="stat-card">
+                <h3>Total Experiments</h3>
+                <div class="value">{len(df)}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Test Cases</h3>
+                <div class="value">{df['total_tests'].sum():,}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Best Accuracy</h3>
+                <div class="value">{best_accuracy['accuracy']*100:.1f}%</div>
+                <div style="font-size: 12px; color: #666;">{best_accuracy['experiment_name']}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Fastest Avg. Latency</h3>
+                <div class="value">{best_latency['avg_latency_ms']:.0f}ms</div>
+                <div style="font-size: 12px; color: #666;">{best_latency['experiment_name']}</div>
+            </div>
+        </div>
+        
+        <h2>🏆 Methodology Rankings (by Average Accuracy)</h2>
+        <div class="ranking">
+"""
     
-    <h2>Executive Summary</h2>
-    <div class="card">
-        <p>Total experiments analyzed: <span class="metric">{len(summaries)}</span></p>
-        <p>Methodologies tested: <span class="metric">{len(set(s.get('methodology', '') for s in summaries))}</span></p>
-    </div>
+    for i, (meth, acc) in enumerate(meth_rankings.items()):
+        rank_class = f"rank-{i+1}" if i < 3 else "rank-other"
+        display_name = METHODOLOGY_DISPLAY_NAMES.get(meth, meth)
+        html += f'<span class="rank-badge {rank_class}">#{i+1} {display_name}: {acc*100:.1f}%</span>\n'
     
-    <h2>Comparison Table</h2>
-    {comparison_table.to_html(index=False, classes='comparison')}
+    html += """
+        </div>
+        
+        <h2>📈 Summary Statistics</h2>
+"""
     
-    <h2>Key Findings</h2>
-    <div class="card">
-        <ul>
+    html += summary_table.to_html(classes='summary')
+    
+    html += """
+        <h2>📉 Visualizations</h2>
+"""
+    
+    # Add figures
+    figure_descriptions = {
+        "01_methodology_comparison.png": "Average accuracy comparison across methodologies with standard deviation error bars.",
+        "02_accuracy_heatmap.png": "Accuracy by methodology and tool count. Green = high accuracy, red = low accuracy.",
+        "03_scaling_curves.png": "How accuracy changes as the number of tools increases for each methodology.",
+        "04_latency_comparison.png": "Latency distribution comparison. Left shows raw data with outliers, right shows filtered data.",
+        "05_latency_vs_accuracy.png": "Trade-off between latency and accuracy. Point size indicates number of tools.",
+        "06_error_breakdown.png": "Breakdown of test outcomes by methodology.",
+        "07_doc_length_impact.png": "Impact of tool documentation length on accuracy.",
+        "08_rag_topk_analysis.png": "RAG methodology: Effect of top-K parameter on accuracy.",
+        # "09_clustering_backtrack.png": "Clustering methodology: Backtracking impact on accuracy.",
+        "10_adaptive_k_distribution.png": "Adaptive RAG: Distribution of dynamically selected K values.",
+        "11_hybrid_category_analysis.png": "Hybrid methodology: Effect of top-K categories on accuracy.",
+        "12_category_accuracy.png": "Per-category accuracy comparison across methodologies.",
+        # "13_radar_comparison.png": "Multi-dimensional comparison of methodology performance.",
+    }
+    
+    for fig_name, description in figure_descriptions.items():
+        fig_path = figures_dir / fig_name
+        if fig_path.exists():
+            rel_path = fig_path.name
+            html += f"""
+        <div class="figure">
+            <img src="figures/{rel_path}" alt="{fig_name.replace('.png', '').replace('_', ' ').title()}">
+            <p class="figure-caption">{description}</p>
+        </div>
+"""
+    
+    html += """
+        <h2>🔍 Key Findings</h2>
+        <div class="card">
+            <ul>
 """
     
     # Add key findings
-    if summaries:
-        best_accuracy = max(summaries, key=lambda s: s.get("accuracy", 0))
-        fastest = min(summaries, key=lambda s: s.get("avg_latency_ms", float('inf')))
+    if len(meth_rankings) > 0:
+        best_meth = meth_rankings.index[0]
+        html += f"<li><strong>Best performing methodology:</strong> {METHODOLOGY_DISPLAY_NAMES.get(best_meth, best_meth)} with {meth_rankings.iloc[0]*100:.1f}% average accuracy</li>\n"
+    
+    if "mcp" in meth_rankings.index:
+        mcp_rank = list(meth_rankings.index).index("mcp") + 1
+        html += f"<li><strong>MCP baseline:</strong> Ranked #{mcp_rank} with {meth_rankings['mcp']*100:.1f}% accuracy</li>\n"
+    
+    # Scaling insights
+    large_scale = df[df["num_tools"] >= 500]
+    if not large_scale.empty:
+        best_large = large_scale.groupby("methodology")["accuracy"].mean().idxmax()
+        html += f"<li><strong>Best at scale (500+ tools):</strong> {METHODOLOGY_DISPLAY_NAMES.get(best_large, best_large)}</li>\n"
+    
+    html += """
+            </ul>
+        </div>
         
-        html += f"""
-            <li><strong>Highest Accuracy:</strong> {best_accuracy.get('methodology')} with {best_accuracy.get('accuracy', 0) * 100:.1f}%</li>
-            <li><strong>Fastest:</strong> {fastest.get('methodology')} with {fastest.get('avg_latency_ms', 0):.1f}ms average latency</li>
-"""
-    
-    html += """
-        </ul>
+        <h2>⚠️ Limitations & Notes</h2>
+        <div class="card">
+            <ul>
+                <li>Results may be affected by rate limiting during experiments</li>
+                <li>Latency outliers have been filtered using IQR method in some charts</li>
+                <li>Category accuracy may vary based on category representation in test set</li>
+            </ul>
+        </div>
     </div>
-"""
-    
-    # Add figures if available
-    if figures_dir and figures_dir.exists():
-        html += "<h2>Visualizations</h2>"
-        for fig_path in sorted(figures_dir.glob("*.png")):
-            rel_path = fig_path.relative_to(output_path.parent)
-            html += f"""
-    <div class="figure">
-        <img src="{rel_path}" alt="{fig_path.stem}">
-        <p>{fig_path.stem.replace('_', ' ').title()}</p>
-    </div>
-"""
-    
-    html += """
 </body>
 </html>
 """
     
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_path, 'w') as f:
+    with open(output_path, 'w', encoding='utf-8') as f:
         f.write(html)
     
     logger.info(f"Generated HTML report: {output_path}")
@@ -782,251 +1279,160 @@ def generate_html_report(
 # =============================================================================
 
 @app.command()
-def compare(
+def generate_report(
     results_dir: Path = typer.Option(
-        Path("experiments/results"),
-        "--results-dir", "-d",
-        help="Directory containing experiment results"
-    ),
-    experiments: Optional[list[str]] = typer.Option(
-        None,
-        "--experiments", "-e",
-        help="Specific experiment summary files to compare"
-    ),
-    output: Optional[Path] = typer.Option(
-        None,
-        "--output", "-o",
-        help="Output file for comparison results (JSON)"
-    ),
-    verbose: bool = typer.Option(False, "--verbose", "-v")
-):
-    """
-    Compare multiple experiment results with statistical analysis.
-    """
-    logger.remove()
-    logger.add(sys.stderr, level="DEBUG" if verbose else "INFO")
-    
-    if experiments:
-        summaries = [load_experiment_summary(Path(e)) for e in experiments]
-        details = []
-        for exp in experiments:
-            detail_path = Path(exp).with_name(
-                Path(exp).name.replace("_summary.json", "_details.csv")
-            )
-            details.append(load_experiment_details(detail_path) if detail_path.exists() else None)
-    else:
-        summaries, details = load_all_experiments(results_dir)
-    
-    if len(summaries) == 0:
-        logger.error("No experiments found")
-        raise typer.Exit(1)
-    
-    logger.info(f"Loaded {len(summaries)} experiments")
-    
-    # Generate comparison table
-    comparison_table = generate_comparison_table(summaries)
-    print("\n" + "=" * 80)
-    print("METHODOLOGY COMPARISON")
-    print("=" * 80)
-    print(comparison_table.to_string(index=False))
-    print()
-    
-    # Statistical comparisons between pairs
-    if len(summaries) >= 2 and all(d is not None for d in details):
-        print("\n" + "=" * 80)
-        print("STATISTICAL COMPARISONS")
-        print("=" * 80)
-        
-        comparisons = []
-        for i in range(len(summaries)):
-            for j in range(i + 1, len(summaries)):
-                if details[i] is not None and details[j] is not None:
-                    comparison = compare_methodologies_statistical(
-                        details[i], details[j],
-                        summaries[i].get("methodology", "A"),
-                        summaries[j].get("methodology", "B")
-                    )
-                    comparisons.append(comparison)
-                    
-                    print(f"\n{comparison['methodology_a']} vs {comparison['methodology_b']}:")
-                    print(f"  Accuracy: {comparison['accuracy_a']:.3f} vs {comparison['accuracy_b']:.3f}")
-                    print(f"  Difference: {comparison['difference']:+.3f}")
-                    print(f"  T-test p-value: {comparison['t_test']['p_value']:.4f}")
-                    print(f"  Effect size (Cohen's d): {comparison['cohens_d']:.3f} ({comparison['effect_size_interpretation']})")
-                    if comparison['t_test'].get('significant_0.05'):
-                        print(f"  *** Statistically significant at p<0.05 ***")
-    
-    # Save results
-    if output:
-        results = {
-            "comparison_table": comparison_table.to_dict(orient="records"),
-            "timestamp": datetime.now().isoformat(),
-        }
-        if 'comparisons' in dir():
-            results["statistical_comparisons"] = comparisons
-        
-        with open(output, 'w') as f:
-            json.dump(results, f, indent=2)
-        logger.info(f"Saved comparison results to {output}")
-
-
-@app.command()
-def visualize(
-    results_dir: Path = typer.Option(
-        Path("experiments/results"),
+        Path("experiments/results/plan"),
         "--results-dir", "-d",
         help="Directory containing experiment results"
     ),
     output_dir: Path = typer.Option(
-        Path("reports/figures"),
+        Path("reports"),
         "--output-dir", "-o",
-        help="Output directory for figures"
+        help="Output directory for report and figures"
     ),
     verbose: bool = typer.Option(False, "--verbose", "-v")
 ):
     """
-    Generate visualization charts from experiment results.
+    Generate comprehensive analysis report with all visualizations.
     """
     logger.remove()
     logger.add(sys.stderr, level="DEBUG" if verbose else "INFO")
     
-    summaries, details = load_all_experiments(results_dir)
+    logger.info(f"Loading experiments from {results_dir}")
+    df = load_all_experiments_as_dataframe(results_dir)
     
-    if len(summaries) == 0:
+    if df.empty:
         logger.error("No experiments found")
         raise typer.Exit(1)
     
-    output_dir.mkdir(parents=True, exist_ok=True)
-    logger.info(f"Generating visualizations for {len(summaries)} experiments")
+    logger.info(f"Loaded {len(df)} experiments")
     
-    # Generate all charts
-    generate_accuracy_comparison_chart(summaries, output_dir / "accuracy_comparison.png")
+    # Load details for detailed analysis
+    details_df = load_all_details_as_dataframe(results_dir)
+    logger.info(f"Loaded {len(details_df)} detailed test records")
     
-    methodology_names = [s.get("methodology", "unknown") for s in summaries]
-    generate_latency_boxplot(details, methodology_names, output_dir / "latency_distribution.png")
-    
-    generate_accuracy_vs_tools_chart(summaries, output_dir / "accuracy_vs_tools.png")
-    
-    # Generate methodology-specific charts
-    for i, (summary, detail) in enumerate(zip(summaries, details)):
-        if detail is None:
-            continue
-        
-        methodology = summary.get("methodology", "unknown")
-        
-        if methodology == "confidence" and "confidence_score" in detail.columns:
-            generate_confidence_histogram(
-                detail, methodology,
-                output_dir / f"confidence_histogram_{i}.png"
-            )
-            generate_fallback_breakdown(
-                detail,
-                output_dir / f"fallback_breakdown_{i}.png"
-            )
-        
-        if methodology in ["clustering", "hybrid"] and "final_category" in detail.columns:
-            confusion = build_category_confusion_matrix(detail)
-            if not confusion.empty:
-                generate_confusion_heatmap(
-                    confusion,
-                    output_dir / f"confusion_matrix_{methodology}_{i}.png"
-                )
-    
-    logger.info(f"All visualizations saved to {output_dir}")
-
-
-@app.command()
-def confusion(
-    details_csv: Path = typer.Argument(..., help="Details CSV file to analyze"),
-    output: Optional[Path] = typer.Option(
-        None, "--output", "-o",
-        help="Output file for confusion matrix analysis (JSON)"
-    ),
-    visualize_matrix: bool = typer.Option(
-        True, "--visualize/--no-visualize",
-        help="Generate heatmap visualization"
-    ),
-    verbose: bool = typer.Option(False, "--verbose", "-v")
-):
-    """
-    Generate and analyze category confusion matrix.
-    """
-    logger.remove()
-    logger.add(sys.stderr, level="DEBUG" if verbose else "INFO")
-    
-    details = load_experiment_details(details_csv)
-    confusion_matrix = build_category_confusion_matrix(details)
-    
-    if confusion_matrix.empty:
-        logger.error("Could not build confusion matrix (no category data)")
-        raise typer.Exit(1)
-    
-    analysis = analyze_confusion_matrix(confusion_matrix)
-    
-    print("\n" + "=" * 80)
-    print("CONFUSION MATRIX ANALYSIS")
-    print("=" * 80)
-    print(f"\nOverall Category Accuracy: {analysis['overall_accuracy']:.2%}")
-    print(f"Total Samples: {analysis['total_samples']}")
-    
-    print("\nPer-Category Accuracy:")
-    for cat, acc in sorted(analysis['category_accuracy'].items(), key=lambda x: x[1]):
-        print(f"  {cat}: {acc:.2%}")
-    
-    print("\nMost Confused Pairs (Expected → Selected):")
-    for pair in analysis['most_confused_pairs'][:5]:
-        print(f"  {pair['expected']} → {pair['selected']}: {pair['count']} times")
-    
-    if output:
-        with open(output, 'w') as f:
-            json.dump(analysis, f, indent=2)
-        logger.info(f"Saved analysis to {output}")
-    
-    if visualize_matrix:
-        fig_path = details_csv.with_name(details_csv.stem + "_confusion.png")
-        generate_confusion_heatmap(confusion_matrix, fig_path)
-
-
-@app.command()
-def report(
-    results_dir: Path = typer.Option(
-        Path("experiments/results"),
-        "--results-dir", "-d",
-        help="Directory containing experiment results"
-    ),
-    output: Path = typer.Option(
-        Path("reports/analysis_report.html"),
-        "--output", "-o",
-        help="Output HTML report file"
-    ),
-    verbose: bool = typer.Option(False, "--verbose", "-v")
-):
-    """
-    Generate comprehensive HTML analysis report.
-    """
-    logger.remove()
-    logger.add(sys.stderr, level="DEBUG" if verbose else "INFO")
-    
-    summaries, details = load_all_experiments(results_dir)
-    
-    if len(summaries) == 0:
-        logger.error("No experiments found")
-        raise typer.Exit(1)
-    
-    # Generate figures first
-    figures_dir = output.parent / "figures"
+    # Create output directories
+    figures_dir = output_dir / "figures"
     figures_dir.mkdir(parents=True, exist_ok=True)
     
+    # Generate all visualizations
     logger.info("Generating visualizations...")
-    generate_accuracy_comparison_chart(summaries, figures_dir / "accuracy_comparison.png")
     
-    methodology_names = [s.get("methodology", "unknown") for s in summaries]
-    generate_latency_boxplot(details, methodology_names, figures_dir / "latency_distribution.png")
+    # Overview charts
+    generate_methodology_comparison_bar(df, figures_dir / "01_methodology_comparison.png")
+    generate_accuracy_heatmap(df, figures_dir / "02_accuracy_heatmap.png")
+    generate_scaling_curves(df, figures_dir / "03_scaling_curves.png")
+    generate_latency_comparison(df, details_df, figures_dir / "04_latency_comparison.png")
+    generate_latency_vs_accuracy_scatter(df, figures_dir / "05_latency_vs_accuracy.png")
+    generate_error_breakdown(df, figures_dir / "06_error_breakdown.png")
+    generate_doc_length_impact(df, figures_dir / "07_doc_length_impact.png")
     
-    logger.info("Generating HTML report...")
-    generate_html_report(summaries, details, output, figures_dir)
+    # Methodology-specific charts
+    generate_rag_topk_analysis(df, figures_dir / "08_rag_topk_analysis.png")
+    generate_clustering_backtrack_analysis(df, figures_dir / "09_clustering_backtrack.png")
+    generate_adaptive_k_distribution(df, details_df, figures_dir / "10_adaptive_k_distribution.png")
+    generate_hybrid_category_analysis(df, figures_dir / "11_hybrid_category_analysis.png")
+    generate_category_accuracy_comparison(df, figures_dir / "12_category_accuracy.png")
+    generate_radar_chart(df, figures_dir / "13_radar_comparison.png")
     
-    print(f"\nReport generated: {output}")
+    # Generate HTML report
+    generate_html_report(df, details_df, output_dir / "analysis_report.html", figures_dir)
+    
+    logger.info(f"Report generated at {output_dir / 'analysis_report.html'}")
+    print(f"\n✅ Report generated: {output_dir / 'analysis_report.html'}")
+    print(f"   Figures saved to: {figures_dir}")
+
+
+@app.command()
+def overview(
+    results_dir: Path = typer.Option(
+        Path("experiments/results/plan"),
+        "--results-dir", "-d"
+    ),
+    output_dir: Path = typer.Option(
+        Path("reports/figures"),
+        "--output-dir", "-o"
+    ),
+    verbose: bool = typer.Option(False, "--verbose", "-v")
+):
+    """Generate overview comparison charts only."""
+    logger.remove()
+    logger.add(sys.stderr, level="DEBUG" if verbose else "INFO")
+    
+    df = load_all_experiments_as_dataframe(results_dir)
+    details_df = load_all_details_as_dataframe(results_dir)
+    
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    generate_methodology_comparison_bar(df, output_dir / "methodology_comparison.png")
+    generate_accuracy_heatmap(df, output_dir / "accuracy_heatmap.png")
+    generate_scaling_curves(df, output_dir / "scaling_curves.png")
+    generate_latency_comparison(df, details_df, output_dir / "latency_comparison.png")
+    
+    logger.info(f"Overview charts saved to {output_dir}")
+
+
+@app.command()
+def compare(
+    experiments: list[str] = typer.Argument(..., help="Summary JSON files to compare"),
+    output: Optional[Path] = typer.Option(None, "--output", "-o"),
+    verbose: bool = typer.Option(False, "--verbose", "-v")
+):
+    """Compare specific experiments with statistical analysis."""
+    logger.remove()
+    logger.add(sys.stderr, level="DEBUG" if verbose else "INFO")
+    
+    summaries = []
+    for exp_path in experiments:
+        summaries.append(load_experiment_summary(Path(exp_path)))
+    
+    # Create comparison table
+    rows = []
+    for summary in summaries:
+        config = summary.get("experiment_config", {})
+        rows.append({
+            "Experiment": config.get("name", "unknown"),
+            "Methodology": summary.get("methodology"),
+            "Num Tools": config.get("num_tools"),
+            "Accuracy": f"{summary.get('accuracy', 0)*100:.1f}%",
+            "Latency (ms)": f"{summary.get('avg_latency_ms', 0):.1f}",
+            "Call Rate": f"{summary.get('call_rate', 0)*100:.1f}%",
+        })
+    
+    comparison_df = pd.DataFrame(rows)
+    print("\n" + "=" * 80)
+    print("EXPERIMENT COMPARISON")
+    print("=" * 80)
+    print(comparison_df.to_string(index=False))
+    
+    if output:
+        comparison_df.to_csv(output, index=False)
+        logger.info(f"Saved comparison to {output}")
+
+
+@app.command()
+def export_data(
+    results_dir: Path = typer.Option(
+        Path("experiments/results/plan"),
+        "--results-dir", "-d"
+    ),
+    output: Path = typer.Option(
+        Path("reports/experiment_data.csv"),
+        "--output", "-o"
+    ),
+    verbose: bool = typer.Option(False, "--verbose", "-v")
+):
+    """Export aggregated experiment data to CSV for external analysis."""
+    logger.remove()
+    logger.add(sys.stderr, level="DEBUG" if verbose else "INFO")
+    
+    df = load_all_experiments_as_dataframe(results_dir)
+    
+    output.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(output, index=False)
+    
+    logger.info(f"Exported {len(df)} experiments to {output}")
+    print(f"\n✅ Exported data to: {output}")
 
 
 if __name__ == "__main__":
