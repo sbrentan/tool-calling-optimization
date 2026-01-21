@@ -213,6 +213,7 @@ class ConfidenceMethodology(BaseMethodology):
             "methods_tried": [],
             "confidences": {},
             "final_method": None,
+            "all_results": [],  # Store all results for token aggregation
         }
         
         # Step 1: Try RAG first
@@ -222,6 +223,7 @@ class ConfidenceMethodology(BaseMethodology):
         
         fallback_info["methods_tried"].append("rag")
         fallback_info["confidences"]["rag"] = rag_confidence
+        fallback_info["all_results"].append(rag_result)
         
         if rag_confidence >= self.rag_confidence_threshold:
             logger.debug(f"[Confidence] RAG confidence {rag_confidence:.3f} >= {self.rag_confidence_threshold}, accepting")
@@ -237,6 +239,7 @@ class ConfidenceMethodology(BaseMethodology):
         
         fallback_info["methods_tried"].append("clustering")
         fallback_info["confidences"]["clustering"] = clustering_confidence
+        fallback_info["all_results"].append(clustering_result)
         
         if clustering_confidence >= self.clustering_confidence_threshold:
             logger.debug(f"[Confidence] Clustering confidence {clustering_confidence:.3f} >= {self.clustering_confidence_threshold}, accepting")
@@ -252,6 +255,7 @@ class ConfidenceMethodology(BaseMethodology):
         fallback_info["methods_tried"].append("mcp")
         fallback_info["confidences"]["mcp"] = 1.0  # MCP is the ground truth
         fallback_info["final_method"] = "mcp"
+        fallback_info["all_results"].append(mcp_result)
         
         return self._wrap_result(mcp_result, fallback_info, total_start)
     
@@ -274,6 +278,15 @@ class ConfidenceMethodology(BaseMethodology):
         """
         total_latency = (time.time() - start_time) * 1000
         
+        # Aggregate token usage from all methods tried
+        total_tokens_input = 0
+        total_tokens_output = 0
+        for r in fallback_info.get("all_results", []):
+            if r.tokens_input is not None:
+                total_tokens_input += r.tokens_input
+            if r.tokens_output is not None:
+                total_tokens_output += r.tokens_output
+        
         # Create a new result with our methodology name
         wrapped = MethodologyResult(
             success=result.success,
@@ -291,6 +304,10 @@ class ConfidenceMethodology(BaseMethodology):
             backtrack_count=result.backtrack_count,
             declined_tool_call=result.declined_tool_call,
             final_category=result.final_category,
+            # Aggregated token usage across all fallback attempts
+            tokens_input=total_tokens_input if total_tokens_input > 0 else None,
+            tokens_output=total_tokens_output if total_tokens_output > 0 else None,
+            tokens_total=(total_tokens_input + total_tokens_output) if (total_tokens_input > 0 or total_tokens_output > 0) else None,
         )
         
         # Attach confidence-specific metadata

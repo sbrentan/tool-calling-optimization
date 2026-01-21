@@ -169,6 +169,7 @@ def load_all_experiments_as_dataframe(results_dir: Path) -> pd.DataFrame:
     - accuracy, call_rate, avg_latency_ms
     - methodology-specific parameters (top_k, allow_backtrack, etc.)
     - methodology-specific metrics (category_accuracy, adaptive_k_stats, etc.)
+    - run-specific fields (model, seed, run_name) for multi-run aggregation
     """
     rows = []
     
@@ -185,8 +186,21 @@ def load_all_experiments_as_dataframe(results_dir: Path) -> pd.DataFrame:
         # Parse parameters from experiment name
         parsed = parse_experiment_name(exp_name)
         
+        # Extract run info if present (e.g., "experiment_name_run_1" -> run_name="run_1")
+        base_exp_name = exp_name
+        run_name = None
+        if "_run_" in exp_name:
+            parts = exp_name.rsplit("_run_", 1)
+            if len(parts) == 2:
+                base_exp_name = parts[0]
+                run_name = f"run_{parts[1]}"
+        
         row = {
             "experiment_name": exp_name,
+            "base_experiment_name": base_exp_name,  # Name without run suffix
+            "run_name": run_name,
+            "model": config.get("model", "unknown"),
+            "seed": config.get("seed", 42),
             "file_path": str(summary_path),
             "methodology": summary.get("methodology", config.get("methodology", "unknown")),
             "num_tools": config.get("num_tools", parsed.get("num_tools", 0)),
@@ -218,6 +232,11 @@ def load_all_experiments_as_dataframe(results_dir: Path) -> pd.DataFrame:
             "avg_retrieval_rank": summary.get("avg_retrieval_rank", 0.0),
             
             # Token metrics
+            "total_tokens_input": summary.get("total_tokens_input", 0),
+            "total_tokens_output": summary.get("total_tokens_output", 0),
+            "total_tokens": summary.get("total_tokens", 0),
+            "avg_tokens_input": summary.get("avg_tokens_input", 0.0),
+            "avg_tokens_output": summary.get("avg_tokens_output", 0.0),
             "avg_tokens_total": summary.get("avg_tokens_total", 0.0),
             
             # Parsed parameters
@@ -257,6 +276,106 @@ def load_all_experiments_as_dataframe(results_dir: Path) -> pd.DataFrame:
         df = df.sort_values(["methodology", "num_tools", "experiment_name"]).reset_index(drop=True)
     
     return df
+
+
+def aggregate_across_runs(df: pd.DataFrame, treat_single_as_run: bool = True) -> pd.DataFrame:
+    """
+    Aggregate experiment results across multiple runs (different seeds/models).
+    
+    Groups by base_experiment_name and computes mean/std for numeric metrics.
+    This function handles:
+    - Multi-run experiments (with _run_X suffix)
+    - Single-run experiments (without suffix) - treated as their own run if treat_single_as_run=True
+    - Multiple plan config runs (all runs with same base name are aggregated)
+    
+    Args:
+        df: DataFrame with experiment results (may include multiple runs)
+        treat_single_as_run: If True, experiments without run suffix are included in aggregation
+                            with their base name. If False, they're kept separate.
+        
+    Returns:
+        DataFrame with aggregated results, including _mean and _std columns
+    """
+    if df.empty:
+        return df
+    
+    # Ensure we have the required columns
+    if "base_experiment_name" not in df.columns:
+        df = df.copy()
+        df["base_experiment_name"] = df["experiment_name"]
+    
+    if "run_name" not in df.columns:
+        df = df.copy()
+        df["run_name"] = None
+    
+    # For experiments without run_name, use base_experiment_name as-is for grouping
+    # This allows single-run results to be aggregated with multi-run results
+    if treat_single_as_run:
+        # Experiments without run suffix: base_experiment_name equals experiment_name
+        # These can be aggregated with multi-run experiments of the same base name
+        pass  # The grouping by base_experiment_name will work correctly
+    else:
+        # Keep single-run experiments separate by using their full name as base
+        mask = df["run_name"].isna()
+        df.loc[mask, "base_experiment_name"] = df.loc[mask, "experiment_name"]
+    
+    # Numeric columns to aggregate
+    numeric_cols = [
+        "accuracy", "call_rate", "avg_latency_ms", "min_latency_ms", "max_latency_ms",
+        "total_tests", "tool_correct", "tool_incorrect", "no_tool_called", "errors",
+        "category_selection_accuracy", "avg_steps_per_call", "total_backtracks",
+        "fallback_rate", "retrieval_recall_rate", "avg_retrieval_rank",
+        "avg_tokens_input", "avg_tokens_output", "avg_tokens_total",
+        "adaptive_k_avg", "adaptive_k_min", "adaptive_k_max",
+    ]
+    
+    # Columns to keep first value (should be same across runs)
+    group_cols = [
+        "base_experiment_name", "methodology", "num_tools", "doc_length", "prompt_type",
+        "phase", "top_k", "similarity_threshold", "allow_backtrack", "top_k_categories",
+        "min_k", "max_k", "drop_threshold", "min_similarity", "num_similar_tools", "is_no_tool_test",
+    ]
+    
+    # Group by base experiment name
+    grouped = df.groupby("base_experiment_name")
+    
+    agg_rows = []
+    for base_name, group in grouped:
+        row = {
+            "experiment_name": base_name,
+            "num_runs": len(group),
+            "models": list(group["model"].unique()) if "model" in group.columns else [],
+            "seeds": list(group["seed"].unique()) if "seed" in group.columns else [],
+            "run_names": [r for r in group["run_name"].tolist() if r is not None],
+        }
+        
+        # Copy group columns (first value)
+        for col in group_cols:
+            if col in group.columns:
+                row[col] = group[col].iloc[0]
+        
+        # Aggregate numeric columns
+        for col in numeric_cols:
+            if col in group.columns:
+                values = group[col].dropna()
+                if len(values) > 0:
+                    row[f"{col}_mean"] = values.mean()
+                    row[f"{col}_std"] = values.std() if len(values) > 1 else 0.0
+                    row[col] = values.mean()  # Keep mean as primary value
+        
+        agg_rows.append(row)
+    
+    agg_df = pd.DataFrame(agg_rows)
+    
+    if not agg_df.empty:
+        agg_df = agg_df.sort_values(["methodology", "num_tools", "experiment_name"]).reset_index(drop=True)
+    
+    # Log aggregation summary
+    single_runs = len([r for r in agg_df["num_runs"] if r == 1])
+    multi_runs = len(agg_df) - single_runs
+    logger.info(f"Aggregated {len(df)} results into {len(agg_df)} experiments ({single_runs} single-run, {multi_runs} multi-run)")
+    
+    return agg_df
 
 
 def load_all_details_as_dataframe(results_dir: Path) -> pd.DataFrame:
@@ -729,6 +848,218 @@ def generate_doc_length_impact(df: pd.DataFrame, output_path: Path):
 
 
 # =============================================================================
+# Token Usage Analysis Charts
+# =============================================================================
+
+def generate_token_usage_by_methodology(df: pd.DataFrame, output_path: Path):
+    """
+    Generate bar chart showing average input tokens by methodology.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter to experiments with token data
+    df_tokens = df[df["avg_tokens_input"] > 0].copy()
+    
+    if df_tokens.empty:
+        logger.warning("No token usage data available")
+        return
+    
+    # Aggregate by methodology
+    agg = df_tokens.groupby("methodology").agg({
+        "avg_tokens_input": ["mean", "std"],
+        "avg_tokens_output": ["mean", "std"],
+        "avg_tokens_total": ["mean", "std"],
+    }).reset_index()
+    agg.columns = ["methodology", "input_mean", "input_std", "output_mean", "output_std", "total_mean", "total_std"]
+    
+    # Sort by total tokens
+    agg = agg.sort_values("total_mean", ascending=True)
+    
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    x = np.arange(len(agg))
+    width = 0.35
+    
+    # Input tokens
+    bars1 = ax.barh(x - width/2, agg["input_mean"], width, 
+                    xerr=agg["input_std"].fillna(0), 
+                    label="Input Tokens", color="#3498db", capsize=3)
+    
+    # Output tokens
+    bars2 = ax.barh(x + width/2, agg["output_mean"], width, 
+                    xerr=agg["output_std"].fillna(0), 
+                    label="Output Tokens", color="#e74c3c", capsize=3)
+    
+    ax.set_yticks(x)
+    ax.set_yticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in agg["methodology"]])
+    ax.set_xlabel("Average Tokens per Request")
+    ax.set_title("Token Usage by Methodology", fontsize=14, fontweight='bold')
+    ax.legend(loc='lower right', frameon=True)
+    ax.grid(axis='x', alpha=0.3)
+    
+    # Add total values as text
+    for i, (_, row) in enumerate(agg.iterrows()):
+        total = row["input_mean"] + row["output_mean"]
+        ax.text(total + 50, i, f'{total:.0f}', va='center', fontsize=9, color='gray')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_token_usage_scaling(df: pd.DataFrame, output_path: Path):
+    """
+    Generate line chart showing how input tokens scale with number of tools.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter to experiments with token data
+    df_tokens = df[df["avg_tokens_input"] > 0].copy()
+    
+    if df_tokens.empty:
+        logger.warning("No token usage data available")
+        return
+    
+    fig, ax = plt.subplots(figsize=(12, 7))
+    
+    # Group by methodology and num_tools
+    for methodology in df_tokens["methodology"].unique():
+        meth_data = df_tokens[df_tokens["methodology"] == methodology]
+        
+        # Aggregate by num_tools
+        agg = meth_data.groupby("num_tools").agg({
+            "avg_tokens_input": "mean"
+        }).reset_index()
+        
+        if len(agg) < 2:
+            continue
+        
+        agg = agg.sort_values("num_tools")
+        
+        color = METHODOLOGY_COLORS.get(methodology, "#666666")
+        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
+        
+        ax.plot(agg["num_tools"], agg["avg_tokens_input"], 
+                marker='o', linewidth=2, markersize=8,
+                color=color, label=label)
+    
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Average Input Tokens")
+    ax.set_title("Input Token Usage Scaling by Methodology", fontsize=14, fontweight='bold')
+    ax.legend(loc='upper left', frameon=True)
+    ax.grid(True, alpha=0.3)
+    
+    # Log scale for x-axis if range is large
+    if df_tokens["num_tools"].max() / df_tokens["num_tools"].min() > 10:
+        ax.set_xscale('log')
+        ax.xaxis.set_major_formatter(plt.ScalarFormatter())
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_token_efficiency_scatter(df: pd.DataFrame, output_path: Path):
+    """
+    Generate scatter plot of accuracy vs. input tokens (token efficiency).
+    Shows which methodologies achieve better accuracy with fewer tokens.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter to experiments with token data
+    df_tokens = df[df["avg_tokens_input"] > 0].copy()
+    
+    if df_tokens.empty:
+        logger.warning("No token usage data available")
+        return
+    
+    fig, ax = plt.subplots(figsize=(10, 7))
+    
+    for methodology in df_tokens["methodology"].unique():
+        meth_data = df_tokens[df_tokens["methodology"] == methodology]
+        
+        color = METHODOLOGY_COLORS.get(methodology, "#666666")
+        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
+        
+        # Size by num_tools
+        sizes = (meth_data["num_tools"] / meth_data["num_tools"].max() * 200 + 50).values
+        
+        ax.scatter(meth_data["avg_tokens_input"], meth_data["accuracy"] * 100,
+                   s=sizes, alpha=0.7, color=color, label=label, edgecolors='white')
+    
+    ax.set_xlabel("Average Input Tokens")
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_title("Token Efficiency: Accuracy vs. Input Token Cost\n(point size = num_tools)", 
+                 fontsize=14, fontweight='bold')
+    ax.legend(loc='lower right', frameon=True)
+    ax.grid(True, alpha=0.3)
+    ax.set_ylim(0, 105)
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_token_heatmap(df: pd.DataFrame, output_path: Path):
+    """
+    Generate heatmap of average input tokens by methodology and num_tools.
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    setup_matplotlib()
+    
+    # Filter to experiments with token data
+    df_tokens = df[df["avg_tokens_input"] > 0].copy()
+    
+    if df_tokens.empty:
+        logger.warning("No token usage data available")
+        return
+    
+    # Pivot for heatmap
+    pivot = df_tokens.pivot_table(
+        values="avg_tokens_input",
+        index="methodology",
+        columns="num_tools",
+        aggfunc="mean"
+    )
+    
+    # Sort index by METHODOLOGY_DISPLAY_NAMES order
+    method_order = [m for m in METHODOLOGY_COLORS.keys() if m in pivot.index]
+    pivot = pivot.reindex(method_order)
+    
+    # Sort columns numerically
+    pivot = pivot.reindex(columns=sorted(pivot.columns))
+    
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    sns.heatmap(
+        pivot, 
+        annot=True, 
+        fmt=".0f", 
+        cmap="YlOrRd",
+        ax=ax,
+        cbar_kws={"label": "Avg Input Tokens"},
+        linewidths=0.5,
+    )
+    
+    ax.set_yticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in pivot.index], rotation=0)
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Methodology")
+    ax.set_title("Input Token Usage Heatmap: Methodology × Tool Count", fontsize=14, fontweight='bold')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+# =============================================================================
 # Methodology-Specific Analysis Charts
 # =============================================================================
 
@@ -1116,8 +1447,43 @@ def generate_html_report(
     best_accuracy = df.loc[df["accuracy"].idxmax()]
     best_latency = df.loc[df["avg_latency_ms"].idxmin()]
     
-    # Methodology rankings
-    meth_rankings = df.groupby("methodology")["accuracy"].mean().sort_values(ascending=False)
+    # Token usage stats
+    df_with_tokens = df[df["avg_tokens_input"] > 0]
+    has_token_data = len(df_with_tokens) > 0
+    if has_token_data:
+        avg_tokens_input = df_with_tokens["avg_tokens_input"].mean()
+        avg_tokens_output = df_with_tokens["avg_tokens_output"].mean()
+        most_efficient = df_with_tokens.loc[df_with_tokens["avg_tokens_input"].idxmin()]
+    
+    # Methodology rankings - treating missing experiments as 0% accuracy
+    # Get all unique tool counts tested across all methodologies
+    all_tool_counts = sorted(df["num_tools"].unique())
+    all_methodologies = df["methodology"].unique()
+    
+    # Create a complete grid of methodology × tool count, filling missing with 0
+    meth_rankings_data = {}
+    missing_experiments = []
+    
+    for meth in all_methodologies:
+        meth_df = df[df["methodology"] == meth]
+        meth_tool_counts = set(meth_df["num_tools"].unique())
+        
+        # Calculate accuracy including 0 for missing tool counts
+        total_accuracy = 0.0
+        for tc in all_tool_counts:
+            if tc in meth_tool_counts:
+                # Get accuracy for this methodology-tool count combination
+                acc = meth_df[meth_df["num_tools"] == tc]["accuracy"].mean()
+                total_accuracy += acc
+            else:
+                # Missing experiment counts as 0%
+                missing_experiments.append((meth, tc))
+        
+        # Average across all tool counts (including missing as 0)
+        meth_rankings_data[meth] = total_accuracy / len(all_tool_counts)
+    
+    meth_rankings = pd.Series(meth_rankings_data).sort_values(ascending=False)
+    has_missing_experiments = len(missing_experiments) > 0
     
     html = f"""<!DOCTYPE html>
 <html>
@@ -1179,7 +1545,34 @@ def generate_html_report(
                 <div style="font-size: 12px; color: #666;">{best_latency['experiment_name']}</div>
             </div>
         </div>
-        
+"""
+    
+    # Add token usage stats if available
+    if has_token_data:
+        html += f"""
+        <h2>🔤 Token Usage Summary</h2>
+        <div class="card-grid">
+            <div class="stat-card">
+                <h3>Experiments with Token Data</h3>
+                <div class="value">{len(df_with_tokens)}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Avg Input Tokens</h3>
+                <div class="value">{avg_tokens_input:,.0f}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Avg Output Tokens</h3>
+                <div class="value">{avg_tokens_output:,.0f}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Most Token-Efficient</h3>
+                <div class="value">{most_efficient['avg_tokens_input']:,.0f}</div>
+                <div style="font-size: 12px; color: #666;">{most_efficient['experiment_name']}</div>
+            </div>
+        </div>
+"""
+    
+    html += """
         <h2>🏆 Methodology Rankings (by Average Accuracy)</h2>
         <div class="ranking">
 """
@@ -1191,7 +1584,34 @@ def generate_html_report(
     
     html += """
         </div>
+"""
+    
+    # Add info note about missing experiments if any
+    if has_missing_experiments:
+        missing_by_meth = {}
+        for meth, tc in missing_experiments:
+            if meth not in missing_by_meth:
+                missing_by_meth[meth] = []
+            missing_by_meth[meth].append(tc)
         
+        html += """
+        <div class="card" style="border-left-color: #f39c12; background: #fef9e7;">
+            <p><strong>ℹ️ Note:</strong> Rankings are calculated treating missing experiments as 0% accuracy. 
+            This penalizes methodologies that could not be tested at certain tool scales (e.g., due to token limits).</p>
+            <p><strong>Missing experiments:</strong></p>
+            <ul>
+"""
+        for meth, tool_counts in missing_by_meth.items():
+            display_name = METHODOLOGY_DISPLAY_NAMES.get(meth, meth)
+            tc_str = ", ".join(str(tc) for tc in sorted(tool_counts))
+            html += f"<li>{display_name}: {tc_str} tools</li>\n"
+        
+        html += """
+            </ul>
+        </div>
+"""
+    
+    html += """
         <h2>📈 Summary Statistics</h2>
 """
     
@@ -1216,6 +1636,10 @@ def generate_html_report(
         "11_hybrid_category_analysis.png": "Hybrid methodology: Effect of top-K categories on accuracy.",
         "12_category_accuracy.png": "Per-category accuracy comparison across methodologies.",
         # "13_radar_comparison.png": "Multi-dimensional comparison of methodology performance.",
+        "14_token_usage_methodology.png": "Average input and output tokens per request by methodology.",
+        "15_token_usage_scaling.png": "How input token usage scales with the number of tools for each methodology.",
+        "16_token_efficiency.png": "Token efficiency: accuracy achieved relative to input token cost.",
+        "17_token_heatmap.png": "Input token usage heatmap by methodology and tool count.",
     }
     
     for fig_name, description in figure_descriptions.items():
@@ -1290,10 +1714,19 @@ def generate_report(
         "--output-dir", "-o",
         help="Output directory for report and figures"
     ),
+    aggregate_runs: bool = typer.Option(
+        True,
+        "--aggregate/--no-aggregate",
+        help="Aggregate results across multiple runs (different seeds/models)"
+    ),
     verbose: bool = typer.Option(False, "--verbose", "-v")
 ):
     """
     Generate comprehensive analysis report with all visualizations.
+    
+    When --aggregate is enabled (default), results from multiple runs of the same
+    experiment (with different seeds/models) are aggregated together, showing
+    mean values and standard deviations.
     """
     logger.remove()
     logger.add(sys.stderr, level="DEBUG" if verbose else "INFO")
@@ -1305,7 +1738,16 @@ def generate_report(
         logger.error("No experiments found")
         raise typer.Exit(1)
     
-    logger.info(f"Loaded {len(df)} experiments")
+    logger.info(f"Loaded {len(df)} experiment results")
+    
+    # Aggregate across runs if enabled
+    if aggregate_runs:
+        # Check if there's multi-run data
+        has_runs = "run_name" in df.columns and df["run_name"].notna().any()
+        if has_runs:
+            logger.info("Aggregating results across multiple runs...")
+            df = aggregate_across_runs(df)
+            logger.info(f"Aggregated to {len(df)} unique experiments")
     
     # Load details for detailed analysis
     details_df = load_all_details_as_dataframe(results_dir)
@@ -1334,6 +1776,12 @@ def generate_report(
     generate_hybrid_category_analysis(df, figures_dir / "11_hybrid_category_analysis.png")
     generate_category_accuracy_comparison(df, figures_dir / "12_category_accuracy.png")
     generate_radar_chart(df, figures_dir / "13_radar_comparison.png")
+    
+    # Token usage analysis charts
+    generate_token_usage_by_methodology(df, figures_dir / "14_token_usage_methodology.png")
+    generate_token_usage_scaling(df, figures_dir / "15_token_usage_scaling.png")
+    generate_token_efficiency_scatter(df, figures_dir / "16_token_efficiency.png")
+    generate_token_heatmap(df, figures_dir / "17_token_heatmap.png")
     
     # Generate HTML report
     generate_html_report(df, details_df, output_dir / "analysis_report.html", figures_dir)

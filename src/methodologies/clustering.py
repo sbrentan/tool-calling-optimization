@@ -330,6 +330,10 @@ class ClusteringMethodology(StepBasedMethodology):
         backtrack_count = 0
         total_latency = 0.0
         
+        # Token tracking across all steps
+        total_tokens_input = 0
+        total_tokens_output = 0
+        
         # Initialize state
         state = {
             "phase": "category_selection",
@@ -365,6 +369,12 @@ class ClusteringMethodology(StepBasedMethodology):
             
             step_latency = (time.time() - start_time) * 1000
             total_latency += call_result.latency_ms or step_latency
+            
+            # Aggregate token usage across all steps
+            if call_result.tokens_input is not None:
+                total_tokens_input += call_result.tokens_input
+            if call_result.tokens_output is not None:
+                total_tokens_output += call_result.tokens_output
             
             logger.debug(f"[Clustering] API call completed in {call_result.latency_ms:.1f}ms")
             logger.debug(f"[Clustering] Success: {call_result.success}")
@@ -408,6 +418,10 @@ class ClusteringMethodology(StepBasedMethodology):
                     backtrack_count=backtrack_count,
                     declined_tool_call=False,
                     final_category=state.get("current_category"),
+                    # Token usage aggregated across all steps
+                    tokens_input=total_tokens_input if total_tokens_input > 0 else None,
+                    tokens_output=total_tokens_output if total_tokens_output > 0 else None,
+                    tokens_total=(total_tokens_input + total_tokens_output) if (total_tokens_input > 0 or total_tokens_output > 0) else None,
                 )
             
             # Process the selection
@@ -457,6 +471,10 @@ class ClusteringMethodology(StepBasedMethodology):
                         backtrack_count=backtrack_count,
                         declined_tool_call=True,
                         final_category=state.get("current_category"),
+                        # Token usage aggregated across all steps
+                        tokens_input=total_tokens_input if total_tokens_input > 0 else None,
+                        tokens_output=total_tokens_output if total_tokens_output > 0 else None,
+                        tokens_total=(total_tokens_input + total_tokens_output) if (total_tokens_input > 0 or total_tokens_output > 0) else None,
                     )
                 elif step_type == StepType.CLARIFICATION:
                     # Extract clarification details from args
@@ -487,6 +505,10 @@ class ClusteringMethodology(StepBasedMethodology):
                         clarification_requested=True,
                         clarification_question=clarification_question,
                         candidate_tools=candidate_tools,
+                        # Token usage aggregated across all steps
+                        tokens_input=total_tokens_input if total_tokens_input > 0 else None,
+                        tokens_output=total_tokens_output if total_tokens_output > 0 else None,
+                        tokens_total=(total_tokens_input + total_tokens_output) if (total_tokens_input > 0 or total_tokens_output > 0) else None,
                     )
                 else:
                     # Tool selected
@@ -512,6 +534,10 @@ class ClusteringMethodology(StepBasedMethodology):
                         backtrack_count=backtrack_count,
                         declined_tool_call=False,
                         final_category=state.get("current_category"),
+                        # Token usage aggregated across all steps
+                        tokens_input=total_tokens_input if total_tokens_input > 0 else None,
+                        tokens_output=total_tokens_output if total_tokens_output > 0 else None,
+                        tokens_total=(total_tokens_input + total_tokens_output) if (total_tokens_input > 0 or total_tokens_output > 0) else None,
                     )
             
             # Continue with next options
@@ -543,4 +569,8 @@ class ClusteringMethodology(StepBasedMethodology):
             backtrack_count=backtrack_count,
             declined_tool_call=False,
             final_category=state.get("current_category"),
+            # Token usage aggregated across all steps
+            tokens_input=total_tokens_input if total_tokens_input > 0 else None,
+            tokens_output=total_tokens_output if total_tokens_output > 0 else None,
+            tokens_total=(total_tokens_input + total_tokens_output) if (total_tokens_input > 0 or total_tokens_output > 0) else None,
         )

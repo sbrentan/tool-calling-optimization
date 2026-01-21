@@ -82,6 +82,20 @@ class OpenAIClient(BaseLLMClient):
         self.model = model
         logger.info(f"Switched to model: {model}")
     
+    def set_api_key(self, api_key: str) -> None:
+        """Update the API key and reinitialize the client."""
+        self.api_key = api_key
+        try:
+            from openai import OpenAI
+            client_kwargs = {"api_key": self.api_key}
+            if self.base_url:
+                client_kwargs["base_url"] = self.base_url
+            self.client = OpenAI(**client_kwargs)
+            logger.debug(f"Updated OpenAI client with new API key")
+        except Exception as e:
+            logger.error(f"Failed to update OpenAI client with new API key: {e}")
+            raise
+    
     def _convert_tools_to_openai_format(self, tools: list) -> list[dict]:
         """
         Convert Tool objects to OpenAI function format.
@@ -163,6 +177,15 @@ class OpenAIClient(BaseLLMClient):
                 
                 latency_ms = (time.time() - start_time) * 1000
                 
+                # Extract token usage from response
+                tokens_input = None
+                tokens_output = None
+                tokens_total = None
+                if hasattr(response, 'usage') and response.usage:
+                    tokens_input = getattr(response.usage, 'prompt_tokens', None)
+                    tokens_output = getattr(response.usage, 'completion_tokens', None)
+                    tokens_total = getattr(response.usage, 'total_tokens', None)
+                
                 # Extract function calls
                 message = response.choices[0].message
                 
@@ -187,7 +210,10 @@ class OpenAIClient(BaseLLMClient):
                         latency_ms=latency_ms,
                         raw_response=response,
                         model=self.model,
-                        provider=self.PROVIDER_NAME
+                        provider=self.PROVIDER_NAME,
+                        tokens_input=tokens_input,
+                        tokens_output=tokens_output,
+                        tokens_total=tokens_total
                     )
                 else:
                     # Model didn't call any tool
@@ -198,7 +224,10 @@ class OpenAIClient(BaseLLMClient):
                         raw_response=response,
                         model=self.model,
                         provider=self.PROVIDER_NAME,
-                        error="Model did not call any tool"
+                        error="Model did not call any tool",
+                        tokens_input=tokens_input,
+                        tokens_output=tokens_output,
+                        tokens_total=tokens_total
                     )
                     
             except UserAbortError:
@@ -209,9 +238,14 @@ class OpenAIClient(BaseLLMClient):
                 latency_ms = (time.time() - start_time) * 1000
                 logger.error(f"OpenAI API call failed: {e}")
                 
-                # Check if this is a rate limit error and prompt user
-                if handle_api_error_with_retry(e, context="calling OpenAI API"):
-                    # User chose to retry
+                # Check if this is a rate limit error and use key rotation
+                if handle_api_error_with_retry(
+                    e, 
+                    context="calling OpenAI API",
+                    provider=self.PROVIDER_NAME,
+                    on_key_rotated=self.set_api_key
+                ):
+                    # Retry with potentially rotated key
                     logger.info("Retrying OpenAI API call...")
                     continue
                 

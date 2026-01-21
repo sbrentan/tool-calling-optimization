@@ -190,6 +190,10 @@ class MCPMethodology(BaseMethodology):
             clarification_requested=clarification_requested,
             clarification_question=clarification_question,
             candidate_tools=candidate_tools,
+            # Token usage from the API call
+            tokens_input=call_result.tokens_input,
+            tokens_output=call_result.tokens_output,
+            tokens_total=call_result.tokens_total,
         )
         
         logger.debug(f"[MCP] Final result - tool: {result.called_tool}, success: {result.success}, clarification: {clarification_requested}")

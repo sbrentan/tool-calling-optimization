@@ -77,6 +77,11 @@ class MethodologyResult:
     clarification_question: Optional[str] = None  # The clarification question asked
     candidate_tools: list[str] = field(default_factory=list)  # Tools LLM considers ambiguous
     
+    # Token usage tracking (Phase 3)
+    tokens_input: Optional[int] = None   # Total input/prompt tokens used
+    tokens_output: Optional[int] = None  # Total output/completion tokens used
+    tokens_total: Optional[int] = None   # Total tokens (input + output)
+    
     def to_call_result(self) -> CallResult:
         """Convert to standard CallResult for compatibility."""
         return CallResult(
@@ -89,6 +94,9 @@ class MethodologyResult:
             raw_response=self.raw_response,
             model=self.model,
             provider=self.provider,
+            tokens_input=self.tokens_input,
+            tokens_output=self.tokens_output,
+            tokens_total=self.tokens_total,
         )
     
     def to_dict(self) -> dict[str, Any]:
@@ -112,6 +120,10 @@ class MethodologyResult:
             "clarification_requested": self.clarification_requested,
             "clarification_question": self.clarification_question,
             "candidate_tools": self.candidate_tools,
+            # Token usage
+            "tokens_input": self.tokens_input,
+            "tokens_output": self.tokens_output,
+            "tokens_total": self.tokens_total,
         }
 
 

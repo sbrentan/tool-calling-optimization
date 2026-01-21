@@ -74,6 +74,17 @@ class CerebrasClient(BaseLLMClient):
         self.model = model
         logger.info(f"Switched to model: {model}")
     
+    def set_api_key(self, api_key: str) -> None:
+        """Update the API key and reinitialize the client."""
+        self.api_key = api_key
+        try:
+            from cerebras.cloud.sdk import Cerebras
+            self.client = Cerebras(api_key=self.api_key)
+            logger.debug(f"Updated Cerebras client with new API key")
+        except Exception as e:
+            logger.error(f"Failed to update Cerebras client with new API key: {e}")
+            raise
+    
     def _convert_tools_to_cerebras_format(self, tools: list) -> list[dict]:
         """
         Convert Tool objects to Cerebras/OpenAI function format.
@@ -157,9 +168,22 @@ class CerebrasClient(BaseLLMClient):
                 )
                 
                 latency_ms = (time.time() - start_time) * 1000
+
+                logger.debug(f"Cerebras response: {response}")
                 
                 # Extract function calls
                 message = response.choices[0].message
+
+                logger.debug(f"Cerebras response message: {message}")
+                
+                # Extract token usage from response
+                tokens_input = None
+                tokens_output = None
+                tokens_total = None
+                if hasattr(response, 'usage') and response.usage:
+                    tokens_input = getattr(response.usage, 'prompt_tokens', None)
+                    tokens_output = getattr(response.usage, 'completion_tokens', None)
+                    tokens_total = getattr(response.usage, 'total_tokens', None)
                 
                 if message.tool_calls:
                     all_calls = []
@@ -182,7 +206,10 @@ class CerebrasClient(BaseLLMClient):
                         latency_ms=latency_ms,
                         raw_response=response,
                         model=self.model,
-                        provider=self.PROVIDER_NAME
+                        provider=self.PROVIDER_NAME,
+                        tokens_input=tokens_input,
+                        tokens_output=tokens_output,
+                        tokens_total=tokens_total
                     )
                 else:
                     # Model didn't call any tool
@@ -193,7 +220,10 @@ class CerebrasClient(BaseLLMClient):
                         raw_response=response,
                         model=self.model,
                         provider=self.PROVIDER_NAME,
-                        error="Model did not call any tool"
+                        error="Model did not call any tool",
+                        tokens_input=tokens_input,
+                        tokens_output=tokens_output,
+                        tokens_total=tokens_total
                     )
                     
             except UserAbortError:
@@ -204,9 +234,14 @@ class CerebrasClient(BaseLLMClient):
                 latency_ms = (time.time() - start_time) * 1000
                 logger.error(f"Cerebras API call failed: {e}")
                 
-                # Check if this is a rate limit error and prompt user
-                if handle_api_error_with_retry(e, context="calling Cerebras API"):
-                    # User chose to retry
+                # Check if this is a rate limit error and use key rotation
+                if handle_api_error_with_retry(
+                    e, 
+                    context="calling Cerebras API",
+                    provider=self.PROVIDER_NAME,
+                    on_key_rotated=self.set_api_key
+                ):
+                    # Retry with potentially rotated key
                     logger.info("Retrying Cerebras API call...")
                     continue
                 

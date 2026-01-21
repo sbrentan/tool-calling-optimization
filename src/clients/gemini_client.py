@@ -79,6 +79,17 @@ class GeminiClient(BaseLLMClient):
         self.model = model
         logger.info(f"Switched to model: {model}")
     
+    def set_api_key(self, api_key: str) -> None:
+        """Update the API key and reinitialize the client."""
+        self.api_key = api_key
+        try:
+            from google import genai
+            self.client = genai.Client(api_key=self.api_key)
+            logger.debug(f"Updated Gemini client with new API key")
+        except Exception as e:
+            logger.error(f"Failed to update Gemini client with new API key: {e}")
+            raise
+    
     def call_with_tools(
         self,
         prompt: str,
@@ -124,6 +135,15 @@ class GeminiClient(BaseLLMClient):
                 
                 latency_ms = (time.time() - start_time) * 1000
                 
+                # Extract token usage from response
+                tokens_input = None
+                tokens_output = None
+                tokens_total = None
+                if hasattr(response, 'usage_metadata') and response.usage_metadata:
+                    tokens_input = getattr(response.usage_metadata, 'prompt_token_count', None)
+                    tokens_output = getattr(response.usage_metadata, 'candidates_token_count', None)
+                    tokens_total = getattr(response.usage_metadata, 'total_token_count', None)
+                
                 # Extract function call
                 function_call = GeminiAdapter.extract_function_call(response)
                 all_calls = GeminiAdapter.extract_all_function_calls(response)
@@ -137,7 +157,10 @@ class GeminiClient(BaseLLMClient):
                         latency_ms=latency_ms,
                         raw_response=response,
                         model=self.model,
-                        provider=self.PROVIDER_NAME
+                        provider=self.PROVIDER_NAME,
+                        tokens_input=tokens_input,
+                        tokens_output=tokens_output,
+                        tokens_total=tokens_total
                     )
                 else:
                     # Model didn't call any tool
@@ -148,7 +171,10 @@ class GeminiClient(BaseLLMClient):
                         raw_response=response,
                         model=self.model,
                         provider=self.PROVIDER_NAME,
-                        error="Model did not call any tool"
+                        error="Model did not call any tool",
+                        tokens_input=tokens_input,
+                        tokens_output=tokens_output,
+                        tokens_total=tokens_total
                     )
                     
             except UserAbortError:
@@ -159,9 +185,14 @@ class GeminiClient(BaseLLMClient):
                 latency_ms = (time.time() - start_time) * 1000
                 logger.error(f"Gemini API call failed: {e}")
                 
-                # Check if this is a rate limit error and prompt user
-                if handle_api_error_with_retry(e, context="calling Gemini API"):
-                    # User chose to retry
+                # Check if this is a rate limit error and use key rotation
+                if handle_api_error_with_retry(
+                    e, 
+                    context="calling Gemini API",
+                    provider=self.PROVIDER_NAME,
+                    on_key_rotated=self.set_api_key
+                ):
+                    # Retry with potentially rotated key
                     logger.info("Retrying Gemini API call...")
                     continue
                 

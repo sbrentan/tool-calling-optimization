@@ -349,6 +349,10 @@ class HybridMethodology(BaseMethodology):
                 backtrack_count=0,
                 declined_tool_call=False,
                 final_category=None,
+                # No tokens used since no LLM call was made
+                tokens_input=None,
+                tokens_output=None,
+                tokens_total=None,
             )
         
         # Optionally add decline pseudo-tool
@@ -471,6 +475,10 @@ class HybridMethodology(BaseMethodology):
             clarification_requested=clarification_requested,
             clarification_question=clarification_question,
             candidate_tools=candidate_tools,
+            # Token usage from the LLM call
+            tokens_input=call_result.tokens_input,
+            tokens_output=call_result.tokens_output,
+            tokens_total=call_result.tokens_total,
         )
         
         # Store hybrid-specific metadata

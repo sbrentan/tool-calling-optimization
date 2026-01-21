@@ -616,6 +616,10 @@ class ToolCallEvaluator:
             retrieval_recall=retrieval_recall,
             retrieved_tools=retrieved_tools,
             retrieval_rank=retrieval_rank,
+            # Phase 3: Token tracking
+            tokens_input=call_result.tokens_input,
+            tokens_output=call_result.tokens_output,
+            tokens_total=call_result.tokens_total,
             # Phase 4: Clarification fields
             clarification_requested=clarification_requested,
             clarification_question=clarification_question,
@@ -710,6 +714,10 @@ class ToolCallEvaluator:
             completion_rate=completion_rate,
             sequence_correct=sequence_correct,
             extra_calls=extra_calls,
+            # Phase 3: Token tracking
+            tokens_input=call_result.tokens_input,
+            tokens_output=call_result.tokens_output,
+            tokens_total=call_result.tokens_total,
         )
         
         self.results.append(result)
@@ -824,6 +832,10 @@ class ToolCallEvaluator:
             clarification_question=clarification_question,
             candidate_tools=candidate_tools,
             expected_candidate_tools=list(expected_candidates),
+            # Phase 3: Token tracking
+            tokens_input=call_result.tokens_input,
+            tokens_output=call_result.tokens_output,
+            tokens_total=call_result.tokens_total,
         )
         
         self.results.append(result)

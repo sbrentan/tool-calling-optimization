@@ -247,6 +247,10 @@ class AdaptiveRAGMethodology(RAGMethodology):
                 backtrack_count=0,
                 declined_tool_call=False,
                 final_category=None,
+                # No tokens used since no LLM call was made
+                tokens_input=None,
+                tokens_output=None,
+                tokens_total=None,
             )
         
         # Optionally add decline pseudo-tool
@@ -326,6 +330,10 @@ class AdaptiveRAGMethodology(RAGMethodology):
             backtrack_count=0,
             declined_tool_call=declined,
             final_category=final_category,
+            # Token usage from the LLM call
+            tokens_input=call_result.tokens_input,
+            tokens_output=call_result.tokens_output,
+            tokens_total=call_result.tokens_total,
         )
         
         # Store adaptive RAG-specific metadata
