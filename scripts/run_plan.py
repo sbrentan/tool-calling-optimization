@@ -57,6 +57,7 @@ load_dotenv()
 from src.experiments.config import ExperimentConfig
 from src.experiments.plan_config import PlanConfig, RunConfig
 from src.clients.rate_limit_handler import UserAbortError
+from src.clients.api_key_manager import reset_all_rotations
 
 app = typer.Typer(help="Batch runner for experiment plan configurations")
 console = Console()
@@ -455,6 +456,8 @@ def run(
             
             # Run experiment
             try:
+                # Reset API key rotation state before each experiment to avoid desync
+                reset_all_rotations()
                 result = run_single_experiment(config_path, run_config)
                 results.append(result)
             except UserAbortError:

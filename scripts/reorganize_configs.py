@@ -131,13 +131,14 @@ def check(
 def reorganize(
     dry_run: bool = typer.Option(False, "--dry-run", "-n", help="Show what would be done without making changes"),
     skip_confirmation: bool = typer.Option(False, "--yes", "-y", help="Skip confirmation prompts"),
+    move_to_other: bool = typer.Option(False, "--move-to-other/--no-move-to-other", help="Move incomplete configs to other_configs/")
 ):
     """
     Reorganize configs by moving incomplete experiments to other_configs/
     and merging plan_2/ configs into plan/.
     """
     plan_path = project_root / "experiments" / "plan"
-    plan2_path = project_root / "experiments" / "plan_2"
+    plan2_path = project_root / "experiments" / "plan_3"
     other_path = project_root / "experiments" / "other_configs"
     results_path = project_root / "experiments" / "results" / "plan"
     
@@ -161,7 +162,7 @@ def reorganize(
         console.print("\n[yellow]DRY RUN MODE - No changes will be made[/yellow]\n")
     
     # Show incomplete experiments to be moved
-    if incomplete:
+    if move_to_other and incomplete:
         console.print("\n[yellow]Incomplete experiments to move to other_configs/:[/yellow]")
         for config in incomplete:
             console.print(f"  {config.name}")
@@ -182,7 +183,7 @@ def reorganize(
     
     # Confirmation
     if not skip_confirmation:
-        if incomplete:
+        if move_to_other and incomplete:
             proceed = typer.confirm(
                 f"\nMove {len(incomplete)} incomplete configs to other_configs/?",
                 default=True
@@ -201,7 +202,7 @@ def reorganize(
                 plan2_path = None
     
     # Move incomplete configs
-    if incomplete:
+    if move_to_other and incomplete:
         other_path.mkdir(parents=True, exist_ok=True)
         console.print(f"\n[yellow]Moving {len(incomplete)} incomplete configs to {other_path}[/yellow]")
         

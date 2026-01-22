@@ -105,7 +105,8 @@ class ApiKeyPool:
         allowing all keys to be tried again.
         """
         self._exhausted_in_rotation.clear()
-        logger.info(f"Reset rotation cycle for {self.provider} - all {len(self.keys)} keys available again")
+        self.current_index = 0  # Also reset to first key
+        logger.info(f"Reset rotation cycle for {self.provider} - all {len(self.keys)} keys available again, starting from key 1")
     
     def key_succeeded(self) -> None:
         """
@@ -268,6 +269,16 @@ class ApiKeyManager:
         if pool:
             pool.reset_rotation()
     
+    def reset_all_rotations(self) -> None:
+        """
+        Reset rotation cycles for all providers.
+        
+        Should be called between experiment configs to ensure clean state.
+        """
+        for provider, pool in self._pools.items():
+            pool.reset_rotation()
+        logger.info("Reset rotation cycles for all providers")
+    
     def mark_key_succeeded(self, provider: str) -> None:
         """Mark that the current key for a provider succeeded."""
         pool = self._pools.get(provider)
@@ -310,6 +321,11 @@ def rotate_key(provider: str) -> bool:
 def reset_rotation(provider: str) -> None:
     """Reset the rotation cycle for a provider."""
     get_api_key_manager().reset_rotation(provider)
+
+
+def reset_all_rotations() -> None:
+    """Reset rotation cycles for all providers."""
+    get_api_key_manager().reset_all_rotations()
 
 
 def mark_key_succeeded(provider: str) -> None:

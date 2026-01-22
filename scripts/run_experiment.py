@@ -140,6 +140,14 @@ def run_experiment(config: ExperimentConfig) -> dict:
         include_no_tool=include_no_tool,
         prompt_type=prompt_type
     )
+    
+    # Filter test cases by test_categories if specified
+    test_categories = getattr(config, 'test_categories', None)
+    if test_categories:
+        logger.info(f"Filtering tests to categories: {test_categories}")
+        test_cases = [tc for tc in test_cases if tc.category in test_categories]
+        logger.info(f"Filtered to {len(test_cases)} test cases")
+    
     if config.num_test_samples is not None:
         test_cases = test_cases[:config.num_test_samples]
     

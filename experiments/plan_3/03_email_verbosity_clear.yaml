@@ -1,0 +1,27 @@
+# Email category verbosity analysis - clear description with clear prompts
+# Tests how clearer descriptions affect email tool selection accuracy
+
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+name: email_verbosity_clear_200tools
+
+# Tool configuration
+num_tools: 200
+doc_length: medium
+prompt_type: clear
+categories:
+  - email_operations  # Ensure email tools are included
+num_similar_tools: 0
+include_no_tool: false
+
+# Test configuration - limit to email category only
+test_categories:
+  - email_operations
+
+# Methodology configuration
+methodology: rag
+rag_config:
+  top_k: 10
+  similarity_threshold: 0.0

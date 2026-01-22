@@ -266,6 +266,7 @@ def load_all_experiments_as_dataframe(results_dir: Path) -> pd.DataFrame:
         
         # Store category_accuracy dict as JSON string
         row["category_accuracy_json"] = json.dumps(summary.get("category_accuracy", {}))
+        # print(len(row["category_accuracy_json"]))  This prints a lot of 200+ length strings
         
         rows.append(row)
     
@@ -362,6 +363,34 @@ def aggregate_across_runs(df: pd.DataFrame, treat_single_as_run: bool = True) ->
                     row[f"{col}_mean"] = values.mean()
                     row[f"{col}_std"] = values.std() if len(values) > 1 else 0.0
                     row[col] = values.mean()  # Keep mean as primary value
+        
+        # Aggregate category_accuracy_json across runs
+        if "category_accuracy_json" in group.columns:
+            # Parse all category accuracy dicts and average them
+            all_cat_acc = []
+            for cat_json in group["category_accuracy_json"]:
+                try:
+                    cat_acc = json.loads(cat_json) if isinstance(cat_json, str) else {}
+                    if cat_acc:  # Only include non-empty dicts
+                        all_cat_acc.append(cat_acc)
+                except:
+                    continue
+            
+            if all_cat_acc:
+                # Merge and average category accuracies across runs
+                merged_cat_acc = {}
+                all_categories = set()
+                for cat_acc in all_cat_acc:
+                    all_categories.update(cat_acc.keys())
+                
+                for cat in all_categories:
+                    values = [ca.get(cat) for ca in all_cat_acc if cat in ca]
+                    if values:
+                        merged_cat_acc[cat] = sum(values) / len(values)
+                
+                row["category_accuracy_json"] = json.dumps(merged_cat_acc)
+            else:
+                row["category_accuracy_json"] = "{}"
         
         agg_rows.append(row)
     
@@ -493,12 +522,20 @@ def generate_methodology_comparison_bar(df: pd.DataFrame, output_path: Path):
     """
     Generate grouped bar chart comparing methodologies by accuracy.
     Groups experiments by methodology and shows mean accuracy with error bars.
+    Excludes experiments with 0 tests from calculation.
     """
     import matplotlib.pyplot as plt
     setup_matplotlib()
     
+    # Filter out experiments with 0 tests (e.g., category-filtered experiments with no matching tests)
+    df_valid = df[df["total_tests"] > 0] if "total_tests" in df.columns else df
+    
+    if df_valid.empty:
+        logger.warning("No valid experiments to plot for methodology comparison")
+        return
+    
     # Aggregate by methodology
-    agg = df.groupby("methodology").agg({
+    agg = df_valid.groupby("methodology").agg({
         "accuracy": ["mean", "std", "count"],
         "avg_latency_ms": "mean",
     }).reset_index()
@@ -533,6 +570,116 @@ def generate_methodology_comparison_bar(df: pd.DataFrame, output_path: Path):
     ax.axhline(y=100, color='gray', linestyle='--', alpha=0.3)
     
     # Add count annotations
+    for i, (bar, count) in enumerate(zip(bars, agg["count"])):
+        ax.text(bar.get_x() + bar.get_width()/2, 5,
+                f'n={count}', ha='center', va='bottom', fontsize=9, color='white')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_methodology_comparison_bar_comparable(df: pd.DataFrame, output_path: Path, max_tools: int = 200):
+    """
+    Generate bar chart comparing methodologies for experiments ≤max_tools.
+    This allows fair comparison including MCP baseline.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter to experiments with tool count <= max_tools and with actual tests
+    df_comparable = df[(df["num_tools"] <= max_tools)]
+    if "total_tests" in df_comparable.columns:
+        df_comparable = df_comparable[df_comparable["total_tests"] > 0]
+    
+    if df_comparable.empty:
+        logger.warning(f"No valid experiments with num_tools <= {max_tools}")
+        return
+    
+    # Aggregate by methodology
+    agg = df_comparable.groupby("methodology").agg({
+        "accuracy": ["mean", "std", "count"],
+    }).reset_index()
+    agg.columns = ["methodology", "accuracy_mean", "accuracy_std", "count"]
+    agg = agg.sort_values("accuracy_mean", ascending=False)
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    x = np.arange(len(agg))
+    colors = [METHODOLOGY_COLORS.get(m, "#666666") for m in agg["methodology"]]
+    
+    bars = ax.bar(x, agg["accuracy_mean"] * 100, 
+                  yerr=agg["accuracy_std"] * 100, 
+                  capsize=5, color=colors, edgecolor='white', linewidth=1.5)
+    
+    for bar, acc in zip(bars, agg["accuracy_mean"]):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 2,
+                f'{acc*100:.1f}%', ha='center', va='bottom', fontsize=11, fontweight='bold')
+    
+    ax.set_xticks(x)
+    ax.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in agg["methodology"]], rotation=30, ha='right')
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_xlabel("Methodology")
+    ax.set_title(f"Average Accuracy by Methodology (≤{max_tools} tools)", fontsize=14, fontweight='bold')
+    ax.set_ylim(0, 110)
+    ax.axhline(y=100, color='gray', linestyle='--', alpha=0.3)
+    
+    for i, (bar, count) in enumerate(zip(bars, agg["count"])):
+        ax.text(bar.get_x() + bar.get_width()/2, 5,
+                f'n={count}', ha='center', va='bottom', fontsize=9, color='white')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_methodology_comparison_bar_scaled(df: pd.DataFrame, output_path: Path):
+    """
+    Generate bar chart comparing methodologies across all experiments, excluding MCP.
+    MCP cannot scale to high tool counts, so this shows scalable methodologies only.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Exclude MCP and filter to valid experiments
+    df_scaled = df[df["methodology"] != "mcp"]
+    if "total_tests" in df_scaled.columns:
+        df_scaled = df_scaled[df_scaled["total_tests"] > 0]
+    
+    if df_scaled.empty:
+        logger.warning("No valid non-MCP experiments")
+        return
+    
+    # Aggregate by methodology
+    agg = df_scaled.groupby("methodology").agg({
+        "accuracy": ["mean", "std", "count"],
+    }).reset_index()
+    agg.columns = ["methodology", "accuracy_mean", "accuracy_std", "count"]
+    agg = agg.sort_values("accuracy_mean", ascending=False)
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    x = np.arange(len(agg))
+    colors = [METHODOLOGY_COLORS.get(m, "#666666") for m in agg["methodology"]]
+    
+    bars = ax.bar(x, agg["accuracy_mean"] * 100, 
+                  yerr=agg["accuracy_std"] * 100, 
+                  capsize=5, color=colors, edgecolor='white', linewidth=1.5)
+    
+    for bar, acc in zip(bars, agg["accuracy_mean"]):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 2,
+                f'{acc*100:.1f}%', ha='center', va='bottom', fontsize=11, fontweight='bold')
+    
+    ax.set_xticks(x)
+    ax.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in agg["methodology"]], rotation=30, ha='right')
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_xlabel("Methodology")
+    ax.set_title("Average Accuracy by Methodology (All Scales, excl. MCP)", fontsize=14, fontweight='bold')
+    ax.set_ylim(0, 110)
+    ax.axhline(y=100, color='gray', linestyle='--', alpha=0.3)
+    
     for i, (bar, count) in enumerate(zip(bars, agg["count"])):
         ax.text(bar.get_x() + bar.get_width()/2, 5,
                 f'n={count}', ha='center', va='bottom', fontsize=9, color='white')
@@ -584,6 +731,118 @@ def generate_accuracy_heatmap(df: pd.DataFrame, output_path: Path):
     ax.set_xlabel("Number of Tools")
     ax.set_ylabel("Methodology")
     ax.set_title("Accuracy Heatmap: Methodology × Tool Count", fontsize=14, fontweight='bold')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_accuracy_heatmap_comparable(df: pd.DataFrame, output_path: Path, max_tools: int = 200):
+    """
+    Generate heatmap of accuracy for experiments where all methodologies were tested (≤max_tools).
+    This allows fair comparison including MCP baseline.
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    setup_matplotlib()
+    
+    # Filter to experiments with tool count <= max_tools
+    df_comparable = df[df["num_tools"] <= max_tools]
+    
+    if df_comparable.empty:
+        logger.warning(f"No experiments with num_tools <= {max_tools}")
+        return
+    
+    # Pivot for heatmap
+    pivot = df_comparable.pivot_table(
+        values="accuracy",
+        index="methodology",
+        columns="num_tools",
+        aggfunc="mean"
+    )
+    
+    # Sort index by METHODOLOGY_DISPLAY_NAMES order
+    method_order = [m for m in METHODOLOGY_COLORS.keys() if m in pivot.index]
+    pivot = pivot.reindex(method_order)
+    
+    # Sort columns numerically
+    pivot = pivot.reindex(columns=sorted(pivot.columns))
+    
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    sns.heatmap(
+        pivot * 100, 
+        annot=True, 
+        fmt=".0f", 
+        cmap="RdYlGn",
+        vmin=0, 
+        vmax=100,
+        ax=ax,
+        cbar_kws={"label": "Accuracy (%)"},
+        linewidths=0.5,
+    )
+    
+    ax.set_yticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in pivot.index], rotation=0)
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Methodology")
+    ax.set_title(f"Accuracy Heatmap: All Methodologies (≤{max_tools} tools)", fontsize=14, fontweight='bold')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_accuracy_heatmap_scaled(df: pd.DataFrame, output_path: Path, min_tools: int = 200):
+    """
+    Generate heatmap for high tool count experiments, excluding MCP (which can't scale).
+    Shows methodologies that can handle large tool counts.
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    setup_matplotlib()
+    
+    # Filter to experiments with tool count > min_tools and exclude MCP
+    df_scaled = df[(df["num_tools"] > min_tools) & (df["methodology"] != "mcp")]
+    
+    if df_scaled.empty:
+        logger.warning(f"No non-MCP experiments with num_tools > {min_tools}")
+        return
+    
+    # Pivot for heatmap
+    pivot = df_scaled.pivot_table(
+        values="accuracy",
+        index="methodology",
+        columns="num_tools",
+        aggfunc="mean"
+    )
+    
+    # Sort index by METHODOLOGY_DISPLAY_NAMES order (excluding mcp)
+    method_order = [m for m in METHODOLOGY_COLORS.keys() if m in pivot.index and m != "mcp"]
+    pivot = pivot.reindex(method_order)
+    
+    # Sort columns numerically
+    pivot = pivot.reindex(columns=sorted(pivot.columns))
+    
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    sns.heatmap(
+        pivot * 100, 
+        annot=True, 
+        fmt=".0f", 
+        cmap="RdYlGn",
+        vmin=0, 
+        vmax=100,
+        ax=ax,
+        cbar_kws={"label": "Accuracy (%)"},
+        linewidths=0.5,
+    )
+    
+    ax.set_yticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in pivot.index], rotation=0)
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Methodology")
+    ax.set_title(f"Accuracy Heatmap: Scaled Experiments (>{min_tools} tools, excl. MCP)", fontsize=14, fontweight='bold')
     
     plt.tight_layout()
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
@@ -840,6 +1099,382 @@ def generate_doc_length_impact(df: pd.DataFrame, output_path: Path):
     ax.set_title("Impact of Documentation Length on Accuracy", fontsize=14, fontweight='bold')
     ax.legend(title="Doc Length", loc='upper right', frameon=True)
     ax.set_ylim(0, 110)
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_email_verbosity_impact(df: pd.DataFrame, output_path: Path):
+    """
+    Generate chart showing email category accuracy by doc_length for each methodology.
+    Email tools have JSON string parameters that may confuse LLMs with minimal descriptions.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Parse category accuracy from JSON and filter to email
+    email_acc = []
+    for _, row in df.iterrows():
+        try:
+            cat_acc = json.loads(row.get("category_accuracy_json", "{}"))
+            # Look for email category (may be stored as "email" or "email_operations")
+            email_accuracy = cat_acc.get("email", cat_acc.get("email_operations"))
+            if email_accuracy is not None:
+                email_acc.append({
+                    "methodology": row["methodology"],
+                    "doc_length": row.get("doc_length", "medium"),
+                    "accuracy": email_accuracy,
+                    "num_tools": row.get("num_tools", 0),
+                })
+        except:
+            continue
+    
+    if not email_acc:
+        logger.warning("No email category accuracy data available")
+        return
+    
+    email_df = pd.DataFrame(email_acc)
+    
+    # Pivot: methodology x doc_length
+    pivot = email_df.pivot_table(
+        values="accuracy",
+        index="methodology",
+        columns="doc_length",
+        aggfunc="mean"
+    )
+    
+    if pivot.empty or pivot.shape[1] < 2:
+        logger.warning("Not enough doc_length variation for email analysis")
+        return
+    
+    # Reorder columns
+    doc_order = [d for d in DOC_LENGTH_ORDER if d in pivot.columns]
+    pivot = pivot[doc_order]
+    
+    # Sort methodologies by METHODOLOGY_COLORS order
+    method_order = [m for m in METHODOLOGY_COLORS.keys() if m in pivot.index]
+    pivot = pivot.reindex(method_order)
+    
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    x = np.arange(len(pivot.index))
+    width = 0.2
+    colors = ['#e74c3c', '#f39c12', '#2ecc71', '#27ae60']  # Red to green gradient
+    
+    for i, doc_len in enumerate(pivot.columns):
+        offset = (i - len(pivot.columns)/2 + 0.5) * width
+        color = colors[i % len(colors)]
+        bars = ax.bar(x + offset, pivot[doc_len] * 100, width, label=doc_len.capitalize(), color=color)
+        
+        # Add value labels
+        for bar in bars:
+            height = bar.get_height()
+            if not np.isnan(height):
+                ax.text(bar.get_x() + bar.get_width()/2, height + 1,
+                       f'{height:.0f}', ha='center', va='bottom', fontsize=8)
+    
+    ax.set_xticks(x)
+    ax.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in pivot.index], rotation=30, ha='right')
+    ax.set_ylabel("Email Category Accuracy (%)")
+    ax.set_xlabel("Methodology")
+    ax.set_title("Email Category: Impact of Description Verbosity\n(Email tools use JSON string params that may confuse LLMs)", 
+                 fontsize=14, fontweight='bold')
+    ax.legend(title="Doc Length", loc='upper right', frameon=True)
+    ax.set_ylim(0, 110)
+    ax.axhline(y=50, color='gray', linestyle='--', alpha=0.3, label='_nolegend_')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_category_confusion_matrix(df: pd.DataFrame, details_df: pd.DataFrame, output_path: Path):
+    """
+    Generate confusion matrix showing which categories are mistaken for others.
+    Helps identify systematically confused category pairs (e.g., database vs data).
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    setup_matplotlib()
+    
+    if details_df.empty or "category" not in details_df.columns:
+        logger.warning("No category data available for confusion matrix")
+        return
+    
+    # Build confusion data from details
+    confusion_data = []
+    for _, row in details_df.iterrows():
+        expected_category = row.get("category", "").replace("_operations", "")
+        called_tool = row.get("called_tool", "")
+        
+        if not expected_category or not called_tool or called_tool == "None" or pd.isna(called_tool):
+            continue
+        
+        # Try to determine the predicted category from the called tool
+        # This requires looking up the tool's category from the experiment
+        predicted_category = row.get("final_category", "").replace("_operations", "") if pd.notna(row.get("final_category")) else None
+        
+        if predicted_category:
+            confusion_data.append({
+                "expected": expected_category,
+                "predicted": predicted_category
+            })
+    
+    if not confusion_data:
+        logger.warning("No confusion data available - trying fallback method")
+        # Fallback: use category_correct field if available
+        for _, row in details_df.iterrows():
+            expected = row.get("category", "").replace("_operations", "")
+            if row.get("category_correct") == False and row.get("final_category"):
+                confusion_data.append({
+                    "expected": expected,
+                    "predicted": row.get("final_category", "").replace("_operations", "")
+                })
+            elif row.get("category_correct") == True:
+                confusion_data.append({
+                    "expected": expected,
+                    "predicted": expected
+                })
+    
+    if not confusion_data:
+        logger.warning("Still no confusion data available")
+        return
+    
+    confusion_df = pd.DataFrame(confusion_data)
+    
+    # Get all unique categories
+    all_categories = sorted(set(confusion_df["expected"].unique()) | set(confusion_df["predicted"].unique()))
+    
+    # Build confusion matrix
+    matrix = pd.crosstab(
+        confusion_df["expected"], 
+        confusion_df["predicted"],
+        normalize='index'  # Normalize by row (expected category)
+    ).reindex(index=all_categories, columns=all_categories, fill_value=0)
+    
+    fig, ax = plt.subplots(figsize=(14, 12))
+    
+    sns.heatmap(
+        matrix * 100,
+        annot=True,
+        fmt=".0f",
+        cmap="Blues",
+        ax=ax,
+        cbar_kws={"label": "Percentage (%)"},
+        linewidths=0.5,
+        square=True,
+    )
+    
+    ax.set_xlabel("Predicted Category")
+    ax.set_ylabel("Expected Category")
+    ax.set_title("Category Confusion Matrix\n(row-normalized: % of expected category predicted as each)", 
+                 fontsize=14, fontweight='bold')
+    
+    # Rotate labels for readability
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
+    ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_clustering_category_accuracy(df: pd.DataFrame, output_path: Path):
+    """
+    Generate line chart showing clustering methodology category selection accuracy
+    as the number of tools increases.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter to clustering methodology only
+    cluster_df = df[df["methodology"] == "clustering"].copy()
+    
+    if cluster_df.empty:
+        logger.warning("No clustering experiments found")
+        return
+    
+    # Group by num_tools
+    agg = cluster_df.groupby("num_tools").agg({
+        "category_selection_accuracy": ["mean", "std"],
+        "accuracy": ["mean", "std"]
+    }).reset_index()
+    agg.columns = ["num_tools", "cat_acc_mean", "cat_acc_std", "tool_acc_mean", "tool_acc_std"]
+    agg = agg.sort_values("num_tools")
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    # Plot category selection accuracy
+    ax.plot(agg["num_tools"], agg["cat_acc_mean"] * 100, 
+            marker='o', linewidth=2, markersize=8,
+            color=METHODOLOGY_COLORS["clustering"], label="Category Selection Accuracy")
+    
+    # Add error band
+    if agg["cat_acc_std"].notna().any():
+        ax.fill_between(
+            agg["num_tools"],
+            (agg["cat_acc_mean"] - agg["cat_acc_std"]) * 100,
+            (agg["cat_acc_mean"] + agg["cat_acc_std"]) * 100,
+            alpha=0.2, color=METHODOLOGY_COLORS["clustering"]
+        )
+    
+    # Also plot tool accuracy for comparison
+    ax.plot(agg["num_tools"], agg["tool_acc_mean"] * 100, 
+            marker='s', linewidth=2, markersize=8, linestyle='--',
+            color="#999999", label="Final Tool Accuracy")
+    
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_title("Clustering: Category Selection Accuracy vs Tool Count", fontsize=14, fontweight='bold')
+    ax.legend(loc='lower left', frameon=True)
+    ax.set_ylim(0, 105)
+    ax.grid(True, alpha=0.3)
+    
+    # Log scale if range is large
+    if len(agg) > 1 and agg["num_tools"].max() / agg["num_tools"].min() > 10:
+        ax.set_xscale('log')
+        ax.xaxis.set_major_formatter(plt.ScalarFormatter())
+        ax.set_xticks(agg["num_tools"].values)
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_no_tool_accuracy(df: pd.DataFrame, output_path: Path):
+    """
+    Generate bar chart showing no-tool test accuracy (false positive rate) by methodology.
+    Tests where no tool should be called - lower false positive = better.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter to experiments that included no-tool tests
+    # Look for experiments with no_tool_tests > 0 or is_no_tool_test flag
+    df_notool = df[df.get("no_tool_tests", pd.Series([0]*len(df))) > 0].copy() if "no_tool_tests" in df.columns else pd.DataFrame()
+    
+    if df_notool.empty:
+        # Try alternative: look at false_positive_rate
+        if "false_positive_rate" in df.columns:
+            df_notool = df[df["false_positive_rate"].notna() & (df["false_positive_rate"] > 0)]
+        
+    if df_notool.empty:
+        logger.warning("No no-tool test data available")
+        return
+    
+    # Aggregate by methodology
+    agg = df_notool.groupby("methodology").agg({
+        "false_positive_rate": ["mean", "std"] if "false_positive_rate" in df_notool.columns else {},
+        "no_tool_correct": "sum" if "no_tool_correct" in df_notool.columns else {},
+        "no_tool_tests": "sum" if "no_tool_tests" in df_notool.columns else {},
+    }).reset_index()
+    
+    if "false_positive_rate" in df_notool.columns:
+        agg.columns = ["methodology", "fp_rate_mean", "fp_rate_std"]
+        metric = "fp_rate_mean"
+        metric_label = "False Positive Rate (%)"
+        invert = True  # Lower is better
+    else:
+        agg["accuracy"] = agg["no_tool_correct"] / agg["no_tool_tests"]
+        metric = "accuracy"
+        metric_label = "No-Tool Accuracy (%)"
+        invert = False
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    x = np.arange(len(agg))
+    colors = [METHODOLOGY_COLORS.get(m, "#666666") for m in agg["methodology"]]
+    
+    bars = ax.bar(x, agg[metric] * 100, color=colors, edgecolor='white', linewidth=1.5)
+    
+    # Add value labels
+    for bar, val in zip(bars, agg[metric]):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1,
+                f'{val*100:.1f}%', ha='center', va='bottom', fontsize=10, fontweight='bold')
+    
+    ax.set_xticks(x)
+    ax.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in agg["methodology"]], rotation=30, ha='right')
+    ax.set_ylabel(metric_label)
+    ax.set_xlabel("Methodology")
+    
+    if invert:
+        ax.set_title("No-Tool Tests: False Positive Rate by Methodology\n(lower = better, tool called when none expected)", 
+                     fontsize=14, fontweight='bold')
+    else:
+        ax.set_title("No-Tool Tests: Accuracy by Methodology\n(correctly declined to call a tool)", 
+                     fontsize=14, fontweight='bold')
+    
+    ax.set_ylim(0, max(agg[metric].max() * 100 + 10, 50))
+    ax.grid(True, alpha=0.3, axis='y')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_similar_tools_impact(df: pd.DataFrame, output_path: Path):
+    """
+    Generate line chart showing accuracy vs. number of similar/distractor tools.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter to experiments with similar tools
+    if "num_similar_tools" not in df.columns:
+        logger.warning("No similar tools data available")
+        return
+    
+    df_similar = df[df["num_similar_tools"].notna()].copy()
+    
+    if df_similar.empty or df_similar["num_similar_tools"].nunique() < 2:
+        logger.warning("Not enough similar tools variation to plot")
+        return
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    # Group by methodology
+    for methodology in df_similar["methodology"].unique():
+        meth_df = df_similar[df_similar["methodology"] == methodology]
+        
+        # Aggregate by num_similar_tools
+        agg = meth_df.groupby("num_similar_tools").agg({
+            "accuracy": ["mean", "std"]
+        }).reset_index()
+        agg.columns = ["num_similar_tools", "accuracy_mean", "accuracy_std"]
+        agg = agg.sort_values("num_similar_tools")
+        
+        if len(agg) < 2:
+            continue
+        
+        color = METHODOLOGY_COLORS.get(methodology, "#666666")
+        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
+        
+        ax.plot(agg["num_similar_tools"], agg["accuracy_mean"] * 100, 
+                marker='o', linewidth=2, markersize=8,
+                color=color, label=label)
+        
+        # Add error band
+        if agg["accuracy_std"].notna().any():
+            ax.fill_between(
+                agg["num_similar_tools"],
+                (agg["accuracy_mean"] - agg["accuracy_std"]) * 100,
+                (agg["accuracy_mean"] + agg["accuracy_std"]) * 100,
+                alpha=0.2, color=color
+            )
+    
+    ax.set_xlabel("Number of Similar/Distractor Tools")
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_title("Impact of Similar Tools on Accuracy\n(distractor tools that look similar to correct ones)", 
+                 fontsize=14, fontweight='bold')
+    ax.legend(loc='lower left', frameon=True)
+    ax.set_ylim(0, 105)
+    ax.grid(True, alpha=0.3)
     
     plt.tight_layout()
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
@@ -1623,23 +2258,32 @@ def generate_html_report(
     
     # Add figures
     figure_descriptions = {
-        "01_methodology_comparison.png": "Average accuracy comparison across methodologies with standard deviation error bars.",
+        "01_methodology_comparison.png": "Average accuracy comparison across all methodologies with standard deviation error bars. Excludes experiments with 0 tests.",
+        "01a_methodology_comparison_comparable.png": "Average accuracy for experiments ≤200 tools - fair comparison including MCP baseline.",
+        "01b_methodology_comparison_scaled.png": "Average accuracy across all tool counts, excluding MCP (which cannot scale beyond ~200 tools).",
         "02_accuracy_heatmap.png": "Accuracy by methodology and tool count. Green = high accuracy, red = low accuracy.",
+        "02a_accuracy_heatmap_comparable.png": "Accuracy heatmap for experiments ≤200 tools where all methodologies (including MCP) were tested - fair comparison.",
+        "02b_accuracy_heatmap_scaled.png": "Accuracy heatmap for high tool count experiments (>200 tools), excluding MCP which cannot scale.",
         "03_scaling_curves.png": "How accuracy changes as the number of tools increases for each methodology.",
         "04_latency_comparison.png": "Latency distribution comparison. Left shows raw data with outliers, right shows filtered data.",
         "05_latency_vs_accuracy.png": "Trade-off between latency and accuracy. Point size indicates number of tools.",
         "06_error_breakdown.png": "Breakdown of test outcomes by methodology.",
         "07_doc_length_impact.png": "Impact of tool documentation length on accuracy.",
+        "07a_email_verbosity_impact.png": "Email category accuracy by description verbosity - email tools use JSON string params that may confuse LLMs.",
         "08_rag_topk_analysis.png": "RAG methodology: Effect of top-K parameter on accuracy.",
         # "09_clustering_backtrack.png": "Clustering methodology: Backtracking impact on accuracy.",
+        "09a_clustering_category_accuracy.png": "Clustering methodology: Category selection accuracy vs tool count.",
         "10_adaptive_k_distribution.png": "Adaptive RAG: Distribution of dynamically selected K values.",
         "11_hybrid_category_analysis.png": "Hybrid methodology: Effect of top-K categories on accuracy.",
         "12_category_accuracy.png": "Per-category accuracy comparison across methodologies.",
+        "12a_category_confusion_matrix.png": "Category confusion matrix showing which categories are mistaken for others.",
         # "13_radar_comparison.png": "Multi-dimensional comparison of methodology performance.",
         "14_token_usage_methodology.png": "Average input and output tokens per request by methodology.",
         "15_token_usage_scaling.png": "How input token usage scales with the number of tools for each methodology.",
         "16_token_efficiency.png": "Token efficiency: accuracy achieved relative to input token cost.",
         "17_token_heatmap.png": "Input token usage heatmap by methodology and tool count.",
+        "18_no_tool_accuracy.png": "No-tool test accuracy: how well methodologies avoid false positives when no tool should be called.",
+        "19_similar_tools_impact.png": "Impact of similar/distractor tools on accuracy.",
     }
     
     for fig_name, description in figure_descriptions.items():
@@ -1762,19 +2406,26 @@ def generate_report(
     
     # Overview charts
     generate_methodology_comparison_bar(df, figures_dir / "01_methodology_comparison.png")
+    generate_methodology_comparison_bar_comparable(df, figures_dir / "01a_methodology_comparison_comparable.png", max_tools=200)
+    generate_methodology_comparison_bar_scaled(df, figures_dir / "01b_methodology_comparison_scaled.png")
     generate_accuracy_heatmap(df, figures_dir / "02_accuracy_heatmap.png")
+    generate_accuracy_heatmap_comparable(df, figures_dir / "02a_accuracy_heatmap_comparable.png", max_tools=200)
+    generate_accuracy_heatmap_scaled(df, figures_dir / "02b_accuracy_heatmap_scaled.png", min_tools=200)
     generate_scaling_curves(df, figures_dir / "03_scaling_curves.png")
     generate_latency_comparison(df, details_df, figures_dir / "04_latency_comparison.png")
     generate_latency_vs_accuracy_scatter(df, figures_dir / "05_latency_vs_accuracy.png")
     generate_error_breakdown(df, figures_dir / "06_error_breakdown.png")
     generate_doc_length_impact(df, figures_dir / "07_doc_length_impact.png")
+    generate_email_verbosity_impact(df, figures_dir / "07a_email_verbosity_impact.png")
     
     # Methodology-specific charts
     generate_rag_topk_analysis(df, figures_dir / "08_rag_topk_analysis.png")
     generate_clustering_backtrack_analysis(df, figures_dir / "09_clustering_backtrack.png")
+    generate_clustering_category_accuracy(df, figures_dir / "09a_clustering_category_accuracy.png")
     generate_adaptive_k_distribution(df, details_df, figures_dir / "10_adaptive_k_distribution.png")
     generate_hybrid_category_analysis(df, figures_dir / "11_hybrid_category_analysis.png")
     generate_category_accuracy_comparison(df, figures_dir / "12_category_accuracy.png")
+    generate_category_confusion_matrix(df, details_df, figures_dir / "12a_category_confusion_matrix.png")
     generate_radar_chart(df, figures_dir / "13_radar_comparison.png")
     
     # Token usage analysis charts
@@ -1782,6 +2433,10 @@ def generate_report(
     generate_token_usage_scaling(df, figures_dir / "15_token_usage_scaling.png")
     generate_token_efficiency_scatter(df, figures_dir / "16_token_efficiency.png")
     generate_token_heatmap(df, figures_dir / "17_token_heatmap.png")
+    
+    # Robustness analysis charts
+    generate_no_tool_accuracy(df, figures_dir / "18_no_tool_accuracy.png")
+    generate_similar_tools_impact(df, figures_dir / "19_similar_tools_impact.png")
     
     # Generate HTML report
     generate_html_report(df, details_df, output_dir / "analysis_report.html", figures_dir)
