@@ -62,6 +62,8 @@ from src.clients.api_key_manager import reset_all_rotations
 app = typer.Typer(help="Batch runner for experiment plan configurations")
 console = Console()
 
+METHODOLOGIES_TO_SKIP = ["mcp"]  # List of methodologies to skip during execution
+
 
 def get_plan_configs(plan_dir: str = "plan") -> list[Path]:
     """Get all YAML config files from experiments/plan folder, sorted by name."""
@@ -141,7 +143,7 @@ def apply_run_config_to_experiment(config: ExperimentConfig, run_config: RunConf
     return ExperimentConfig.from_dict(config_dict)
 
 
-def display_config_summary(config_path: Path, index: int, total: int) -> None:
+def display_config_summary(config_path: Path, index: int, total: int) -> ExperimentConfig:
     """Display a summary of the configuration to be run."""
     try:
         config = ExperimentConfig.from_yaml(config_path)
@@ -183,6 +185,8 @@ def display_config_summary(config_path: Path, index: int, total: int) -> None:
             table.add_row("Include No-Tool", "Yes")
         
         console.print(table)
+
+        return config
         
     except Exception as e:
         console.print(f"[yellow]Warning: Could not parse config {config_path.name}: {e}[/yellow]")
@@ -406,6 +410,7 @@ def run(
     # Run experiments (config × run matrix)
     experiment_num = 0
     for i, config_path in enumerate(configs, 1):
+        skip_config = False
         if i < start_from:
             continue
         
@@ -419,7 +424,12 @@ def run(
             else:
                 console.print(f"[bold]Config {i}/{total_configs}[/bold]")
                 console.print(f"[dim]Single run mode (using environment variables/defaults)[/dim]")
-            display_config_summary(config_path, i, total_configs)
+            config = display_config_summary(config_path, i, total_configs)
+            if config.methodology in METHODOLOGIES_TO_SKIP:
+                console.print(f"[yellow]Warning: configs with {config.methodology} methodology are skipped[/yellow]")
+                skipped += 1
+                skip_config = True
+                break
             
             if dry_run:
                 console.print("[yellow]Would run this experiment (dry run)[/yellow]")
@@ -482,6 +492,9 @@ def run(
             
             console.print(f"\n[dim]Progress: {completed} completed, {failed} failed, ~{remaining} remaining[/dim]")
         
+        if skip_config:
+            continue
+
         if user_aborted:
             break
     
