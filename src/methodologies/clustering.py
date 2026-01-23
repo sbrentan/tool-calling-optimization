@@ -187,7 +187,9 @@ class ClusteringMethodology(StepBasedMethodology):
         system_instruction = (
             "You are selecting from tool categories. Choose the category that best matches "
             "the user's request. After selecting a category, you will see the specific tools "
-            "available in that category."
+            "available in that category. To select a category, call the tool corresponding to"
+            " select_category_<category_name>. Check the available tools and based on the user"
+            " request, choose the most appropriate category."
         )
         
         logger.debug(f"[Clustering] Presenting {len(category_tools)} category options")
@@ -349,7 +351,9 @@ class ClusteringMethodology(StepBasedMethodology):
             full_system = f"{system_instruction}\n\n{step_system}"
         else:
             full_system = step_system
-        logger.debug(f"[Clustering] System instruction: {full_system[:200]}...")
+        logger.debug(f"[Clustering] System instruction: {full_system}...")
+
+        backtracked_categories: list[Optional[str]] = []
         
         # Iterative selection loop
         for step_num in range(1, self.max_steps + 1):
@@ -360,9 +364,13 @@ class ClusteringMethodology(StepBasedMethodology):
             start_time = time.time()
             
             # Make API call
+            edited_prompt = prompt + "\n\nFirst call the appropriate tool category to list and find the best tool for the request." + \
+                " Then, select the most suitable tool within that category. You can backtrack to the category selection if needed."
+            if backtracked_categories:
+                edited_prompt += f" Note: You have previously backtracked from categories: {', '.join(backtracked_categories)}."
             logger.debug(f"[Clustering] Making API call to {client.PROVIDER_NAME}...")
             call_result = client.call_with_tools(
-                prompt=prompt,
+                prompt=edited_prompt,
                 tools=current_options,
                 system_instruction=full_system,
             )
@@ -425,6 +433,7 @@ class ClusteringMethodology(StepBasedMethodology):
                 )
             
             # Process the selection
+            current_category = state.get("current_category")
             next_options, step_type, state = self.process_selection(
                 selection, tools, state
             )
@@ -437,6 +446,7 @@ class ClusteringMethodology(StepBasedMethodology):
             # Track backtracks
             if step_type == StepType.BACKTRACK:
                 backtrack_count += 1
+                backtracked_categories.append(current_category)
             
             # Record step
             step = StepInfo(

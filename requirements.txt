@@ -2,6 +2,7 @@
 cerebras-cloud-sdk>=1.0.0   # Cerebras (FREE tier - recommended!)
 google-genai>=1.0.0          # Google Gemini
 openai>=1.0.0                # OpenAI (optional, paid)
+langchain-ollama>=0.2.0      # Ollama local LLM (requires Ollama server running)
 
 # Data models
 pydantic>=2.0.0

@@ -12,6 +12,7 @@ from .base import BaseLLMClient
 from .gemini_client import GeminiClient
 from .cerebras_client import CerebrasClient
 from .openai_client import OpenAIClient
+from .ollama_client import OllamaClient
 
 
 # Registry of available providers and their clients
@@ -19,6 +20,7 @@ PROVIDER_REGISTRY: dict[str, type[BaseLLMClient]] = {
     "gemini": GeminiClient,
     "cerebras": CerebrasClient,
     "openai": OpenAIClient,
+    "ollama": OllamaClient,
 }
 
 # Model name to provider mapping for auto-detection
@@ -41,6 +43,16 @@ MODEL_TO_PROVIDER: dict[str, str] = {
     "gpt-4-turbo": "openai",
     "gpt-4": "openai",
     "gpt-3.5-turbo": "openai",
+    
+    # Ollama local models
+    "gpt-oss:20b": "ollama",
+    "llama3:8b": "ollama",
+    "llama3:70b": "ollama",
+    "mistral:7b": "ollama",
+    "mixtral:8x7b": "ollama",
+    "codellama:7b": "ollama",
+    "phi3:mini": "ollama",
+    "qwen2:7b": "ollama",
 }
 
 
@@ -90,8 +102,12 @@ def detect_provider_from_model(model: str) -> Optional[str]:
     
     if "gemini" in model_lower:
         return "gemini"
-    elif "gpt" in model_lower:
+    elif "gpt-4" in model_lower or "gpt-3" in model_lower:
+        # Explicit OpenAI GPT models
         return "openai"
+    elif ":" in model_lower:
+        # Ollama models typically have format "model:tag" (e.g., llama3:8b, gpt-oss:20b)
+        return "ollama"
     elif "llama" in model_lower or "qwen" in model_lower:
         # Could be Cerebras or other providers
         return "cerebras"

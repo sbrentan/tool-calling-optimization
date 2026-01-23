@@ -90,7 +90,7 @@ rag_config:
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `model` | `str` | `"llama-3.3-70b"` | Model identifier. Determines provider if not explicitly set. |
-| `provider` | `str` or `null` | `null` | Explicit provider selection. Options: `"cerebras"`, `"gemini"`, `"openai"`. Auto-detected from model name if `null`. |
+| `provider` | `str` or `null` | `null` | Explicit provider selection. Options: `"cerebras"`, `"gemini"`, `"openai"`, `"ollama"`. Auto-detected from model name if `null`. |
 | `temperature` | `float` | `0.0` | Sampling temperature. Lower values (0.0) are more deterministic. Range: 0.0-2.0. |
 
 ### Provider Auto-Detection
@@ -99,7 +99,55 @@ rag_config:
 |---------------|-------------------|
 | `llama-*`, `llama3*` | `cerebras` |
 | `gemini-*` | `gemini` |
-| `gpt-*`, `o1-*`, `o3-*` | `openai` |
+| `gpt-4*`, `gpt-3*` | `openai` |
+| `*:*` (e.g., `model:tag`) | `ollama` |
+
+### Ollama Provider (Local LLM)
+
+Ollama allows running models locally without cloud API costs. Requires [Ollama](https://ollama.ai) to be installed and running.
+
+#### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
+
+#### Supported Models
+
+Any model installed via `ollama pull <model>` can be used. Common models:
+
+| Model | Description |
+|-------|-------------|
+| `gpt-oss:20b` | GPT-OSS 20B parameter model |
+| `llama3:8b` | Llama 3 8B |
+| `llama3:70b` | Llama 3 70B |
+| `mistral:7b` | Mistral 7B |
+| `mixtral:8x7b` | Mixtral 8x7B |
+| `codellama:7b` | Code Llama 7B |
+| `phi3:mini` | Phi-3 Mini |
+| `qwen2:7b` | Qwen 2 7B |
+
+#### Example Configuration
+
+```yaml
+name: ollama_local_test
+model: gpt-oss:20b
+provider: ollama  # Optional if model has ":" format
+temperature: 0.0
+
+# Ollama-specific (optional)
+# base_url: http://localhost:11434
+
+methodology: rag
+num_tools: 100
+```
+
+#### Usage
+
+1. Install Ollama: https://ollama.ai
+2. Pull your model: `ollama pull gpt-oss:20b`
+3. Start Ollama server: `ollama serve`
+4. Run experiment with `provider: ollama`
 
 ---
 
