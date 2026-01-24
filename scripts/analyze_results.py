@@ -266,7 +266,6 @@ def load_all_experiments_as_dataframe(results_dir: Path) -> pd.DataFrame:
         
         # Store category_accuracy dict as JSON string
         row["category_accuracy_json"] = json.dumps(summary.get("category_accuracy", {}))
-        # print(len(row["category_accuracy_json"]))  This prints a lot of 200+ length strings
         
         rows.append(row)
     
