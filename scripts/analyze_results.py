@@ -696,6 +696,9 @@ def generate_accuracy_heatmap(df: pd.DataFrame, output_path: Path):
     import matplotlib.pyplot as plt
     import seaborn as sns
     setup_matplotlib()
+
+    # Exclude from mcp data where tool counts is 300 or 350
+    df = df[~((df["methodology"] == "mcp") & (df["num_tools"].isin([300, 350])))]
     
     # Pivot for heatmap
     pivot = df.pivot_table(
@@ -2076,6 +2079,9 @@ def generate_html_report(
 ):
     """Generate comprehensive HTML analysis report."""
     summary_table = generate_summary_table(df)
+
+    # Exclude from mcp data where tool counts is 300 or 350
+    df = df[~((df["methodology"] == "mcp") & (df["num_tools"].isin([300, 350])))]
     
     # Calculate key findings
     best_accuracy = df.loc[df["accuracy"].idxmax()]
@@ -2111,7 +2117,9 @@ def generate_html_report(
                 total_accuracy += acc
             else:
                 # Missing experiment counts as 0%
-                missing_experiments.append((meth, tc))
+                # Skip 300 and 350 tool counts for missing experiments
+                if tc not in [300, 350]:
+                    missing_experiments.append((meth, tc))
         
         # Average across all tool counts (including missing as 0)
         meth_rankings_data[meth] = total_accuracy / len(all_tool_counts)

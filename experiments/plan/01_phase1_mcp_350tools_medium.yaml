@@ -1,5 +1,5 @@
 # ============================================================
-# PHASE 1: MCP Baseline - 300 Tools (Significant Load)
+# PHASE 1: MCP Baseline - 350 Tools (Significant Load)
 # ============================================================
 # Purpose: Test MCP with significant context load
 # Hypothesis: Noticeable accuracy and latency degradation
@@ -12,11 +12,11 @@ model: "__env__"
 seed: "__env__"
 
 # --- Experiment Identification ---
-name: phase1_mcp_300tools_medium
-description: "MCP baseline with 300 tools - significant context load"
+name: phase1_mcp_350tools_medium
+description: "MCP baseline with 350 tools - significant context load"
 
 # --- Tool Configuration ---
-num_tools: 300
+num_tools: 350
 doc_length: medium
 prompt_type: concise
 num_similar_tools: 0

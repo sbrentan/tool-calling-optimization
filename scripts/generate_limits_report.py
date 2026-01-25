@@ -466,13 +466,13 @@ def generate_mcp_accuracy_vs_tools(df: pd.DataFrame, output_path: Path):
     
     # Add annotation for scaling limit
     max_tested = agg["num_tools"].max()
-    ax.axvline(x=200, color='red', linestyle='--', alpha=0.7, linewidth=2)
-    ax.annotate('Practical limit\n(~200 tools)', xy=(200, 50), 
+    ax.axvline(x=350, color='red', linestyle='--', alpha=0.7, linewidth=2)
+    ax.annotate('Practical limit\n(~350 tools)', xy=(350, 50), 
                fontsize=10, color='red', ha='center')
     
     ax.set_xlabel("Number of Tools")
     ax.set_ylabel("Accuracy (%)")
-    ax.set_title("MCP: Accuracy Degradation with Increasing Tools\n(Context window limits become critical at ~200+ tools)", 
+    ax.set_title("MCP: Accuracy Degradation with Increasing Tools\n(Context window limits become critical at ~350+ tools)", 
                  fontsize=14, fontweight='bold')
     ax.set_ylim(0, 105)
     ax.legend(loc='lower left', frameon=True)
@@ -531,7 +531,6 @@ def generate_mcp_tokens_vs_tools(df: pd.DataFrame, output_path: Path):
         )
     
     # Add typical context window limits as reference lines
-    ax.axhline(y=32000, color='orange', linestyle='--', alpha=0.7, linewidth=2, label='32K context limit')
     ax.axhline(y=64000, color='red', linestyle='--', alpha=0.7, linewidth=2, label='64K context limit')
     
     ax.set_xlabel("Number of Tools")
@@ -542,7 +541,7 @@ def generate_mcp_tokens_vs_tools(df: pd.DataFrame, output_path: Path):
     ax.grid(True, alpha=0.3)
     
     if agg["num_tools"].max() / agg["num_tools"].min() > 5:
-        ax.set_xscale('log')
+        # ax.set_xscale('log')
         ax.set_xticks(sorted(agg["num_tools"].unique()))
         ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
     
@@ -662,7 +661,7 @@ def generate_clustering_tokens_vs_tools(df: pd.DataFrame, output_path: Path):
     
     all_tools = df["num_tools"].unique()
     if len(all_tools) > 0 and max(all_tools) / min(all_tools) > 5:
-        ax.set_xscale('log')
+        # ax.set_xscale('log')
         ax.set_xticks(sorted(all_tools))
         ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
     
@@ -1007,7 +1006,7 @@ def generate_hybrid_tokens_vs_tools(df: pd.DataFrame, output_path: Path):
     
     all_tools = df["num_tools"].unique()
     if len(all_tools) > 0 and max(all_tools) / min(all_tools) > 5:
-        ax.set_xscale('log')
+        # ax.set_xscale('log')
         ax.set_xticks(sorted(all_tools))
         ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
     
@@ -1251,7 +1250,7 @@ def generate_rag_tokens_vs_tools(df: pd.DataFrame, output_path: Path):
     
     all_tools = df["num_tools"].unique()
     if len(all_tools) > 0 and max(all_tools) / min(all_tools) > 5:
-        ax.set_xscale('log')
+        # ax.set_xscale('log')
         ax.set_xticks(sorted(all_tools))
         ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
     
@@ -1351,9 +1350,254 @@ def generate_rag_verbosity_comparison(df: pd.DataFrame, output_path: Path):
     logger.info(f"Saved: {output_path}")
 
 
+def generate_rag_k_accuracy_impact(df: pd.DataFrame, output_path: Path):
+    """
+    Generate chart showing how varying fixed K in RAG impacts accuracy
+    across different tool counts.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter for RAG experiments with top_k values
+    rag_df = df[(df["methodology"] == "rag") & (df["top_k"].notna())]
+    
+    if rag_df.empty:
+        logger.warning("No RAG experiments with varying K values found")
+        return
+    
+    fig, ax = plt.subplots(figsize=(12, 7))
+    
+    # Get unique K values and tool counts
+    k_values = sorted(rag_df["top_k"].unique())
+    tool_counts = sorted(rag_df["num_tools"].unique())
+    
+    # Color palette for different K values
+    colors = plt.cm.viridis(np.linspace(0, 0.9, len(k_values)))
+    markers = ['o', 's', '^', 'D', 'v', 'p', 'h', '*']
+    
+    for i, k in enumerate(k_values):
+        k_subset = rag_df[rag_df["top_k"] == k]
+        
+        agg = k_subset.groupby("num_tools").agg({
+            "accuracy": ["mean", "std"]
+        }).reset_index()
+        agg.columns = ["num_tools", "accuracy_mean", "accuracy_std"]
+        agg = agg.sort_values("num_tools")
+        
+        marker = markers[i % len(markers)]
+        ax.plot(agg["num_tools"], agg["accuracy_mean"] * 100, 
+                marker=marker, linewidth=2, markersize=9,
+                color=colors[i], label=f"K={int(k)}")
+        
+        if agg["accuracy_std"].notna().any() and (agg["accuracy_std"] > 0).any():
+            ax.fill_between(
+                agg["num_tools"],
+                (agg["accuracy_mean"] - agg["accuracy_std"]) * 100,
+                (agg["accuracy_mean"] + agg["accuracy_std"]) * 100,
+                alpha=0.15, color=colors[i]
+            )
+    
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_title("RAG: Impact of Fixed K on Accuracy Across Tool Counts\n(K higher than 15 yields diminishing returns)", 
+                 fontsize=14, fontweight='bold')
+    ax.set_ylim(0, 105)
+    ax.legend(title="Top-K Retrieved", loc='lower left', frameon=True, ncol=2)
+    ax.grid(True, alpha=0.3)
+    
+    # Set x-ticks to actual tool counts
+    if len(tool_counts) > 0:
+        ax.set_xticks(tool_counts)
+        ax.set_xticklabels([str(t) for t in tool_counts])
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_rag_k_tokens_impact(df: pd.DataFrame, output_path: Path):
+    """
+    Generate chart showing how varying fixed K in RAG impacts token usage
+    across different tool counts.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter for RAG experiments with top_k values
+    rag_df = df[(df["methodology"] == "rag") & (df["top_k"].notna())]
+    
+    if rag_df.empty:
+        logger.warning("No RAG experiments with varying K values found")
+        return
+    
+    fig, ax = plt.subplots(figsize=(12, 7))
+    
+    # Get unique K values and tool counts
+    k_values = sorted(rag_df["top_k"].unique())
+    tool_counts = sorted(rag_df["num_tools"].unique())
+    
+    # Color palette for different K values
+    colors = plt.cm.viridis(np.linspace(0, 0.9, len(k_values)))
+    markers = ['o', 's', '^', 'D', 'v', 'p', 'h', '*']
+    
+    for i, k in enumerate(k_values):
+        k_subset = rag_df[rag_df["top_k"] == k]
+        
+        agg = k_subset.groupby("num_tools").agg({
+            "avg_tokens_input": ["mean", "std"]
+        }).reset_index()
+        agg.columns = ["num_tools", "tokens_mean", "tokens_std"]
+        agg = agg.sort_values("num_tools")
+        
+        marker = markers[i % len(markers)]
+        ax.plot(agg["num_tools"], agg["tokens_mean"], 
+                marker=marker, linewidth=2, markersize=9,
+                color=colors[i], label=f"K={int(k)}")
+        
+        if agg["tokens_std"].notna().any() and (agg["tokens_std"] > 0).any():
+            ax.fill_between(
+                agg["num_tools"],
+                agg["tokens_mean"] - agg["tokens_std"],
+                agg["tokens_mean"] + agg["tokens_std"],
+                alpha=0.15, color=colors[i]
+            )
+    
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Average Input Tokens")
+    ax.set_title("RAG: Impact of Fixed K on Token Usage Across Tool Counts\n(Token usage scales with K, remains constant regardless of total tools)", 
+                 fontsize=14, fontweight='bold')
+    ax.legend(title="Top-K Retrieved", loc='upper left', frameon=True, ncol=2)
+    ax.grid(True, alpha=0.3)
+    
+    # Set x-ticks to actual tool counts
+    if len(tool_counts) > 0:
+        ax.set_xticks(tool_counts)
+        ax.set_xticklabels([str(t) for t in tool_counts])
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
 # =============================================================================
 # Section 5: Adaptive RAG
 # =============================================================================
+
+def generate_adaptive_accuracy_vs_tools(df: pd.DataFrame, output_path: Path):
+    """
+    Generate chart showing Adaptive RAG accuracy compared to all other methodologies.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    for methodology in ["mcp", "clustering", "hybrid", "rag", "adaptive_rag"]:
+        meth_df = df[(df["methodology"] == methodology) & (df["doc_length"] == "medium")]
+        if meth_df.empty:
+            meth_df = df[df["methodology"] == methodology]
+        
+        if meth_df.empty:
+            continue
+        
+        agg = meth_df.groupby("num_tools").agg({
+            "accuracy": ["mean", "std"]
+        }).reset_index()
+        agg.columns = ["num_tools", "accuracy_mean", "accuracy_std"]
+        agg = agg.sort_values("num_tools")
+        
+        color = METHODOLOGY_COLORS.get(methodology, "#666666")
+        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
+        
+        ax.plot(agg["num_tools"], agg["accuracy_mean"] * 100, 
+                marker='o', linewidth=2, markersize=8,
+                color=color, label=label)
+        
+        if agg["accuracy_std"].notna().any():
+            ax.fill_between(
+                agg["num_tools"],
+                (agg["accuracy_mean"] - agg["accuracy_std"]) * 100,
+                (agg["accuracy_mean"] + agg["accuracy_std"]) * 100,
+                alpha=0.2, color=color
+            )
+    
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_title("Adaptive RAG: Accuracy Comparison Across All Methodologies\n(Dynamic K selection maintains high accuracy at scale)", 
+                 fontsize=14, fontweight='bold')
+    ax.set_ylim(0, 105)
+    ax.legend(loc='lower left', frameon=True)
+    ax.grid(True, alpha=0.3)
+    
+    all_tools = df["num_tools"].unique()
+    if len(all_tools) > 0 and max(all_tools) / min(all_tools) > 5:
+        ax.set_xscale('log')
+        ax.set_xticks(sorted(all_tools))
+        ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_adaptive_tokens_vs_tools(df: pd.DataFrame, output_path: Path):
+    """
+    Generate chart showing Adaptive RAG token usage compared to all other methodologies.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    for methodology in ["mcp", "clustering", "hybrid", "rag", "adaptive_rag"]:
+        meth_df = df[(df["methodology"] == methodology) & (df["doc_length"] == "medium")]
+        if meth_df.empty:
+            meth_df = df[df["methodology"] == methodology]
+        
+        if meth_df.empty:
+            continue
+        
+        agg = meth_df.groupby("num_tools").agg({
+            "avg_tokens_input": ["mean", "std"]
+        }).reset_index()
+        agg.columns = ["num_tools", "tokens_mean", "tokens_std"]
+        agg = agg.sort_values("num_tools")
+        
+        color = METHODOLOGY_COLORS.get(methodology, "#666666")
+        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
+        
+        ax.plot(agg["num_tools"], agg["tokens_mean"], 
+                marker='s', linewidth=2, markersize=8,
+                color=color, label=label)
+        
+        if agg["tokens_std"].notna().any():
+            ax.fill_between(
+                agg["num_tools"],
+                agg["tokens_mean"] - agg["tokens_std"],
+                agg["tokens_mean"] + agg["tokens_std"],
+                alpha=0.2, color=color
+            )
+    
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Average Input Tokens")
+    ax.set_title("Adaptive RAG: Token Efficiency Across All Methodologies\n(Dynamic K provides efficient token usage while scaling)", 
+                 fontsize=14, fontweight='bold')
+    ax.legend(loc='upper left', frameon=True)
+    ax.grid(True, alpha=0.3)
+    
+    all_tools = df["num_tools"].unique()
+    if len(all_tools) > 0 and max(all_tools) / min(all_tools) > 5:
+        ax.set_xticks(sorted(all_tools))
+        ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
 
 def generate_adaptive_vs_rag_accuracy(df: pd.DataFrame, output_path: Path):
     """
@@ -1466,7 +1710,7 @@ def generate_adaptive_vs_rag_tokens(df: pd.DataFrame, output_path: Path):
     
     all_tools = df["num_tools"].unique()
     if len(all_tools) > 0 and max(all_tools) / min(all_tools) > 5:
-        ax.set_xscale('log')
+        # ax.set_xscale('log')
         ax.set_xticks(sorted(all_tools))
         ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
     
@@ -1601,6 +1845,9 @@ def generate_accuracy_heatmap_summary(df: pd.DataFrame, output_path: Path):
     import matplotlib.pyplot as plt
     import seaborn as sns
     setup_matplotlib()
+
+    # Exclude from mcp data where tool counts is 300 or 350
+    df = df[~((df["methodology"] == "mcp") & (df["num_tools"].isin([300, 350])))]
     
     # Pivot for heatmap
     pivot = df.pivot_table(
@@ -1836,6 +2083,20 @@ def generate_limits_html_report(
                 <img src="limits_figures/14_rag_verbosity_comparison.png" alt="RAG Verbosity Comparison">
                 <p class="figure-caption">Comparison of medium vs verbose documentation for RAG methodology.</p>
             </div>
+            
+            <h3>Impact of K (Retrieved Tools) on Performance</h3>
+            <p>The fixed K parameter determines how many tools are retrieved by the embedding similarity search. 
+            Analyzing how different K values affect accuracy and token usage helps find the optimal balance.</p>
+            
+            <div class="figure">
+                <img src="limits_figures/14a_rag_k_accuracy_impact.png" alt="RAG K Accuracy Impact">
+                <p class="figure-caption">Impact of fixed K on accuracy across different tool counts. K higher than 15 yields diminishing returns.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/14b_rag_k_tokens_impact.png" alt="RAG K Tokens Impact">
+                <p class="figure-caption">Impact of fixed K on token usage. Token usage scales linearly with K but remains constant regardless of total tool count.</p>
+            </div>
         </div>
         
         <!-- Section 5: Adaptive RAG -->
@@ -1853,18 +2114,32 @@ def generate_limits_html_report(
                 </ul>
             </div>
             
+            <h3>Comparison Across All Methodologies</h3>
+            
             <div class="figure">
-                <img src="limits_figures/15_adaptive_vs_rag_accuracy.png" alt="Adaptive vs RAG Accuracy">
+                <img src="limits_figures/15_adaptive_accuracy_vs_tools.png" alt="Adaptive RAG Accuracy vs All">
+                <p class="figure-caption">Adaptive RAG accuracy compared to all other methodologies across tool counts.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/15a_adaptive_tokens_vs_tools.png" alt="Adaptive RAG Tokens vs All">
+                <p class="figure-caption">Adaptive RAG token efficiency compared to all other methodologies.</p>
+            </div>
+            
+            <h3>Adaptive RAG vs Standard RAG</h3>
+            
+            <div class="figure">
+                <img src="limits_figures/16_adaptive_vs_rag_accuracy.png" alt="Adaptive vs RAG Accuracy">
                 <p class="figure-caption">Adaptive RAG vs standard RAG accuracy comparison (verbose).</p>
             </div>
             
             <div class="figure">
-                <img src="limits_figures/16_adaptive_vs_rag_tokens.png" alt="Adaptive vs RAG Tokens">
+                <img src="limits_figures/17_adaptive_vs_rag_tokens.png" alt="Adaptive vs RAG Tokens">
                 <p class="figure-caption">Adaptive RAG token savings compared to fixed-K RAG.</p>
             </div>
             
             <div class="figure">
-                <img src="limits_figures/17_adaptive_prompt_clarity.png" alt="Adaptive Prompt Clarity">
+                <img src="limits_figures/18_adaptive_prompt_clarity.png" alt="Adaptive Prompt Clarity">
                 <p class="figure-caption">Impact of prompt clarity on Adaptive RAG accuracy - clear prompts vs concise prompts.</p>
             </div>
         </div>
@@ -1875,12 +2150,12 @@ def generate_limits_html_report(
             <p>Comprehensive comparison of all methodologies across accuracy and latency dimensions.</p>
             
             <div class="figure">
-                <img src="limits_figures/18_latency_distribution.png" alt="Latency Distribution">
+                <img src="limits_figures/19_latency_distribution.png" alt="Latency Distribution">
                 <p class="figure-caption">Latency distribution across all methodologies (outliers filtered).</p>
             </div>
             
             <div class="figure">
-                <img src="limits_figures/19_accuracy_heatmap.png" alt="Accuracy Heatmap">
+                <img src="limits_figures/20_accuracy_heatmap.png" alt="Accuracy Heatmap">
                 <p class="figure-caption">Complete accuracy heatmap: methodology × tool count.</p>
             </div>
         </div>
@@ -1984,17 +2259,21 @@ def generate_report(
     generate_rag_accuracy_vs_tools(df, figures_dir / "12_rag_accuracy_vs_tools.png")
     generate_rag_tokens_vs_tools(df, figures_dir / "13_rag_tokens_vs_tools.png")
     generate_rag_verbosity_comparison(df, figures_dir / "14_rag_verbosity_comparison.png")
+    generate_rag_k_accuracy_impact(df, figures_dir / "14a_rag_k_accuracy_impact.png")
+    generate_rag_k_tokens_impact(df, figures_dir / "14b_rag_k_tokens_impact.png")
     
     # Section 5: Adaptive RAG
     logger.info("Generating Section 5: Adaptive RAG...")
-    generate_adaptive_vs_rag_accuracy(df, figures_dir / "15_adaptive_vs_rag_accuracy.png")
-    generate_adaptive_vs_rag_tokens(df, figures_dir / "16_adaptive_vs_rag_tokens.png")
-    generate_adaptive_prompt_clarity_comparison(df, figures_dir / "17_adaptive_prompt_clarity.png")
+    generate_adaptive_accuracy_vs_tools(df, figures_dir / "15_adaptive_accuracy_vs_tools.png")
+    generate_adaptive_tokens_vs_tools(df, figures_dir / "15a_adaptive_tokens_vs_tools.png")
+    generate_adaptive_vs_rag_accuracy(df, figures_dir / "16_adaptive_vs_rag_accuracy.png")
+    generate_adaptive_vs_rag_tokens(df, figures_dir / "17_adaptive_vs_rag_tokens.png")
+    generate_adaptive_prompt_clarity_comparison(df, figures_dir / "18_adaptive_prompt_clarity.png")
     
     # Section 6: Final Summary
     logger.info("Generating Section 6: Final Summary...")
-    generate_latency_distribution_filtered(df, details_df, figures_dir / "18_latency_distribution.png")
-    generate_accuracy_heatmap_summary(df, figures_dir / "19_accuracy_heatmap.png")
+    generate_latency_distribution_filtered(df, details_df, figures_dir / "19_latency_distribution.png")
+    generate_accuracy_heatmap_summary(df, figures_dir / "20_accuracy_heatmap.png")
     
     # Generate HTML report
     generate_limits_html_report(df, details_df, output_dir / "limits_report.html", figures_dir)
