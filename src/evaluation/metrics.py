@@ -462,6 +462,89 @@ class ToolCallEvaluator:
         """Initialize the evaluator."""
         self.results: list[TestResult] = []
     
+    def get_results_for_serialization(self) -> list[dict]:
+        """
+        Get results in a serializable format for saving progress.
+        
+        Returns:
+            List of dictionaries containing all test result data.
+        """
+        return [r.to_dict() for r in self.results]
+    
+    def restore_results_from_serialization(self, serialized_results: list[dict]) -> None:
+        """
+        Restore results from serialized format (for resuming).
+        
+        Note: This creates lightweight TestResult objects without full test_case/call_result.
+        The to_dict() output is preserved for metrics computation.
+        
+        Args:
+            serialized_results: List of dictionaries from get_results_for_serialization()
+        """
+        for data in serialized_results:
+            # Create minimal TestCase for the required fields
+            test_case = TestCase(
+                prompt=data.get("prompt", ""),
+                expected_tool=data.get("expected_tool"),
+                expected_params=None,
+                category=data.get("category", "unknown"),
+                difficulty=data.get("difficulty", "medium"),
+            )
+            
+            # Create minimal CallResult
+            call_result = CallResult(
+                success=data.get("tool_correct", False),
+                called_tool=data.get("called_tool"),
+                called_args=None,
+                latency_ms=data.get("latency_ms", 0.0),
+                error=data.get("error"),
+                model=data.get("model", ""),
+            )
+            
+            # Create TestResult with all the saved fields
+            result = TestResult(
+                test_case=test_case,
+                call_result=call_result,
+                tool_correct=data.get("tool_correct", False),
+                params_correct=data.get("params_correct"),
+                methodology=data.get("methodology", "unknown"),
+                steps_count=data.get("steps_count", 1),
+                backtrack_count=data.get("backtrack_count", 0),
+                declined_tool_call=data.get("declined_tool_call", False),
+                category_correct=data.get("category_correct"),
+                final_category=data.get("final_category"),
+                categories_visited=data.get("categories_visited", []),
+                is_no_tool_test=data.get("is_no_tool_test", False),
+                false_positive=data.get("false_positive", False),
+                is_multi_tool_test=data.get("is_multi_tool_test", False),
+                tools_called=data.get("tools_called", []),
+                completion_rate=data.get("completion_rate"),
+                sequence_correct=data.get("sequence_correct"),
+                extra_calls=data.get("extra_calls", 0),
+                param_details=data.get("param_details", {}),
+                confidence_score=data.get("confidence_score"),
+                fallback_method_used=data.get("fallback_method_used"),
+                num_fallbacks=data.get("num_fallbacks", 0),
+                adaptive_k_used=data.get("adaptive_k_used"),
+                adaptive_strategy=data.get("adaptive_strategy"),
+                tokens_input=data.get("tokens_input"),
+                tokens_output=data.get("tokens_output"),
+                tokens_total=data.get("tokens_total"),
+                retrieval_recall=data.get("retrieval_recall"),
+                retrieved_tools=data.get("retrieved_tools", []),
+                retrieval_rank=data.get("retrieval_rank"),
+                is_ambiguous_test=data.get("is_ambiguous_test", False),
+                clarification_requested=data.get("clarification_requested", False),
+                clarification_correct=data.get("clarification_correct"),
+                clarification_score=data.get("clarification_score"),
+                clarification_question=data.get("clarification_question"),
+                candidate_tools=data.get("candidate_tools", []),
+                expected_candidate_tools=data.get("expected_candidate_tools", []),
+            )
+            self.results.append(result)
+        
+        logger.info(f"Restored {len(serialized_results)} previous test results")
+    
     def evaluate_single(
         self,
         test_case: AnyTestCase,

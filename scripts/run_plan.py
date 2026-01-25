@@ -27,6 +27,15 @@ Usage:
     
     # Multi-run mode with CLI args (same length required)
     python scripts/run_plan.py --models llama-3.3-70b,gpt-4o --seeds 42,123
+    
+    # Custom timeout and retry settings
+    python scripts/run_plan.py --timeout 120 --max-retries 5
+    
+    # Resume from a saved progress file
+    python scripts/run_plan.py --resume tmp/progress/progress_plan_20240101_120000.json
+    
+    # Resume from specific config and run index
+    python scripts/run_plan.py --start-from 15 --start-from-run 1
 
 Environment Variables:
     EXPERIMENT_NUM_SAMPLES: Number of test samples (default: 10)
@@ -38,6 +47,12 @@ import os
 from pathlib import Path
 from datetime import datetime
 import json
+import signal
+import tempfile
+import shutil
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
+from functools import partial
+import traceback
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
@@ -62,7 +77,190 @@ from src.clients.api_key_manager import reset_all_rotations
 app = typer.Typer(help="Batch runner for experiment plan configurations")
 console = Console()
 
+# METHODOLOGIES_TO_SKIP = ["clustering", "hybrid", "rag", "adaptive_rag"]  # List of methodologies to skip during execution
 METHODOLOGIES_TO_SKIP = ["mcp"]  # List of methodologies to skip during execution
+
+# Default timeout and retry settings
+DEFAULT_TIMEOUT_SECONDS = 60  # 1 minute timeout per experiment
+DEFAULT_MAX_RETRIES = 3  # Maximum retries on timeout
+
+# Progress state file location
+PROGRESS_DIR = project_root / "tmp" / "progress"
+
+
+class InterruptState:
+    """
+    Global state to track current execution position for Ctrl+C handling.
+    This allows us to save progress when the user interrupts.
+    """
+    def __init__(self):
+        self.plan_dir: str = "plan"
+        self.current_config_idx: int = 0
+        self.current_run_idx: int = 0
+        self.current_test_idx: int = 0  # Track which test we're on within an experiment
+        self.results: list[dict] = []
+        self.plan_config: PlanConfig = None
+        self.configs: list[Path] = []
+        self.enabled: bool = False  # Only save on interrupt if enabled
+        self.test_results: list[dict] = []  # Serialized test results from evaluator
+    
+    def update(
+        self,
+        plan_dir: str,
+        current_config_idx: int,
+        current_run_idx: int,
+        results: list[dict],
+        plan_config: PlanConfig,
+        configs: list[Path],
+        current_test_idx: int = 0,
+        test_results: list[dict] = None,
+    ):
+        """Update the current state."""
+        self.plan_dir = plan_dir
+        self.current_config_idx = current_config_idx
+        self.current_run_idx = current_run_idx
+        self.current_test_idx = current_test_idx
+        self.results = results
+        self.plan_config = plan_config
+        self.configs = configs
+        self.enabled = True
+        self.test_results = test_results or []
+    
+    def update_test_idx(self, test_idx: int):
+        """Update just the current test index (called from run_experiment)."""
+        self.current_test_idx = test_idx
+    
+    def update_test_results(self, test_results: list[dict]):
+        """Update the current test results (called from run_experiment after each test)."""
+        self.test_results = test_results
+
+
+# Global interrupt state
+_interrupt_state = InterruptState()
+
+
+def sigint_handler(signum, frame):
+    """Handle Ctrl+C by saving progress before exiting."""
+    console.print("\n\n[bold yellow]Interrupt received (Ctrl+C)![/bold yellow]")
+    
+    if _interrupt_state.enabled and _interrupt_state.configs:
+        console.print("[yellow]Saving progress before exit...[/yellow]")
+        try:
+            save_progress_state(
+                PROGRESS_DIR,
+                _interrupt_state.plan_dir,
+                _interrupt_state.current_config_idx,
+                _interrupt_state.current_run_idx,
+                _interrupt_state.current_test_idx,
+                _interrupt_state.results,
+                _interrupt_state.plan_config,
+                _interrupt_state.configs,
+                _interrupt_state.test_results,  # Include accumulated test results
+            )
+        except Exception as e:
+            console.print(f"[red]Failed to save progress: {e}[/red]")
+    else:
+        console.print("[dim]No progress to save (not in experiment loop)[/dim]")
+    
+    console.print("[yellow]Exiting...[/yellow]")
+    # Use os._exit to force immediate exit (sys.exit waits for threads)
+    os._exit(130)
+
+
+class ExperimentTimeoutError(Exception):
+    """Raised when an experiment times out."""
+    pass
+
+
+def save_progress_state(
+    progress_dir: Path,
+    plan_dir: str,
+    current_config_idx: int,
+    current_run_idx: int,
+    current_test_idx: int,
+    results: list[dict],
+    plan_config: "PlanConfig",
+    configs: list[Path],
+    test_results: list[dict] = None,
+) -> Path:
+    """
+    Save current progress state to allow resuming.
+    
+    Args:
+        test_results: Serialized test results from the evaluator (individual test outcomes)
+    
+    Returns:
+        Path to the saved progress file.
+    """
+    progress_dir.mkdir(parents=True, exist_ok=True)
+    
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    progress_file = progress_dir / f"progress_{plan_dir}_{timestamp}.json"
+    
+    state = {
+        "timestamp": datetime.now().isoformat(),
+        "plan_dir": plan_dir,
+        "current_config_idx": current_config_idx,  # 1-indexed config number
+        "current_run_idx": current_run_idx,  # 0-indexed run within config
+        "current_test_idx": current_test_idx,  # 0-indexed test within experiment
+        "total_configs": len(configs),
+        "config_files": [str(c) for c in configs],
+        "plan_config": plan_config.to_dict() if plan_config else None,
+        "results_so_far": results,
+        "test_results": test_results or [],  # Individual test results for current experiment
+    }
+    
+    with open(progress_file, "w") as f:
+        json.dump(state, f, indent=2, default=str)
+    
+    console.print(f"\n[cyan]Progress saved to: {progress_file}[/cyan]")
+    console.print(f"[cyan]To resume from config {current_config_idx}, run {current_run_idx + 1}, test {current_test_idx + 1}, use:[/cyan]")
+    console.print(f"  python scripts/run_plan.py --resume {progress_file}")
+    console.print(f"[cyan]Or to skip the stuck test:[/cyan]")
+    console.print(f"  python scripts/run_plan.py --resume {progress_file} --skip-to-test {current_test_idx + 2}")
+    console.print(f"[cyan]Or to skip to next config:[/cyan]")
+    console.print(f"  python scripts/run_plan.py --plan-dir {plan_dir} --start-from {current_config_idx + 1}")
+    
+    return progress_file
+
+
+def load_progress_state(progress_file: Path) -> dict:
+    """
+    Load progress state from a saved file.
+    
+    Returns:
+        Dictionary with saved state.
+    """
+    if not progress_file.exists():
+        raise FileNotFoundError(f"Progress file not found: {progress_file}")
+    
+    with open(progress_file, "r") as f:
+        return json.load(f)
+
+
+def run_with_timeout(func, timeout_seconds: int, *args, **kwargs):
+    """
+    Run a function with a timeout.
+    
+    Args:
+        func: Function to run
+        timeout_seconds: Timeout in seconds
+        *args, **kwargs: Arguments to pass to the function
+        
+    Returns:
+        Function result
+        
+    Raises:
+        ExperimentTimeoutError: If the function times out
+    """
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(func, *args, **kwargs)
+        try:
+            return future.result(timeout=timeout_seconds)
+        except FuturesTimeoutError:
+            raise ExperimentTimeoutError(
+                f"Experiment timed out after {timeout_seconds} seconds"
+            )
 
 
 def get_plan_configs(plan_dir: str = "plan") -> list[Path]:
@@ -192,10 +390,33 @@ def display_config_summary(config_path: Path, index: int, total: int) -> Experim
         console.print(f"[yellow]Warning: Could not parse config {config_path.name}: {e}[/yellow]")
 
 
-def run_single_experiment(config_path: Path, run_config: RunConfig = None) -> dict:
-    """Run a single experiment and return results."""
+def run_single_experiment(
+    config_path: Path, 
+    run_config: RunConfig = None,
+    timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+    max_retries: int = DEFAULT_MAX_RETRIES,
+    start_from_test: int = 0,
+    previous_test_results: list[dict] = None,
+) -> dict:
+    """
+    Run a single experiment and return results.
+    
+    Args:
+        config_path: Path to experiment config YAML
+        run_config: Optional run configuration overrides
+        timeout_seconds: Timeout per attempt in seconds (currently unused, per-test timeout handles this)
+        max_retries: Maximum number of retries on timeout (currently unused, per-test timeout handles this)
+        start_from_test: Test index to start from (0-indexed) for resuming mid-experiment
+        previous_test_results: Serialized test results from previous run to restore when resuming
+        
+    Returns:
+        Dictionary with experiment results
+    """
     # Import here to avoid circular imports and speed up --list
-    from scripts.run_experiment import run_experiment
+    from scripts.run_experiment import run_experiment, set_interrupt_state
+    
+    # Pass interrupt state to run_experiment for test-level tracking
+    set_interrupt_state(_interrupt_state)
     
     config = ExperimentConfig.from_yaml(config_path)
     
@@ -206,11 +427,20 @@ def run_single_experiment(config_path: Path, run_config: RunConfig = None) -> di
     console.print(f"\n[bold blue]Running: {config.name}[/bold blue]")
     console.print(f"Configuration: {config.num_tools} tools, {config.methodology} methodology")
     console.print(f"Model: {config.model}, Seed: {config.seed}")
+    if start_from_test > 0:
+        console.print(f"[dim]Resuming from test {start_from_test + 1}[/dim]")
+        if previous_test_results:
+            console.print(f"[dim]Restoring {len(previous_test_results)} previous test results[/dim]")
     
     start_time = datetime.now()
     
     try:
-        results = run_experiment(config)
+        # Run experiment (per-test timeouts are handled inside run_experiment)
+        results = run_experiment(
+            config, 
+            start_from_test=start_from_test,
+            previous_test_results=previous_test_results,
+        )
         end_time = datetime.now()
         duration = (end_time - start_time).total_seconds()
         
@@ -225,7 +455,7 @@ def run_single_experiment(config_path: Path, run_config: RunConfig = None) -> di
             "experiment_name": config.name,
             "run_config": run_config.to_dict() if run_config else None,
             "duration": duration,
-            "results": results
+            "results": results,
         }
     
     except UserAbortError as e:
@@ -241,7 +471,7 @@ def run_single_experiment(config_path: Path, run_config: RunConfig = None) -> di
             "status": "error",
             "config": config_path.name,
             "duration": duration,
-            "error": str(e)
+            "error": str(e),
         }
 
 
@@ -268,6 +498,8 @@ def save_batch_summary(results: list[dict], output_path: Path, plan_config: Plan
 def run(
     start_from: int = typer.Option(1, "--start-from", "-s", 
                                     help="Start from this experiment number (1-indexed)"),
+    start_from_run: int = typer.Option(0, "--start-from-run",
+                                        help="Start from this run index within the config (0-indexed, use with --start-from)"),
     no_confirm: bool = typer.Option(False, "--no-confirm", "-y",
                                      help="Run without confirmation prompts"),
     dry_run: bool = typer.Option(False, "--dry-run", "-n",
@@ -288,6 +520,16 @@ def run(
                                      help="Comma-separated list of sample counts for multi-run mode"),
     run_id_prefix: str = typer.Option(None, "--run-prefix",
                                        help="Prefix for run names (to distinguish multiple plan config runs)"),
+    timeout: int = typer.Option(DEFAULT_TIMEOUT_SECONDS, "--timeout", "-t",
+                                 help="Timeout in seconds for each experiment (default: 60)"),
+    max_retries: int = typer.Option(DEFAULT_MAX_RETRIES, "--max-retries", "-r",
+                                     help="Maximum retries on timeout (default: 3)"),
+    resume: Path = typer.Option(None, "--resume",
+                                 help="Resume from a saved progress file"),
+    skip_to_test: int = typer.Option(None, "--skip-to-test",
+                                      help="Skip to this test number (1-indexed) when resuming, to skip a stuck test"),
+    save_progress_on_error: bool = typer.Option(True, "--save-progress/--no-save-progress",
+                                                  help="Save progress state on error/timeout for later resume"),
 ):
     """
     Run all experiment plan configurations in sequence.
@@ -300,6 +542,15 @@ def run(
         --plan-config experiments/plan_runs.yaml  # Use YAML file
         --models llama-3.3-70b,gpt-4o --seeds 42,123  # Use CLI args
         --run-prefix a  # Add prefix to distinguish from other plan runs
+    
+    Timeout and retry:
+        --timeout 120  # 2 minute timeout per experiment (default: 60)
+        --max-retries 5  # 5 retries on timeout (default: 3)
+    
+    Resume from saved progress:
+        --resume tmp/progress/progress_plan_20240101_120000.json
+        --skip-to-test 203  # Skip stuck test 202, start from test 203
+        --start-from 15 --start-from-run 1  # Start from config 15, run index 1
 
     Environment Variables (used if no multi-run mode specified):
         EXPERIMENT_NUM_SAMPLES: Number of test samples (default: None - all samples)
@@ -312,12 +563,62 @@ def run(
     logger.add(sys.stderr, level=level, 
                format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>")
     
-    # Load plan configuration
-    try:
-        run_plan_config = load_plan_config(plan_config, models, seeds, num_samples, run_id_prefix)
-    except ValueError as e:
-        console.print(f"[red]Error loading plan config: {e}[/red]")
-        raise typer.Exit(1)
+    # Register signal handler for Ctrl+C
+    signal.signal(signal.SIGINT, sigint_handler)
+    
+    # Handle resume from progress file
+    resume_run_idx = start_from_run
+    previous_results = []
+    previous_test_results = []  # Test results to restore when resuming mid-experiment
+    
+    if resume:
+        try:
+            console.print(f"[cyan]Loading progress from: {resume}[/cyan]")
+            state = load_progress_state(resume)
+            
+            # Override settings from saved state
+            plan_dir = state.get("plan_dir", plan_dir)
+            start_from = state.get("current_config_idx", start_from)
+            resume_run_idx = state.get("current_run_idx", 0)
+            resume_test_idx = state.get("current_test_idx", 0)
+            previous_results = state.get("results_so_far", [])
+            previous_test_results = state.get("test_results", [])  # Load saved test results
+            
+            # Handle --skip-to-test override (1-indexed from CLI, convert to 0-indexed)
+            if skip_to_test is not None:
+                resume_test_idx = skip_to_test - 1  # Convert to 0-indexed
+                console.print(f"[yellow]Skipping to test {skip_to_test} (overriding saved test index)[/yellow]")
+            
+            # Load plan config from state if available
+            if state.get("plan_config"):
+                run_plan_config = PlanConfig.from_dict(state["plan_config"])
+                console.print(f"[green]Resumed from config {start_from}, run {resume_run_idx + 1}, test {resume_test_idx + 1}[/green]")
+                console.print(f"[dim]Loaded {len(previous_results)} previous experiment results[/dim]")
+                if previous_test_results:
+                    console.print(f"[dim]Loaded {len(previous_test_results)} previous test results to restore[/dim]")
+            else:
+                # Load fresh plan config
+                try:
+                    run_plan_config = load_plan_config(plan_config, models, seeds, num_samples, run_id_prefix)
+                except ValueError as e:
+                    console.print(f"[red]Error loading plan config: {e}[/red]")
+                    raise typer.Exit(1)
+        except FileNotFoundError as e:
+            console.print(f"[red]Error: {e}[/red]")
+            raise typer.Exit(1)
+    else:
+        resume_test_idx = 0
+        # Handle --skip-to-test without resume
+        if skip_to_test is not None:
+            resume_test_idx = skip_to_test - 1
+            console.print(f"[yellow]Starting from test {skip_to_test}[/yellow]")
+        
+        # Load plan configuration
+        try:
+            run_plan_config = load_plan_config(plan_config, models, seeds, num_samples, run_id_prefix)
+        except ValueError as e:
+            console.print(f"[red]Error loading plan config: {e}[/red]")
+            raise typer.Exit(1)
     
     # Get all configs
     configs = get_plan_configs(plan_dir)
@@ -347,6 +648,9 @@ def run(
         f"Total Configs: {total_configs}\n"
         f"{mode_info}\n"
         f"Total Experiments: {total_experiments}\n"
+        f"Timeout: {timeout}s per experiment\n"
+        f"Max Retries: {max_retries}\n"
+        f"Save Progress: {save_progress_on_error}\n"
         f"\n[bold]Runs:[/bold]\n" + runs_info,
         title="Configuration"
     ))
@@ -396,7 +700,7 @@ def run(
         console.print("\n[yellow]DRY RUN MODE - No experiments will be executed[/yellow]\n")
     
     # Prepare results tracking
-    results = []
+    results = list(previous_results)  # Start with any previous results from resume
     skipped = start_from - 1
     user_aborted = False
     
@@ -415,6 +719,10 @@ def run(
             continue
         
         for run_idx, run_config in enumerate(run_list):
+            # Skip runs that were already completed when resuming
+            if i == start_from and run_idx < resume_run_idx:
+                continue
+                
             experiment_num += 1
             
             console.print(f"\n{'='*60}")
@@ -466,10 +774,57 @@ def run(
             
             # Run experiment
             try:
+                # Update interrupt state before running (for Ctrl+C handling)
+                _interrupt_state.update(
+                    plan_dir=plan_dir,
+                    current_config_idx=i,
+                    current_run_idx=run_idx,
+                    results=results,
+                    plan_config=run_plan_config,
+                    configs=configs,
+                )
+                
                 # Reset API key rotation state before each experiment to avoid desync
                 reset_all_rotations()
-                result = run_single_experiment(config_path, run_config)
+                
+                # Determine start_from_test and previous_test_results for this experiment
+                # Only apply resume values to the first experiment after resume
+                current_start_test = 0
+                current_previous_test_results = None
+                if i == start_from and run_idx == resume_run_idx and resume_test_idx > 0:
+                    current_start_test = resume_test_idx
+                    current_previous_test_results = previous_test_results
+                    # Reset resume values after using them once
+                    resume_test_idx = 0
+                    previous_test_results = []
+                
+                result = run_single_experiment(
+                    config_path, 
+                    run_config,
+                    timeout_seconds=timeout,
+                    max_retries=max_retries,
+                    start_from_test=current_start_test,
+                    previous_test_results=current_previous_test_results,
+                )
                 results.append(result)
+                
+                # Clear test results from interrupt state after experiment completes
+                _interrupt_state.test_results = []
+                
+                # Save progress on timeout if enabled
+                if result.get("status") == "timeout" and save_progress_on_error:
+                    save_progress_state(
+                        PROGRESS_DIR,
+                        plan_dir,
+                        i,
+                        run_idx + 1,  # Next run to attempt
+                        0,  # Start from beginning of next experiment
+                        results,
+                        run_plan_config,
+                        configs,
+                    )
+                    console.print("[yellow]Continuing to next experiment...[/yellow]")
+                    
             except UserAbortError:
                 # User chose to abort after rate limit
                 console.print("\n[bold red]Batch execution aborted by user due to rate limit.[/bold red]")
@@ -482,15 +837,30 @@ def run(
                 if run_config is not None:
                     result_dict["run_config"] = run_config.to_dict()
                 results.append(result_dict)
+                
+                # Save progress on abort if enabled
+                if save_progress_on_error:
+                    save_progress_state(
+                        PROGRESS_DIR,
+                        plan_dir,
+                        i,
+                        run_idx,
+                        0,  # Test index not applicable for abort
+                        results,
+                        run_plan_config,
+                        configs,
+                    )
+                    
                 user_aborted = True
                 break
             
             # Show progress
             completed = len([r for r in results if r["status"] == "success"])
             failed = len([r for r in results if r["status"] == "error"])
+            timed_out = len([r for r in results if r["status"] == "timeout"])
             remaining = total_experiments - experiment_num - (skipped * num_runs)
             
-            console.print(f"\n[dim]Progress: {completed} completed, {failed} failed, ~{remaining} remaining[/dim]")
+            console.print(f"\n[dim]Progress: {completed} completed, {failed} failed, {timed_out} timed out, ~{remaining} remaining[/dim]")
         
         if skip_config:
             continue
@@ -508,6 +878,7 @@ def run(
         
         successful = sum(1 for r in results if r["status"] == "success")
         failed = sum(1 for r in results if r["status"] == "error")
+        timed_out = sum(1 for r in results if r["status"] == "timeout")
         skipped_count = sum(1 for r in results if r["status"] == "skipped")
         aborted_count = sum(1 for r in results if r["status"] == "aborted")
         total_duration = sum(r["duration"] for r in results)
@@ -521,6 +892,7 @@ def run(
         summary_table.add_row("Runs Per Config", str(num_runs))
         summary_table.add_row("Successful", f"[green]{successful}[/green]")
         summary_table.add_row("Failed", f"[red]{failed}[/red]" if failed > 0 else "0")
+        summary_table.add_row("Timed Out", f"[yellow]{timed_out}[/yellow]" if timed_out > 0 else "0")
         summary_table.add_row("Skipped", f"[yellow]{skipped_count + (skipped * num_runs)}[/yellow]")
         if aborted_count > 0:
             summary_table.add_row("Aborted", f"[yellow]{aborted_count}[/yellow]")
@@ -541,11 +913,21 @@ def run(
                     run_info = f" ({r.get('run_config', {}).get('name', '')})" if r.get('run_config') else ""
                     console.print(f"  - {r['config']}{run_info}: {r.get('error', 'Unknown error')}")
         
-        # Show hint for resuming if aborted
+        # Show timed out experiments if any
+        if timed_out > 0:
+            console.print("\n[yellow]Timed out experiments:[/yellow]")
+            for r in results:
+                if r["status"] == "timeout":
+                    run_info = f" ({r.get('run_config', {}).get('name', '')})" if r.get('run_config') else ""
+                    attempts = r.get('attempts', '?')
+                    console.print(f"  - {r['config']}{run_info}: {attempts} attempts exhausted")
+        
+        # Show hint for resuming if aborted or check for saved progress files
         if user_aborted:
-            resume_from = (len([r for r in results if r["status"] == "success"]) // num_runs) + skipped + 1
-            console.print(f"\n[cyan]To resume from where you left off, run:[/cyan]")
-            console.print(f"  python scripts/run_plan.py --start-from {resume_from} --plan-dir {plan_dir}")
+            console.print(f"\n[cyan]A progress file was saved. To resume, check:[/cyan]")
+            console.print(f"  ls {PROGRESS_DIR}")
+            console.print(f"\n[cyan]Then run:[/cyan]")
+            console.print(f"  python scripts/run_plan.py --resume <progress_file.json>")
 
 
 @app.command()

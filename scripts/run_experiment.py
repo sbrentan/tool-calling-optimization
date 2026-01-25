@@ -20,11 +20,18 @@ Usage:
     
     # List available models
     python scripts/run_experiment.py list-models
+
+Environment Variables for Per-Test Timeout:
+    EXPERIMENT_TEST_TIMEOUT: Timeout in seconds for each individual test (default: 60)
+    EXPERIMENT_TEST_MAX_RETRIES: Max retries on timeout per test (default: 2)
 """
 import sys
 import json
+import os
+import signal
 from pathlib import Path
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
@@ -45,6 +52,40 @@ load_dotenv()
 
 app = typer.Typer(help="Tool Calling Optimization Experiments")
 
+# Per-test timeout settings (can be overridden via environment variable)
+DEFAULT_TEST_TIMEOUT_SECONDS = int(os.environ.get("EXPERIMENT_TEST_TIMEOUT", 60))
+DEFAULT_TEST_MAX_RETRIES = int(os.environ.get("EXPERIMENT_TEST_MAX_RETRIES", 2))
+
+
+class TestTimeoutError(Exception):
+    """Raised when a single test times out."""
+    pass
+
+
+def run_with_timeout(func, timeout_seconds: int, *args, **kwargs):
+    """
+    Run a function with a timeout using ThreadPoolExecutor.
+    
+    Args:
+        func: Function to run
+        timeout_seconds: Timeout in seconds
+        *args, **kwargs: Arguments to pass to the function
+        
+    Returns:
+        Function result
+        
+    Raises:
+        TestTimeoutError: If the function times out
+    """
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(func, *args, **kwargs)
+        try:
+            return future.result(timeout=timeout_seconds)
+        except FuturesTimeoutError:
+            raise TestTimeoutError(
+                f"Test timed out after {timeout_seconds} seconds"
+            )
+
 
 def setup_logging(verbose: bool = False):
     """Configure logging."""
@@ -53,12 +94,28 @@ def setup_logging(verbose: bool = False):
     logger.add(sys.stderr, level=level, format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>")
 
 
-def run_experiment(config: ExperimentConfig) -> dict:
+# Global reference to interrupt state from run_plan (set by run_plan.py)
+_interrupt_state = None
+
+
+def set_interrupt_state(state):
+    """Set the interrupt state object from run_plan.py for test-level tracking."""
+    global _interrupt_state
+    _interrupt_state = state
+
+
+def run_experiment(
+    config: ExperimentConfig, 
+    start_from_test: int = 0,
+    previous_test_results: list[dict] = None,
+) -> dict:
     """
     Run a single experiment with the given configuration.
     
     Args:
         config: Experiment configuration
+        start_from_test: Skip to this test index (0-indexed) to resume mid-experiment
+        previous_test_results: Serialized test results from previous run (for resume)
         
     Returns:
         Dictionary with experiment results
@@ -66,6 +123,10 @@ def run_experiment(config: ExperimentConfig) -> dict:
     logger.info(f"Starting experiment: {config.name}")
     logger.info(f"Configuration: {config.num_tools} tools, {config.doc_length} docs, model={config.model}")
     logger.info(f"Methodology: {config.methodology}")
+    if start_from_test > 0:
+        logger.info(f"Resuming from test {start_from_test + 1}")
+    if previous_test_results:
+        logger.info(f"Restoring {len(previous_test_results)} previous test results")
     
     # Initialize components
     generator = ToolGenerator(seed=config.seed)
@@ -108,6 +169,10 @@ def run_experiment(config: ExperimentConfig) -> dict:
         raise
     
     evaluator = ToolCallEvaluator()
+    
+    # Restore previous test results if resuming
+    if previous_test_results:
+        evaluator.restore_results_from_serialization(previous_test_results)
     
     # Generate tools
     logger.info(f"Generating {config.num_tools} tools...")
@@ -162,8 +227,24 @@ def run_experiment(config: ExperimentConfig) -> dict:
     logger.info(f"  - No-tool tests: {no_tool_count}")
     logger.info(f"  - Multi-tool tests: {multi_tool_count}")
     
+    # Get timeout settings from config or environment
+    test_timeout = getattr(config, 'test_timeout', DEFAULT_TEST_TIMEOUT_SECONDS)
+    test_max_retries = getattr(config, 'test_max_retries', DEFAULT_TEST_MAX_RETRIES)
+    logger.info(f"  - Per-test timeout: {test_timeout}s, max retries: {test_max_retries}")
+    
+    if start_from_test > 0:
+        logger.info(f"  - Skipping first {start_from_test} tests (resuming)")
+    
     # Run tests using methodology
     for i, test_case in enumerate(test_cases):
+        # Skip tests before start_from_test when resuming
+        if i < start_from_test:
+            continue
+            
+        # Update interrupt state with current test index (for Ctrl+C handling)
+        if _interrupt_state is not None:
+            _interrupt_state.update_test_idx(i)
+        
         logger.info(f"")
         logger.info(f"======== Test {i+1}/{len(test_cases)} ========")
         logger.debug(f"Prompt: {test_case.prompt}")
@@ -175,18 +256,47 @@ def run_experiment(config: ExperimentConfig) -> dict:
             logger.debug(f"Expected tool: {test_case.expected_tool}")
         logger.debug(f"Expected category: {test_case.category}")
         
-        # Use methodology to run the test
-        methodology_result = methodology.run_single(
-            prompt=test_case.prompt,
-            tools=tools,
-            client=client,
-        )
+        # Use methodology to run the test with timeout and retry
+        methodology_result = None
+        last_error = None
+        
+        for attempt in range(test_max_retries + 1):
+            try:
+                methodology_result = run_with_timeout(
+                    methodology.run_single,
+                    test_timeout,
+                    prompt=test_case.prompt,
+                    tools=tools,
+                    client=client,
+                )
+                break  # Success, exit retry loop
+                
+            except TestTimeoutError as e:
+                last_error = e
+                if attempt < test_max_retries:
+                    logger.warning(f"Test {i+1} timed out (attempt {attempt + 1}/{test_max_retries + 1}), retrying...")
+                else:
+                    logger.error(f"Test {i+1} timed out after {test_max_retries + 1} attempts, skipping...")
+        
+        # If all retries failed, create an error result and continue
+        if methodology_result is None:
+            from src.methodologies.base import MethodologyResult, StepInfo, StepType
+            methodology_result = MethodologyResult(
+                success=False,
+                error=f"Test timed out after {test_max_retries + 1} attempts: {last_error}",
+                methodology=methodology.NAME,
+                steps=[StepInfo(step_number=1, step_type=StepType.ERROR, error=str(last_error))],
+            )
         
         # Convert to CallResult for evaluation
         result = methodology_result.to_call_result()
         
         # Evaluate
         test_result = evaluator.evaluate_single(test_case, result, methodology_result)
+        
+        # Update interrupt state with test results AFTER evaluation (for saving on interrupt)
+        if _interrupt_state is not None:
+            _interrupt_state.update_test_results(evaluator.get_results_for_serialization())
         
         status = "✓" if test_result.tool_correct else "✗"
         extra_info = ""
