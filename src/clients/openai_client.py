@@ -12,9 +12,11 @@ import json
 from typing import Any, Optional
 
 from loguru import logger
+import httpx
 
 from .base import BaseLLMClient, CallResult
 from .rate_limit_handler import handle_api_error_with_retry, UserAbortError
+from .timeout_utils import get_default_client_timeouts, is_interrupted
 
 
 class OpenAIClient(BaseLLMClient):
@@ -60,13 +62,21 @@ class OpenAIClient(BaseLLMClient):
         self.temperature = temperature
         self.base_url = base_url
         
-        # Import and initialize OpenAI client
+        # Import and initialize OpenAI client with HTTP timeouts
         try:
             from openai import OpenAI
-            client_kwargs = {"api_key": self.api_key}
+            
+            # Get timeout configuration
+            connect_timeout, read_timeout = get_default_client_timeouts()
+            http_client = httpx.Client(
+                timeout=httpx.Timeout(connect_timeout, read=read_timeout, write=read_timeout, pool=connect_timeout)
+            )
+            
+            client_kwargs = {"api_key": self.api_key, "http_client": http_client}
             if base_url:
                 client_kwargs["base_url"] = base_url
             self.client = OpenAI(**client_kwargs)
+            self._http_client = http_client  # Keep reference for cleanup
         except ImportError:
             raise ImportError(
                 "openai not installed. "
@@ -87,10 +97,18 @@ class OpenAIClient(BaseLLMClient):
         self.api_key = api_key
         try:
             from openai import OpenAI
-            client_kwargs = {"api_key": self.api_key}
+            
+            # Get timeout configuration
+            connect_timeout, read_timeout = get_default_client_timeouts()
+            http_client = httpx.Client(
+                timeout=httpx.Timeout(connect_timeout, read=read_timeout, write=read_timeout, pool=connect_timeout)
+            )
+            
+            client_kwargs = {"api_key": self.api_key, "http_client": http_client}
             if self.base_url:
                 client_kwargs["base_url"] = self.base_url
             self.client = OpenAI(**client_kwargs)
+            self._http_client = http_client
             logger.debug(f"Updated OpenAI client with new API key")
         except Exception as e:
             logger.error(f"Failed to update OpenAI client with new API key: {e}")

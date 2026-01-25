@@ -56,6 +56,14 @@ app = typer.Typer(help="Tool Calling Optimization Experiments")
 DEFAULT_TEST_TIMEOUT_SECONDS = int(os.environ.get("EXPERIMENT_TEST_TIMEOUT", 60))
 DEFAULT_TEST_MAX_RETRIES = int(os.environ.get("EXPERIMENT_TEST_MAX_RETRIES", 2))
 
+# Import timeout utilities
+from src.clients.timeout_utils import (
+    run_with_interruptible_timeout,
+    TimeoutError as InterruptibleTimeoutError,
+    InterruptedError as TimeoutInterruptedError,
+    is_interrupted,
+)
+
 
 class TestTimeoutError(Exception):
     """Raised when a single test times out."""
@@ -64,7 +72,11 @@ class TestTimeoutError(Exception):
 
 def run_with_timeout(func, timeout_seconds: int, *args, **kwargs):
     """
-    Run a function with a timeout using ThreadPoolExecutor.
+    Run a function with an interruptible timeout.
+    
+    This uses daemon threads and periodic interrupt checking to ensure:
+    1. Timeouts actually stop waiting for the function
+    2. Ctrl+C can interrupt the operation on Windows
     
     Args:
         func: Function to run
@@ -75,16 +87,16 @@ def run_with_timeout(func, timeout_seconds: int, *args, **kwargs):
         Function result
         
     Raises:
-        TestTimeoutError: If the function times out
+        TestTimeoutError: If the function times out or is interrupted
     """
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        future = executor.submit(func, *args, **kwargs)
-        try:
-            return future.result(timeout=timeout_seconds)
-        except FuturesTimeoutError:
-            raise TestTimeoutError(
-                f"Test timed out after {timeout_seconds} seconds"
-            )
+    try:
+        return run_with_interruptible_timeout(
+            func, timeout_seconds, *args, **kwargs
+        )
+    except InterruptibleTimeoutError as e:
+        raise TestTimeoutError(str(e))
+    except TimeoutInterruptedError as e:
+        raise TestTimeoutError(f"Test interrupted: {e}")
 
 
 def setup_logging(verbose: bool = False):
@@ -129,7 +141,8 @@ def run_experiment(
         logger.info(f"Restoring {len(previous_test_results)} previous test results")
     
     # Initialize components
-    generator = ToolGenerator(seed=config.seed)
+    tools_dir = getattr(config, 'tools_dir', None)
+    generator = ToolGenerator(tools_dir=tools_dir, seed=config.seed)
     
     # Create client using factory (auto-detects provider from model)
     try:
@@ -194,16 +207,19 @@ def run_experiment(
     prompt_type = getattr(config, 'prompt_type', 'concise')
     include_multi_tool = getattr(config, 'include_multi_tool', False)
     include_no_tool = getattr(config, 'include_no_tool', False)
+    validate_params = getattr(config, 'validate_params', False)
     
     logger.info(f"Using prompt type: {prompt_type}")
     logger.info(f"Include multi-tool tests: {include_multi_tool}")
     logger.info(f"Include no-tool tests: {include_no_tool}")
+    logger.info(f"Validate parameters: {validate_params}")
     
     test_cases = generator.generate_test_cases(
         tools,
         include_multi_tool=include_multi_tool,
         include_no_tool=include_no_tool,
-        prompt_type=prompt_type
+        prompt_type=prompt_type,
+        validate_params=validate_params
     )
     
     # Filter test cases by test_categories if specified

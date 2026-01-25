@@ -11,11 +11,13 @@ import time
 from typing import Any, Optional
 
 from loguru import logger
+import httpx
 
 from .base import BaseLLMClient, CallResult
 from .rate_limit_handler import handle_api_error_with_retry, UserAbortError
 from src.tools.base import Tool
 from src.adapters.gemini_adapter import GeminiAdapter
+from .timeout_utils import get_default_client_timeouts, is_interrupted
 
 
 class GeminiClient(BaseLLMClient):
@@ -60,10 +62,20 @@ class GeminiClient(BaseLLMClient):
         self.model = model
         self.temperature = temperature
         
-        # Import and initialize client
+        # Import and initialize client with HTTP timeouts
         try:
             from google import genai
-            self.client = genai.Client(api_key=self.api_key)
+            
+            # Get timeout configuration
+            connect_timeout, read_timeout = get_default_client_timeouts()
+            http_client = httpx.Client(
+                timeout=httpx.Timeout(connect_timeout, read=read_timeout, write=read_timeout, pool=connect_timeout)
+            )
+            
+            # Note: google-genai may not support custom http_client directly,
+            # but we set httpx defaults which it will use
+            self.client = genai.Client(api_key=self.api_key, http_options={'timeout': read_timeout})
+            self._http_client = http_client
         except ImportError:
             raise ImportError(
                 "google-genai not installed. "
@@ -84,7 +96,11 @@ class GeminiClient(BaseLLMClient):
         self.api_key = api_key
         try:
             from google import genai
-            self.client = genai.Client(api_key=self.api_key)
+            
+            # Get timeout configuration
+            connect_timeout, read_timeout = get_default_client_timeouts()
+            
+            self.client = genai.Client(api_key=self.api_key, http_options={'timeout': read_timeout})
             logger.debug(f"Updated Gemini client with new API key")
         except Exception as e:
             logger.error(f"Failed to update Gemini client with new API key: {e}")

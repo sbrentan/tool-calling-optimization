@@ -1,0 +1,882 @@
+category: category_6
+tools:
+- name: world
+  descriptions:
+    minimal: Fetches world news from Google News using the...
+    short: Fetches world news from Google News using the specified region and RapidAPI key.
+    medium: Fetches world news from Google News using the specified region and RapidAPI key.
+    long: Fetches world news from Google News using the specified region and RapidAPI key.
+    verbose: Fetches world news from Google News using the specified region and RapidAPI key.
+  parameters:
+  - name: lr
+    type: string
+    description: The language and regional code to filter news, e.g., 'en-US'. Defaults to 'en-US'.
+    required: false
+    default: en-US
+  tags:
+  - world
+  test_prompts:
+    single:
+    - Provide the world news in English for the US region.
+    - Get the world news in English for the US region.
+    single_clear:
+    - Provide the world news in English for the US region.
+    - Get the world news in English for the US region.
+- name: view_all_food_items
+  descriptions:
+    minimal: Retrieves a comprehensive list of all available...
+    short: Retrieves a comprehensive list of all available food items from the API with an optional limit on the number of
+      items.
+    medium: Retrieves a comprehensive list of all available food items from the API with an optional limit on the number of
+      items.
+    long: Retrieves a comprehensive list of all available food items from the API with an optional limit on the number of
+      items.
+    verbose: Retrieves a comprehensive list of all available food items from the API with an optional limit on the number
+      of items.
+  parameters:
+  - name: limit
+    type: integer
+    description: The maximum number of food items to retrieve. Defaults to 10.
+    required: false
+    default: '10'
+  tags:
+  - view
+  - all
+  - food
+  test_prompts:
+    single:
+    - Retrieve all available food items from the API.
+    single_clear:
+    - Retrieve all available food items from the API.
+- name: vehicle_market_value_by_vin
+  descriptions:
+    minimal: Fetches the market value of a vehicle based on...
+    short: Fetches the market value of a vehicle based on its VIN (Vehicle Identification Number) using the Toolbench RapidAPI
+      service.
+    medium: Fetches the market value of a vehicle based on its VIN (Vehicle Identification Number) using the Toolbench RapidAPI
+      service.
+    long: Fetches the market value of a vehicle based on its VIN (Vehicle Identification Number) using the Toolbench RapidAPI
+      service.
+    verbose: Fetches the market value of a vehicle based on its VIN (Vehicle Identification Number) using the Toolbench RapidAPI
+      service.
+  parameters:
+  - name: vin
+    type: string
+    description: The vehicle identification number to query.
+    required: true
+    default: 5UXKR0C58JL074657
+  - name: mileage
+    type: string
+    description: The current mileage of the vehicle. If not specified, the average mileage is used. Default is None.
+    required: false
+  - name: period
+    type: string
+    description: Number of days to look back for sales data, with a maximum value of 365 days. Default is None.
+    required: false
+  tags:
+  - vehicle
+  - market
+  - value
+  test_prompts:
+    single:
+    - What is the market value of a 2015 Toyota Camry with 70,000 miles, using sales data from the last 180 days?
+    single_clear:
+    - What is the market value of a 2015 Toyota Camry with 70,000 miles, using sales data from the last 180 days?
+- name: countries_detail
+  descriptions:
+    minimal: Fetch detailed information of a country from the...
+    short: Fetch detailed information of a country from the unofficial Shein API.
+    medium: Fetch detailed information of a country from the unofficial Shein API.
+    long: Fetch detailed information of a country from the unofficial Shein API.
+    verbose: Fetch detailed information of a country from the unofficial Shein API.
+  parameters:
+  - name: region
+    type: string
+    description: The region code to fetch details for a specific country. Default is 'US'.
+    required: true
+    default: US
+  tags:
+  - countries
+  - detail
+  test_prompts:
+    single:
+    - Fetch detailed information about the country in the 'EU' region.
+    single_clear:
+    - Fetch detailed information about the country in the 'EU' region.
+- name: get_username_point_blank
+  descriptions:
+    minimal: Fetch the username associated with a given Point...
+    short: Fetch the username associated with a given Point Blank ID using the RapidAPI service.
+    medium: Fetch the username associated with a given Point Blank ID using the RapidAPI service.
+    long: Fetch the username associated with a given Point Blank ID using the RapidAPI service.
+    verbose: Fetch the username associated with a given Point Blank ID using the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: string
+    description: The Point Blank ID to look up.
+    required: true
+    default: blackforster
+  tags:
+  - get
+  - username
+  - point
+  test_prompts:
+    single:
+    - What is the username associated with Point Blank ID 'PB123456789'?
+    single_clear:
+    - What is the username associated with Point Blank ID 'PB123456789'?
+- name: calculate_card_game_probability
+  descriptions:
+    minimal: Calculate the probability of drawing a certain...
+    short: Calculate the probability of drawing a certain number of desired cards from a deck.
+    medium: Calculate the probability of drawing a certain number of desired cards from a deck.
+    long: Calculate the probability of drawing a certain number of desired cards from a deck.
+    verbose: Calculate the probability of drawing a certain number of desired cards from a deck.
+  parameters:
+  - name: total_cards
+    type: integer
+    description: Total number of cards in the deck.
+    required: true
+  - name: desired_cards
+    type: integer
+    description: Number of cards in the deck that satisfy the conditions.
+    required: true
+  - name: cards_drawn
+    type: integer
+    description: Number of cards drawn from the deck.
+    required: true
+  tags:
+  - calculate
+  - card
+  - game
+  test_prompts:
+    single:
+    - In a deck of 52 cards, what is the probability of drawing exactly 5 red cards if you draw 10 cards?
+    - In a game with a 40-card deck, what's the chance of drawing no face cards in a 3-card draw?
+    single_clear:
+    - In a deck of 52 cards, what is the probability of drawing exactly 5 red cards if you draw 10 cards?
+    - In a game with a 40-card deck, what's the chance of drawing no face cards in a 3-card draw?
+- name: today
+  descriptions:
+    minimal: Fetches the treasure of the day from the...
+    short: Fetches the treasure of the day from the Uncovered Treasure API.
+    medium: Fetches the treasure of the day from the Uncovered Treasure API.
+    long: Fetches the treasure of the day from the Uncovered Treasure API.
+    verbose: Fetches the treasure of the day from the Uncovered Treasure API.
+  parameters:
+  - name: callback
+    type: string
+    description: Optional JSONP callback for the request. Defaults to None.
+    required: false
+  tags:
+  - today
+  test_prompts:
+    single:
+    - Fetch the treasure of the day from the Uncovered Treasure API.
+    - Retrieve the treasure of the day with a JSONP callback named 'handleTreasure'
+    - Can you fetch the treasure of the day without a JSONP callback?
+    - I need the treasure data today with a callback named 'myCallback'
+    single_clear:
+    - Fetch the treasure of the day from the Uncovered Treasure API.
+    - Retrieve the treasure of the day with a JSONP callback named 'handleTreasure'
+    - Can you fetch the treasure of the day without a JSONP callback?
+    - I need the treasure data today with a callback named 'myCallback'
+- name: factorial
+  descriptions:
+    minimal: Computes the factorial of a non-negative integer.
+    short: Computes the factorial of a non-negative integer.
+    medium: Computes the factorial of a non-negative integer.
+    long: Computes the factorial of a non-negative integer.
+    verbose: Computes the factorial of a non-negative integer.
+  parameters:
+  - name: n
+    type: integer
+    description: The non-negative integer to compute the factorial of.
+    required: true
+  tags:
+  - factorial
+  test_prompts:
+    single:
+    - Calculate the factorial of 7.
+    - Find the factorial of 6.
+    single_clear:
+    - Calculate the factorial of 7.
+    - Find the factorial of 6.
+- name: get_all_organizations_environment_admin
+  descriptions:
+    minimal: Fetches organization information for all...
+    short: Fetches organization information for all organizations in your Enterprise Hub.
+    medium: Fetches organization information for all organizations in your Enterprise Hub.
+    long: Fetches organization information for all organizations in your Enterprise Hub.
+    verbose: Fetches organization information for all organizations in your Enterprise Hub.
+  parameters:
+  - name: limit
+    type: string
+    description: The maximum number of organizations to return. Defaults to None.
+    required: false
+  - name: offset
+    type: string
+    description: The number of organizations to skip. Defaults to None.
+    required: false
+  - name: status
+    type: string
+    description: The status of organizations to return (e.g., 'ACTIVE'). Defaults to 'ACTIVE'.
+    required: false
+    default: ACTIVE
+  tags:
+  - get
+  - all
+  - organizations
+  test_prompts:
+    single:
+    - Skip the first 50 organizations and fetch the next 20 active ones.
+    single_clear:
+    - Skip the first 50 organizations and fetch the next 20 active ones.
+- name: select_race_based_on_race_number
+  descriptions:
+    minimal: Fetches the details for a Formula 1 race based on...
+    short: Fetches the details for a Formula 1 race based on the provided race number.
+    medium: Fetches the details for a Formula 1 race based on the provided race number.
+    long: Fetches the details for a Formula 1 race based on the provided race number.
+    verbose: Fetches the details for a Formula 1 race based on the provided race number.
+  parameters:
+  - name: race_no
+    type: string
+    description: The race number of the Formula 1 race to get details for.
+    required: true
+  tags:
+  - select
+  - race
+  - based
+  test_prompts:
+    single:
+    - What information is available for Formula 1 race number 10?
+    - What details are available for the Formula 1 race with number 20?
+    single_clear:
+    - What information is available for Formula 1 race number 10?
+    - What details are available for the Formula 1 race with number 20?
+- name: charts_chain
+  descriptions:
+    minimal: Retrieves the historical Total Value Locked (TVL)...
+    short: Retrieves the historical Total Value Locked (TVL) data for a specified blockchain chain.
+    medium: Retrieves the historical Total Value Locked (TVL) data for a specified blockchain chain.
+    long: Retrieves the historical Total Value Locked (TVL) data for a specified blockchain chain.
+    verbose: Retrieves the historical Total Value Locked (TVL) data for a specified blockchain chain.
+  parameters:
+  - name: chain
+    type: string
+    description: The slug identifier of the blockchain chain. This can be obtained from the /v1/tvl/chains endpoint or the
+      chains property on /v1/tvl/protocols.
+    required: true
+    default: Ethereum
+  tags:
+  - charts
+  - chain
+  test_prompts:
+    single:
+    - What is the historical Total Value Locked (TVL) data for the Ethereum chain?
+    single_clear:
+    - What is the historical Total Value Locked (TVL) data for the Ethereum chain?
+- name: top_popular_posts
+  descriptions:
+    minimal: Fetches the top popular posts from Reddit based...
+    short: Fetches the top popular posts from Reddit based on the specified time frame.
+    medium: Fetches the top popular posts from Reddit based on the specified time frame.
+    long: Fetches the top popular posts from Reddit based on the specified time frame.
+    verbose: Fetches the top popular posts from Reddit based on the specified time frame.
+  parameters:
+  - name: time
+    type: string
+    description: 'The time frame for fetching popular posts. It can be one of the following: ''hour'', ''day'', ''week'',
+      ''month'', ''year'', or ''all''.'
+    required: true
+    default: year
+  - name: cursor
+    type: string
+    description: A cursor for pagination to fetch the next set of results. Defaults to None.
+    required: false
+  tags:
+  - top
+  - popular
+  - posts
+  test_prompts:
+    single:
+    - Can you fetch the top popular posts from Reddit in the last 24 hours?
+    - I need to see the most popular posts on Reddit for the entire month of March 2023.
+    single_clear:
+    - Can you fetch the top popular posts from Reddit in the last 24 hours?
+    - I need to see the most popular posts on Reddit for the entire month of March 2023.
+- name: ski_weather_api
+  descriptions:
+    minimal: Fetches ski weather forecasts from the World...
+    short: Fetches ski weather forecasts from the World Weather Online API for a specified location.
+    medium: Fetches ski weather forecasts from the World Weather Online API for a specified location.
+    long: Fetches ski weather forecasts from the World Weather Online API for a specified location.
+    verbose: Fetches ski weather forecasts from the World Weather Online API for a specified location.
+  parameters:
+  - name: q
+    type: string
+    description: The location query (e.g., city name, latitude/longitude).
+    required: true
+    default: 45.45,6.7
+  - name: tp
+    type: string
+    description: Time period for the weather forecast (e.g., '3 hourly'). Default is None.
+    required: false
+  - name: lang
+    type: string
+    description: The language code for the weather forecast (default is 'en' for English).
+    required: false
+    default: en
+  - name: format
+    type: string
+    description: The response format, such as 'json' or 'xml'. Default is None.
+    required: false
+  - name: num_of_days
+    type: integer
+    description: The number of days for the weather forecast, with a maximum of 7 days. Default is 1.
+    required: false
+    default: '1'
+  tags:
+  - ski
+  - weather
+  - api
+  test_prompts:
+    single:
+    - Fetch ski weather forecasts for Aspen, Colorado with a 3-hourly time period in French.
+    single_clear:
+    - Fetch ski weather forecasts for Aspen, Colorado with a 3-hourly time period in French.
+- name: horse_stats
+  descriptions:
+    minimal: Fetches the racing statistics for a specified...
+    short: Fetches the racing statistics for a specified horse using the RapidAPI Horse Racing API.
+    medium: Fetches the racing statistics for a specified horse using the RapidAPI Horse Racing API.
+    long: Fetches the racing statistics for a specified horse using the RapidAPI Horse Racing API.
+    verbose: Fetches the racing statistics for a specified horse using the RapidAPI Horse Racing API.
+  parameters:
+  - name: id_horse
+    type: string
+    description: The unique identifier of the horse.
+    required: true
+    default: '230380'
+  tags:
+  - horse
+  - stats
+  test_prompts:
+    single:
+    - Retrieve the racing statistics for the horse 'HR567890'.
+    - What are the racing statistics for the oldest horse in the stable? Assume the ID is '97531'.
+    - What are the racing statistics for the horse named 'Lightning Bolt'? Assume the ID is '54321'.
+    single_clear:
+    - Retrieve the racing statistics for the horse 'HR567890'.
+    - What are the racing statistics for the oldest horse in the stable? Assume the ID is '97531'.
+    - What are the racing statistics for the horse named 'Lightning Bolt'? Assume the ID is '54321'.
+- name: user_data_by_name
+  descriptions:
+    minimal: Fetches user data from TikTok Solutions API for a...
+    short: Fetches user data from TikTok Solutions API for a given username.
+    medium: Fetches user data from TikTok Solutions API for a given username.
+    long: Fetches user data from TikTok Solutions API for a given username.
+    verbose: Fetches user data from TikTok Solutions API for a given username.
+  parameters:
+  - name: username
+    type: string
+    description: The username of the TikTok user whose data is to be retrieved.
+    required: true
+    default: mrbeast
+  tags:
+  - user
+  - data
+  - by
+  test_prompts:
+    single:
+    - What is the user data for the TikTok username 'charlidamelio'?
+    - Retrieve user data for TikTok user 'charlidamelio'
+    single_clear:
+    - What is the user data for the TikTok username 'charlidamelio'?
+    - Retrieve user data for TikTok user 'charlidamelio'
+- name: is_rotation
+  descriptions:
+    minimal: Checks if one string is a rotation of another...
+    short: Checks if one string is a rotation of another string.
+    medium: Checks if one string is a rotation of another string.
+    long: Checks if one string is a rotation of another string.
+    verbose: Checks if one string is a rotation of another string.
+  parameters:
+  - name: str1
+    type: string
+    description: The first string.
+    required: true
+  - name: str2
+    type: string
+    description: The second string.
+    required: true
+  tags:
+  - is
+  - rotation
+  test_prompts:
+    single:
+    - Is 'digital' a rotation of 'taldigi'?
+    - Verify if 'waterbottle' is a rotation of 'erbottlewat'.
+    - Verify if 'python' is a rotation of 'thonpy'.
+    - Determine if the string 'abcde' is a rotation of 'cdeab'.
+    - Verify if 'rotate' can be rotated to 'terora'.
+    - Can 'abcde' be rotated to form 'cdeab'?
+    - Check if 'csharp' is a rotation of 'harpsc'.
+    - Check if 'abcde' is a rotation of 'cdeab'.
+    - Check if 'abcde' is a rotation of 'cdeab'.
+    - Check if the string 'waterbottle' is a rotation of 'erbottlewat'.
+    - Is 'waterbottle' a rotation of 'erbottlewat'?
+    single_clear:
+    - Is 'digital' a rotation of 'taldigi'?
+    - Verify if 'waterbottle' is a rotation of 'erbottlewat'.
+    - Verify if 'python' is a rotation of 'thonpy'.
+    - Determine if the string 'abcde' is a rotation of 'cdeab'.
+    - Verify if 'rotate' can be rotated to 'terora'.
+    - Can 'abcde' be rotated to form 'cdeab'?
+    - Check if 'csharp' is a rotation of 'harpsc'.
+    - Check if 'abcde' is a rotation of 'cdeab'.
+    - Check if 'abcde' is a rotation of 'cdeab'.
+    - Check if the string 'waterbottle' is a rotation of 'erbottlewat'.
+    - Is 'waterbottle' a rotation of 'erbottlewat'?
+- name: merge_dictionaries
+  descriptions:
+    minimal: Merges two dictionaries into a single dictionary.
+    short: Merges two dictionaries into a single dictionary.
+    medium: Merges two dictionaries into a single dictionary.
+    long: Merges two dictionaries into a single dictionary.
+    verbose: Merges two dictionaries into a single dictionary.
+  parameters:
+  - name: dict1
+    type: object
+    description: The first dictionary.
+    required: true
+  - name: dict2
+    type: object
+    description: The second dictionary.
+    required: true
+  tags:
+  - merge
+  - dictionaries
+  test_prompts:
+    single:
+    - 'Can you merge two dictionaries: {''a'': 1, ''b'': 2} and {''b'': 3, ''c'': 4}?'
+    - 'I have two dictionaries: {''a'': 1, ''b'': 2} and {''b'': 3, ''c'': 4}. Can you merge them?'
+    - 'Merge these two dictionaries: {''name'': ''John'', ''age'': 30} and {''city'': ''New York'', ''job'': ''Engineer''}'
+    - 'Merge these dictionaries: {''a'': 1, ''b'': 2} and {''b'': 3, ''c'': 4}'
+    - 'Merge these two dictionaries: {''a'': 1, ''b'': 2} and {''b'': 3, ''c'': 4}'
+    single_clear:
+    - 'Can you merge two dictionaries: {''a'': 1, ''b'': 2} and {''b'': 3, ''c'': 4}?'
+    - 'I have two dictionaries: {''a'': 1, ''b'': 2} and {''b'': 3, ''c'': 4}. Can you merge them?'
+    - 'Merge these two dictionaries: {''name'': ''John'', ''age'': 30} and {''city'': ''New York'', ''job'': ''Engineer''}'
+    - 'Merge these dictionaries: {''a'': 1, ''b'': 2} and {''b'': 3, ''c'': 4}'
+    - 'Merge these two dictionaries: {''a'': 1, ''b'': 2} and {''b'': 3, ''c'': 4}'
+- name: user_metadata_information
+  descriptions:
+    minimal: Fetch and return metadata information for a...
+    short: Fetch and return metadata information for a specified TikTok user, such as number of followers, followings, avatar
+      URL, description, and more.
+    medium: Fetch and return metadata information for a specified TikTok user, such as number of followers, followings, avatar
+      URL, description, and more.
+    long: Fetch and return metadata information for a specified TikTok user, such as number of followers, followings, avatar
+      URL, description, and more.
+    verbose: Fetch and return metadata information for a specified TikTok user, such as number of followers, followings, avatar
+      URL, description, and more.
+  parameters:
+  - name: username
+    type: string
+    description: The TikTok username to fetch metadata for (e.g., "amazon").
+    required: true
+    default: tiktok
+  - name: fresh
+    type: string
+    description: If set to '1', forces the API to return fresh (non-cached) data. Defaults to '0'.
+    required: false
+    default: '0'
+  tags:
+  - user
+  - metadata
+  - information
+  test_prompts:
+    single:
+    - Fetch TikTok user metadata for username 'techlover88' without forcing fresh data.
+    single_clear:
+    - Fetch TikTok user metadata for username 'techlover88' without forcing fresh data.
+- name: fetchdividends
+  descriptions:
+    minimal: Fetches the dividends data for a given ISIN using...
+    short: Fetches the dividends data for a given ISIN using the RapidAPI service.
+    medium: Fetches the dividends data for a given ISIN using the RapidAPI service.
+    long: Fetches the dividends data for a given ISIN using the RapidAPI service.
+    verbose: Fetches the dividends data for a given ISIN using the RapidAPI service.
+  parameters:
+  - name: isin
+    type: string
+    description: The International Securities Identification Number (ISIN) for which to fetch dividends data.
+    required: true
+  tags:
+  - fetchdividends
+  test_prompts:
+    single:
+    - Fetch recent dividends data for the ISIN of Tesla Inc.
+    single_clear:
+    - Fetch recent dividends data for the ISIN of Tesla Inc.
+- name: new_titles
+  descriptions:
+    minimal: Fetches a listing of new title IDs added to...
+    short: Fetches a listing of new title IDs added to Watchmode within a specific date range.
+    medium: Fetches a listing of new title IDs added to Watchmode within a specific date range.
+    long: Fetches a listing of new title IDs added to Watchmode within a specific date range.
+    verbose: Fetches a listing of new title IDs added to Watchmode within a specific date range.
+  parameters:
+  - name: page
+    type: integer
+    description: Specifies the page of results to return. Defaults to 1.
+    required: false
+    default: '1'
+  - name: types
+    type: string
+    description: 'Filters results to include specific types of titles. Acceptable values are: ''movie'', ''tv_series'', ''tv_special'',
+      ''tv_miniseries'', ''short_film''. Multiple types can be passed as a comma-delimited string. Defaults to ''movie,tv_series''.'
+    required: false
+    default: movie,tv_series
+  - name: limit
+    type: integer
+    description: Specifies the number of titles to return per page. The default and maximum is 250. Defaults to 50.
+    required: false
+    default: '50'
+  - name: end_date
+    type: integer
+    description: Sets the end date to include changes from a specific date range. The format is YYYYMMDD (e.g., 20210101 for
+      January 1st, 2021). If not specified, the API returns changes since the beginning of yesterday.
+    required: false
+  - name: start_date
+    type: integer
+    description: Sets the start date to include changes from a specific date range. The format is YYYYMMDD (e.g., 20210101
+      for January 1st, 2021). If not specified, the API returns changes since the beginning of yesterday.
+    required: false
+  tags:
+  - new
+  - titles
+  test_prompts:
+    single:
+    - Please provide new titles added in the last week, including both movies and TV series.
+    - Retrieve new titles of TV miniseries added on March 1, 2023.
+    single_clear:
+    - Please provide new titles added in the last week, including both movies and TV series.
+    - Retrieve new titles of TV miniseries added on March 1, 2023.
+- name: v1_motorcycles
+  descriptions:
+    minimal: Fetches motorcycle data from the Motorcycles API...
+    short: Fetches motorcycle data from the Motorcycles API, returning up to 30 results that match the given parameters.
+    medium: Fetches motorcycle data from the Motorcycles API, returning up to 30 results that match the given parameters.
+    long: Fetches motorcycle data from the Motorcycles API, returning up to 30 results that match the given parameters.
+    verbose: Fetches motorcycle data from the Motorcycles API, returning up to 30 results that match the given parameters.
+  parameters:
+  - name: model
+    type: string
+    description: Name of the motorcycle model. Supports partial matching (default is 'Ninja').
+    required: true
+    default: Ninja
+  - name: offset
+    type: integer
+    description: Number of results to offset for pagination. Default is None.
+    required: false
+  - name: make
+    type: string
+    description: Name of the manufacturer/brand. Supports partial matching (default is 'Kawasaki').
+    required: true
+    default: Kawasaki
+  - name: year
+    type: string
+    description: Release year of the motorcycle model in YYYY format. Default is None.
+    required: false
+  tags:
+  - v1
+  - motorcycles
+  test_prompts:
+    single:
+    - Retrieve information about all Kawasaki Ninja models.
+    - Find all motorcycles made by Honda in the year 2005.
+    single_clear:
+    - Retrieve information about all Kawasaki Ninja models.
+    - Find all motorcycles made by Honda in the year 2005.
+- name: gethistoricalscoresbyyear
+  descriptions:
+    minimal: Fetches historical Environmental, Social...
+    short: Fetches historical Environmental, Social, Governance and Overall scores for companies based on the given year.
+    medium: Fetches historical Environmental, Social, Governance and Overall scores for companies based on the given year.
+    long: Fetches historical Environmental, Social, Governance and Overall scores for companies based on the given year.
+    verbose: Fetches historical Environmental, Social, Governance and Overall scores for companies based on the given year.
+  parameters:
+  - name: year
+    type: string
+    description: The year for which to fetch the historical scores (must be less than or equal to 2020).
+    required: true
+    default: '2020'
+  - name: content_type
+    type: string
+    description: The type of content to return. Default is None.
+    required: false
+  - name: sedol
+    type: string
+    description: The SEDOL identifier of the company. Default is None.
+    required: false
+  - name: isin
+    type: string
+    description: The ISIN identifier of the company. Default is None.
+    required: false
+  - name: companyname
+    type: string
+    description: The name of the company. Default is 'Apple Inc.'.
+    required: false
+    default: Apple Inc.
+  tags:
+  - gethistoricalscoresbyyear
+  test_prompts:
+    single:
+    - Retrieve the historical ESG scores for Google LLC in the year 2020.
+    - Fetch the historical ESG scores for Microsoft Corporation in the year 2019.
+    - What were the ESG scores for 'Apple Inc.' in 2019?
+    single_clear:
+    - Retrieve the historical ESG scores for Google LLC in the year 2020.
+    - Fetch the historical ESG scores for Microsoft Corporation in the year 2019.
+    - What were the ESG scores for 'Apple Inc.' in 2019?
+- name: binance_charts
+  descriptions:
+    minimal: Fetch candlestick chart data for a specified...
+    short: Fetch candlestick chart data for a specified cryptocurrency trading pair from Binance.
+    medium: Fetch candlestick chart data for a specified cryptocurrency trading pair from Binance.
+    long: Fetch candlestick chart data for a specified cryptocurrency trading pair from Binance.
+    verbose: Fetch candlestick chart data for a specified cryptocurrency trading pair from Binance.
+  parameters:
+  - name: symbol
+    type: string
+    description: 'Symbol for the trading pair. Example: ''BTCUSDT'''
+    required: true
+    default: BTCUSDT
+  - name: content_type
+    type: string
+    description: Type of content for the query. Defaults to 'application/x-www-form-urlencoded'.
+    required: false
+    default: application/x-www-form-urlencoded
+  - name: limit
+    type: integer
+    description: Number of candles to include in the chart. Defaults to 16. Maximum is 1000.
+    required: false
+    default: '16'
+  - name: interval
+    type: string
+    description: 'Time interval for each candle. Defaults to ''1m''. Valid intervals are:'
+    required: false
+    default: 1m
+  - name: lastprice
+    type: integer
+    description: The specified last price for the chart. Defaults to 57500.
+    required: false
+    default: '57500'
+  tags:
+  - binance
+  - charts
+  test_prompts:
+    single:
+    - Can you fetch the candlestick chart data for 'ETHBTC' for the last 30 minutes with a 5-minute interval?
+    - Get the 5-minute candlestick data for the ADAUSDT trading pair for the last 100 candles.
+    - Retrieve the 3-day candlestick chart for the EOSUSDT pair with a limit of 200.
+    single_clear:
+    - Can you fetch the candlestick chart data for 'ETHBTC' for the last 30 minutes with a 5-minute interval?
+    - Get the 5-minute candlestick data for the ADAUSDT trading pair for the last 100 candles.
+    - Retrieve the 3-day candlestick chart for the EOSUSDT pair with a limit of 200.
+- name: search
+  descriptions:
+    minimal: Search the Icons8 repository for icons based on...
+    short: Search the Icons8 repository for icons based on various parameters.
+    medium: Search the Icons8 repository for icons based on various parameters.
+    long: Search the Icons8 repository for icons based on various parameters.
+    verbose: Search the Icons8 repository for icons based on various parameters.
+  parameters:
+  - name: term
+    type: string
+    description: The term to search for within the Icons8 repository.
+    required: true
+    default: apple
+  - name: size
+    type: integer
+    description: The size of the icons in pixels. Defaults to 64.
+    required: false
+    default: '64'
+  - name: limit
+    type: integer
+    description: The maximum number of results to return. Defaults to 20.
+    required: false
+    default: '20'
+  - name: color
+    type: string
+    description: The color of the icons in hexadecimal format. Defaults to 'ff0000'.
+    required: false
+    default: ff0000
+  - name: offset
+    type: integer
+    description: The number of results to skip before starting to collect the output. Defaults to 0.
+    required: false
+    default: '0'
+  tags:
+  - search
+  test_prompts:
+    single:
+    - Find 12 yellow icons about 'travel' starting from the 15th result.
+    - Can you search SoundCloud for users who are known for 'jazz music'?
+    - Please get me 15 gray icons of size 64 for 'science' starting from the 40th result.
+    - Retrieve details for the movie 'Forrest Gump' on the first page of search results.
+    - Search for 'vegan recipes' on YouTube in Spanish from Spain.
+    - I'm interested in finding refurbished smartphones with a minimum rating of 2, priced between $100 and $300 in the US.
+    - Search for information on Tesla (TSLA) in the US market and return results in English.
+    - Search for articles about the latest advancements in renewable energy.
+    - Look up information on the movie 'Interstellar'.
+    - I need 5 large green icons about 'tree' from the beginning.
+    - Search for 'Kanye West' on Spotify and return results of type 'artist'.
+    - Search for details on the 'NFL Draft' in American Football.
+    - Search for 'marketing manager' jobs in Los Angeles, considering only full-time positions.
+    - What are the hunting dog breeds available? Please search for 'hunting dogs'
+    - Search YouTube for videos on 'quantum physics'.
+    - Search for companies related to 'renewable energy, sustainability' in the Market Intelligence API.
+    - Find details about 'To Kill a Mockingbird' by Harper Lee.
+    - Find dog breeds related to the keyword 'retriever'.
+    - Find dog breeds related to the keyword 'retriever'.
+    - Search for icons related to 'health' with a size of 256 pixels and a green color, skipping the first 10 results.
+    - Search for the term 'pop music' on Spotify across all types of content.
+    - Fetch me 15 blue icons of size 64 pixels about 'computer' starting from the 10th result.
+    - Search for 'phone' icons with a size of 100 pixels and a color of 'ffff00', skipping the first 5 results.
+    - What are the top tracks on SoundCloud related to 'electronic music'?
+    - Please search for gaming laptops under $1000 with a minimum price of $500, available in Canada, and only show new items.
+    - Find videos discussing 'artificial intelligence' on YouTube.
+    - What are the breeds of dogs that are known for their intelligence?
+    - Search for universities in the United States and Canada, and include any available polygons in the response.
+    - Search for songs by 'Shakira' titled 'Waka Waka' in Spanish, limit the results to 15 and start from the 10th result.
+    - Find me some images of vintage cars, but only those from the 1960s and in color.
+    - I'm looking for new cameras that are on sale and offer free shipping in the US.
+    - Look up videos on 'quantum physics' using the YouTube API.
+    - Retrieve information about parks in London, but only from the UK.
+    - I'm looking for recipes that use quinoa and are suitable for vegans. Can you provide me with some options?
+    - Could you search for 'The Matrix' and tell me what's on the third page of results?
+    - Show all movies about 'history' that are long in duration and available in 'IN'.
+    - Look up information on the latest tech gadgets in France in French, with 15 results per page.
+    - Can you search for 'coffee makers' on Amazon and sort them by 'NEWEST' to see the latest models?
+    - How about 'Breaking Bad'? Can you find anything from the sixth page?
+    - I'm looking for 'Interstellar'. What information can you provide from the fifth page?
+    - Find news on the latest advancements in space exploration.
+    - Search for COVID-19 vaccine updates in the UK in English, with 30 results per page.
+    - Find all products from brand 'Samsung' within the electronics category on Amazon, sorted by highest price.
+    - Search for dog breeds using the keyword 'terrier'.
+    - Search for dog breeds using the keyword 'terrier'.
+    - Find the repositories of the user 'mojombo' on GitHub.
+    single_clear:
+    - Find 12 yellow icons about 'travel' starting from the 15th result.
+    - Can you search SoundCloud for users who are known for 'jazz music'?
+    - Please get me 15 gray icons of size 64 for 'science' starting from the 40th result.
+    - Retrieve details for the movie 'Forrest Gump' on the first page of search results.
+    - Search for 'vegan recipes' on YouTube in Spanish from Spain.
+    - I'm interested in finding refurbished smartphones with a minimum rating of 2, priced between $100 and $300 in the US.
+    - Search for information on Tesla (TSLA) in the US market and return results in English.
+    - Search for articles about the latest advancements in renewable energy.
+    - Look up information on the movie 'Interstellar'.
+    - I need 5 large green icons about 'tree' from the beginning.
+    - Search for 'Kanye West' on Spotify and return results of type 'artist'.
+    - Search for details on the 'NFL Draft' in American Football.
+    - Search for 'marketing manager' jobs in Los Angeles, considering only full-time positions.
+    - What are the hunting dog breeds available? Please search for 'hunting dogs'
+    - Search YouTube for videos on 'quantum physics'.
+    - Search for companies related to 'renewable energy, sustainability' in the Market Intelligence API.
+    - Find details about 'To Kill a Mockingbird' by Harper Lee.
+    - Find dog breeds related to the keyword 'retriever'.
+    - Find dog breeds related to the keyword 'retriever'.
+    - Search for icons related to 'health' with a size of 256 pixels and a green color, skipping the first 10 results.
+    - Search for the term 'pop music' on Spotify across all types of content.
+    - Fetch me 15 blue icons of size 64 pixels about 'computer' starting from the 10th result.
+    - Search for 'phone' icons with a size of 100 pixels and a color of 'ffff00', skipping the first 5 results.
+    - What are the top tracks on SoundCloud related to 'electronic music'?
+    - Please search for gaming laptops under $1000 with a minimum price of $500, available in Canada, and only show new items.
+    - Find videos discussing 'artificial intelligence' on YouTube.
+    - What are the breeds of dogs that are known for their intelligence?
+    - Search for universities in the United States and Canada, and include any available polygons in the response.
+    - Search for songs by 'Shakira' titled 'Waka Waka' in Spanish, limit the results to 15 and start from the 10th result.
+    - Find me some images of vintage cars, but only those from the 1960s and in color.
+    - I'm looking for new cameras that are on sale and offer free shipping in the US.
+    - Look up videos on 'quantum physics' using the YouTube API.
+    - Retrieve information about parks in London, but only from the UK.
+    - I'm looking for recipes that use quinoa and are suitable for vegans. Can you provide me with some options?
+    - Could you search for 'The Matrix' and tell me what's on the third page of results?
+    - Show all movies about 'history' that are long in duration and available in 'IN'.
+    - Look up information on the latest tech gadgets in France in French, with 15 results per page.
+    - Can you search for 'coffee makers' on Amazon and sort them by 'NEWEST' to see the latest models?
+    - How about 'Breaking Bad'? Can you find anything from the sixth page?
+    - I'm looking for 'Interstellar'. What information can you provide from the fifth page?
+    - Find news on the latest advancements in space exploration.
+    - Search for COVID-19 vaccine updates in the UK in English, with 30 results per page.
+    - Find all products from brand 'Samsung' within the electronics category on Amazon, sorted by highest price.
+    - Search for dog breeds using the keyword 'terrier'.
+    - Search for dog breeds using the keyword 'terrier'.
+    - Find the repositories of the user 'mojombo' on GitHub.
+- name: independent_samples_t_test
+  descriptions:
+    minimal: Conducts a two-sample independent t-test and...
+    short: Conducts a two-sample independent t-test and returns the t-statistic, p-value, and conclusion.
+    medium: Conducts a two-sample independent t-test and returns the t-statistic, p-value, and conclusion.
+    long: Conducts a two-sample independent t-test and returns the t-statistic, p-value, and conclusion.
+    verbose: Conducts a two-sample independent t-test and returns the t-statistic, p-value, and conclusion.
+  parameters:
+  - name: sample1
+    type: string
+    description: The first sample of observations.
+    required: true
+    default: 0.05
+  - name: sample2
+    type: string
+    description: The second sample of observations.
+    required: true
+    default: 0.05
+  - name: alpha
+    type: number
+    description: The significance level of the test. Defaults to 0.05.
+    required: false
+  tags:
+  - independent
+  - samples
+  - t
+  test_prompts:
+    single:
+    - 'Conduct a t-test on two samples: [10, 15, 20, 25, 30] and [12, 17, 22, 27, 32] with a significance level of 0.01.'
+    - Evaluate if two sets of test scores, [85, 88, 90, 92, 95] and [80, 82, 84, 86, 88], show a significant difference at
+      a 0.10 significance level.
+    - I'm conducting a study on the effectiveness of two different teaching methods. The first method has test scores [85,
+      88, 90, 87, 92] and the second method has scores [80, 82, 85, 84, 87]. I want to know if there's a significant difference
+      in the effectiveness of these methods using an independent samples t-test at a significance level of 0.01.
+    - 'Conduct a t-test to compare the average scores of two groups in a test: Group C [80, 85, 90, 82, 88] and Group D [75,
+      80, 85, 77, 82] with a significance level of 0.05.'
+    - Perform an independent samples t-test to determine if there is a significant difference in the recovery times of patients
+      given two different medications. The data for Medication X is [3, 4, 5, 4, 3] days and for Medication Y is [2, 3, 2,
+      3, 2] days. Assume a standard significance level of 0.05.
+    - 'Perform a t-test to compare the average salaries of two departments: Department A [50000, 55000, 60000, 52000, 58000]
+      dollars and Department B [45000, 48000, 50000, 47000, 52000] dollars with a significance level of 0.05.'
+    - 'Perform an independent samples t-test on two groups of test scores: [85, 90, 92, 88, 91] and [80, 82, 84, 86, 88] at
+      a significance level of 0.01.'
+    - Analyze the effectiveness of two manufacturing processes by comparing their defect rates. Process 1 has defect rates
+      [0.05, 0.04, 0.06, 0.05, 0.04] and Process 2 has [0.03, 0.02, 0.03, 0.02, 0.03]. Use a significance level of 0.01.
+    single_clear:
+    - 'Conduct a t-test on two samples: [10, 15, 20, 25, 30] and [12, 17, 22, 27, 32] with a significance level of 0.01.'
+    - Evaluate if two sets of test scores, [85, 88, 90, 92, 95] and [80, 82, 84, 86, 88], show a significant difference at
+      a 0.10 significance level.
+    - I'm conducting a study on the effectiveness of two different teaching methods. The first method has test scores [85,
+      88, 90, 87, 92] and the second method has scores [80, 82, 85, 84, 87]. I want to know if there's a significant difference
+      in the effectiveness of these methods using an independent samples t-test at a significance level of 0.01.
+    - 'Conduct a t-test to compare the average scores of two groups in a test: Group C [80, 85, 90, 82, 88] and Group D [75,
+      80, 85, 77, 82] with a significance level of 0.05.'
+    - Perform an independent samples t-test to determine if there is a significant difference in the recovery times of patients
+      given two different medications. The data for Medication X is [3, 4, 5, 4, 3] days and for Medication Y is [2, 3, 2,
+      3, 2] days. Assume a standard significance level of 0.05.
+    - 'Perform a t-test to compare the average salaries of two departments: Department A [50000, 55000, 60000, 52000, 58000]
+      dollars and Department B [45000, 48000, 50000, 47000, 52000] dollars with a significance level of 0.05.'
+    - 'Perform an independent samples t-test on two groups of test scores: [85, 90, 92, 88, 91] and [80, 82, 84, 86, 88] at
+      a significance level of 0.01.'
+    - Analyze the effectiveness of two manufacturing processes by comparing their defect rates. Process 1 has defect rates
+      [0.05, 0.04, 0.06, 0.05, 0.04] and Process 2 has [0.03, 0.02, 0.03, 0.02, 0.03]. Use a significance level of 0.01.

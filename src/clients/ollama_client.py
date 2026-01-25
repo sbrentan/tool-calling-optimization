@@ -13,6 +13,7 @@ from loguru import logger
 
 from .base import BaseLLMClient, CallResult
 from .rate_limit_handler import handle_api_error_with_retry, UserAbortError
+from .timeout_utils import get_default_client_timeouts, is_interrupted
 
 
 class OllamaClient(BaseLLMClient):
@@ -57,13 +58,19 @@ class OllamaClient(BaseLLMClient):
         self.temperature = temperature
         self.base_url = base_url or os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
         
-        # Import and initialize Ollama client via langchain
+        # Import and initialize Ollama client via langchain with timeout
         try:
             from langchain_ollama import ChatOllama
+            
+            # Get timeout configuration
+            connect_timeout, read_timeout = get_default_client_timeouts()
+            
             self.client = ChatOllama(
                 model=self.model,
                 base_url=self.base_url,
                 temperature=self.temperature,
+                # Langchain's ChatOllama supports timeout parameter
+                timeout=read_timeout,
             )
         except ImportError:
             raise ImportError(
@@ -79,10 +86,15 @@ class OllamaClient(BaseLLMClient):
         # Reinitialize client with new model
         try:
             from langchain_ollama import ChatOllama
+            
+            # Get timeout configuration
+            connect_timeout, read_timeout = get_default_client_timeouts()
+            
             self.client = ChatOllama(
                 model=self.model,
                 base_url=self.base_url,
                 temperature=self.temperature,
+                timeout=read_timeout,
             )
             logger.info(f"Switched to model: {model}")
         except Exception as e:

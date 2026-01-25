@@ -7,16 +7,20 @@ This module loads tool definitions from YAML files and generates Tool objects wi
 - Similar tool variants for testing
 - No-tool test scenarios (where no tool should be called)
 """
+import json
 import os
 import random
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Optional, Union
 import yaml
 from loguru import logger
 from .base import Tool, ToolParameter, TestCase, MultiToolTestCase, AmbiguousTestCase
 
 # Type alias for any test case
 AnyTestCase = Union[TestCase, MultiToolTestCase, AmbiguousTestCase]
+
+
+TOOLS_DIR = Path(__file__).parent.parent.parent / "tools"
 
 
 class ToolGenerator:
@@ -39,7 +43,6 @@ class ToolGenerator:
         
         Args:
             tools_dir: Path to directory containing YAML tool definitions.
-                      Defaults to 'tools/' in project root.
             seed: Random seed for reproducibility.
         """
         self.seed = seed
@@ -49,14 +52,15 @@ class ToolGenerator:
         # Find tools directory
         if tools_dir is None:
             # Default: look for 'tools/' relative to project root
-            project_root = Path(__file__).parent.parent.parent
-            tools_dir = project_root / "tools"
+            tools_dir = TOOLS_DIR
         else:
             tools_dir = Path(tools_dir)
         
         self.tools_dir = tools_dir
         self._tools_cache: dict[str, list[dict]] = {}  # category -> tools
+        self._prompts_mapping: dict[str, dict[str, Any]] = {}  # tool_name -> {prompts, expected_answers}
         self._load_all_tools()
+        self._load_prompts_mapping()
     
     def _load_all_tools(self) -> None:
         """Load all tool definitions from YAML files."""
@@ -80,6 +84,61 @@ class ToolGenerator:
         
         total_tools = sum(len(tools) for tools in self._tools_cache.values())
         logger.info(f"Total tools loaded: {total_tools} across {len(self._tools_cache)} categories")
+    
+    def _load_prompts_mapping(self) -> None:
+        """
+        Load prompts_mapping.json if it exists in the tools directory.
+        
+        This file contains expected parameters for each prompt, enabling
+        parameter validation during evaluation.
+        """
+        mapping_file = self.tools_dir / "prompts_mapping.json"
+        if not mapping_file.exists():
+            logger.debug(f"No prompts_mapping.json found in {self.tools_dir}")
+            return
+        
+        try:
+            with open(mapping_file, 'r', encoding='utf-8') as f:
+                self._prompts_mapping = json.load(f)
+            logger.info(f"Loaded prompts mapping for {len(self._prompts_mapping)} tools")
+        except Exception as e:
+            logger.error(f"Failed to load prompts_mapping.json: {e}")
+            self._prompts_mapping = {}
+    
+    def has_prompts_mapping(self) -> bool:
+        """Check if prompts mapping is available for parameter validation."""
+        return len(self._prompts_mapping) > 0
+    
+    def get_expected_params_for_prompt(
+        self, tool_name: str, prompt: str
+    ) -> Optional[dict[str, Any]]:
+        """
+        Get expected parameters for a specific prompt.
+        
+        Args:
+            tool_name: Name of the tool
+            prompt: The test prompt
+            
+        Returns:
+            Expected parameters dict or None if not found
+        """
+        if tool_name not in self._prompts_mapping:
+            return None
+        
+        tool_data = self._prompts_mapping[tool_name]
+        prompts = tool_data.get("prompts", [])
+        answers = tool_data.get("expected_answers", [])
+        
+        # Find the prompt index
+        try:
+            idx = prompts.index(prompt)
+            if idx < len(answers):
+                answer = answers[idx]
+                return answer.get("arguments", {})
+        except ValueError:
+            pass
+        
+        return None
     
     def get_categories(self) -> list[str]:
         """Get list of available tool categories."""
@@ -296,7 +355,8 @@ class ToolGenerator:
         include_multi_tool: bool = False,
         include_no_tool: bool = False,
         include_ambiguous: bool = False,
-        prompt_type: str = "concise"
+        prompt_type: str = "concise",
+        validate_params: bool = False
     ) -> list[AnyTestCase]:
         """
         Generate test cases for the given tools.
@@ -307,12 +367,20 @@ class ToolGenerator:
             include_no_tool: Whether to include no-tool test scenarios
             include_ambiguous: Whether to include ambiguous test scenarios
             prompt_type: Type of prompts to use ('concise' or 'clear')
+            validate_params: Whether to include expected parameters from prompts_mapping.json
             
         Returns:
             List of TestCase, MultiToolTestCase, and AmbiguousTestCase objects
         """
         test_cases: list[AnyTestCase] = []
         tool_name_to_category = {t.name: t.category for t in tools}
+        
+        # Warn if validate_params requested but no mapping available
+        if validate_params and not self.has_prompts_mapping():
+            logger.warning(
+                "validate_params=True but no prompts_mapping.json found in tools directory. "
+                "Parameter validation will be skipped."
+            )
         
         for tool in tools:
             # Find the original definition to get test prompts
@@ -332,9 +400,15 @@ class ToolGenerator:
             else:
                 prompt = f"Use {tool.name.replace('_', ' ')} to perform the operation"
             
+            # Get expected parameters if validation is enabled
+            expected_params = None
+            if validate_params and self.has_prompts_mapping():
+                expected_params = self.get_expected_params_for_prompt(tool.name, prompt)
+            
             test_cases.append(TestCase(
                 prompt=prompt,
                 expected_tool=tool.name,
+                expected_params=expected_params,
                 category=tool.category,
                 difficulty=self._get_difficulty(tool.complexity, len(tools)),
                 description=f"Test: {prompt}",

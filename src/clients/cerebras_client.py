@@ -10,9 +10,11 @@ import json
 from typing import Any, Optional
 
 from loguru import logger
+import httpx
 
 from .base import BaseLLMClient, CallResult
 from .rate_limit_handler import handle_api_error_with_retry, UserAbortError
+from .timeout_utils import get_default_client_timeouts, is_interrupted
 
 
 class CerebrasClient(BaseLLMClient):
@@ -55,10 +57,18 @@ class CerebrasClient(BaseLLMClient):
         self.model = model
         self.temperature = temperature
         
-        # Import and initialize Cerebras client
+        # Import and initialize Cerebras client with HTTP timeouts
         try:
             from cerebras.cloud.sdk import Cerebras
-            self.client = Cerebras(api_key=self.api_key)
+            
+            # Get timeout configuration
+            connect_timeout, read_timeout = get_default_client_timeouts()
+            http_client = httpx.Client(
+                timeout=httpx.Timeout(connect_timeout, read=read_timeout, write=read_timeout, pool=connect_timeout)
+            )
+            
+            self.client = Cerebras(api_key=self.api_key, http_client=http_client)
+            self._http_client = http_client  # Keep reference for cleanup
         except ImportError:
             raise ImportError(
                 "cerebras-cloud-sdk not installed. "
@@ -79,7 +89,15 @@ class CerebrasClient(BaseLLMClient):
         self.api_key = api_key
         try:
             from cerebras.cloud.sdk import Cerebras
-            self.client = Cerebras(api_key=self.api_key)
+            
+            # Get timeout configuration
+            connect_timeout, read_timeout = get_default_client_timeouts()
+            http_client = httpx.Client(
+                timeout=httpx.Timeout(connect_timeout, read=read_timeout, write=read_timeout, pool=connect_timeout)
+            )
+            
+            self.client = Cerebras(api_key=self.api_key, http_client=http_client)
+            self._http_client = http_client
             logger.debug(f"Updated Cerebras client with new API key")
         except Exception as e:
             logger.error(f"Failed to update Cerebras client with new API key: {e}")

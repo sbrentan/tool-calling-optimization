@@ -1,0 +1,643 @@
+category: category_38
+tools:
+- name: avatar
+  descriptions:
+    minimal: Generates an avatar with the initials derived...
+    short: Generates an avatar with the initials derived from the given name and various customization options.
+    medium: Generates an avatar with the initials derived from the given name and various customization options.
+    long: Generates an avatar with the initials derived from the given name and various customization options.
+    verbose: Generates an avatar with the initials derived from the given name and various customization options.
+  parameters:
+  - name: name
+    type: string
+    description: The name from which to derive the initials. Default is 'john doe'.
+    required: false
+    default: john doe
+  - name: rounded
+    type: boolean
+    description: If True, the avatar will be rounded. Default is None.
+    required: false
+    default: true
+  - name: uppercase
+    type: boolean
+    description: If True, the initials will be in uppercase. Default is None.
+    required: false
+    default: true
+  - name: font_size
+    type: integer
+    description: The font size of the initials, ranging from 0 to 1. Default is 0.
+    required: false
+    default: '0.5'
+  - name: length
+    type: integer
+    description: The number of initials to display. Default is 2.
+    required: false
+    default: '2'
+  - name: size
+    type: integer
+    description: The font size of the initials, ranging from 0 to 1. Default is 0.
+    required: false
+    default: '128'
+  - name: background
+    type: string
+    description: The background color of the avatar in RRGGBB hex format. Default is '000000'.
+    required: false
+    default: '000000'
+  - name: color
+    type: string
+    description: The color of the initials in RRGGBB hex format. Default is 'ffffff'.
+    required: false
+    default: ffffff
+  tags:
+  - avatar
+  test_prompts:
+    single:
+    - Generate an avatar for the name 'Alice Smith' with a rounded shape and a size of 256 pixels.
+    single_clear:
+    - Generate an avatar for the name 'Alice Smith' with a rounded shape and a size of 256 pixels.
+- name: get_search_keyword
+  descriptions:
+    minimal: Search for a keyword using RapidAPI and return...
+    short: Search for a keyword using RapidAPI and return related hashtags and places.
+    medium: Search for a keyword using RapidAPI and return related hashtags and places.
+    long: Search for a keyword using RapidAPI and return related hashtags and places.
+    verbose: Search for a keyword using RapidAPI and return related hashtags and places.
+  parameters:
+  - name: keyword
+    type: string
+    description: The keyword to search for on Instagram.
+    required: true
+    default: los angeles
+  tags:
+  - get
+  - search
+  - keyword
+  test_prompts:
+    single:
+    - What are the trending hashtags and places related to 'Paris Fashion Week'?
+    single_clear:
+    - What are the trending hashtags and places related to 'Paris Fashion Week'?
+- name: upvote_riddle
+  descriptions:
+    minimal: Registers an upvote for a riddle using the...
+    short: Registers an upvote for a riddle using the Riddlie API.
+    medium: Registers an upvote for a riddle using the Riddlie API. This function sends a GET request to the Riddlie API to
+      upvote a riddle identified by `is_id`. The upvote helps in better serving the riddles in the future.
+    long: Registers an upvote for a riddle using the Riddlie API. This function sends a GET request to the Riddlie API to
+      upvote a riddle identified by `is_id`. The upvote helps in better serving the riddles in the future.
+    verbose: Registers an upvote for a riddle using the Riddlie API. This function sends a GET request to the Riddlie API
+      to upvote a riddle identified by `is_id`. The upvote helps in better serving the riddles in the future.
+  parameters:
+  - name: is_id
+    type: string
+    description: The identifier of the riddle to upvote.
+    required: true
+    default: 63bdef027183b71946b64ee6
+  tags:
+  - upvote
+  - riddle
+  test_prompts:
+    single:
+    - Upvote riddle 24680, it was a great riddle for kids.
+    single_clear:
+    - Upvote riddle 24680, it was a great riddle for kids.
+- name: get_job_status
+  descriptions:
+    minimal: Fetch the status and results of a job from the...
+    short: Fetch the status and results of a job from the Large Text-to-Speech service using RapidAPI.
+    medium: Fetch the status and results of a job from the Large Text-to-Speech service using RapidAPI.
+    long: Fetch the status and results of a job from the Large Text-to-Speech service using RapidAPI.
+    verbose: Fetch the status and results of a job from the Large Text-to-Speech service using RapidAPI.
+  parameters:
+  - name: is_id
+    type: string
+    description: The unique identifier of the job whose status and result need to be fetched.
+    required: true
+    default: 5425b1c0-357b-47cf-a06c-69c5260ea890
+  tags:
+  - get
+  - job
+  - status
+  test_prompts:
+    single:
+    - What is the result of the text-to-speech job with ID 345678?
+    single_clear:
+    - What is the result of the text-to-speech job with ID 345678?
+- name: search_by_keyword
+  descriptions:
+    minimal: Searches for products using a specified keyword...
+    short: Searches for products using a specified keyword on the 1688 platform through the Taobao-Tmall Product Detail API.
+    medium: Searches for products using a specified keyword on the 1688 platform through the Taobao-Tmall Product Detail API.
+    long: Searches for products using a specified keyword on the 1688 platform through the Taobao-Tmall Product Detail API.
+    verbose: Searches for products using a specified keyword on the 1688 platform through the Taobao-Tmall Product Detail
+      API.
+  parameters:
+  - name: keyword
+    type: string
+    description: The search keyword to look for products.
+    required: true
+    default: 海久水瓶
+  - name: page
+    type: integer
+    description: The page number for paginated results.
+    required: true
+    default: '1'
+  tags:
+  - search
+  - by
+  - keyword
+  test_prompts:
+    single:
+    - Search for 'leather jacket' on Taobao, page 2.
+    single_clear:
+    - Search for 'leather jacket' on Taobao, page 2.
+- name: artist_discovered_on
+  descriptions:
+    minimal: Fetches playlists where the specified artist was...
+    short: Fetches playlists where the specified artist was discovered using the Spotify API.
+    medium: Fetches playlists where the specified artist was discovered using the Spotify API.
+    long: Fetches playlists where the specified artist was discovered using the Spotify API.
+    verbose: Fetches playlists where the specified artist was discovered using the Spotify API.
+  parameters:
+  - name: is_id
+    type: string
+    description: The Spotify artist ID.
+    required: true
+    default: 2w9zwq3AktTeYYMuhMjju8
+  tags:
+  - artist
+  - discovered
+  - 'on'
+  test_prompts:
+    single:
+    - Discover where Ariana Grande was first featured in playlists.
+    single_clear:
+    - Discover where Ariana Grande was first featured in playlists.
+- name: smart_phones
+  descriptions:
+    minimal: Fetches data of smart phones from the Amazon API...
+    short: Fetches data of smart phones from the Amazon API using optional brand filtering.
+    medium: Fetches data of smart phones from the Amazon API using optional brand filtering.
+    long: Fetches data of smart phones from the Amazon API using optional brand filtering.
+    verbose: Fetches data of smart phones from the Amazon API using optional brand filtering.
+  parameters:
+  - name: name_brand
+    type: string
+    description: The brand name to filter the smart phones. Defaults to None.
+    required: false
+  tags:
+  - smart
+  - phones
+  test_prompts:
+    single:
+    - Fetch details of all smartphones available on Amazon.
+    single_clear:
+    - Fetch details of all smartphones available on Amazon.
+- name: serp
+  descriptions:
+    minimal: Fetches search engine results using the given...
+    short: Fetches search engine results using the given query and optional parameters.
+    medium: Fetches search engine results using the given query and optional parameters.
+    long: Fetches search engine results using the given query and optional parameters.
+    verbose: Fetches search engine results using the given query and optional parameters.
+  parameters:
+  - name: query
+    type: string
+    description: The search query to be sent to the search engine.
+    required: true
+    default: YouTube
+  - name: proxy
+    type: string
+    description: The country to use as a proxy for the search. Defaults to 'US'.
+    required: false
+    default: US
+  - name: max
+    type: integer
+    description: The maximum number of search results to return. Defaults to 10.
+    required: false
+    default: '10'
+  tags:
+  - serp
+  test_prompts:
+    single:
+    - Retrieve the top 20 search results for 'best restaurants in New York' using a proxy in the UK.
+    single_clear:
+    - Retrieve the top 20 search results for 'best restaurants in New York' using a proxy in the UK.
+- name: user_info
+  descriptions:
+    minimal: Fetches basic user information from the TikTok...
+    short: Fetches basic user information from the TikTok API based on user ID or user name.
+    medium: Fetches basic user information from the TikTok API based on user ID or user name.
+    long: Fetches basic user information from the TikTok API based on user ID or user name.
+    verbose: Fetches basic user information from the TikTok API based on user ID or user name.
+  parameters:
+  - name: user_id
+    type: string
+    description: The ID of the user to fetch information for. Defaults to '107955'.
+    required: false
+    default: '107955'
+  - name: user_name
+    type: string
+    description: The name of the user to fetch information for. Defaults to 'tiktok'.
+    required: false
+    default: tiktok
+  tags:
+  - user
+  - info
+  test_prompts:
+    single:
+    - What is the user information for TikTok user with ID '9876543210'?
+    single_clear:
+    - What is the user information for TikTok user with ID '9876543210'?
+- name: v1_validatephone
+  descriptions:
+    minimal: Validates a given phone number and returns...
+    short: Validates a given phone number and returns metadata using the API Ninjas Validate Phone API.
+    medium: Validates a given phone number and returns metadata using the API Ninjas Validate Phone API.
+    long: Validates a given phone number and returns metadata using the API Ninjas Validate Phone API.
+    verbose: Validates a given phone number and returns metadata using the API Ninjas Validate Phone API.
+  parameters:
+  - name: number
+    type: string
+    description: The phone number to validate. If `country` is not specified, the phone number must include the 3-digit country
+      code prefix.
+    required: true
+    default: '+12065550100'
+  - name: country
+    type: string
+    description: The 2-letter ISO-3166 country code corresponding to the phone number.
+    required: false
+  tags:
+  - v1
+  - validatephone
+  test_prompts:
+    single:
+    - Validate the phone number +1234567890 in the United States.
+    single_clear:
+    - Validate the phone number +1234567890 in the United States.
+- name: market_get_full
+  descriptions:
+    minimal: Retrieves comprehensive information about...
+    short: Retrieves comprehensive information about specified stock tickers using the Bloomberg Finance API.
+    medium: Retrieves comprehensive information about specified stock tickers using the Bloomberg Finance API.
+    long: Retrieves comprehensive information about specified stock tickers using the Bloomberg Finance API.
+    verbose: Retrieves comprehensive information about specified stock tickers using the Bloomberg Finance API.
+  parameters:
+  - name: is_id
+    type: string
+    description: A comma-separated string of ticker IDs corresponding to the desired stocks. These IDs are returned by the
+      `/market/auto-complete` endpoint.
+    required: true
+    default: adsmi:ind,aex:ind,co1:com,gc1:com
+  tags:
+  - market
+  - get
+  - full
+  test_prompts:
+    single:
+    - I need full stock reports on Coca-Cola and PepsiCo.
+    single_clear:
+    - I need full stock reports on Coca-Cola and PepsiCo.
+- name: get_expressions
+  descriptions:
+    minimal: Fetch expressions that include a specified word...
+    short: Fetch expressions that include a specified word from the Dicolink API.
+    medium: Fetch expressions that include a specified word from the Dicolink API.
+    long: Fetch expressions that include a specified word from the Dicolink API.
+    verbose: Fetch expressions that include a specified word from the Dicolink API.
+  parameters:
+  - name: mot
+    type: string
+    description: The word for which to retrieve expressions.
+    required: true
+    default: cheval
+  - name: limite
+    type: string
+    description: The maximum number of expressions to retrieve. Defaults to '10'.
+    required: false
+    default: '10'
+  tags:
+  - get
+  - expressions
+  test_prompts:
+    single:
+    - Find expressions including 'peace' with a maximum of 30 results.
+    single_clear:
+    - Find expressions including 'peace' with a maximum of 30 results.
+- name: get_domaine
+  descriptions:
+    minimal: Retrieves the details of a domain using an API...
+    short: Retrieves the details of a domain using an API, specific to domains registered in New Caledonia.
+    medium: Retrieves the details of a domain using an API, specific to domains registered in New Caledonia.
+    long: Retrieves the details of a domain using an API, specific to domains registered in New Caledonia.
+    verbose: Retrieves the details of a domain using an API, specific to domains registered in New Caledonia.
+  parameters:
+  - name: ext
+    type: string
+    description: 'The domain extension, which can be one of the following:'
+    required: true
+    default: NC
+  - name: nom
+    type: string
+    description: The domain name to look up.
+    required: true
+    default: '1012'
+  tags:
+  - get
+  - domaine
+  test_prompts:
+    single:
+    - Lookup the domain 'association' with the extension 'asso.nc' to check its registration status.
+    - Is the domain 'mybusiness' registered under the 'nc' extension?
+    single_clear:
+    - Lookup the domain 'association' with the extension 'asso.nc' to check its registration status.
+    - Is the domain 'mybusiness' registered under the 'nc' extension?
+- name: using_path_parameters
+  descriptions:
+    minimal: This function makes a request to an API endpoint...
+    short: This function makes a request to an API endpoint to split a given text based on specified parameters and returns
+      the response.
+    medium: This function makes a request to an API endpoint to split a given text based on specified parameters and returns
+      the response.
+    long: This function makes a request to an API endpoint to split a given text based on specified parameters and returns
+      the response.
+    verbose: This function makes a request to an API endpoint to split a given text based on specified parameters and returns
+      the response.
+  parameters:
+  - name: text
+    type: string
+    description: The input text to be split.
+    required: true
+  - name: max_size
+    type: integer
+    description: The maximum size limit for the split text. Defaults to 1024.
+    required: false
+    default: 1024
+  - name: delimiter
+    type: string
+    description: The delimiter to be used for splitting the text. Defaults to None.
+    required: false
+  - name: include_variations
+    type: boolean
+    description: Whether to include variations in the splitting process. Defaults to None.
+    required: false
+    default: 'true'
+  tags:
+  - using
+  - path
+  - parameters
+  test_prompts:
+    single:
+    - Split the text 'This is a test. Another test.' into tokens with a delimiter of '.' and include variations.
+    single_clear:
+    - Split the text 'This is a test. Another test.' into tokens with a delimiter of '.' and include variations.
+- name: us_de
+  descriptions:
+    minimal: Fetches current or historical gas price data for...
+    short: Fetches current or historical gas price data for Delaware.
+    medium: Fetches current or historical gas price data for Delaware.
+    long: Fetches current or historical gas price data for Delaware.
+    verbose: Fetches current or historical gas price data for Delaware.
+  parameters:
+  - name: date
+    type: string
+    description: A specific date for querying historical gas price data. If not provided, the current gas price data is returned.
+    required: false
+  tags:
+  - us
+  - de
+  test_prompts:
+    single:
+    - Retrieve historical gas prices for Delaware on '2023-07-01'.
+    single_clear:
+    - Retrieve historical gas prices for Delaware on '2023-07-01'.
+- name: iplookup
+  descriptions:
+    minimal: Perform an IP lookup using the RapidAPI IP Lookup...
+    short: Perform an IP lookup using the RapidAPI IP Lookup service.
+    medium: Perform an IP lookup using the RapidAPI IP Lookup service.
+    long: Perform an IP lookup using the RapidAPI IP Lookup service.
+    verbose: Perform an IP lookup using the RapidAPI IP Lookup service.
+  parameters:
+  - name: ip
+    type: string
+    description: The IP address to lookup.
+    required: true
+    default: 161.97.149.190
+  tags:
+  - iplookup
+  test_prompts:
+    single:
+    - What details can you provide about the IP 123.123.123.123?
+    single_clear:
+    - What details can you provide about the IP 123.123.123.123?
+- name: products_detail
+  descriptions:
+    minimal: Fetches detailed information of a product from...
+    short: Fetches detailed information of a product from the API.
+    medium: Fetches detailed information of a product from the API.
+    long: Fetches detailed information of a product from the API.
+    verbose: Fetches detailed information of a product from the API.
+  parameters:
+  - name: country
+    type: string
+    description: The country code obtained from the /regions/list endpoint.
+    required: true
+    default: us
+  - name: lang
+    type: string
+    description: The language code obtained from the /regions/list endpoint.
+    required: true
+    default: en
+  - name: productcode
+    type: string
+    description: The value of the articles/code JSON object returned in the /products/list endpoint.
+    required: true
+    default: 0839915011
+  tags:
+  - products
+  - detail
+  test_prompts:
+    single:
+    - I want to see the details of the H&M product with code '0000987654' in Germany and in German.
+    single_clear:
+    - I want to see the details of the H&M product with code '0000987654' in Germany and in German.
+- name: get_specific_dessert
+  descriptions:
+    minimal: Fetch a specific dessert's details using its ID...
+    short: Fetch a specific dessert's details using its ID from the Pizza and Desserts API.
+    medium: Fetch a specific dessert's details using its ID from the Pizza and Desserts API.
+    long: Fetch a specific dessert's details using its ID from the Pizza and Desserts API.
+    verbose: Fetch a specific dessert's details using its ID from the Pizza and Desserts API.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the dessert to fetch.
+    required: true
+    default: '1'
+  tags:
+  - get
+  - specific
+  - dessert
+  test_prompts:
+    single:
+    - What are the details of dessert ID 98765 in the Pizza and Desserts API?
+    single_clear:
+    - What are the details of dessert ID 98765 in the Pizza and Desserts API?
+- name: communes_par_code_commune
+  descriptions:
+    minimal: Fetch details of a commune using its code via the...
+    short: Fetch details of a commune using its code via the RapidAPI.
+    medium: Fetch details of a commune using its code via the RapidAPI.
+    long: Fetch details of a commune using its code via the RapidAPI.
+    verbose: Fetch details of a commune using its code via the RapidAPI.
+  parameters:
+  - name: code_com
+    type: string
+    description: The code of the commune to retrieve details for.
+    required: true
+    default: '98810'
+  tags:
+  - communes
+  - par
+  - code
+  test_prompts:
+    single:
+    - Get information about the commune with code '3101'.
+    single_clear:
+    - Get information about the commune with code '3101'.
+- name: is_a_coordinate_water
+  descriptions:
+    minimal: Determines if a given coordinate on Earth is...
+    short: Determines if a given coordinate on Earth is water based on the provided longitude and latitude.
+    medium: Determines if a given coordinate on Earth is water based on the provided longitude and latitude.
+    long: Determines if a given coordinate on Earth is water based on the provided longitude and latitude.
+    verbose: Determines if a given coordinate on Earth is water based on the provided longitude and latitude.
+  parameters:
+  - name: longitude
+    type: integer
+    description: The longitude of the coordinate to check.
+    required: true
+    default: '-70.2652276'
+  - name: latitude
+    type: integer
+    description: The latitude of the coordinate to check.
+    required: true
+    default: '41.9029192'
+  tags:
+  - is
+  - a
+  - coordinate
+  test_prompts:
+    single:
+    - 'Is the coordinate at the North Pole water? (longitude: 0, latitude: 90)'
+    single_clear:
+    - 'Is the coordinate at the North Pole water? (longitude: 0, latitude: 90)'
+- name: basketball_search
+  descriptions:
+    minimal: Search for basketball players, teams, and...
+    short: Search for basketball players, teams, and tournaments using the provided term.
+    medium: Search for basketball players, teams, and tournaments using the provided term.
+    long: Search for basketball players, teams, and tournaments using the provided term.
+    verbose: Search for basketball players, teams, and tournaments using the provided term.
+  parameters:
+  - name: term
+    type: string
+    description: The search term used to look for players, teams, and tournaments.
+    required: true
+    default: kevin
+  tags:
+  - basketball
+  - search
+  test_prompts:
+    single:
+    - Search for basketball entities related to the term 'Warriors'.
+    single_clear:
+    - Search for basketball entities related to the term 'Warriors'.
+- name: email_checker
+  descriptions:
+    minimal: Checks whether the provided email is valid or...
+    short: Checks whether the provided email is valid or disposable using the RapidAPI service.
+    medium: Checks whether the provided email is valid or disposable using the RapidAPI service.
+    long: Checks whether the provided email is valid or disposable using the RapidAPI service.
+    verbose: Checks whether the provided email is valid or disposable using the RapidAPI service.
+  parameters:
+  - name: email
+    type: string
+    description: The email address to be verified.
+    required: true
+    default: rahul@gmail.com
+  tags:
+  - email
+  - checker
+  test_prompts:
+    single:
+    - Is jane_doe@yahoo.com a disposable email?
+    single_clear:
+    - Is jane_doe@yahoo.com a disposable email?
+- name: search_roman_god_by_name
+  descriptions:
+    minimal: Searches for a Roman God by name to get a...
+    short: Searches for a Roman God by name to get a description about them.
+    medium: Searches for a Roman God by name to get a description about them.
+    long: Searches for a Roman God by name to get a description about them.
+    verbose: Searches for a Roman God by name to get a description about them.
+  parameters:
+  - name: god
+    type: string
+    description: The name of the Roman God to search for.
+    required: true
+    default: jupiter
+  tags:
+  - search
+  - roman
+  - god
+  test_prompts:
+    single:
+    - What is the description of the Roman God Jupiter?
+    single_clear:
+    - What is the description of the Roman God Jupiter?
+- name: bus_trolley_routes
+  descriptions:
+    minimal: Fetches and returns the bus or trolley route...
+    short: Fetches and returns the bus or trolley route stops information using the SEPTA API.
+    medium: Fetches and returns the bus or trolley route stops information using the SEPTA API.
+    long: Fetches and returns the bus or trolley route stops information using the SEPTA API.
+    verbose: Fetches and returns the bus or trolley route stops information using the SEPTA API.
+  parameters:
+  - name: req1
+    type: string
+    description: The route number to fetch stops information for.
+    required: true
+    default: '23'
+  tags:
+  - bus
+  - trolley
+  - routes
+  test_prompts:
+    single:
+    - Fetch the bus stops for route number 23 in Philadelphia.
+    single_clear:
+    - Fetch the bus stops for route number 23 in Philadelphia.
+- name: get_followers_by_username
+  descriptions:
+    minimal: Retrieves the information of 12 followers for a...
+    short: Retrieves the information of 12 followers for a given Instagram username using the RapidAPI service.
+    medium: Retrieves the information of 12 followers for a given Instagram username using the RapidAPI service.
+    long: Retrieves the information of 12 followers for a given Instagram username using the RapidAPI service.
+    verbose: Retrieves the information of 12 followers for a given Instagram username using the RapidAPI service.
+  parameters:
+  - name: username
+    type: string
+    description: The Instagram username for which to fetch followers information.
+    required: true
+    default: therock
+  tags:
+  - get
+  - followers
+  - by
+  test_prompts:
+    single:
+    - How many followers does user 'tech_insider' have and who are the first 12 followers?
+    single_clear:
+    - How many followers does user 'tech_insider' have and who are the first 12 followers?

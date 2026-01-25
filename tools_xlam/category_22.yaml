@@ -1,0 +1,714 @@
+category: category_22
+tools:
+- name: ev
+  descriptions:
+    minimal: Fetch data from the EV API with optional...
+    short: Fetch data from the EV API with optional pagination support by specifying the page number.
+    medium: Fetch data from the EV API with optional pagination support by specifying the page number.
+    long: Fetch data from the EV API with optional pagination support by specifying the page number.
+    verbose: Fetch data from the EV API with optional pagination support by specifying the page number.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number for pagination, default is 2.
+    required: false
+    default: '2'
+  tags:
+  - ev
+  test_prompts:
+    single:
+    - Retrieve data from the EV API on page 3.
+    - Fetch the third page of data from the EV API.
+    - Retrieve data from the EV API starting from page 5.
+    - Get the data from the EV API starting from page 25.
+    single_clear:
+    - Retrieve data from the EV API on page 3.
+    - Fetch the third page of data from the EV API.
+    - Retrieve data from the EV API starting from page 5.
+    - Get the data from the EV API starting from page 25.
+- name: get_5_year_historical_monthly_prices
+  descriptions:
+    minimal: Fetch 5-year historical monthly stock prices for...
+    short: Fetch 5-year historical monthly stock prices for a given ticker symbol.
+    medium: Fetch 5-year historical monthly stock prices for a given ticker symbol.
+    long: Fetch 5-year historical monthly stock prices for a given ticker symbol.
+    verbose: Fetch 5-year historical monthly stock prices for a given ticker symbol.
+  parameters:
+  - name: ticker
+    type: string
+    description: The stock ticker symbol for which historical data is to be fetched.
+    required: true
+    default: AAPL
+  tags:
+  - get
+  - '5'
+  - year
+  test_prompts:
+    single:
+    - Can you provide the 5-year historical monthly data for Tesla Inc. (TSLA) including Open, High, Low, and Close prices?
+    single_clear:
+    - Can you provide the 5-year historical monthly data for Tesla Inc. (TSLA) including Open, High, Low, and Close prices?
+- name: get_user_favorite_list
+  descriptions:
+    minimal: Retrieve the favorite video list for a TikTok...
+    short: Retrieve the favorite video list for a TikTok user using their unique identifier.
+    medium: Retrieve the favorite video list for a TikTok user using their unique identifier.
+    long: Retrieve the favorite video list for a TikTok user using their unique identifier.
+    verbose: Retrieve the favorite video list for a TikTok user using their unique identifier.
+  parameters:
+  - name: sec_uid
+    type: string
+    description: The unique identifier of the TikTok user whose favorite list is to be retrieved.
+    required: true
+    default: MS4wLjABAAAAv7iSuuXDJGDvJkmH_vz1qkDZYo1apxgzaxdBSeIuPiM
+  tags:
+  - get
+  - user
+  - favorite
+  test_prompts:
+    single:
+    - Please provide the favorite video list for TikTok user 'user012' based on their sec_uid.
+    single_clear:
+    - Please provide the favorite video list for TikTok user 'user012' based on their sec_uid.
+- name: ip_geolocation
+  descriptions:
+    minimal: This function retrieves geolocation information...
+    short: This function retrieves geolocation information for a given IP address using the Toolbench API.
+    medium: This function retrieves geolocation information for a given IP address using the Toolbench API.
+    long: This function retrieves geolocation information for a given IP address using the Toolbench API.
+    verbose: This function retrieves geolocation information for a given IP address using the Toolbench API.
+  parameters:
+  - name: ip_address
+    type: string
+    description: The IP address for which to retrieve geolocation data.
+    required: true
+    default: 187.66.247.186
+  tags:
+  - ip
+  - geolocation
+  test_prompts:
+    single:
+    - Retrieve geolocation data for IP address 192.168.1.1.
+    - What is the geolocation information for the IP address '8.8.8.8'?
+    single_clear:
+    - Retrieve geolocation data for IP address 192.168.1.1.
+    - What is the geolocation information for the IP address '8.8.8.8'?
+- name: mama
+  descriptions:
+    minimal: Fetches the MESA Adaptive Moving Average (MAMA)...
+    short: Fetches the MESA Adaptive Moving Average (MAMA) for a given instrument symbol and time interval from the Twelve
+      Data API.
+    medium: Fetches the MESA Adaptive Moving Average (MAMA) for a given instrument symbol and time interval from the Twelve
+      Data API.
+    long: Fetches the MESA Adaptive Moving Average (MAMA) for a given instrument symbol and time interval from the Twelve
+      Data API.
+    verbose: Fetches the MESA Adaptive Moving Average (MAMA) for a given instrument symbol and time interval from the Twelve
+      Data API.
+  parameters:
+  - name: interval
+    type: string
+    description: 'Interval between two consecutive points in the time series. Supports: `1min`, `5min`, `15min`, `30min`,
+      `45min`, `1h`, `2h`, `4h`, `1day`, `1week`, `1month`.'
+    required: true
+    default: 1min
+  - name: symbol
+    type: string
+    description: Instrument symbol, can be any equity, index, ETF, forex, or cryptocurrency (e.g., `AAPL`, `EUR/USD`, `ETH/BTC`).
+    required: true
+    default: AAPL
+  - name: format
+    type: string
+    description: Response format. Supports `csv` or `json`. Default is `json`.
+    required: false
+    default: json
+  - name: slow_limit
+    type: integer
+    description: Slow limit parameter for MAMA calculation.
+    required: false
+    default: 0.05
+  - name: series_type
+    type: string
+    description: 'Type of series data. Supports: `open`, `high`, `low`, `close`. Default is `close`.'
+    required: false
+    default: close
+  - name: fast_limit
+    type: integer
+    description: Fast limit parameter for MAMA calculation.
+    required: false
+    default: 0.5
+  - name: outputsize
+    type: integer
+    description: Number of data points to return. Default is `30` if no date parameters are set, otherwise set to maximum.
+    required: false
+    default: 30
+  tags:
+  - mama
+  test_prompts:
+    single:
+    - Can you provide the MAMA data for the S&P 500 index (SPX) for the last 6 months with a 1-day interval?
+    - Retrieve the MESA Adaptive Moving Average for AAPL stock over a 15-minute interval, using the close price series.
+    single_clear:
+    - Can you provide the MAMA data for the S&P 500 index (SPX) for the last 6 months with a 1-day interval?
+    - Retrieve the MESA Adaptive Moving Average for AAPL stock over a 15-minute interval, using the close price series.
+- name: fetch_by_type_and_region
+  descriptions:
+    minimal: Fetch records from the API based on the given...
+    short: Fetch records from the API based on the given type, limit, and region.
+    medium: Fetch records from the API based on the given type, limit, and region.
+    long: Fetch records from the API based on the given type, limit, and region.
+    verbose: Fetch records from the API based on the given type, limit, and region.
+  parameters:
+  - name: type
+    type: string
+    description: The type of records to fetch. Refer to the README for accepted types.
+    required: true
+    default: Hill
+  - name: limit
+    type: integer
+    description: The maximum number of records to fetch.
+    required: true
+    default: '5'
+  - name: region
+    type: string
+    description: The region from which to fetch records.
+    required: true
+    default: Eastern
+  tags:
+  - fetch
+  - by
+  - type
+  test_prompts:
+    single:
+    - Retrieve the top 10 restaurants in Paris.
+    - Get information about 5 historical landmarks in London, sorted by their popularity.
+    - Can you fetch the latest magical creatures spotted in the region of Europe with a limit of 10 records?
+    single_clear:
+    - Retrieve the top 10 restaurants in Paris.
+    - Get information about 5 historical landmarks in London, sorted by their popularity.
+    - Can you fetch the latest magical creatures spotted in the region of Europe with a limit of 10 records?
+- name: getpetbyid
+  descriptions:
+    minimal: Fetches the details of a pet by its ID from the...
+    short: Fetches the details of a pet by its ID from the Team Petstore API.
+    medium: Fetches the details of a pet by its ID from the Team Petstore API.
+    long: Fetches the details of a pet by its ID from the Team Petstore API.
+    verbose: Fetches the details of a pet by its ID from the Team Petstore API.
+  parameters:
+  - name: petid
+    type: integer
+    description: The ID of the pet to retrieve.
+    required: true
+    default: 0
+  tags:
+  - getpetbyid
+  test_prompts:
+    single:
+    - Could you find out more about the pet with ID 98765?
+    single_clear:
+    - Could you find out more about the pet with ID 98765?
+- name: nearest_airport_from_postal_code
+  descriptions:
+    minimal: Retrieves the nearest airport to a given postal...
+    short: Retrieves the nearest airport to a given postal code within a specified country.
+    medium: Retrieves the nearest airport to a given postal code within a specified country.
+    long: Retrieves the nearest airport to a given postal code within a specified country.
+    verbose: Retrieves the nearest airport to a given postal code within a specified country.
+  parameters:
+  - name: postal_code
+    type: string
+    description: The postal code for which to find the nearest airport.
+    required: true
+  - name: country_code
+    type: string
+    description: The two-digit country code corresponding to the postal code.
+    required: true
+  tags:
+  - nearest
+  - airport
+  - from
+  test_prompts:
+    single:
+    - What is the nearest airport to a postal code 90210 in the USA?
+    - Find the nearest airport to a postal code 75001 in France.
+    single_clear:
+    - What is the nearest airport to a postal code 90210 in the USA?
+    - Find the nearest airport to a postal code 75001 in France.
+- name: matchh2hduel
+  descriptions:
+    minimal: Retrieves head-to-head duel information for a...
+    short: Retrieves head-to-head duel information for a specific basketball match.
+    medium: Retrieves head-to-head duel information for a specific basketball match.
+    long: Retrieves head-to-head duel information for a specific basketball match.
+    verbose: Retrieves head-to-head duel information for a specific basketball match.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the basketball match for which to retrieve head-to-head duel information.
+    required: true
+    default: 10066290
+  tags:
+  - matchh2hduel
+  test_prompts:
+    single:
+    - Can you provide the head-to-head duel stats for the basketball match with ID 12345?
+    - I'm looking for the duel details of the match that was a part of the championship series, ID 86420.
+    - Get the duel details for the basketball match with ID 54321.
+    single_clear:
+    - Can you provide the head-to-head duel stats for the basketball match with ID 12345?
+    - I'm looking for the duel details of the match that was a part of the championship series, ID 86420.
+    - Get the duel details for the basketball match with ID 54321.
+- name: get_analytics
+  descriptions:
+    minimal: Retrieve detailed statistics for your account...
+    short: Retrieve detailed statistics for your account using the specified parameters through the API.
+    medium: Retrieve detailed statistics for your account using the specified parameters through the API.
+    long: Retrieve detailed statistics for your account using the specified parameters through the API.
+    verbose: Retrieve detailed statistics for your account using the specified parameters through the API.
+  parameters:
+  - name: p
+    type: string
+    description: The API Key to authenticate the API request.
+    required: true
+  - name: start
+    type: string
+    description: The start date for the statistics in the format YYYY-MM-DD. Defaults to 30 days ago if not specified.
+    required: false
+  - name: label
+    type: string
+    description: 'Filter data by a specific label. Allowed values: ''all'' (default) or a specific label.'
+    required: false
+    default: all
+  - name: end
+    type: string
+    description: The end date for the statistics in the format YYYY-MM-DD. Defaults to the current date if not specified.
+    required: false
+  - name: subaccounts
+    type: string
+    description: 'Specifies which account data to retrieve. Allowed values: ''only_main'' (default), ''all'', or a specific
+      subaccount ID.'
+    required: false
+    default: only_main
+  - name: group_by
+    type: string
+    description: Specifies the grouping of the data.
+    required: false
+  tags:
+  - get
+  - analytics
+  test_prompts:
+    single:
+    - Get analytics for a specific subaccount with ID '12345'.
+    - Please provide analytics data filtered by the label 'promotion' for the entire month of March 2023.
+    single_clear:
+    - Get analytics for a specific subaccount with ID '12345'.
+    - Please provide analytics data filtered by the label 'promotion' for the entire month of March 2023.
+- name: year_end_hot_100_songs
+  descriptions:
+    minimal: Fetches the Year-End Hot 100 Songs chart for a...
+    short: Fetches the Year-End Hot 100 Songs chart for a given year from the Billboard API.
+    medium: Fetches the Year-End Hot 100 Songs chart for a given year from the Billboard API.
+    long: Fetches the Year-End Hot 100 Songs chart for a given year from the Billboard API.
+    verbose: Fetches the Year-End Hot 100 Songs chart for a given year from the Billboard API.
+  parameters:
+  - name: year
+    type: integer
+    description: The year for which to retrieve the Year-End Hot 100 Songs chart.
+    required: true
+    default: '2021'
+  - name: range
+    type: string
+    description: The range of chart positions to retrieve, default is '1-10'. If not specified, returns all results.
+    required: false
+    default: 1-10
+  tags:
+  - year
+  - end
+  - hot
+  test_prompts:
+    single:
+    - Get the top 10 songs from the Year-End Hot 100 Songs chart for the year 2010.
+    single_clear:
+    - Get the top 10 songs from the Year-End Hot 100 Songs chart for the year 2010.
+- name: game_odds_by_category_schedule
+  descriptions:
+    minimal: Fetches the schedule of game odds for a given...
+    short: Fetches the schedule of game odds for a given sport and category from the sportsbook-odds API.
+    medium: Fetches the schedule of game odds for a given sport and category from the sportsbook-odds API.
+    long: Fetches the schedule of game odds for a given sport and category from the sportsbook-odds API.
+    verbose: Fetches the schedule of game odds for a given sport and category from the sportsbook-odds API.
+  parameters:
+  - name: category
+    type: string
+    description: The category of the odds. For example, 0 for moneylines, 1 for spreads, 2 for over/under, etc.
+    required: true
+    default: '0'
+  - name: sport
+    type: string
+    description: The sport for which to fetch the game odds schedule.
+    required: true
+    default: Baseball
+  tags:
+  - game
+  - odds
+  - by
+  test_prompts:
+    single:
+    - I'm planning a sports betting strategy for the upcoming basketball season. Can you provide the schedule of game odds
+      for moneylines (category 0) in basketball?
+    single_clear:
+    - I'm planning a sports betting strategy for the upcoming basketball season. Can you provide the schedule of game odds
+      for moneylines (category 0) in basketball?
+- name: v1getfundlatestprice
+  descriptions:
+    minimal: Fetches the latest price of a fund using its ISIN.
+    short: Fetches the latest price of a fund using its ISIN.
+    medium: Fetches the latest price of a fund using its ISIN.
+    long: Fetches the latest price of a fund using its ISIN.
+    verbose: Fetches the latest price of a fund using its ISIN.
+  parameters:
+  - name: isin
+    type: string
+    description: The International Securities Identification Number of the fund.
+    required: true
+    default: LU0690375182
+  tags:
+  - v1getfundlatestprice
+  test_prompts:
+    single:
+    - I'm looking for the latest price of the fund with ISIN 'GB00B3X7QG66'. Can you help?
+    single_clear:
+    - I'm looking for the latest price of the fund with ISIN 'GB00B3X7QG66'. Can you help?
+- name: get_trip_plan
+  descriptions:
+    minimal: Generates a trip plan based on the number of days...
+    short: Generates a trip plan based on the number of days and destination provided.
+    medium: Generates a trip plan based on the number of days and destination provided.
+    long: Generates a trip plan based on the number of days and destination provided.
+    verbose: Generates a trip plan based on the number of days and destination provided.
+  parameters:
+  - name: days
+    type: integer
+    description: The number of days for the trip.
+    required: true
+    default: '3'
+  - name: destination
+    type: string
+    description: The destination for the trip.
+    required: true
+    default: London,UK
+  tags:
+  - get
+  - trip
+  - plan
+  test_prompts:
+    single:
+    - I'm planning a 7-day cultural tour in Rome. Can you provide a trip plan?
+    single_clear:
+    - I'm planning a 7-day cultural tour in Rome. Can you provide a trip plan?
+- name: v1_loremipsum
+  descriptions:
+    minimal: Fetches lorem ipsum placeholder text from the API...
+    short: Fetches lorem ipsum placeholder text from the API Ninjas Lorem Ipsum API.
+    medium: Fetches lorem ipsum placeholder text from the API Ninjas Lorem Ipsum API.
+    long: Fetches lorem ipsum placeholder text from the API Ninjas Lorem Ipsum API.
+    verbose: Fetches lorem ipsum placeholder text from the API Ninjas Lorem Ipsum API.
+  parameters:
+  - name: max_length
+    type: integer
+    description: Maximum character length for the returned text.
+    required: false
+  - name: start_with_lorem_ipsum
+    type: string
+    description: Whether to begin the text with "Lorem ipsum". Accepts 'true' or 'false'. Defaults to 'true' if unset.
+    required: false
+  - name: random
+    type: string
+    description: Whether to randomly generate paragraphs. Accepts 'true' or 'false'. Defaults to 'true' if unset.
+    required: false
+  - name: paragraphs
+    type: integer
+    description: Number of paragraphs to generate. Defaults to 1 if unset.
+    required: false
+  tags:
+  - v1
+  - loremipsum
+  test_prompts:
+    single:
+    - I need a longer lorem ipsum text, about 500 characters long, starting with 'Lorem ipsum', and generated randomly.
+    single_clear:
+    - I need a longer lorem ipsum text, about 500 characters long, starting with 'Lorem ipsum', and generated randomly.
+- name: fixtures_and_results_by_team
+  descriptions:
+    minimal: Returns all fixtures and results for a given team...
+    short: Returns all fixtures and results for a given team by querying the "rugby-live-data" API.
+    medium: Returns all fixtures and results for a given team by querying the "rugby-live-data" API.
+    long: Returns all fixtures and results for a given team by querying the "rugby-live-data" API.
+    verbose: Returns all fixtures and results for a given team by querying the "rugby-live-data" API.
+  parameters:
+  - name: team_id
+    type: integer
+    description: The ID of the team for which to retrieve fixtures and results.
+    required: true
+    default: '6167'
+  tags:
+  - fixtures
+  - and
+  - results
+  test_prompts:
+    single:
+    - Fetch all results and fixtures for rugby team 567.
+    - Can you fetch the fixtures and results for the rugby team with ID 123?
+    single_clear:
+    - Fetch all results and fixtures for rugby team 567.
+    - Can you fetch the fixtures and results for the rugby team with ID 123?
+- name: clubs
+  descriptions:
+    minimal: Retrieves information about clubs participating...
+    short: Retrieves information about clubs participating in the First Premier League Competition.
+    medium: Retrieves information about clubs participating in the First Premier League Competition.
+    long: Retrieves information about clubs participating in the First Premier League Competition.
+    verbose: Retrieves information about clubs participating in the First Premier League Competition.
+  parameters:
+  - name: abbr
+    type: string
+    description: The abbreviation of the club. Default is 'ARS'.
+    required: true
+    default: ARS
+  - name: name
+    type: string
+    description: The name of the club. Default is 'Arsenal'.
+    required: true
+    default: Arsenal
+  tags:
+  - clubs
+  test_prompts:
+    single:
+    - Get details about Liverpool FC using its abbreviation.
+    - Retrieve information about Manchester United.
+    single_clear:
+    - Get details about Liverpool FC using its abbreviation.
+    - Retrieve information about Manchester United.
+- name: properties_get_broadband
+  descriptions:
+    minimal: Fetch broadband information for a given property...
+    short: Fetch broadband information for a given property listing.
+    medium: Fetch broadband information for a given property listing.
+    long: Fetch broadband information for a given property listing.
+    verbose: Fetch broadband information for a given property listing.
+  parameters:
+  - name: listing_id
+    type: integer
+    description: The ID of the property listing for which broadband information is to be retrieved. This value is typically
+      obtained from the `/properties/list` endpoint.
+    required: true
+    default: '56354192'
+  tags:
+  - properties
+  - get
+  - broadband
+  test_prompts:
+    single:
+    - Get broadband information for property listing with ID 987654321.
+    - Retrieve broadband information for property listing ID 123456.
+    single_clear:
+    - Get broadband information for property listing with ID 987654321.
+    - Retrieve broadband information for property listing ID 123456.
+- name: nal_query
+  descriptions:
+    minimal: Converts a given number to its corresponding word...
+    short: Converts a given number to its corresponding word representation in Spanish using the Numeros-a-Letras API.
+    medium: Converts a given number to its corresponding word representation in Spanish using the Numeros-a-Letras API.
+    long: Converts a given number to its corresponding word representation in Spanish using the Numeros-a-Letras API.
+    verbose: Converts a given number to its corresponding word representation in Spanish using the Numeros-a-Letras API.
+  parameters:
+  - name: num
+    type: string
+    description: The number to be converted to words.
+    required: true
+    default: '0'
+  tags:
+  - nal
+  - query
+  test_prompts:
+    single:
+    - How do you say the number 123456 in Spanish?
+    single_clear:
+    - How do you say the number 123456 in Spanish?
+- name: team_stats
+  descriptions:
+    minimal: Fetches team statistics for the NBA. By default...
+    short: Fetches team statistics for the NBA.
+    medium: Fetches team statistics for the NBA. By default, it provides stats for the current league year. Optionally, you
+      can supply a specific `leagueyear` or `team` to get results for those parameters.
+    long: Fetches team statistics for the NBA. By default, it provides stats for the current league year. Optionally, you
+      can supply a specific `leagueyear` or `team` to get results for those parameters.
+    verbose: Fetches team statistics for the NBA. By default, it provides stats for the current league year. Optionally, you
+      can supply a specific `leagueyear` or `team` to get results for those parameters.
+  parameters:
+  - name: leagueyear
+    type: string
+    description: The league year for which to fetch team stats. Defaults to None, which retrieves stats for the current league
+      year.
+    required: false
+  - name: team
+    type: string
+    description: The team for which to fetch stats. Defaults to None, which retrieves stats for all teams.
+    required: false
+  tags:
+  - team
+  - stats
+  test_prompts:
+    single:
+    - Fetch the team statistics for all NBA teams in the current league year.
+    single_clear:
+    - Fetch the team statistics for all NBA teams in the current league year.
+- name: advance
+  descriptions:
+    minimal: This function makes a GET request to the...
+    short: This function makes a GET request to the cleantalk1.
+    medium: This function makes a GET request to the cleantalk1.p.rapidapi.com service with specified parameters and returns
+      the response.
+    long: This function makes a GET request to the cleantalk1.p.rapidapi.com service with specified parameters and returns
+      the response.
+    verbose: This function makes a GET request to the cleantalk1.p.rapidapi.com service with specified parameters and returns
+      the response.
+  parameters:
+  - name: fill_char
+    type: string
+    description: A character to fill within the text.
+    required: true
+    default: _
+  - name: text
+    type: string
+    description: The text to be processed.
+    required: true
+    default: How about you?
+  - name: add
+    type: string
+    description: Additional text or parameters to be included.
+    required: true
+    default: about
+  tags:
+  - advance
+  test_prompts:
+    single:
+    - Process a text with a fill character of 'X' and additional parameters 'test=123' using the cleantalk service.
+    single_clear:
+    - Process a text with a fill character of 'X' and additional parameters 'test=123' using the cleantalk service.
+- name: monthly_mortgage_payment
+  descriptions:
+    minimal: Calculates the monthly mortgage payment based on...
+    short: Calculates the monthly mortgage payment based on the loan amount, annual interest rate, and loan term.
+    medium: Calculates the monthly mortgage payment based on the loan amount, annual interest rate, and loan term.
+    long: Calculates the monthly mortgage payment based on the loan amount, annual interest rate, and loan term.
+    verbose: Calculates the monthly mortgage payment based on the loan amount, annual interest rate, and loan term.
+  parameters:
+  - name: loan_amount
+    type: number
+    description: The total amount of the loan.
+    required: true
+  - name: annual_interest_rate
+    type: number
+    description: The annual interest rate as a decimal (e.g., 0.05 for 5%).
+    required: true
+  - name: loan_term_years
+    type: integer
+    description: The loan term in years.
+    required: true
+  tags:
+  - monthly
+  - mortgage
+  - payment
+  test_prompts:
+    single:
+    - Calculate the monthly payment for a $400,000 loan at 4.5% annual interest for a term of 30 years.
+    - How much would the monthly mortgage payment be for a $250,000 loan at an annual interest rate of 4.5% over 30 years?
+    single_clear:
+    - Calculate the monthly payment for a $400,000 loan at 4.5% annual interest for a term of 30 years.
+    - How much would the monthly mortgage payment be for a $250,000 loan at an annual interest rate of 4.5% over 30 years?
+- name: straddle
+  descriptions:
+    minimal: This function retrieves the straddle data for a...
+    short: This function retrieves the straddle data for a given stock ticker from the RapidAPI stock and options trading
+      data provider.
+    medium: This function retrieves the straddle data for a given stock ticker from the RapidAPI stock and options trading
+      data provider.
+    long: This function retrieves the straddle data for a given stock ticker from the RapidAPI stock and options trading data
+      provider.
+    verbose: This function retrieves the straddle data for a given stock ticker from the RapidAPI stock and options trading
+      data provider.
+  parameters:
+  - name: ticker
+    type: string
+    description: The stock ticker symbol for which to retrieve straddle data.
+    required: true
+    default: intc
+  tags:
+  - straddle
+  test_prompts:
+    single:
+    - Retrieve straddle data for Apple Inc.
+    single_clear:
+    - Retrieve straddle data for Apple Inc.
+- name: match_scorecard
+  descriptions:
+    minimal: Fetches the full scorecard (updated live) for a...
+    short: Fetches the full scorecard (updated live) for a given match ID using the RapidAPI service.
+    medium: Fetches the full scorecard (updated live) for a given match ID using the RapidAPI service.
+    long: Fetches the full scorecard (updated live) for a given match ID using the RapidAPI service.
+    verbose: Fetches the full scorecard (updated live) for a given match ID using the RapidAPI service.
+  parameters:
+  - name: match_id
+    type: integer
+    description: The ID of the cricket match for which to retrieve the live scorecard.
+    required: true
+    default: '2432999'
+  tags:
+  - match
+  - scorecard
+  test_prompts:
+    single:
+    - Fetch the live scorecard for cricket match with ID 12345.
+    single_clear:
+    - Fetch the live scorecard for cricket match with ID 12345.
+- name: v1_worldtime
+  descriptions:
+    minimal: Fetches the current date and time from the API...
+    short: Fetches the current date and time from the API Ninjas World Time API for a specified location.
+    medium: Fetches the current date and time from the API Ninjas World Time API for a specified location.
+    long: Fetches the current date and time from the API Ninjas World Time API for a specified location.
+    verbose: Fetches the current date and time from the API Ninjas World Time API for a specified location.
+  parameters:
+  - name: timezone
+    type: string
+    description: Timezone of the desired location (e.g., 'Europe/London').
+    required: false
+  - name: lon
+    type: string
+    description: Longitude of the desired location.
+    required: false
+  - name: lat
+    type: string
+    description: Latitude of the desired location.
+    required: false
+  - name: state
+    type: string
+    description: US state name or 2-letter abbreviation (for United States cities only).
+    required: false
+  - name: country
+    type: string
+    description: Country name or 2-letter country code.
+    required: false
+  - name: city
+    type: string
+    description: City name.
+    required: false
+    default: London
+  tags:
+  - v1
+  - worldtime
+  test_prompts:
+    single:
+    - Get the current time in Sydney using its coordinates.
+    single_clear:
+    - Get the current time in Sydney using its coordinates.

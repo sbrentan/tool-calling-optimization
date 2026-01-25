@@ -1,0 +1,850 @@
+category: category_2
+tools:
+- name: find_minimum_rotated_sorted_array
+  descriptions:
+    minimal: Finds the minimum element in a rotated sorted...
+    short: Finds the minimum element in a rotated sorted array.
+    medium: Finds the minimum element in a rotated sorted array.
+    long: Finds the minimum element in a rotated sorted array.
+    verbose: Finds the minimum element in a rotated sorted array.
+  parameters:
+  - name: nums
+    type: string
+    description: The rotated sorted array.
+    required: true
+  tags:
+  - find
+  - minimum
+  - rotated
+  test_prompts:
+    single:
+    - Find the minimum element in the rotated sorted array [4, 5, 6, 7, 0, 1, 2].
+    - What is the smallest number in a rotated sorted array where the original sorted array was [1, 2, 3, 4, 5] and it was
+      rotated 2 times to the left?
+    - Determine the smallest number in a rotated sorted array [1, 2, 3, 4, 5].
+    - Find the minimum element in the rotated sorted array [4, 5, 6, 7, 0, 1, 2].
+    - Find the minimum element in a rotated sorted array [4, 5, 6, 7, 0, 1, 2].
+    - Find the minimum element in the rotated sorted array [3, 4, 5, 1, 2].
+    - Determine the minimum element in the rotated sorted array [2, 3, 4, 5, 6, 1].
+    - Identify the minimum number in a rotated array that was sorted as [-5, -4, -3, -2, -1] and then rotated 1 time to the
+      right.
+    - Find the minimum element in a rotated sorted array [4, 5, 6, 7, 0, 1, 2].
+    - Find the minimum element in a rotated sorted array [4, 5, 6, 7, 0, 1, 2]
+    - Find the minimum element in a rotated array [4, 5, 6, 7, 0, 1, 2].
+    - Identify the minimum value in a rotated sorted array [6, 7, 8, 9, 1, 2, 3, 4, 5].
+    - Find the minimum element in the rotated sorted array [3, 4, 5, 1, 2].
+    - Identify the minimum element in a rotated sorted array [3, 4, 5, 1, 2].
+    single_clear:
+    - Find the minimum element in the rotated sorted array [4, 5, 6, 7, 0, 1, 2].
+    - What is the smallest number in a rotated sorted array where the original sorted array was [1, 2, 3, 4, 5] and it was
+      rotated 2 times to the left?
+    - Determine the smallest number in a rotated sorted array [1, 2, 3, 4, 5].
+    - Find the minimum element in the rotated sorted array [4, 5, 6, 7, 0, 1, 2].
+    - Find the minimum element in a rotated sorted array [4, 5, 6, 7, 0, 1, 2].
+    - Find the minimum element in the rotated sorted array [3, 4, 5, 1, 2].
+    - Determine the minimum element in the rotated sorted array [2, 3, 4, 5, 6, 1].
+    - Identify the minimum number in a rotated array that was sorted as [-5, -4, -3, -2, -1] and then rotated 1 time to the
+      right.
+    - Find the minimum element in a rotated sorted array [4, 5, 6, 7, 0, 1, 2].
+    - Find the minimum element in a rotated sorted array [4, 5, 6, 7, 0, 1, 2]
+    - Find the minimum element in a rotated array [4, 5, 6, 7, 0, 1, 2].
+    - Identify the minimum value in a rotated sorted array [6, 7, 8, 9, 1, 2, 3, 4, 5].
+    - Find the minimum element in the rotated sorted array [3, 4, 5, 1, 2].
+    - Identify the minimum element in a rotated sorted array [3, 4, 5, 1, 2].
+- name: longest_common_prefix
+  descriptions:
+    minimal: Finds the longest common prefix among a list of...
+    short: Finds the longest common prefix among a list of strings.
+    medium: Finds the longest common prefix among a list of strings.
+    long: Finds the longest common prefix among a list of strings.
+    verbose: Finds the longest common prefix among a list of strings.
+  parameters:
+  - name: strs
+    type: string
+    description: The list of strings.
+    required: true
+  tags:
+  - longest
+  - common
+  - prefix
+  test_prompts:
+    single:
+    - What is the longest common prefix of 'prefix', 'preamble', 'pretext'?
+    - Find the longest common prefix for the strings 'prefix', 'preamble', 'prelude'.
+    - Determine the longest common prefix in the list of strings ['prefix', 'preamble', 'prelude'].
+    - Find the longest common prefix in the list ['dog', 'racecar', 'car'].
+    - Determine the longest common prefix among the words 'prefix', 'preamble', 'prelude'.
+    - What is the longest common prefix between 'interstellar', 'international', 'internet'?
+    - Determine the longest common prefix of 'dog', 'racecar', 'car'.
+    - 'Determine the longest common prefix in this list: [''apple'', ''apricot'', ''application'']'
+    - Determine the longest common prefix among the strings 'flower', 'flow', 'flight'
+    - 'What is the common prefix among these city names: [''London'', ''Londinium'', ''Londonderry'']'
+    single_clear:
+    - What is the longest common prefix of 'prefix', 'preamble', 'pretext'?
+    - Find the longest common prefix for the strings 'prefix', 'preamble', 'prelude'.
+    - Determine the longest common prefix in the list of strings ['prefix', 'preamble', 'prelude'].
+    - Find the longest common prefix in the list ['dog', 'racecar', 'car'].
+    - Determine the longest common prefix among the words 'prefix', 'preamble', 'prelude'.
+    - What is the longest common prefix between 'interstellar', 'international', 'internet'?
+    - Determine the longest common prefix of 'dog', 'racecar', 'car'.
+    - 'Determine the longest common prefix in this list: [''apple'', ''apricot'', ''application'']'
+    - Determine the longest common prefix among the strings 'flower', 'flow', 'flight'
+    - 'What is the common prefix among these city names: [''London'', ''Londinium'', ''Londonderry'']'
+- name: getlistings
+  descriptions:
+    minimal: Retrieve a list of condominiums and townhouses in...
+    short: Retrieve a list of condominiums and townhouses in specified cities of Southwest Florida and the East Coast.
+    medium: Retrieve a list of condominiums and townhouses in specified cities of Southwest Florida and the East Coast.
+    long: Retrieve a list of condominiums and townhouses in specified cities of Southwest Florida and the East Coast.
+    verbose: Retrieve a list of condominiums and townhouses in specified cities of Southwest Florida and the East Coast.
+  parameters:
+  - name: sort
+    type: string
+    description: Defines how the listings should be sorted. Supported values are 'RELEVANCE' (best match), 'NEWEST' (newest
+      first), 'PRICE_LOW' (cheapest first), and 'PRICE_HIGH' (most expensive first). Default is 'RELEVANCE'.
+    required: true
+    default: RELEVANCE
+  - name: offset
+    type: integer
+    description: For pagination. Specifies the starting point in the collection of listings. For example, to get the first
+      set of items, set offset to 0. Default is 0.
+    required: true
+    default: '0'
+  - name: price_max
+    type: integer
+    description: The maximum price in US dollars for the condos and townhouses. Default is 250,000.
+    required: true
+    default: '250000'
+  - name: city
+    type: string
+    description: The name of the city to search within. Supported cities include Cape Coral, Fort Myers, West Palm Beach,
+      Lake Worth, Lantana, Boynton Beach, Delray Beach, Boca Raton, Pompano Beach, Fort Lauderdale, Naples, Tampa, and Saint
+      Petersburg. Default is 'Cape Coral'.
+    required: true
+    default: Cape Coral
+  - name: limit
+    type: integer
+    description: The maximum number of items to return. Default is 50.
+    required: true
+    default: '50'
+  tags:
+  - getlistings
+  test_prompts:
+    single:
+    - Retrieve the cheapest 15 townhouses in Delray Beach starting from the 5th listing.
+    - What are the cheapest condos available in Naples, sorted by price, with a maximum price of $200,000?
+    - How can I get the newest listings of condos in Fort Myers, starting from the 51st result, with a maximum price of $300,000?
+    single_clear:
+    - Retrieve the cheapest 15 townhouses in Delray Beach starting from the 5th listing.
+    - What are the cheapest condos available in Naples, sorted by price, with a maximum price of $200,000?
+    - How can I get the newest listings of condos in Fort Myers, starting from the 51st result, with a maximum price of $300,000?
+- name: get_user_profile
+  descriptions:
+    minimal: Fetches the user profile from the Pinterest API...
+    short: Fetches the user profile from the Pinterest API using the provided username.
+    medium: Fetches the user profile from the Pinterest API using the provided username.
+    long: Fetches the user profile from the Pinterest API using the provided username.
+    verbose: Fetches the user profile from the Pinterest API using the provided username.
+  parameters:
+  - name: username
+    type: string
+    description: The Pinterest username for which to retrieve the profile information.
+    required: true
+    default: 0869178429hau
+  tags:
+  - get
+  - user
+  - profile
+  test_prompts:
+    single:
+    - Fetch the profile of the Pinterest user 'fashion_insider'.
+    - Get the profile information for 'foodie_explorer'.
+    single_clear:
+    - Fetch the profile of the Pinterest user 'fashion_insider'.
+    - Get the profile information for 'foodie_explorer'.
+- name: greatest_common_divisor
+  descriptions:
+    minimal: Computes the greatest common divisor (GCD) of two...
+    short: Computes the greatest common divisor (GCD) of two non-negative integers.
+    medium: Computes the greatest common divisor (GCD) of two non-negative integers.
+    long: Computes the greatest common divisor (GCD) of two non-negative integers.
+    verbose: Computes the greatest common divisor (GCD) of two non-negative integers.
+  parameters:
+  - name: a
+    type: integer
+    description: The first non-negative integer.
+    required: true
+  - name: b
+    type: integer
+    description: The second non-negative integer.
+    required: true
+  tags:
+  - greatest
+  - common
+  - divisor
+  test_prompts:
+    single:
+    - Determine the GCD of 144 and 60.
+    - What is the GCD of 144 and 60?
+    - Find the greatest common divisor of 144 and 60.
+    single_clear:
+    - Determine the GCD of 144 and 60.
+    - What is the GCD of 144 and 60?
+    - Find the greatest common divisor of 144 and 60.
+- name: image_search
+  descriptions:
+    minimal: Search for images using a given URL and retrieve...
+    short: Search for images using a given URL and retrieve visual matches, knowledge graph information, products and prices,
+      and text and object detections.
+    medium: Search for images using a given URL and retrieve visual matches, knowledge graph information, products and prices,
+      and text and object detections.
+    long: Search for images using a given URL and retrieve visual matches, knowledge graph information, products and prices,
+      and text and object detections.
+    verbose: Search for images using a given URL and retrieve visual matches, knowledge graph information, products and prices,
+      and text and object detections.
+  parameters:
+  - name: url
+    type: string
+    description: URL of an image to perform Google Lens search.
+    required: true
+    default: https://i.imgur.com/HBrB8p0.png
+  - name: country
+    type: string
+    description: The country code for the search. Defaults to 'us'.
+    required: false
+    default: us
+  - name: language
+    type: string
+    description: The language code for the results. Defaults to 'en'.
+    required: false
+    default: en
+  tags:
+  - image
+  - search
+  test_prompts:
+    single:
+    - Search for visual matches and text detections for an image at 'https://example.com/sample.jpg' in the UK, in English.
+    single_clear:
+    - Search for visual matches and text detections for an image at 'https://example.com/sample.jpg' in the UK, in English.
+- name: catalog_albums
+  descriptions:
+    minimal: Fetch catalog album data from the Billboard API...
+    short: Fetch catalog album data from the Billboard API for a specified week.
+    medium: Fetch catalog album data from the Billboard API for a specified week.
+    long: Fetch catalog album data from the Billboard API for a specified week.
+    verbose: Fetch catalog album data from the Billboard API for a specified week.
+  parameters:
+  - name: week
+    type: string
+    description: The week for which to fetch the catalog albums chart in the format 'YYYY-MM-DD'. Defaults to '2022-10-08'.
+    required: true
+    default: '2022-10-08'
+  tags:
+  - catalog
+  - albums
+  test_prompts:
+    single:
+    - Retrieve the catalog albums from Billboard for the week starting on July 4, 2023.
+    single_clear:
+    - Retrieve the catalog albums from Billboard for the week starting on July 4, 2023.
+- name: difficulty
+  descriptions:
+    minimal: Fetches weed strain information based on the...
+    short: Fetches weed strain information based on the difficulty of growing (easy, medium, or difficult).
+    medium: Fetches weed strain information based on the difficulty of growing (easy, medium, or difficult).
+    long: Fetches weed strain information based on the difficulty of growing (easy, medium, or difficult).
+    verbose: Fetches weed strain information based on the difficulty of growing (easy, medium, or difficult).
+  parameters:
+  - name: difficulty
+    type: string
+    description: The difficulty level of growing the strain. Acceptable values are 'easy', 'medium', or 'difficult'.
+    required: true
+    default: medium
+  tags:
+  - difficulty
+  test_prompts:
+    single:
+    - What are the growing conditions for a strain classified as medium difficulty?
+    single_clear:
+    - What are the growing conditions for a strain classified as medium difficulty?
+- name: analyze_social_group_dynamics
+  descriptions:
+    minimal: Analyzes the social dynamics within a group based...
+    short: Analyzes the social dynamics within a group based on the personality traits and group size.
+    medium: Analyzes the social dynamics within a group based on the personality traits and group size.
+    long: Analyzes the social dynamics within a group based on the personality traits and group size.
+    verbose: Analyzes the social dynamics within a group based on the personality traits and group size.
+  parameters:
+  - name: total
+    type: integer
+    description: The total group size.
+    required: true
+  - name: extroverts
+    type: integer
+    description: The number of extroverted members in the group.
+    required: true
+  - name: introverts
+    type: integer
+    description: The number of introverted members in the group.
+    required: true
+  tags:
+  - analyze
+  - social
+  - group
+  test_prompts:
+    single:
+    - Analyze a group of 30 people, with 15 extroverts and 15 introverts, focusing on leadership potential.
+    - How does the dominance of extroverts in a group of 30, with 25 extroverts and 5 introverts, influence the group's dynamics?
+    - Analyze the social dynamics in a group of 20 people, with 12 extroverts and 8 introverts.
+    - Analyze the social dynamics of a group of 15 people with 5 extroverts and 10 introverts.
+    - What are the dynamics in a group of 25, with 12 extroverts and the rest introverts?
+    - Analyze the social dynamics of a group of 20 people, where 10 are extroverts and 10 are introverts.
+    - Analyze the dynamics of a group of 35, with 10 extroverts and 25 introverts.
+    - Analyze the social dynamics in a group of 15 people, with 5 extroverts and 10 introverts.
+    single_clear:
+    - Analyze a group of 30 people, with 15 extroverts and 15 introverts, focusing on leadership potential.
+    - How does the dominance of extroverts in a group of 30, with 25 extroverts and 5 introverts, influence the group's dynamics?
+    - Analyze the social dynamics in a group of 20 people, with 12 extroverts and 8 introverts.
+    - Analyze the social dynamics of a group of 15 people with 5 extroverts and 10 introverts.
+    - What are the dynamics in a group of 25, with 12 extroverts and the rest introverts?
+    - Analyze the social dynamics of a group of 20 people, where 10 are extroverts and 10 are introverts.
+    - Analyze the dynamics of a group of 35, with 10 extroverts and 25 introverts.
+    - Analyze the social dynamics in a group of 15 people, with 5 extroverts and 10 introverts.
+- name: random_company
+  descriptions:
+    minimal: Generates a list of fake companies using the...
+    short: Generates a list of fake companies using the specified RapidAPI endpoint.
+    medium: Generates a list of fake companies using the specified RapidAPI endpoint.
+    long: Generates a list of fake companies using the specified RapidAPI endpoint.
+    verbose: Generates a list of fake companies using the specified RapidAPI endpoint.
+  parameters:
+  - name: size
+    type: integer
+    description: The number of fake companies to generate. Defaults to 5.
+    required: false
+    default: '5'
+  tags:
+  - random
+  - company
+  test_prompts:
+    single:
+    - Generate 10 random company names.
+    - Generate 15 random company names with different sizes.
+    single_clear:
+    - Generate 10 random company names.
+    - Generate 15 random company names with different sizes.
+- name: reverse_string
+  descriptions:
+    minimal: Reverses the characters in a string.
+    short: Reverses the characters in a string.
+    medium: Reverses the characters in a string.
+    long: Reverses the characters in a string.
+    verbose: Reverses the characters in a string.
+  parameters:
+  - name: text
+    type: string
+    description: The input string.
+    required: true
+  tags:
+  - reverse
+  - string
+  test_prompts:
+    single:
+    - Please reverse the string 'Hello, world!'
+    - Please reverse the sentence 'Data science is fascinating.'
+    - Reverse the string 'Python programming is fun.'
+    - Can you reverse the string '123456789'?
+    - Reverse the string '123456789'.
+    - What is the reverse of 'Python is fun'?
+    - Reverse the sentence 'Machine learning is powerful'
+    single_clear:
+    - Please reverse the string 'Hello, world!'
+    - Please reverse the sentence 'Data science is fascinating.'
+    - Reverse the string 'Python programming is fun.'
+    - Can you reverse the string '123456789'?
+    - Reverse the string '123456789'.
+    - What is the reverse of 'Python is fun'?
+    - Reverse the sentence 'Machine learning is powerful'
+- name: getforecastweather
+  descriptions:
+    minimal: Fetches weather forecast data for a specified...
+    short: Fetches weather forecast data for a specified city using the OpenWeatherMap API.
+    medium: Fetches weather forecast data for a specified city using the OpenWeatherMap API.
+    long: Fetches weather forecast data for a specified city using the OpenWeatherMap API.
+    verbose: Fetches weather forecast data for a specified city using the OpenWeatherMap API.
+  parameters:
+  - name: q
+    type: string
+    description: The city name for which the weather forecast is requested.
+    required: true
+  - name: cnt
+    type: integer
+    description: The number of timestamps to return in the response. Defaults to None.
+    required: false
+  - name: units
+    type: string
+    description: Units of measurement. Options are 'imperial' for Fahrenheit, 'metric' for Celsius, and 'standard' for Kelvin.
+      Defaults to 'standard'.
+    required: false
+    default: standard
+  - name: lang
+    type: string
+    description: Language for the output. Translation applies to city name and description fields. Defaults to None.
+    required: false
+  tags:
+  - getforecastweather
+  test_prompts:
+    single:
+    - Can you tell me the weather forecast for New York City for the next 5 days in Celsius?
+    - Get a 5-day weather forecast for Paris, France in metric units.
+    single_clear:
+    - Can you tell me the weather forecast for New York City for the next 5 days in Celsius?
+    - Get a 5-day weather forecast for Paris, France in metric units.
+- name: dashboard
+  descriptions:
+    minimal: Fetches the deployment and response dashboard for...
+    short: Fetches the deployment and response dashboard for a specified survey using provided credentials and API keys.
+    medium: Fetches the deployment and response dashboard for a specified survey using provided credentials and API keys.
+    long: Fetches the deployment and response dashboard for a specified survey using provided credentials and API keys.
+    verbose: Fetches the deployment and response dashboard for a specified survey using provided credentials and API keys.
+  parameters:
+  - name: login_id
+    type: string
+    description: The login identifier for accessing the survey methods API.
+    required: true
+  - name: api_key
+    type: string
+    description: The API key associated with the user account.
+    required: true
+  - name: survey_code
+    type: string
+    description: The code identifying the specific survey whose dashboard is being fetched.
+    required: true
+  tags:
+  - dashboard
+  test_prompts:
+    single:
+    - How can I view the dashboard for the 'MNO345' survey using login 'user345' and key 'api345'?
+    - Can you retrieve the dashboard data for 'GHI789' survey using 'user789' and 'api789'?
+    single_clear:
+    - How can I view the dashboard for the 'MNO345' survey using login 'user345' and key 'api345'?
+    - Can you retrieve the dashboard data for 'GHI789' survey using 'user789' and 'api789'?
+- name: news_source
+  descriptions:
+    minimal: Fetch the latest news stories for a given news...
+    short: Fetch the latest news stories for a given news source in chronological order.
+    medium: Fetch the latest news stories for a given news source in chronological order.
+    long: Fetch the latest news stories for a given news source in chronological order.
+    verbose: Fetch the latest news stories for a given news source in chronological order.
+  parameters:
+  - name: source_id
+    type: string
+    description: The identifier of the news source for which to retrieve the latest news stories.
+    required: true
+    default: bbc
+  tags:
+  - news
+  - source
+  test_prompts:
+    single:
+    - Get the latest news from the BBC source.
+    single_clear:
+    - Get the latest news from the BBC source.
+- name: indexes_intraday
+  descriptions:
+    minimal: Fetches intraday time series data (Date, Open...
+    short: Fetches intraday time series data (Date, Open, High, Low, Close, Volume) for a specified index symbol within a
+      given time interval.
+    medium: Fetches intraday time series data (Date, Open, High, Low, Close, Volume) for a specified index symbol within a
+      given time interval.
+    long: Fetches intraday time series data (Date, Open, High, Low, Close, Volume) for a specified index symbol within a given
+      time interval.
+    verbose: Fetches intraday time series data (Date, Open, High, Low, Close, Volume) for a specified index symbol within
+      a given time interval.
+  parameters:
+  - name: interval
+    type: integer
+    description: Time interval in minutes, e.g., `1` for 1-minute intervals, `5` for 5-minute intervals.
+    required: true
+    default: '1'
+  - name: is_from
+    type: string
+    description: The start date and time for the query. Supported formats include **YYYY-mm-dd HH:MM** and **YYYY-mm-dd**,
+      e.g., '2020-04-21 10:00' or '2020-04-21'.
+    required: true
+    default: 2020-04-21 10:00
+  - name: to
+    type: string
+    description: The end date and time for the query. Supported formats include **YYYY-mm-dd HH:MM** and **YYYY-mm-dd**, e.g.,
+      '2020-04-21 10:30' or '2020-04-22'.
+    required: true
+    default: 2020-04-21 10:30
+  - name: symbol
+    type: string
+    description: 'The symbol of the index to query. Examples include `^GSPC` (S&P 500 index) or `SPX:INDEX` (S&P 500 index).
+      Valid suffixes are:'
+    required: true
+    default: ^GSPC
+  - name: adjust
+    type: boolean
+    description: Whether the price should be adjusted. Defaults to None.
+    required: false
+    default: 'false'
+  tags:
+  - indexes
+  - intraday
+  test_prompts:
+    single:
+    - Please retrieve intraday data for the Dow Jones Industrial Average (DJI:INDEXUS) for the entire month of August 2023
+      with 30-minute intervals.
+    single_clear:
+    - Please retrieve intraday data for the Dow Jones Industrial Average (DJI:INDEXUS) for the entire month of August 2023
+      with 30-minute intervals.
+- name: dice_roll_probability
+  descriptions:
+    minimal: Calculates the probability of rolling a specific...
+    short: Calculates the probability of rolling a specific sum with a given number of dice, each having a certain number
+      of faces.
+    medium: Calculates the probability of rolling a specific sum with a given number of dice, each having a certain number
+      of faces.
+    long: Calculates the probability of rolling a specific sum with a given number of dice, each having a certain number of
+      faces.
+    verbose: Calculates the probability of rolling a specific sum with a given number of dice, each having a certain number
+      of faces.
+  parameters:
+  - name: target_sum
+    type: integer
+    description: The target sum to calculate the probability for.
+    required: true
+    default: 6
+  - name: num_dice
+    type: integer
+    description: The number of dice being rolled.
+    required: true
+    default: 6
+  - name: num_faces
+    type: integer
+    description: The number of faces on each die. Defaults to 6.
+    required: false
+  tags:
+  - dice
+  - roll
+  - probability
+  test_prompts:
+    single:
+    - How likely is it to roll a sum of 25 with six 6-sided dice?
+    - What is the probability of rolling a sum of 10 with 3 dice?
+    - Can you calculate the probability of getting a total of 10 with three 8-sided dice?
+    - Calculate the probability of getting a sum of 10 when rolling 3 dice, each with 6 faces.
+    - What's the probability of rolling a sum of 8 with 2 dice?
+    - Calculate the probability of getting a sum of 30 with seven 8-sided dice.
+    - Calculate the probability of rolling a sum of 20 with five 10-sided dice.
+    - What is the probability of rolling a sum of 8 with 3 dice?
+    - Determine the probability of rolling a sum of 10 with 3 six-sided dice.
+    single_clear:
+    - How likely is it to roll a sum of 25 with six 6-sided dice?
+    - What is the probability of rolling a sum of 10 with 3 dice?
+    - Can you calculate the probability of getting a total of 10 with three 8-sided dice?
+    - Calculate the probability of getting a sum of 10 when rolling 3 dice, each with 6 faces.
+    - What's the probability of rolling a sum of 8 with 2 dice?
+    - Calculate the probability of getting a sum of 30 with seven 8-sided dice.
+    - Calculate the probability of rolling a sum of 20 with five 10-sided dice.
+    - What is the probability of rolling a sum of 8 with 3 dice?
+    - Determine the probability of rolling a sum of 10 with 3 six-sided dice.
+- name: get_all_kfc_locations
+  descriptions:
+    minimal: Fetches a list of KFC locations from the KFC...
+    short: Fetches a list of KFC locations from the KFC Locations API for a given page number.
+    medium: Fetches a list of KFC locations from the KFC Locations API for a given page number.
+    long: Fetches a list of KFC locations from the KFC Locations API for a given page number.
+    verbose: Fetches a list of KFC locations from the KFC Locations API for a given page number.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number of results to retrieve, with each page typically containing 10 results.
+    required: true
+    default: '0'
+  tags:
+  - get
+  - all
+  - kfc
+  test_prompts:
+    single:
+    - What are the KFC locations listed on page 5?
+    single_clear:
+    - What are the KFC locations listed on page 5?
+- name: getallquotes
+  descriptions:
+    minimal: Fetch all quotes from the Radio World API with...
+    short: Fetch all quotes from the Radio World API with optional pagination and API key.
+    medium: Fetch all quotes from the Radio World API with optional pagination and API key.
+    long: Fetch all quotes from the Radio World API with optional pagination and API key.
+    verbose: Fetch all quotes from the Radio World API with optional pagination and API key.
+  parameters:
+  - name: limit
+    type: integer
+    description: The number of quotes to fetch per page. Defaults to 10.
+    required: false
+    default: '10'
+  - name: page
+    type: integer
+    description: The page number to fetch. Defaults to 1.
+    required: false
+    default: '1'
+  tags:
+  - getallquotes
+  test_prompts:
+    single:
+    - Retrieve quotes from Radio World API, fetching 20 quotes per page and accessing the second page.
+    single_clear:
+    - Retrieve quotes from Radio World API, fetching 20 quotes per page and accessing the second page.
+- name: top_artists
+  descriptions:
+    minimal: Fetch the YEAR-END Top Artists chart information...
+    short: Fetch the YEAR-END Top Artists chart information from the Billboard API for a specified year.
+    medium: Fetch the YEAR-END Top Artists chart information from the Billboard API for a specified year.
+    long: Fetch the YEAR-END Top Artists chart information from the Billboard API for a specified year.
+    verbose: Fetch the YEAR-END Top Artists chart information from the Billboard API for a specified year.
+  parameters:
+  - name: year
+    type: string
+    description: The year for which to retrieve the Top Artists chart information in YYYY format. Defaults to '2022'.
+    required: true
+    default: '2022'
+  tags:
+  - top
+  - artists
+  test_prompts:
+    single:
+    - What were the top artists of 2019 according to the Billboard year-end chart?
+    single_clear:
+    - What were the top artists of 2019 according to the Billboard year-end chart?
+- name: get_1688_product_detail
+  descriptions:
+    minimal: Fetches detail of a product from 1688 using the...
+    short: Fetches detail of a product from 1688 using the provided product ID and RapidAPI key.
+    medium: Fetches detail of a product from 1688 using the provided product ID and RapidAPI key.
+    long: Fetches detail of a product from 1688 using the provided product ID and RapidAPI key.
+    verbose: Fetches detail of a product from 1688 using the provided product ID and RapidAPI key.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the product to fetch details for from 1688.
+    required: true
+    default: 601513403951
+  tags:
+  - get
+  - '1688'
+  - product
+  test_prompts:
+    single:
+    - What are the details of the product with ID 123456789 on 1688?
+    - What are the details of the product with ID 999888777 on 1688?
+    - Fetch the details of the 1688 product with ID 123456789.
+    single_clear:
+    - What are the details of the product with ID 123456789 on 1688?
+    - What are the details of the product with ID 999888777 on 1688?
+    - Fetch the details of the 1688 product with ID 123456789.
+- name: constructors
+  descriptions:
+    minimal: Fetches the list of constructors for a given...
+    short: Fetches the list of constructors for a given Formula 1 season using the specified API key.
+    medium: Fetches the list of constructors for a given Formula 1 season using the specified API key.
+    long: Fetches the list of constructors for a given Formula 1 season using the specified API key.
+    verbose: Fetches the list of constructors for a given Formula 1 season using the specified API key.
+  parameters:
+  - name: season_id
+    type: integer
+    description: The ID of the season for which to list constructors.
+    required: true
+    default: '2020'
+  tags:
+  - constructors
+  test_prompts:
+    single:
+    - What are the constructors for the Formula 1 season with ID 1001?
+    - Can you provide the list of constructors for the 2005 Formula 1 season?
+    single_clear:
+    - What are the constructors for the Formula 1 season with ID 1001?
+    - Can you provide the list of constructors for the 2005 Formula 1 season?
+- name: quotes_get_mashup
+  descriptions:
+    minimal: Fetch additional information for a specific...
+    short: Fetch additional information for a specific market quote.
+    medium: Fetch additional information for a specific market quote.
+    long: Fetch additional information for a specific market quote.
+    verbose: Fetch additional information for a specific market quote.
+  parameters:
+  - name: symbol
+    type: string
+    description: The market quote symbol for which the information is to be fetched. Only one symbol is allowed.
+    required: true
+    default: IBIO
+  tags:
+  - quotes
+  - get
+  - mashup
+  test_prompts:
+    single:
+    - I need detailed information on the quote for Microsoft (MSFT).
+    single_clear:
+    - I need detailed information on the quote for Microsoft (MSFT).
+- name: cell_density
+  descriptions:
+    minimal: Calculates the cell density based on the optical...
+    short: Calculates the cell density based on the optical density (OD) and dilution factor.
+    medium: Calculates the cell density based on the optical density (OD) and dilution factor.
+    long: Calculates the cell density based on the optical density (OD) and dilution factor.
+    verbose: Calculates the cell density based on the optical density (OD) and dilution factor.
+  parameters:
+  - name: od
+    type: number
+    description: The optical density of the sample.
+    required: true
+    default: 1000000000.0
+  - name: dilution
+    type: integer
+    description: The dilution factor applied to the sample.
+    required: true
+    default: 1000000000.0
+  - name: factor
+    type: number
+    description: The calibration factor for converting OD to cell density. Defaults to 1e9.
+    required: false
+  tags:
+  - cell
+  - density
+  test_prompts:
+    single:
+    - Calculate the cell density of a sample with an OD of 0.6 and a dilution of 500, using the default calibration factor.
+    - Calculate the cell density with an OD of 0.8, a dilution of 15, and a custom calibration factor of 2 billion.
+    - Calculate the cell density with an OD of 1.2, a dilution factor of 10, and a calibration factor of 2000000000.
+    - What is the cell density if the OD is 1.2 and the dilution is 1000, using a calibration factor of 2e9?
+    - Calculate the cell density if the OD is 0.45 and the dilution factor is 1000.
+    - Calculate the cell density of a sample with an optical density of 0.8 and a dilution factor of 5.
+    - What is the cell density of a bacterial culture with an optical density of 0.8 and a dilution factor of 1000?
+    - Can you calculate the cell density if the optical density is 0.8 and the sample was diluted 5 times?
+    - What is the cell density of a sample with OD 0.8 and a dilution factor of 10?
+    - Calculate the cell density with an OD of 0.4 and a dilution factor of 500, using a custom calibration factor of 1.5e9.
+    - Calculate the cell density using an OD of 0.9 and a dilution of 1500, with a calibration factor of 1.5e9.
+    - Calculate the cell density if the optical density is 0.8 and the dilution factor is 10.
+    - Determine the cell density with OD 0.8, dilution 10, and calibration factor 1e9.
+    - Calculate the cell density if the optical density is 0.8 and the dilution factor is 5.
+    - Calculate the cell density of a bacterial culture with an optical density of 0.6 and a dilution factor of 1000, using
+      a calibration factor of 1 billion.
+    - Calculate the cell density of a bacterial culture with an optical density of 0.65 and a dilution factor of 1000, using
+      a standard calibration factor.
+    single_clear:
+    - Calculate the cell density of a sample with an OD of 0.6 and a dilution of 500, using the default calibration factor.
+    - Calculate the cell density with an OD of 0.8, a dilution of 15, and a custom calibration factor of 2 billion.
+    - Calculate the cell density with an OD of 1.2, a dilution factor of 10, and a calibration factor of 2000000000.
+    - What is the cell density if the OD is 1.2 and the dilution is 1000, using a calibration factor of 2e9?
+    - Calculate the cell density if the OD is 0.45 and the dilution factor is 1000.
+    - Calculate the cell density of a sample with an optical density of 0.8 and a dilution factor of 5.
+    - What is the cell density of a bacterial culture with an optical density of 0.8 and a dilution factor of 1000?
+    - Can you calculate the cell density if the optical density is 0.8 and the sample was diluted 5 times?
+    - What is the cell density of a sample with OD 0.8 and a dilution factor of 10?
+    - Calculate the cell density with an OD of 0.4 and a dilution factor of 500, using a custom calibration factor of 1.5e9.
+    - Calculate the cell density using an OD of 0.9 and a dilution of 1500, with a calibration factor of 1.5e9.
+    - Calculate the cell density if the optical density is 0.8 and the dilution factor is 10.
+    - Determine the cell density with OD 0.8, dilution 10, and calibration factor 1e9.
+    - Calculate the cell density if the optical density is 0.8 and the dilution factor is 5.
+    - Calculate the cell density of a bacterial culture with an optical density of 0.6 and a dilution factor of 1000, using
+      a calibration factor of 1 billion.
+    - Calculate the cell density of a bacterial culture with an optical density of 0.65 and a dilution factor of 1000, using
+      a standard calibration factor.
+- name: triangle_area
+  descriptions:
+    minimal: Computes the area of a triangle given its base...
+    short: Computes the area of a triangle given its base and height.
+    medium: Computes the area of a triangle given its base and height.
+    long: Computes the area of a triangle given its base and height.
+    verbose: Computes the area of a triangle given its base and height.
+  parameters:
+  - name: base
+    type: number
+    description: The length of the base of the triangle.
+    required: true
+  - name: height
+    type: number
+    description: The height of the triangle.
+    required: true
+  tags:
+  - triangle
+  - area
+  test_prompts:
+    single:
+    - Compute the area of a triangle with a base of 9.3 units and a height of 6.7 units.
+    - Calculate the area of a triangle with a base of 10 units and a height of 5 units.
+    - Calculate the area of a triangle with a base of 10 units and a height of 5 units.
+    - Determine the area of a triangle with a base of 7.5 cm and a height of 3.2 cm.
+    - What is the area of a triangle with a base of 12.5 cm and a height of 8 cm?
+    - Calculate the area of a triangle with a base of 10 units and a height of 5 units.
+    - How much area does a triangle cover if its base is 20 feet and its height is 10 feet?
+    - Calculate the area of a triangle with a base of 10.5 cm and a height of 7.2 cm.
+    - Calculate the area of a triangle with a base of 10.5 units and a height of 7.2 units.
+    - Find the area of a triangle with a base of 12 meters and a height of 8 meters.
+    - Calculate the area of a triangle with a base of 10 units and a height of 5 units.
+    - Find the area of a triangle where the base is 8.2 meters and the height is 10 meters.
+    - Calculate the area of a triangle with a base of 10 units and a height of 5 units.
+    - What is the area of a triangle with a base of 10 cm and a height of 5 cm?
+    - Calculate the area of a triangle with a base of 8.2 units and a height of 4.1 units.
+    single_clear:
+    - Compute the area of a triangle with a base of 9.3 units and a height of 6.7 units.
+    - Calculate the area of a triangle with a base of 10 units and a height of 5 units.
+    - Calculate the area of a triangle with a base of 10 units and a height of 5 units.
+    - Determine the area of a triangle with a base of 7.5 cm and a height of 3.2 cm.
+    - What is the area of a triangle with a base of 12.5 cm and a height of 8 cm?
+    - Calculate the area of a triangle with a base of 10 units and a height of 5 units.
+    - How much area does a triangle cover if its base is 20 feet and its height is 10 feet?
+    - Calculate the area of a triangle with a base of 10.5 cm and a height of 7.2 cm.
+    - Calculate the area of a triangle with a base of 10.5 units and a height of 7.2 units.
+    - Find the area of a triangle with a base of 12 meters and a height of 8 meters.
+    - Calculate the area of a triangle with a base of 10 units and a height of 5 units.
+    - Find the area of a triangle where the base is 8.2 meters and the height is 10 meters.
+    - Calculate the area of a triangle with a base of 10 units and a height of 5 units.
+    - What is the area of a triangle with a base of 10 cm and a height of 5 cm?
+    - Calculate the area of a triangle with a base of 8.2 units and a height of 4.1 units.
+- name: web_candles
+  descriptions:
+    minimal: Fetches candlestick data for a specific trading...
+    short: Fetches candlestick data for a specific trading pair within a specified time range.
+    medium: Fetches candlestick data for a specific trading pair within a specified time range.
+    long: Fetches candlestick data for a specific trading pair within a specified time range.
+    verbose: Fetches candlestick data for a specific trading pair within a specified time range.
+  parameters:
+  - name: time_bucket
+    type: string
+    description: The time bucket to use for the candle size, e.g., '1m', '5m', '1h'.
+    required: true
+    default: 1h
+  - name: pair_id
+    type: integer
+    description: The primary key for the trading pair. For tests and demos, use id `1` which corresponds to the ETH/USDC pair
+      on Uniswap v2.
+    required: true
+    default: 1
+  - name: start
+    type: string
+    description: The start of the candle fetch period as an ISO 8601 formatted string. Defaults to '2020-05-18 00:00'.
+    required: false
+    default: 2020-05-18 00:00
+  - name: end
+    type: string
+    description: The end of the candle fetch period as an ISO 8601 formatted string. Defaults to '2020-05-19 00:00'.
+    required: false
+    default: 2020-05-19 00:00
+  tags:
+  - web
+  - candles
+  test_prompts:
+    single:
+    - I need hourly candlestick data for the ETH/USDC pair starting from 2021-01-01 00:00 until 2021-01-02 00:00. Can you
+      provide that?
+    - I need the 5-minute candlestick data for the ETH/USDC pair starting from May 19, 2020, to May 20, 2020. Can you provide
+      that?
+    single_clear:
+    - I need hourly candlestick data for the ETH/USDC pair starting from 2021-01-01 00:00 until 2021-01-02 00:00. Can you
+      provide that?
+    - I need the 5-minute candlestick data for the ETH/USDC pair starting from May 19, 2020, to May 20, 2020. Can you provide
+      that?

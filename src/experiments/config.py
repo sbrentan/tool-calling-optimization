@@ -92,6 +92,8 @@ class ExperimentConfig:
     include_no_tool: bool = False  # Include no-tool test scenarios (negative tests)
     include_ambiguous: bool = False  # Include ambiguous test scenarios (clarification tests)
     test_categories: Optional[list[str]] = None  # Limit tests to specific categories (None = all)
+    validate_params: bool = True  # Enable parameter validation using prompts_mapping.json
+    tools_dir: Optional[str] = None  # Custom tools directory path (None = default)
     
     # Output configuration
     output_dir: str = "experiments/results"
@@ -132,6 +134,8 @@ class ExperimentConfig:
             "include_no_tool": self.include_no_tool,
             "include_ambiguous": self.include_ambiguous,
             "test_categories": self.test_categories,
+            "validate_params": self.validate_params,
+            "tools_dir": self.tools_dir,
             "output_dir": self.output_dir,
             "save_raw_responses": self.save_raw_responses,
             "methodology": self.methodology,

@@ -73,12 +73,13 @@ from src.experiments.config import ExperimentConfig
 from src.experiments.plan_config import PlanConfig, RunConfig
 from src.clients.rate_limit_handler import UserAbortError
 from src.clients.api_key_manager import reset_all_rotations
+from src.clients.timeout_utils import set_interrupt, clear_interrupt, is_interrupted
 
 app = typer.Typer(help="Batch runner for experiment plan configurations")
 console = Console()
 
-# METHODOLOGIES_TO_SKIP = ["clustering", "hybrid", "rag", "adaptive_rag"]  # List of methodologies to skip during execution
-METHODOLOGIES_TO_SKIP = ["mcp"]  # List of methodologies to skip during execution
+# METHODOLOGIES_TO_SKIP = ["clustering", "hybrid", "rag", "adaptive_rag", "mcp"]  # List of methodologies to skip during execution
+METHODOLOGIES_TO_SKIP = []  # List of methodologies to skip during execution
 
 # Default timeout and retry settings
 DEFAULT_TIMEOUT_SECONDS = 60  # 1 minute timeout per experiment
@@ -141,6 +142,9 @@ _interrupt_state = InterruptState()
 
 def sigint_handler(signum, frame):
     """Handle Ctrl+C by saving progress before exiting."""
+    # Set the global interrupt flag to signal all threads to stop
+    set_interrupt()
+    
     console.print("\n\n[bold yellow]Interrupt received (Ctrl+C)![/bold yellow]")
     
     if _interrupt_state.enabled and _interrupt_state.configs:
@@ -563,8 +567,20 @@ def run(
     logger.add(sys.stderr, level=level, 
                format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>")
     
+    # Clear any previous interrupt flag
+    clear_interrupt()
+    
     # Register signal handler for Ctrl+C
+    # On Windows, this works best when the main thread isn't blocked
+    # Our new timeout mechanism uses short sleep intervals to allow signal processing
     signal.signal(signal.SIGINT, sigint_handler)
+    
+    # On Windows, also try to handle CTRL_C_EVENT and CTRL_BREAK_EVENT
+    if sys.platform == 'win32':
+        try:
+            signal.signal(signal.SIGBREAK, sigint_handler)
+        except (AttributeError, ValueError):
+            pass  # SIGBREAK not available on all Windows configurations
     
     # Handle resume from progress file
     resume_run_idx = start_from_run
@@ -718,10 +734,22 @@ def run(
         if i < start_from:
             continue
         
+        # Check for interrupt at the start of each config
+        if is_interrupted():
+            console.print("[yellow]Interrupt detected, stopping batch execution...[/yellow]")
+            user_aborted = True
+            break
+        
         for run_idx, run_config in enumerate(run_list):
             # Skip runs that were already completed when resuming
             if i == start_from and run_idx < resume_run_idx:
                 continue
+            
+            # Check for interrupt at the start of each run
+            if is_interrupted():
+                console.print("[yellow]Interrupt detected, stopping batch execution...[/yellow]")
+                user_aborted = True
+                break
                 
             experiment_num += 1
             

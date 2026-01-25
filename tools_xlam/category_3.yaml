@@ -1,0 +1,914 @@
+category: category_3
+tools:
+- name: calculate_calorie_intake
+  descriptions:
+    minimal: Calculates the recommended daily calorie intake...
+    short: Calculates the recommended daily calorie intake and macronutrient distribution based on personal characteristics
+      and goals.
+    medium: Calculates the recommended daily calorie intake and macronutrient distribution based on personal characteristics
+      and goals.
+    long: Calculates the recommended daily calorie intake and macronutrient distribution based on personal characteristics
+      and goals.
+    verbose: Calculates the recommended daily calorie intake and macronutrient distribution based on personal characteristics
+      and goals.
+  parameters:
+  - name: weight_kg
+    type: number
+    description: Body weight in kilograms.
+    required: true
+  - name: height_cm
+    type: number
+    description: Height in centimeters.
+    required: true
+  - name: age
+    type: integer
+    description: Age in years.
+    required: true
+  - name: sex
+    type: string
+    description: Biological sex, either 'male' or 'female'.
+    required: true
+  - name: activity_level
+    type: integer
+    description: Activity level on a scale of 1 to 5 (1 = sedentary, 5 = extremely active).
+    required: true
+  - name: goal
+    type: string
+    description: Fitness goal, either 'lose', 'maintain', or 'gain'.
+    required: true
+  tags:
+  - calculate
+  - calorie
+  - intake
+  test_prompts:
+    single:
+    - What is the recommended daily calorie intake and macronutrient distribution for a 30-year-old male, weighing 75 kg,
+      180 cm tall, moderately active, aiming to maintain weight?
+    - Calculate the recommended daily calorie intake for a 30-year-old male, weighing 70 kg, 180 cm tall, with an activity
+      level of 3, aiming to maintain weight.
+    - Calculate the recommended daily calorie intake for a 30-year-old male, weighing 75 kg, 180 cm tall, with an activity
+      level of 3, aiming to maintain weight.
+    - What's the ideal calorie and nutrient intake for a 50-year-old sedentary woman, 75 kg, 170 cm, who wants to maintain
+      her weight?
+    - Calculate the recommended daily calorie intake for a 40-year-old male, weighing 80 kg, 175 cm tall, with an activity
+      level of 4, aiming to gain weight.
+    - What should be the daily calorie and macronutrient intake for a 45-year-old female, 65 kg, 165 cm, with a sedentary
+      lifestyle, aiming to lose weight?
+    - What is the recommended calorie intake for a 30-year-old male, weighing 75 kg, 180 cm tall, with an active lifestyle,
+      aiming to maintain weight?
+    - I'm a 35-year-old female, 165 cm tall, and weigh 60 kg. I work a desk job but I go to the gym three times a week. My
+      goal is to maintain my current weight. Can you tell me how many calories I should consume daily and what the macronutrient
+      distribution should be?
+    - Determine the recommended calorie and macronutrient intake for a 25-year-old female, 60 kg, 165 cm, sedentary, aiming
+      to lose weight.
+    - I am a 25-year-old female, 60 kg, 160 cm tall, very active, and want to lose weight. Please calculate my recommended
+      daily calorie intake and macronutrient distribution.
+    - A 45-year-old female, weighing 60 kg and 165 cm tall, aims to lose weight while being sedentary. What should her daily
+      calorie intake and macronutrient distribution be?
+    - Calculate my daily calorie intake if I am a 30-year-old male, 70 kg, 175 cm, and moderately active with a goal to maintain
+      weight.
+    - I'm a 35-year-old male, weighing 78 kg, 180 cm tall, and I have a sedentary lifestyle. I want to maintain my weight.
+      Can you calculate my daily calorie intake and macronutrient distribution?
+    - A 22-year-old female, weighing 55 kg and 160 cm tall, with an extremely active lifestyle, wants to gain weight. What
+      are her recommended daily calorie intake and macronutrient distribution?
+    single_clear:
+    - What is the recommended daily calorie intake and macronutrient distribution for a 30-year-old male, weighing 75 kg,
+      180 cm tall, moderately active, aiming to maintain weight?
+    - Calculate the recommended daily calorie intake for a 30-year-old male, weighing 70 kg, 180 cm tall, with an activity
+      level of 3, aiming to maintain weight.
+    - Calculate the recommended daily calorie intake for a 30-year-old male, weighing 75 kg, 180 cm tall, with an activity
+      level of 3, aiming to maintain weight.
+    - What's the ideal calorie and nutrient intake for a 50-year-old sedentary woman, 75 kg, 170 cm, who wants to maintain
+      her weight?
+    - Calculate the recommended daily calorie intake for a 40-year-old male, weighing 80 kg, 175 cm tall, with an activity
+      level of 4, aiming to gain weight.
+    - What should be the daily calorie and macronutrient intake for a 45-year-old female, 65 kg, 165 cm, with a sedentary
+      lifestyle, aiming to lose weight?
+    - What is the recommended calorie intake for a 30-year-old male, weighing 75 kg, 180 cm tall, with an active lifestyle,
+      aiming to maintain weight?
+    - I'm a 35-year-old female, 165 cm tall, and weigh 60 kg. I work a desk job but I go to the gym three times a week. My
+      goal is to maintain my current weight. Can you tell me how many calories I should consume daily and what the macronutrient
+      distribution should be?
+    - Determine the recommended calorie and macronutrient intake for a 25-year-old female, 60 kg, 165 cm, sedentary, aiming
+      to lose weight.
+    - I am a 25-year-old female, 60 kg, 160 cm tall, very active, and want to lose weight. Please calculate my recommended
+      daily calorie intake and macronutrient distribution.
+    - A 45-year-old female, weighing 60 kg and 165 cm tall, aims to lose weight while being sedentary. What should her daily
+      calorie intake and macronutrient distribution be?
+    - Calculate my daily calorie intake if I am a 30-year-old male, 70 kg, 175 cm, and moderately active with a goal to maintain
+      weight.
+    - I'm a 35-year-old male, weighing 78 kg, 180 cm tall, and I have a sedentary lifestyle. I want to maintain my weight.
+      Can you calculate my daily calorie intake and macronutrient distribution?
+    - A 22-year-old female, weighing 55 kg and 160 cm tall, with an extremely active lifestyle, wants to gain weight. What
+      are her recommended daily calorie intake and macronutrient distribution?
+- name: count_vowels
+  descriptions:
+    minimal: Counts the number of vowels in a given text.
+    short: Counts the number of vowels in a given text.
+    medium: Counts the number of vowels in a given text.
+    long: Counts the number of vowels in a given text.
+    verbose: Counts the number of vowels in a given text.
+  parameters:
+  - name: text
+    type: string
+    description: The input text.
+    required: true
+  tags:
+  - count
+  - vowels
+  test_prompts:
+    single:
+    - How many vowels are there in the sentence 'The quick brown fox jumps over the lazy dog'?
+    - 'Count the number of vowels in the sentence: ''The quick brown fox jumps over the lazy dog.'''
+    - How many vowels are there in the sentence 'Hello, how are you today?'?
+    - Calculate the number of vowels in the text 'Data Science is revolutionizing industries.'
+    - Count the vowels in the sentence 'Hello, World!'.
+    single_clear:
+    - How many vowels are there in the sentence 'The quick brown fox jumps over the lazy dog'?
+    - 'Count the number of vowels in the sentence: ''The quick brown fox jumps over the lazy dog.'''
+    - How many vowels are there in the sentence 'Hello, how are you today?'?
+    - Calculate the number of vowels in the text 'Data Science is revolutionizing industries.'
+    - Count the vowels in the sentence 'Hello, World!'.
+- name: leaguetotalteamevents
+  descriptions:
+    minimal: Retrieve the total team events for a specific...
+    short: Retrieve the total team events for a specific basketball league in a given tournament and season.
+    medium: Retrieve the total team events for a specific basketball league in a given tournament and season.
+    long: Retrieve the total team events for a specific basketball league in a given tournament and season.
+    verbose: Retrieve the total team events for a specific basketball league in a given tournament and season.
+  parameters:
+  - name: seasonid
+    type: integer
+    description: The season ID for which you want to retrieve the league's total team events.
+    required: true
+    default: 42914
+  - name: tournamentid
+    type: integer
+    description: The unique tournament ID for which you want to retrieve the league's total team events.
+    required: true
+    default: 138
+  tags:
+  - leaguetotalteamevents
+  test_prompts:
+    single:
+    - I need the total team events for the FIBA Basketball World Cup 2019.
+    single_clear:
+    - I need the total team events for the FIBA Basketball World Cup 2019.
+- name: income_by_zipcode
+  descriptions:
+    minimal: Fetches income data for a given zipcode using the...
+    short: Fetches income data for a given zipcode using the Toolbench RapidAPI.
+    medium: Fetches income data for a given zipcode using the Toolbench RapidAPI.
+    long: Fetches income data for a given zipcode using the Toolbench RapidAPI.
+    verbose: Fetches income data for a given zipcode using the Toolbench RapidAPI.
+  parameters:
+  - name: zip
+    type: string
+    description: Zipcode for which the income data is to be retrieved.
+    required: true
+    default: '2818'
+  tags:
+  - income
+  - by
+  - zipcode
+  test_prompts:
+    single:
+    - What is the income data for zipcode 90210?
+    - How much income is typically earned in the area of zipcode 10001?
+    single_clear:
+    - What is the income data for zipcode 90210?
+    - How much income is typically earned in the area of zipcode 10001?
+- name: calculate_factorial
+  descriptions:
+    minimal: Calculates the factorial of a non-negative...
+    short: Calculates the factorial of a non-negative integer.
+    medium: Calculates the factorial of a non-negative integer.
+    long: Calculates the factorial of a non-negative integer.
+    verbose: Calculates the factorial of a non-negative integer.
+  parameters:
+  - name: n
+    type: integer
+    description: The non-negative integer.
+    required: true
+  tags:
+  - calculate
+  - factorial
+  test_prompts:
+    single:
+    - Calculate the factorial of 5.
+    - Calculate the factorial for 25.
+    - What is the factorial of 0? Remember, the factorial of 0 is defined as 1.
+    - Calculate the factorial of 7.
+    single_clear:
+    - Calculate the factorial of 5.
+    - Calculate the factorial for 25.
+    - What is the factorial of 0? Remember, the factorial of 0 is defined as 1.
+    - Calculate the factorial of 7.
+- name: is_power
+  descriptions:
+    minimal: Checks if a number is a power of a given base.
+    short: Checks if a number is a power of a given base.
+    medium: Checks if a number is a power of a given base.
+    long: Checks if a number is a power of a given base.
+    verbose: Checks if a number is a power of a given base.
+  parameters:
+  - name: num
+    type: integer
+    description: The number to check.
+    required: true
+  - name: base
+    type: integer
+    description: The base to check against.
+    required: true
+  tags:
+  - is
+  - power
+  test_prompts:
+    single:
+    - Is 27 a power of 3?
+    - Is 27 a power of 5?
+    - Explore if 729 is a power of 9.
+    - Is 64 a power of 2?
+    - Determine if 27 is a power of 3.
+    - Assess whether 1024 is a power of 10.
+    - Is 10000 a power of 10?
+    single_clear:
+    - Is 27 a power of 3?
+    - Is 27 a power of 5?
+    - Explore if 729 is a power of 9.
+    - Is 64 a power of 2?
+    - Determine if 27 is a power of 3.
+    - Assess whether 1024 is a power of 10.
+    - Is 10000 a power of 10?
+- name: search_by_name
+  descriptions:
+    minimal: Searches for a movie by its title using the...
+    short: Searches for a movie by its title using the provided query string.
+    medium: Searches for a movie by its title using the provided query string.
+    long: Searches for a movie by its title using the provided query string.
+    verbose: Searches for a movie by its title using the provided query string.
+  parameters:
+  - name: query
+    type: string
+    description: The movie title or keyword to search for.
+    required: true
+    default: kong
+  - name: page
+    type: integer
+    description: The page number of results to retrieve. Defaults to 1.
+    required: false
+    default: '1'
+  tags:
+  - search
+  - by
+  - name
+  test_prompts:
+    single:
+    - Search for movies related to 'Sci-Fi' on page 1.
+    single_clear:
+    - Search for movies related to 'Sci-Fi' on page 1.
+- name: split_list
+  descriptions:
+    minimal: Splits a list into chunks of a specified size.
+    short: Splits a list into chunks of a specified size.
+    medium: Splits a list into chunks of a specified size.
+    long: Splits a list into chunks of a specified size.
+    verbose: Splits a list into chunks of a specified size.
+  parameters:
+  - name: lst
+    type: array
+    description: The input list.
+    required: true
+  - name: chunk_size
+    type: integer
+    description: The size of each chunk.
+    required: true
+  tags:
+  - split
+  - list
+  test_prompts:
+    single:
+    - How can I split the list ['a', 'b', 'c', 'd', 'e'] into chunks of size 3?
+    - Divide the list [10, 20, 30, 40, 50, 60] into chunks of size 2.
+    - Split the list ['a', 'b', 'c', 'd', 'e', 'f', 'g'] into chunks of size 2.
+    - Split a list of mixed types [1, 'two', 3, 'four', 5] into chunks of size 1.
+    - Split the list [10, 20, 30, 40, 50] into chunks of size 4.
+    - Can you split a list of numbers [1, 2, 3, 4, 5, 6, 7, 8, 9] into chunks of size 3?
+    - Split a list [1, 2, 3, 4, 5, 6] into chunks of size 2.
+    single_clear:
+    - How can I split the list ['a', 'b', 'c', 'd', 'e'] into chunks of size 3?
+    - Divide the list [10, 20, 30, 40, 50, 60] into chunks of size 2.
+    - Split the list ['a', 'b', 'c', 'd', 'e', 'f', 'g'] into chunks of size 2.
+    - Split a list of mixed types [1, 'two', 3, 'four', 5] into chunks of size 1.
+    - Split the list [10, 20, 30, 40, 50] into chunks of size 4.
+    - Can you split a list of numbers [1, 2, 3, 4, 5, 6, 7, 8, 9] into chunks of size 3?
+    - Split a list [1, 2, 3, 4, 5, 6] into chunks of size 2.
+- name: getpercentage
+  descriptions:
+    minimal: Calculates and returns the love compatibility...
+    short: Calculates and returns the love compatibility percentage between two names using the Love Calculator API.
+    medium: Calculates and returns the love compatibility percentage between two names using the Love Calculator API.
+    long: Calculates and returns the love compatibility percentage between two names using the Love Calculator API.
+    verbose: Calculates and returns the love compatibility percentage between two names using the Love Calculator API.
+  parameters:
+  - name: sname
+    type: string
+    description: The second name to be used in the compatibility calculation.
+    required: true
+    default: Alice
+  - name: fname
+    type: string
+    description: The first name to be used in the compatibility calculation.
+    required: true
+    default: John
+  tags:
+  - getpercentage
+  test_prompts:
+    single:
+    - Calculate the love compatibility between 'Alice' and 'Bob'.
+    - Determine the love percentage for Emily and David.
+    single_clear:
+    - Calculate the love compatibility between 'Alice' and 'Bob'.
+    - Determine the love percentage for Emily and David.
+- name: sort_numbers
+  descriptions:
+    minimal: Sorts a list of numbers in ascending or...
+    short: Sorts a list of numbers in ascending or descending order.
+    medium: Sorts a list of numbers in ascending or descending order.
+    long: Sorts a list of numbers in ascending or descending order.
+    verbose: Sorts a list of numbers in ascending or descending order.
+  parameters:
+  - name: numbers
+    type: string
+    description: The list of numbers to be sorted.
+    required: true
+  - name: descending
+    type: boolean
+    description: If True, sorts the numbers in descending order. Defaults to False.
+    required: false
+  tags:
+  - sort
+  - numbers
+  test_prompts:
+    single:
+    - 'Can you sort these numbers in ascending order: [3.14, 2.71, 1.618, 0.577]?'
+    - Sort the numbers [3.2, 1.5, 2.7, 4.1] in descending order.
+    - 'Can you sort these values: 0.01, 0.1, 0.001, 0.011 in ascending order?'
+    - Sort the numbers [0.5, 4.8, 2.1, 3.9] in descending order.
+    - 'Could you sort the following in ascending order: 2.2, 1.1, 3.3, 4.4?'
+    - Sort the list [5.2, 3.1, 9.8, 2.6] in descending order
+    - 'Sort these numbers: 3.2, 1.1, 5.5, 2.2 in descending order.'
+    - 'What is the ascending order of these numbers: [15, 5, 20, 10, 25, 15, 30, 20]? Please sort them.'
+    - 'Sort the following list of numbers in ascending order: 4.4, 2.2, 3.3, 1.1.'
+    - 'Sort the following list in ascending order: [0.001, 0.01, 0.1, 1, 10, 100, 1000]'
+    single_clear:
+    - 'Can you sort these numbers in ascending order: [3.14, 2.71, 1.618, 0.577]?'
+    - Sort the numbers [3.2, 1.5, 2.7, 4.1] in descending order.
+    - 'Can you sort these values: 0.01, 0.1, 0.001, 0.011 in ascending order?'
+    - Sort the numbers [0.5, 4.8, 2.1, 3.9] in descending order.
+    - 'Could you sort the following in ascending order: 2.2, 1.1, 3.3, 4.4?'
+    - Sort the list [5.2, 3.1, 9.8, 2.6] in descending order
+    - 'Sort these numbers: 3.2, 1.1, 5.5, 2.2 in descending order.'
+    - 'What is the ascending order of these numbers: [15, 5, 20, 10, 25, 15, 30, 20]? Please sort them.'
+    - 'Sort the following list of numbers in ascending order: 4.4, 2.2, 3.3, 1.1.'
+    - 'Sort the following list in ascending order: [0.001, 0.01, 0.1, 1, 10, 100, 1000]'
+- name: get_litecoin_block_by_hash_or_height
+  descriptions:
+    minimal: Fetches detailed information about a Litecoin...
+    short: Fetches detailed information about a Litecoin block by its hash or height.
+    medium: Fetches detailed information about a Litecoin block by its hash or height.
+    long: Fetches detailed information about a Litecoin block by its hash or height.
+    verbose: Fetches detailed information about a Litecoin block by its hash or height.
+  parameters:
+  - name: hash
+    type: string
+    description: The hash or height of the Litecoin block you want to retrieve details for.
+    required: true
+    default: '1234314'
+  tags:
+  - get
+  - litecoin
+  - block
+  test_prompts:
+    single:
+    - What are the details of the Litecoin block at height 10000?
+    single_clear:
+    - What are the details of the Litecoin block at height 10000?
+- name: balance_sheet_statement
+  descriptions:
+    minimal: Fetches the balance sheet statement of a...
+    short: Fetches the balance sheet statement of a specified company by its ticker symbol.
+    medium: Fetches the balance sheet statement of a specified company by its ticker symbol.
+    long: Fetches the balance sheet statement of a specified company by its ticker symbol.
+    verbose: Fetches the balance sheet statement of a specified company by its ticker symbol.
+  parameters:
+  - name: ticker
+    type: string
+    description: The ticker symbol of the company whose balance sheet statement is to be retrieved.
+    required: true
+    default: AAPL
+  tags:
+  - balance
+  - sheet
+  - statement
+  test_prompts:
+    single:
+    - I need the balance sheet statement for Tesla Inc. from the previous quarter.
+    - Can you get the balance sheet statement for Google's parent company, Alphabet Inc., for the previous fiscal year?
+    - What is the balance sheet statement for Apple Inc. as of the latest quarter?
+    single_clear:
+    - I need the balance sheet statement for Tesla Inc. from the previous quarter.
+    - Can you get the balance sheet statement for Google's parent company, Alphabet Inc., for the previous fiscal year?
+    - What is the balance sheet statement for Apple Inc. as of the latest quarter?
+- name: historical
+  descriptions:
+    minimal: Fetches the Fear and Greed Index for a given date...
+    short: Fetches the Fear and Greed Index for a given date from the RapidAPI service.
+    medium: Fetches the Fear and Greed Index for a given date from the RapidAPI service.
+    long: Fetches the Fear and Greed Index for a given date from the RapidAPI service.
+    verbose: Fetches the Fear and Greed Index for a given date from the RapidAPI service.
+  parameters:
+  - name: date
+    type: string
+    description: The date for which to retrieve the index, in the format 'YYYY-MM-DD'.
+    required: true
+    default: '2022-06-01'
+  tags:
+  - historical
+  test_prompts:
+    single:
+    - Retrieve the Fear and Greed Index for the date of March 15, 2023.
+    - Fetch the Fear and Greed Index for December 31, 2021.
+    - I need the historical exchange rates for the Swiss Franc against the Euro, US Dollar, and Canadian Dollar on October
+      31, 2008.
+    single_clear:
+    - Retrieve the Fear and Greed Index for the date of March 15, 2023.
+    - Fetch the Fear and Greed Index for December 31, 2021.
+    - I need the historical exchange rates for the Swiss Franc against the Euro, US Dollar, and Canadian Dollar on October
+      31, 2008.
+- name: whole_foods_order
+  descriptions:
+    minimal: Places an order at Whole Foods.
+    short: Places an order at Whole Foods.
+    medium: Places an order at Whole Foods.
+    long: Places an order at Whole Foods.
+    verbose: Places an order at Whole Foods.
+  parameters:
+  - name: store_location
+    type: string
+    description: The location of the Whole Foods store.
+    required: true
+  - name: item_list
+    type: array
+    description: A list of items to order.
+    required: true
+  - name: order_size
+    type: string
+    description: 'The size of the order. Allowed values: "small", "medium", or "large".'
+    required: true
+  tags:
+  - whole
+  - foods
+  - order
+  test_prompts:
+    single:
+    - Place a small order for me at the Whole Foods in Austin, Texas. Include organic bananas, oat milk, and chia seeds.
+    - I need a medium-sized order from the Whole Foods in Chicago. Please add spinach, soy milk, and whole grain pasta to
+      the order.
+    - Place an order at the Whole Foods store in New York for a medium-sized order of apples, bananas, and bread.
+    - 'Place a medium-sized order at the Whole Foods in downtown Seattle with items: ''Organic Apples'', ''Vegan Cheese'',
+      and ''Gluten-Free Bread''.'
+    - Place a small order at the Whole Foods in 'Los Angeles'. I want 'bread', 'milk', and 'eggs'. Please confirm the order.
+    single_clear:
+    - Place a small order for me at the Whole Foods in Austin, Texas. Include organic bananas, oat milk, and chia seeds.
+    - I need a medium-sized order from the Whole Foods in Chicago. Please add spinach, soy milk, and whole grain pasta to
+      the order.
+    - Place an order at the Whole Foods store in New York for a medium-sized order of apples, bananas, and bread.
+    - 'Place a medium-sized order at the Whole Foods in downtown Seattle with items: ''Organic Apples'', ''Vegan Cheese'',
+      and ''Gluten-Free Bread''.'
+    - Place a small order at the Whole Foods in 'Los Angeles'. I want 'bread', 'milk', and 'eggs'. Please confirm the order.
+- name: get_all_servers
+  descriptions:
+    minimal: Fetches a list of Minecraft servers with an...
+    short: Fetches a list of Minecraft servers with an optional limit on the number of servers returned.
+    medium: Fetches a list of Minecraft servers with an optional limit on the number of servers returned.
+    long: Fetches a list of Minecraft servers with an optional limit on the number of servers returned.
+    verbose: Fetches a list of Minecraft servers with an optional limit on the number of servers returned.
+  parameters:
+  - name: limit
+    type: string
+    description: A string representing the maximum number of servers to return.
+    required: true
+    default: '2000'
+  tags:
+  - get
+  - all
+  - servers
+  test_prompts:
+    single:
+    - List the top 5 Minecraft servers.
+    - Provide a list of 5 Minecraft servers that are currently active.
+    single_clear:
+    - List the top 5 Minecraft servers.
+    - Provide a list of 5 Minecraft servers that are currently active.
+- name: measure_distance
+  descriptions:
+    minimal: Calculates the distance between two geographic...
+    short: Calculates the distance between two geographic locations specified by their latitude and longitude coordinates,
+      with an optional unit of measurement.
+    medium: Calculates the distance between two geographic locations specified by their latitude and longitude coordinates,
+      with an optional unit of measurement.
+    long: Calculates the distance between two geographic locations specified by their latitude and longitude coordinates,
+      with an optional unit of measurement.
+    verbose: Calculates the distance between two geographic locations specified by their latitude and longitude coordinates,
+      with an optional unit of measurement.
+  parameters:
+  - name: lon2
+    type: integer
+    description: Longitude of the second location.
+    required: true
+    default: '10.103167361330975'
+  - name: lat2
+    type: integer
+    description: Latitude of the second location.
+    required: true
+    default: '36.81395975'
+  - name: lon1
+    type: integer
+    description: Longitude of the first location.
+    required: true
+    default: '10.7603483'
+  - name: lat1
+    type: integer
+    description: Latitude of the first location.
+    required: true
+    default: '34.797783'
+  - name: unit
+    type: string
+    description: Unit of distance measurement. Valid options are "km" (default), "mi", "ft", and "yd".
+    required: false
+    default: km
+  tags:
+  - measure
+  - distance
+  test_prompts:
+    single:
+    - Calculate the distance in miles between Kampala (latitude 0.3163, longitude 32.5825) and Jinja (latitude 0.4463, longitude
+      33.2041).
+    - Calculate the distance in miles between Kampala (latitude 0.3163, longitude 32.5825) and Jinja (latitude 0.4463, longitude
+      33.2041).
+    - Calculate the distance between New York (40.7128° N, 74.0060° W) and London (51.5074° N, 0.1278° W) in miles.
+    - Calculate the distance between New York (40.7128° N, 74.0060° W) and London (51.5074° N, 0.1278° W) in miles.
+    - Calculate the distance between New York (40.7128° N, 74.0060° W) and London (51.5074° N, 0.1278° W) in miles.
+    - What is the distance in miles between Los Angeles and San Francisco?
+    - Calculate the distance between Cairo (30.0444° N, 31.2357° E) and Alexandria (31.2001° N, 29.9187° E) in kilometers.
+    - Calculate the distance between Cairo (30.0444° N, 31.2357° E) and Alexandria (31.2001° N, 29.9187° E) in kilometers.
+    - Calculate the distance between Cairo (30.0444° N, 31.2357° E) and Alexandria (31.2001° N, 29.9187° E) in kilometers.
+    - What is the distance in kilometers between two points, one at latitude 40.7128 and longitude -74.0060, and another at
+      latitude 34.0522 and longitude -118.2437?
+    - Determine the distance in kilometers between Los Angeles (latitude 34.0522, longitude -118.2437) and Mexico City (latitude
+      19.4326, longitude -99.1332).
+    - What is the distance in miles between New York (latitude 40.7128, longitude -74.0060) and London (latitude 51.5074,
+      longitude -0.1278)?
+    - I need to know the distance from the Eiffel Tower to the Louvre in kilometers.
+    - I need to know the distance from the Eiffel Tower to the Louvre in kilometers.
+    - Calculate the distance in kilometers between New York (40.7128 N, 74.0060 W) and London (51.5074 N, 0.1278 W).
+    - What is the distance in miles between New York City and Los Angeles?
+    - What's the distance in feet between two points in Kyoto with coordinates (35.0116, 135.7680) and (34.9859, 135.7787)?
+    single_clear:
+    - Calculate the distance in miles between Kampala (latitude 0.3163, longitude 32.5825) and Jinja (latitude 0.4463, longitude
+      33.2041).
+    - Calculate the distance in miles between Kampala (latitude 0.3163, longitude 32.5825) and Jinja (latitude 0.4463, longitude
+      33.2041).
+    - Calculate the distance between New York (40.7128° N, 74.0060° W) and London (51.5074° N, 0.1278° W) in miles.
+    - Calculate the distance between New York (40.7128° N, 74.0060° W) and London (51.5074° N, 0.1278° W) in miles.
+    - Calculate the distance between New York (40.7128° N, 74.0060° W) and London (51.5074° N, 0.1278° W) in miles.
+    - What is the distance in miles between Los Angeles and San Francisco?
+    - Calculate the distance between Cairo (30.0444° N, 31.2357° E) and Alexandria (31.2001° N, 29.9187° E) in kilometers.
+    - Calculate the distance between Cairo (30.0444° N, 31.2357° E) and Alexandria (31.2001° N, 29.9187° E) in kilometers.
+    - Calculate the distance between Cairo (30.0444° N, 31.2357° E) and Alexandria (31.2001° N, 29.9187° E) in kilometers.
+    - What is the distance in kilometers between two points, one at latitude 40.7128 and longitude -74.0060, and another at
+      latitude 34.0522 and longitude -118.2437?
+    - Determine the distance in kilometers between Los Angeles (latitude 34.0522, longitude -118.2437) and Mexico City (latitude
+      19.4326, longitude -99.1332).
+    - What is the distance in miles between New York (latitude 40.7128, longitude -74.0060) and London (latitude 51.5074,
+      longitude -0.1278)?
+    - I need to know the distance from the Eiffel Tower to the Louvre in kilometers.
+    - I need to know the distance from the Eiffel Tower to the Louvre in kilometers.
+    - Calculate the distance in kilometers between New York (40.7128 N, 74.0060 W) and London (51.5074 N, 0.1278 W).
+    - What is the distance in miles between New York City and Los Angeles?
+    - What's the distance in feet between two points in Kyoto with coordinates (35.0116, 135.7680) and (34.9859, 135.7787)?
+- name: get_hourly_forecast
+  descriptions:
+    minimal: Retrieves the hourly weather forecast for a...
+    short: Retrieves the hourly weather forecast for a specified city using the RapidAPI Cloud Cast service.
+    medium: Retrieves the hourly weather forecast for a specified city using the RapidAPI Cloud Cast service.
+    long: Retrieves the hourly weather forecast for a specified city using the RapidAPI Cloud Cast service.
+    verbose: Retrieves the hourly weather forecast for a specified city using the RapidAPI Cloud Cast service.
+  parameters:
+  - name: city
+    type: string
+    description: The name of the city for which to retrieve the hourly weather forecast.
+    required: true
+    default: New York
+  tags:
+  - get
+  - hourly
+  - forecast
+  test_prompts:
+    single:
+    - I need to know the hourly weather updates for Tokyo today, please.
+    - Can you provide the hourly forecast for New York City tomorrow?
+    - Can you provide the hourly forecast for New York City tomorrow?
+    - What are the weather conditions in London for the next 24 hours?
+    single_clear:
+    - I need to know the hourly weather updates for Tokyo today, please.
+    - Can you provide the hourly forecast for New York City tomorrow?
+    - Can you provide the hourly forecast for New York City tomorrow?
+    - What are the weather conditions in London for the next 24 hours?
+- name: is_palindrome
+  descriptions:
+    minimal: Checks if a string is a palindrome.
+    short: Checks if a string is a palindrome.
+    medium: Checks if a string is a palindrome.
+    long: Checks if a string is a palindrome.
+    verbose: Checks if a string is a palindrome.
+  parameters:
+  - name: text
+    type: string
+    description: The input string.
+    required: true
+  tags:
+  - is
+  - palindrome
+  test_prompts:
+    single:
+    - Is 'racecar' a palindrome?
+    - Determine if 'No lemon, no melon' is a palindrome.
+    - Check if the string 'madam' is a palindrome
+    - 'Check if the string ''A man, a plan, a canal: Panama'' is a palindrome.'
+    - Is the sentence 'Was it a car or a cat I saw' a palindrome?
+    - Determine if the string 'A man a plan a canal Panama' is a palindrome.
+    single_clear:
+    - Is 'racecar' a palindrome?
+    - Determine if 'No lemon, no melon' is a palindrome.
+    - Check if the string 'madam' is a palindrome
+    - 'Check if the string ''A man, a plan, a canal: Panama'' is a palindrome.'
+    - Is the sentence 'Was it a car or a cat I saw' a palindrome?
+    - Determine if the string 'A man a plan a canal Panama' is a palindrome.
+- name: estimate_market_value
+  descriptions:
+    minimal: Estimates the market value of a car given its VIN...
+    short: Estimates the market value of a car given its VIN and optionally its mileage using the Toolbench RapidAPI service.
+    medium: Estimates the market value of a car given its VIN and optionally its mileage using the Toolbench RapidAPI service.
+    long: Estimates the market value of a car given its VIN and optionally its mileage using the Toolbench RapidAPI service.
+    verbose: Estimates the market value of a car given its VIN and optionally its mileage using the Toolbench RapidAPI service.
+  parameters:
+  - name: vin
+    type: string
+    description: The Vehicle Identification Number of the car.
+    required: true
+    default: 5N3AA08D68N901917
+  - name: mileage
+    type: integer
+    description: The current mileage of the car. Defaults to 50,000 if not specified.
+    required: false
+    default: '50000'
+  tags:
+  - estimate
+  - market
+  - value
+  test_prompts:
+    single:
+    - Estimate the market value of a car with VIN 2T3BF4DV1KW000001 and its mileage is 60000 km.
+    - Estimate the market value of a car with VIN '1HGCM82633A123456' and mileage of 60,000 miles.
+    single_clear:
+    - Estimate the market value of a car with VIN 2T3BF4DV1KW000001 and its mileage is 60000 km.
+    - Estimate the market value of a car with VIN '1HGCM82633A123456' and mileage of 60,000 miles.
+- name: coins_search
+  descriptions:
+    minimal: Search for available cryptocurrencies that match...
+    short: Search for available cryptocurrencies that match a given string.
+    medium: Search for available cryptocurrencies that match a given string.
+    long: Search for available cryptocurrencies that match a given string.
+    verbose: Search for available cryptocurrencies that match a given string.
+  parameters:
+  - name: string
+    type: string
+    description: A word or name to search for relevant cryptocurrencies.
+    required: true
+    default: bit
+  - name: time_utc_offset
+    type: integer
+    description: UTC offset value in seconds (default is 28800, representing UTC+8).
+    required: false
+    default: '28800'
+  - name: lang_id
+    type: integer
+    description: Language ID value, with a default of 1, corresponding to the all_langs/lang_ID returned from the get-meta-data
+      endpoint.
+    required: false
+    default: '1'
+  tags:
+  - coins
+  - search
+  test_prompts:
+    single:
+    - Look up cryptocurrencies associated with the keyword 'Bitcoin' with a UTC offset of 3600.
+    - Could you search for cryptocurrencies that have 'stable' in their name or description?
+    single_clear:
+    - Look up cryptocurrencies associated with the keyword 'Bitcoin' with a UTC offset of 3600.
+    - Could you search for cryptocurrencies that have 'stable' in their name or description?
+- name: auto_complete
+  descriptions:
+    minimal: Fetches auto-complete suggestions for a given...
+    short: Fetches auto-complete suggestions for a given word using an external API.
+    medium: Fetches auto-complete suggestions for a given word using an external API.
+    long: Fetches auto-complete suggestions for a given word using an external API.
+    verbose: Fetches auto-complete suggestions for a given word using an external API.
+  parameters:
+  - name: word
+    type: string
+    description: The term or phrase for which to get auto-complete suggestions.
+    required: true
+    default: bikini top
+  - name: currency
+    type: string
+    description: The 3-letter currency code. Defaults to 'USD'.
+    required: false
+    default: USD
+  - name: country
+    type: string
+    description: The 2-letter country code. Defaults to 'US'.
+    required: false
+    default: US
+  - name: language
+    type: string
+    description: The 2-letter language code. Defaults to 'en'.
+    required: false
+    default: en
+  tags:
+  - auto
+  - complete
+  test_prompts:
+    single:
+    - Provide auto-complete suggestions for the phrase 'smartphone' in German for a user in Germany using Euros.
+    - Get autocomplete suggestions for the term 'Imagine Dragons' in English.
+    - Get auto-complete suggestions for 'London' in the 'listings' category.
+    single_clear:
+    - Provide auto-complete suggestions for the phrase 'smartphone' in German for a user in Germany using Euros.
+    - Get autocomplete suggestions for the term 'Imagine Dragons' in English.
+    - Get auto-complete suggestions for 'London' in the 'listings' category.
+- name: continents
+  descriptions:
+    minimal: Fetches and returns a list of continents of the...
+    short: Fetches and returns a list of continents of the world localized to the requested language, with various filtering
+      options.
+    medium: Fetches and returns a list of continents of the world localized to the requested language, with various filtering
+      options.
+    long: Fetches and returns a list of continents of the world localized to the requested language, with various filtering
+      options.
+    verbose: Fetches and returns a list of continents of the world localized to the requested language, with various filtering
+      options.
+  parameters:
+  - name: fields
+    type: string
+    description: Specifies the fields to return for each continent. Options include 'iso_a2', 'iso_a3', 'continent_code',
+      'dial_code', 'currency_code', 'currency_num_code', 'currency'.
+    required: false
+  - name: continent_code
+    type: string
+    description: Filters the results based on the 2-letter continent code.
+    required: false
+  - name: lang
+    type: string
+    description: Two-letter ISO 639-2 language code to localize the continent names.
+    required: false
+  - name: name
+    type: string
+    description: Filter results to contain the given continent name in the chosen language.
+    required: false
+  tags:
+  - continents
+  test_prompts:
+    single:
+    - What is the continent code for Europe?
+    single_clear:
+    - What is the continent code for Europe?
+- name: playstationdeals
+  descriptions:
+    minimal: Fetches PlayStation deals based on the specified...
+    short: Fetches PlayStation deals based on the specified count, using the provided RapidAPI key.
+    medium: Fetches PlayStation deals based on the specified count, using the provided RapidAPI key.
+    long: Fetches PlayStation deals based on the specified count, using the provided RapidAPI key.
+    verbose: Fetches PlayStation deals based on the specified count, using the provided RapidAPI key.
+  parameters:
+  - name: count
+    type: integer
+    description: The number of games to fetch from the deals list. The minimum value is 0, and the maximum value depends on
+      the total number of games available.
+    required: true
+    default: '0'
+  tags:
+  - playstationdeals
+  test_prompts:
+    single:
+    - Can you fetch the top 5 PlayStation deals available this week?
+    - What are the latest 10 deals on PlayStation games?
+    single_clear:
+    - Can you fetch the top 5 PlayStation deals available this week?
+    - What are the latest 10 deals on PlayStation games?
+- name: is_hotel_available
+  descriptions:
+    minimal: Checks the availability of a hotel for a given...
+    short: Checks the availability of a hotel for a given date range.
+    medium: Checks the availability of a hotel for a given date range.
+    long: Checks the availability of a hotel for a given date range.
+    verbose: Checks the availability of a hotel for a given date range.
+  parameters:
+  - name: hotel
+    type: string
+    description: The name of the hotel.
+    required: true
+  - name: city
+    type: string
+    description: The city where the hotel is located.
+    required: true
+  - name: checkin
+    type: string
+    description: The check-in date in the format "YYYY-MM-DD".
+    required: true
+  - name: checkout
+    type: string
+    description: The check-out date in the format "YYYY-MM-DD".
+    required: true
+  tags:
+  - is
+  - hotel
+  - available
+  test_prompts:
+    single:
+    - Is there availability at the Ocean View Resort in Miami from 2023-07-10 to 2023-07-15?
+    - Is the hotel 'Royal Hotel' in Paris available from '2022-04-01' to '2022-04-04'?
+    - Can I book the Luxe Hotel in New York for 2023-12-20 to 2023-12-27?
+    - Is the Royal Hotel in Paris available from April 15 to April 20, 2022?
+    - Can I book 'Royal Hotel' in Paris for a stay starting April 12, 2022, and ending April 15, 2022?
+    - Is the Queens Hotel in Berlin available for check-in on 2022-03-13 and check-out on 2022-03-16?
+    - Check availability of Queens Hotel in Berlin from March 11th to March 16th, 2022.
+    - Is the Desert Oasis Hotel in Las Vegas available from 2023-11-10 to 2023-11-15?
+    - Is there any availability at the Beachside Resort in Miami from 2024-01-15 to 2024-01-20?
+    - Can I book the Royal Hotel in Paris for 2022-04-11 to 2022-04-15?
+    - Can I book the Royal Hotel in Paris for a stay from 2022-04-11 to 2022-04-15?
+    - Is the Queens Hotel in Berlin available from 2022-03-21 to 2022-03-25?
+    - Can you check if the Royal Hotel in Paris is available from April 1st to April 5th, 2023?
+    - Is the Queens Hotel in Berlin available for check-in on 2022-03-13 and check-out on 2022-03-14?
+    - Is there any availability at the Royal Hotel in Paris for 2022-04-04 and 2022-04-16?
+    single_clear:
+    - Is there availability at the Ocean View Resort in Miami from 2023-07-10 to 2023-07-15?
+    - Is the hotel 'Royal Hotel' in Paris available from '2022-04-01' to '2022-04-04'?
+    - Can I book the Luxe Hotel in New York for 2023-12-20 to 2023-12-27?
+    - Is the Royal Hotel in Paris available from April 15 to April 20, 2022?
+    - Can I book 'Royal Hotel' in Paris for a stay starting April 12, 2022, and ending April 15, 2022?
+    - Is the Queens Hotel in Berlin available for check-in on 2022-03-13 and check-out on 2022-03-16?
+    - Check availability of Queens Hotel in Berlin from March 11th to March 16th, 2022.
+    - Is the Desert Oasis Hotel in Las Vegas available from 2023-11-10 to 2023-11-15?
+    - Is there any availability at the Beachside Resort in Miami from 2024-01-15 to 2024-01-20?
+    - Can I book the Royal Hotel in Paris for 2022-04-11 to 2022-04-15?
+    - Can I book the Royal Hotel in Paris for a stay from 2022-04-11 to 2022-04-15?
+    - Is the Queens Hotel in Berlin available from 2022-03-21 to 2022-03-25?
+    - Can you check if the Royal Hotel in Paris is available from April 1st to April 5th, 2023?
+    - Is the Queens Hotel in Berlin available for check-in on 2022-03-13 and check-out on 2022-03-14?
+    - Is there any availability at the Royal Hotel in Paris for 2022-04-04 and 2022-04-16?
+- name: languages
+  descriptions:
+    minimal: Fetch a list of the world's languages, optionally...
+    short: Fetch a list of the world's languages, optionally filtered and translated.
+    medium: Fetch a list of the world's languages, optionally filtered and translated.
+    long: Fetch a list of the world's languages, optionally filtered and translated.
+    verbose: Fetch a list of the world's languages, optionally filtered and translated.
+  parameters:
+  - name: lang_3
+    type: string
+    description: Filter by 3-letter ISO language code. Defaults to None.
+    required: false
+  - name: iso_a2
+    type: string
+    description: Filter by 2-letter country code. Defaults to None.
+    required: false
+  - name: fields
+    type: string
+    description: Select fields to include in the result (e.g., 'iso_a2,lang_3,flag'). Defaults to 'iso_a2,lang_3,flag'.
+    required: false
+    default: iso_a2,lang_3,flag
+  - name: lang
+    type: string
+    description: Language code to translate the results into. Defaults to 'en'.
+    required: false
+    default: en
+  tags:
+  - languages
+  test_prompts:
+    single:
+    - List all languages with the ISO code 'eng' and their flags, translated into English.
+    single_clear:
+    - List all languages with the ISO code 'eng' and their flags, translated into English.

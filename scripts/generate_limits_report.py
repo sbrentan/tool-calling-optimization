@@ -532,7 +532,7 @@ def generate_mcp_tokens_vs_tools(df: pd.DataFrame, output_path: Path):
     
     # Add typical context window limits as reference lines
     ax.axhline(y=32000, color='orange', linestyle='--', alpha=0.7, linewidth=2, label='32K context limit')
-    ax.axhline(y=128000, color='red', linestyle='--', alpha=0.7, linewidth=2, label='128K context limit')
+    ax.axhline(y=64000, color='red', linestyle='--', alpha=0.7, linewidth=2, label='64K context limit')
     
     ax.set_xlabel("Number of Tools")
     ax.set_ylabel("Average Input Tokens")
