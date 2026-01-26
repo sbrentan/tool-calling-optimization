@@ -22,6 +22,8 @@ from .base import (
     StepType,
 )
 
+TOOLS_FOLDER = "tools_xlam"
+
 
 # Default category descriptions if categories.yaml doesn't exist
 DEFAULT_CATEGORY_DESCRIPTIONS = {
@@ -91,7 +93,7 @@ class ClusteringMethodology(StepBasedMethodology):
         allow_backtrack: bool = True,
         allow_decline: bool = False,
         allow_clarification: bool = False,
-        categories_file: Optional[str] = None,
+        categories_file: Optional[str] = None
     ):
         """
         Initialize clustering methodology.
@@ -116,7 +118,7 @@ class ClusteringMethodology(StepBasedMethodology):
         if categories_file is None:
             # Try default location
             project_root = Path(__file__).parent.parent.parent
-            categories_file = project_root / "tools" / "categories.yaml"
+            categories_file = project_root / TOOLS_FOLDER / "categories.yaml"
         else:
             categories_file = Path(categories_file)
         

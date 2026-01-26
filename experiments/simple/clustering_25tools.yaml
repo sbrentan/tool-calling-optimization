@@ -1,0 +1,21 @@
+# ============================================================
+# Fill Heatmap: Clustering at 25 tools
+# ============================================================
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+name: fill_clustering_25tools
+description: "Clustering at 25 tools to fill heatmap gap"
+
+num_tools: 25
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+methodology: clustering
+max_steps: 10
+allow_backtrack: true
+
+output_dir: experiments/results/simple

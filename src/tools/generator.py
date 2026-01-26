@@ -20,7 +20,7 @@ from .base import Tool, ToolParameter, TestCase, MultiToolTestCase, AmbiguousTes
 AnyTestCase = Union[TestCase, MultiToolTestCase, AmbiguousTestCase]
 
 
-TOOLS_DIR = Path(__file__).parent.parent.parent / "tools"
+TOOLS_DIR = Path(__file__).parent.parent.parent / "tools_xlam"
 
 
 class ToolGenerator:

@@ -22,6 +22,8 @@ from src.clients.base import BaseLLMClient
 from .base import BaseMethodology, MethodologyResult, StepInfo, StepType, StepBasedMethodology
 
 
+TOOLS_FOLDER = "tools_xlam"
+
 class HybridMethodology(BaseMethodology):
     """
     Hybrid RAG + Clustering methodology.
@@ -109,7 +111,7 @@ class HybridMethodology(BaseMethodology):
         import yaml
         
         project_root = Path(__file__).parent.parent.parent
-        categories_file = project_root / "tools" / "categories.yaml"
+        categories_file = project_root / TOOLS_FOLDER / "categories.yaml"
         
         descriptions = {}
         if categories_file.exists():

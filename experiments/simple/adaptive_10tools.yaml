@@ -1,15 +1,15 @@
 # ============================================================
-# Verbose Doc Length: Adaptive RAG at 50 tools
+# Fill Heatmap: Adaptive RAG at 10 tools
 # ============================================================
 num_test_samples: "__env__"
 model: "__env__"
 seed: "__env__"
 
-name: verbose_adaptive_50tools
-description: "Adaptive RAG with verbose documentation to compare doc_length impact"
+name: fill_adaptive_10tools
+description: "Adaptive RAG at 10 tools to fill heatmap gap"
 
-num_tools: 50
-doc_length: verbose
+num_tools: 10
+doc_length: medium
 prompt_type: concise
 num_similar_tools: 0
 categories: null
@@ -18,10 +18,10 @@ methodology: adaptive_rag
 adaptive_rag_config:
   embedding_model: all-MiniLM-L6-v2
   min_k: 3
-  max_k: 20
+  max_k: 10
   similarity_drop_threshold: 0.1
-  min_similarity: 0.3
+  min_similarity: 0.0
   cache_embeddings: true
   include_params_in_embedding: false
 
-output_dir: experiments/results/plan_2
+output_dir: experiments/results/simple

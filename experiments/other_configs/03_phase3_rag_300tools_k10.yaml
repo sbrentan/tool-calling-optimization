@@ -1,0 +1,35 @@
+# ============================================================
+# PHASE 3: RAG - 300 Tools (top_k=10, Scale Test)
+# ============================================================
+# Purpose: Test RAG scaling with more tools
+# Hypothesis: Same k may work at larger scale
+# Rubric: Experiments - scaling behavior
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase3_rag_300tools_k10
+description: "RAG with 300 tools and top_k=10"
+
+# --- Tool Configuration ---
+num_tools: 300
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: rag
+rag_config:
+  embedding_model: all-MiniLM-L6-v2
+  top_k: 10
+  similarity_threshold: 0.0
+  cache_embeddings: true
+  include_params_in_embedding: false
+
+# --- Output ---
+output_dir: experiments/results/plan

@@ -226,28 +226,59 @@ The heuristic considers factors such as query complexity and ambiguity to decide
 
 For this methodology, tests included tools ranging from 10 to 985 tools, similarly to the previous RAG-based tool selection.
 
-[EDIT]: add more details about the heuristic used to adaptively select k? And check previous paragraph for correctness.
+[EDIT]: add more details about the heuristic used to adaptively select k (elbow, bounded, threshold)? And check previous paragraph for correctness.
 
 > Note: This approach is more of a variant of the RAG-based tool selection rather than a completely new methodology, as it builds upon the same RAG framework but introduces adaptivity in the selection process. It was introduced to explore whether dynamically adjusting k could yield better performance compared to a fixed k value.
 
 #### Results
 
-[EDIT]: talk about small performance improvements and similar context size (a bit on the lower end) compared to fixed k RAG-based selection. show average input tokens chart not linear with chainging num tools. Talk about test done clear vs concise prompts -> big improvement on higher tools configs (but not tested enough to be conclusive). Chart of distribution of adaptive k values?
+[EDIT]: talk about small performance improvements and similar context size (a bit on the lower end) compared to fixed k RAG-based selection. show average input tokens chart not linear with changing num tools, but has spikes due to dynamic k. Talk about test done clear vs concise prompts -> apparently big improvement on higher tools configs (but not tested enough to be conclusive). Chart of distribution of adaptive k values? More fine tunign for the heuristic of adaptive k could be future work? Use the following chart images:
+
+[IMAGE PLACEHOLDER: Adaptive RAG accuracy]: showing that adaptive RAG-based selection achieves slightly higher tool selection accuracy compared to the fixed k RAG-based method, particularly in higher tool count configurations.
+[IMAGE PLACEHOLDER: Adaptive RAG token usage]: showing that the context size used by the adaptive RAG-based selection remains comparable to the fixed k RAG-based method, with some variations due to the dynamic nature of k selection.
+[IMAGE PLACEHOLDER: Adaptive RAG input tokens vs num tools]: showing that the input tokens used by the adaptive RAG-based selection varies with the number of tools, with some spikes observed in certain configurations due to the dynamic k selection.
+[IMAGE PLACEHOLDER: Adaptive RAG clear vs concise prompt accuracy]: showing that using a clear prompt in the adaptive RAG-based selection leads to improved tool selection accuracy compared to a concise prompt, particularly in higher tool count configurations. however, further testing is needed to confirm this trend.
+[IMAGE PLACEHOLDER: Adaptive RAG k distribution]: showing the distribution of k values selected by the adaptive RAG-based method across different queries, indicating that the heuristic effectively varies k based on query characteristics.
+[IMAGE PLACEHOLDER: Adaptive RAG strategy distribution]: showing the distribution of strategies (elbow, bounded, threshold) used by the adaptive RAG-based method for selecting k, indicating that different strategies are employed based on query complexity.
         
 
 ## Experiments & Analysis
 
-[EDIT]: Summarize the experiments conducted for each methodology, the metrics used for evaluation, and the key findings from the analysis. Show general 
+[EDIT]: Summarize the experiments conducted for each methodology, the metrics used for evaluation, and the key findings from the analysis. Use the images below
+
+[IMAGE PLACEHOLDER: Overall comparison of methodologies]: Accuracy Heatmap Methodology vs Number of Tools -> This heatmap summarizes the overall performance of each methodology across different tool count configurations. Clustering based approach shows a stable low accuracy, RAG-based methodologies show the best performance, with adaptive RAG-based selection achieving the highest accuracy in most configurations. MCP could not be tested beyond 350 tools due to context window limitations.
+[IMAGE PLACEHOLDER: Latency distribution by Methodology]: Latency Boxplot Methodology vs Latency (s) -> This boxplot illustrates the latency distribution for each methodology. While they are all relatively similar, RAG and adaptive RAG-based methodologies show slightly lower latency (verify why with the code implementation). The boxplot excludes outliers for better visualization (as tests conducted with on cloud LLMs sometimes had high latency due to network issues).
+
+[EDIT]: Add sections for two validation comparisons: with complete text executions with local LLM (Llama 2 3B) and with public dataset of real-world tools and prompts. Use the images below:
+
+[IMAGE PLACEHOLDER: Local LLM Accuracy x Number of tools line plot], [IMAGE PLACEHOLDER: Local LLM Accuracy Heatmap methodology x tool count]: Local LLM Accuracy Comparison Methodology vs Number of Tools -> This graph shows the accuracy comparison of different methodologies when executed with a local LLM (Llama 2 3B). The trends observed are consistent with those seen in cloud LLM experiments (where only a small number of tools has been tested, generally 10 tools x 3 times with different seeds and then medium results), validating the effectiveness of RAG-based methodologies in improving tool selection accuracy.
 
 
-Considerations:
+[IMAGE PLACEHOLDER: Public dataset Accuracy x Number of tools line plot], [IMAGE PLACEHOLDER: Public dataset Accuracy Heatmap methodology x tool count]: Public Dataset Accuracy Comparison Methodology vs Number of Tools -> This graph shows the accuracy comparison of different methodologies when tested on a public dataset of real-world tools and prompts. The results align with those observed in synthetic datasets, confirming that RAG-based methodologies outperform naive and clustering-based approaches in practical scenarios.
+
+
+## Considerations & Future Work
+
+
+[EDIT]: add more details to the following points, separating them into different sections
 * more difficult to handle the clustering prompt as the llm a lot of times fails to understand the categories selection process. Probably it could be improved, but it is out of the scope of this project.
 * Overall charts shown for each methodology are all created based on aggregated data from a set of 130+ experiments. While not assuring all methodologies were tested with exactly the same number of tools/configurations, the trends shown are representative of the general performance observed for each approach. For example, verbosity level tests are shown only in RAG-based methodology, but they are included in all methodology tests, as the results are all aggregated together.
 * Majority of tests conducted with prompt clarity set to concise. Some tests with clear prompt were also conducted (mainly in adaptive rag-based methodology) and they showed improved accuracy when the prompt was more clear. A more extensive analysis of prompt clarity on the other methodologies and its impact on accuracy could be a future work.
+* Prompts used for the experiments are really simple and concise (e.g. tool random_numnber -> prompt: "Generate a random number between 1 and 100"). A simple validation test is conducted by using a public dataset of tools and their prompts (as shown in Experiments & Analysis section) to ensure that the results observed with synthetic datasets are consistent with real-world data. However, a more extensive evaluation with complex prompts and real-world tool definitions could be a future work. Additionally, prompt requiring the model to invoke multiple tools in a single query could also be explored in future work (this could not be done due to time constraints).
+
+
+## Conclusion
+
+In this project, we explored various strategies to optimize tool calling in large-scale LLM-based agents.
+Our experiments demonstrated that naive approaches that load all tool definitions into the model context become infeasible as the number of available tools increases, due to token budget constraints, latency, and cost.
+We evaluated several tool selection and loading strategies, including naive context loading, clustering-based two-step selection, hybrid RAG-based category selection, RAG-based tool selection, and adaptive RAG-based selection.
+Our findings indicate that RAG-based methodologies, particularly the adaptive RAG-based selection, significantly reduce context load while maintaining or improving tool selection accuracy.
+These results highlight the potential of intelligent tool selection mechanisms to enable scalable deployment of LLM agents in real-world applications.
+[EDIT]: add more concluding remarks?
 
 
 
 
-* Note for me: check also about notool/similar tools, and other info to be added here. An example of a tool? Also add in another section a sort of list of the configs? Also section about problems with cloud/local LLMs? -> Probably in experimentation section?
+* Note for me: check also about notool/similar tools, and other info to be added here. An example of a tool? Also add in another section a sort of list of the configs?
 
 

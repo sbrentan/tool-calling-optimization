@@ -1,0 +1,34 @@
+# ============================================================
+# PHASE 5: Hybrid - 300 Tools (top_k_categories=5)
+# ============================================================
+# Purpose: Test wider category selection
+# Hypothesis: More categories = better recall, more context
+# Rubric: Experiments - category count exploration
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase5_hybrid_300tools_cat5
+description: "Hybrid with 300 tools, top_k_categories=5"
+
+# --- Tool Configuration ---
+num_tools: 300
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: hybrid
+hybrid_config:
+  embedding_model: all-MiniLM-L6-v2
+  top_k_categories: 5
+  cache_embeddings: true
+  category_embedding_strategy: mean
+
+# --- Output ---
+output_dir: experiments/results/plan

@@ -1,0 +1,31 @@
+# ============================================================
+# PHASE 2: Clustering - 300 Tools (Clear Prompts)
+# ============================================================
+# Purpose: Test prompt clarity impact on category selection
+# Hypothesis: Clear prompts may improve category matching
+# Rubric: Experiments - prompt_type parameter exploration
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase2_clustering_300tools_clear
+description: "Clustering with 300 tools and clear prompts"
+
+# --- Tool Configuration ---
+num_tools: 300
+doc_length: medium
+prompt_type: clear
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: clustering
+max_steps: 10
+allow_backtrack: true
+
+# --- Output ---
+output_dir: experiments/results/plan
