@@ -1481,6 +1481,127 @@ def generate_rag_k_tokens_impact(df: pd.DataFrame, output_path: Path):
     logger.info(f"Saved: {output_path}")
 
 
+def generate_rag_retrieval_recall(df: pd.DataFrame, output_path: Path):
+    """
+    Generate chart showing retrieval recall rate for RAG-based methodologies.
+    Retrieval recall measures whether the correct tool was in the retrieved candidate set.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter for RAG-based methodologies
+    rag_methods = ["rag", "adaptive_rag", "hybrid"]
+    rag_df = df[df["methodology"].isin(rag_methods) & (df["retrieval_recall_rate"].notna()) & (df["retrieval_recall_rate"] > 0)]
+    
+    if rag_df.empty:
+        logger.warning("No RAG experiments with retrieval recall data found")
+        return
+    
+    fig, ax = plt.subplots(figsize=(12, 7))
+    
+    for methodology in rag_methods:
+        meth_df = rag_df[rag_df["methodology"] == methodology]
+        if meth_df.empty:
+            continue
+        
+        agg = meth_df.groupby("num_tools").agg({
+            "retrieval_recall_rate": ["mean", "std"]
+        }).reset_index()
+        agg.columns = ["num_tools", "recall_mean", "recall_std"]
+        agg = agg.sort_values("num_tools")
+        
+        color = METHODOLOGY_COLORS.get(methodology, "#666666")
+        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
+        
+        ax.plot(agg["num_tools"], agg["recall_mean"] * 100, 
+                marker='o', linewidth=2, markersize=8,
+                color=color, label=label)
+        
+        if agg["recall_std"].notna().any() and (agg["recall_std"] > 0).any():
+            ax.fill_between(
+                agg["num_tools"],
+                (agg["recall_mean"] - agg["recall_std"]) * 100,
+                (agg["recall_mean"] + agg["recall_std"]) * 100,
+                alpha=0.2, color=color
+            )
+    
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Retrieval Recall (%)")
+    ax.set_title("RAG Methodologies: Retrieval Recall Rate vs. Number of Tools\n(Whether correct tool was in retrieved candidate set)", 
+                 fontsize=14, fontweight='bold')
+    ax.set_ylim(80, 105)
+    ax.legend(loc='lower left', frameon=True)
+    ax.grid(True, alpha=0.3)
+    
+    # Log scale if range is large
+    all_tools = rag_df["num_tools"].unique()
+    if len(all_tools) > 0 and max(all_tools) / min(all_tools) > 5:
+        ax.set_xscale('log')
+        ax.set_xticks(sorted(all_tools))
+        ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_rag_recall_vs_accuracy(df: pd.DataFrame, output_path: Path):
+    """
+    Generate scatter plot comparing retrieval recall to final accuracy for RAG methods.
+    This helps identify whether retrieval or LLM selection is the bottleneck.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter for RAG-based methodologies
+    rag_methods = ["rag", "adaptive_rag", "hybrid"]
+    rag_df = df[df["methodology"].isin(rag_methods) & 
+                (df["retrieval_recall_rate"].notna()) & 
+                (df["retrieval_recall_rate"] > 0) &
+                (df["accuracy"].notna())]
+    
+    if rag_df.empty:
+        logger.warning("No RAG experiments with both recall and accuracy data found")
+        return
+    
+    fig, ax = plt.subplots(figsize=(10, 8))
+    
+    for methodology in rag_methods:
+        meth_df = rag_df[rag_df["methodology"] == methodology]
+        if meth_df.empty:
+            continue
+        
+        color = METHODOLOGY_COLORS.get(methodology, "#666666")
+        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
+        
+        ax.scatter(meth_df["retrieval_recall_rate"] * 100, 
+                   meth_df["accuracy"] * 100,
+                   c=color, label=label, s=100, alpha=0.7, edgecolors='white', linewidth=1.5)
+    
+    # Add diagonal reference line (perfect retrieval -> accuracy)
+    ax.plot([0, 100], [0, 100], 'k--', alpha=0.3, label='Retrieval = Accuracy')
+    
+    ax.set_xlabel("Retrieval Recall (%)")
+    ax.set_ylabel("Tool Selection Accuracy (%)")
+    ax.set_title("Retrieval Recall vs. Final Accuracy\n(Gap indicates LLM selection errors from retrieved candidates)", 
+                 fontsize=14, fontweight='bold')
+    ax.set_xlim(0, 105)
+    ax.set_ylim(0, 105)
+    ax.legend(loc='lower right', frameon=True)
+    ax.grid(True, alpha=0.3)
+    
+    # Add annotation
+    ax.annotate('Points below diagonal:\nLLM struggling with selection', 
+                xy=(85, 65), fontsize=10, ha='center',
+                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
 # =============================================================================
 # Section 5: Adaptive RAG
 # =============================================================================
@@ -2097,6 +2218,21 @@ def generate_limits_html_report(
                 <img src="limits_figures/14b_rag_k_tokens_impact.png" alt="RAG K Tokens Impact">
                 <p class="figure-caption">Impact of fixed K on token usage. Token usage scales linearly with K but remains constant regardless of total tool count.</p>
             </div>
+            
+            <h3>Retrieval Recall Analysis</h3>
+            <p>Retrieval recall measures whether the correct tool was present in the retrieved candidate set. 
+            High retrieval recall with lower final accuracy indicates the LLM is struggling with selection from candidates; 
+            low retrieval recall indicates the embedding-based retrieval is the bottleneck.</p>
+            
+            <div class="figure">
+                <img src="limits_figures/14c_rag_retrieval_recall.png" alt="RAG Retrieval Recall">
+                <p class="figure-caption">Retrieval recall rate across RAG-based methodologies. Shows whether correct tool was in retrieved candidate set.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/14d_rag_recall_vs_accuracy.png" alt="Recall vs Accuracy">
+                <p class="figure-caption">Retrieval recall vs final accuracy. Points below the diagonal indicate LLM selection errors from retrieved candidates.</p>
+            </div>
         </div>
         
         <!-- Section 5: Adaptive RAG -->
@@ -2261,6 +2397,8 @@ def generate_report(
     generate_rag_verbosity_comparison(df, figures_dir / "14_rag_verbosity_comparison.png")
     generate_rag_k_accuracy_impact(df, figures_dir / "14a_rag_k_accuracy_impact.png")
     generate_rag_k_tokens_impact(df, figures_dir / "14b_rag_k_tokens_impact.png")
+    generate_rag_retrieval_recall(df, figures_dir / "14c_rag_retrieval_recall.png")
+    generate_rag_recall_vs_accuracy(df, figures_dir / "14d_rag_recall_vs_accuracy.png")
     
     # Section 5: Adaptive RAG
     logger.info("Generating Section 5: Adaptive RAG...")
