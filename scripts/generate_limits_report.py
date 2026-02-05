@@ -753,150 +753,6 @@ def generate_clustering_category_confusion_matrix(df: pd.DataFrame, details_df: 
     logger.info(f"Saved: {output_path}")
 
 
-def generate_clustering_steps_chart(df: pd.DataFrame, output_path: Path):
-    """
-    Generate chart showing average steps per call for clustering methodology.
-    """
-    import matplotlib.pyplot as plt
-    setup_matplotlib()
-    
-    # Filter clustering experiments with medium verbosity
-    cluster_df = df[(df["methodology"] == "clustering") & (df["doc_length"] == "medium")]
-    if cluster_df.empty:
-        cluster_df = df[df["methodology"] == "clustering"]
-    
-    if cluster_df.empty:
-        logger.warning("No clustering experiments found")
-        return
-    
-    # Aggregate by num_tools and backtrack setting
-    agg = cluster_df.groupby(["num_tools", "allow_backtrack"]).agg({
-        "avg_steps_per_call": ["mean", "std"],
-        "avg_backtracks_per_call": "mean"
-    }).reset_index()
-    agg.columns = ["num_tools", "allow_backtrack", "steps_mean", "steps_std", "backtracks_mean"]
-    agg = agg.sort_values("num_tools")
-    
-    fig, ax = plt.subplots(figsize=(10, 6))
-    
-    # Get unique tool counts for x-axis positioning
-    tool_counts = sorted(agg["num_tools"].unique())
-    x = np.arange(len(tool_counts))
-    width = 0.35  # Width of bars
-    
-    # Plot bars for each backtrack setting with offset
-    backtrack_true = agg[agg["allow_backtrack"] == True]
-    backtrack_false = agg[agg["allow_backtrack"] == False]
-    
-    if not backtrack_true.empty:
-        # Map tool counts to x positions
-        positions = [tool_counts.index(t) - width/2 for t in backtrack_true["num_tools"]]
-        ax.bar(
-            positions,
-            backtrack_true["steps_mean"],
-            yerr=backtrack_true["steps_std"],
-            capsize=5,
-            label="With Backtracking",
-            color="#2ecc71",
-            alpha=0.8,
-            width=width,
-        )
-    
-    if not backtrack_false.empty:
-        positions = [tool_counts.index(t) + width/2 for t in backtrack_false["num_tools"]]
-        ax.bar(
-            positions,
-            backtrack_false["steps_mean"],
-            yerr=backtrack_false["steps_std"],
-            capsize=5,
-            label="No Backtracking",
-            color="#e74c3c",
-            alpha=0.8,
-            width=width,
-        )
-    
-    ax.set_xlabel("Number of Tools")
-    ax.set_ylabel("Average Steps per Call")
-    ax.set_title("Clustering: Average Steps Required\n(More steps = more LLM calls = higher latency)", 
-                 fontsize=14, fontweight='bold')
-    ax.set_xticks(x)
-    ax.set_xticklabels([str(t) for t in tool_counts])
-    ax.legend(loc='upper right', frameon=True)
-    ax.grid(True, alpha=0.3, axis='y')
-    
-    # Add annotation about theoretical minimum
-    ax.axhline(y=2, color='gray', linestyle='--', alpha=0.5)
-    ax.annotate('Minimum (category + tool selection)', xy=(0, 2.1), fontsize=9, color='gray')
-    
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches='tight')
-    plt.close()
-    logger.info(f"Saved: {output_path}")
-
-
-def generate_clustering_latency_comparison(df: pd.DataFrame, output_path: Path):
-    """
-    Generate latency comparison chart showing how latency increases with tool count
-    for MCP and clustering methodologies.
-    """
-    import matplotlib.pyplot as plt
-    setup_matplotlib()
-    
-    # Filter to medium verbosity
-    df_med = df[df["doc_length"] == "medium"]
-    if df_med.empty:
-        df_med = df
-    
-    fig, ax = plt.subplots(figsize=(10, 6))
-    
-    # Only compare MCP and clustering
-    for methodology in ["mcp", "clustering"]:
-        meth_df = df_med[df_med["methodology"] == methodology]
-        
-        if meth_df.empty:
-            continue
-        
-        agg = meth_df.groupby("num_tools").agg({
-            "avg_latency_ms": ["mean", "std"]
-        }).reset_index()
-        agg.columns = ["num_tools", "latency_mean", "latency_std"]
-        agg = agg.sort_values("num_tools")
-        
-        color = METHODOLOGY_COLORS.get(methodology, "#666666")
-        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
-        
-        ax.plot(agg["num_tools"], agg["latency_mean"], 
-                marker='o', linewidth=2, markersize=8,
-                color=color, label=label)
-        
-        if agg["latency_std"].notna().any():
-            ax.fill_between(
-                agg["num_tools"],
-                agg["latency_mean"] - agg["latency_std"],
-                agg["latency_mean"] + agg["latency_std"],
-                alpha=0.2, color=color
-            )
-    
-    ax.set_xlabel("Number of Tools")
-    ax.set_ylabel("Average Latency (ms)")
-    ax.set_title("MCP vs Clustering: Latency Scaling\n(Clustering adds overhead from multi-step selection)", 
-                 fontsize=14, fontweight='bold')
-    ax.legend(loc='upper left', frameon=True)
-    ax.grid(True, alpha=0.3)
-    
-    # Log scale for x-axis if range is large
-    all_tools = df_med["num_tools"].unique()
-    if len(all_tools) > 0 and max(all_tools) / min(all_tools) > 5:
-        ax.set_xscale('log')
-        ax.set_xticks(sorted(all_tools))
-        ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
-    
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches='tight')
-    plt.close()
-    logger.info(f"Saved: {output_path}")
-
-
 # =============================================================================
 # Section 3: Hybrid Methodology
 # =============================================================================
@@ -1253,96 +1109,6 @@ def generate_rag_tokens_vs_tools(df: pd.DataFrame, output_path: Path):
         # ax.set_xscale('log')
         ax.set_xticks(sorted(all_tools))
         ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
-    
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches='tight')
-    plt.close()
-    logger.info(f"Saved: {output_path}")
-
-
-def generate_rag_verbosity_comparison(df: pd.DataFrame, output_path: Path):
-    """
-    Generate comparison of RAG accuracy and tokens between medium and verbose.
-    """
-    import matplotlib.pyplot as plt
-    setup_matplotlib()
-    
-    rag_df = df[df["methodology"] == "rag"]
-    
-    if rag_df.empty:
-        logger.warning("No RAG experiments found")
-        return
-    
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
-    
-    # Left: Accuracy comparison
-    ax1 = axes[0]
-    for doc_length in ["medium", "verbose"]:
-        subset = rag_df[rag_df["doc_length"] == doc_length]
-        if subset.empty:
-            continue
-        
-        agg = subset.groupby("num_tools").agg({
-            "accuracy": ["mean", "std"]
-        }).reset_index()
-        agg.columns = ["num_tools", "accuracy_mean", "accuracy_std"]
-        agg = agg.sort_values("num_tools")
-        
-        color = "#2ca02c" if doc_length == "medium" else "#27ae60"
-        linestyle = "-" if doc_length == "medium" else "--"
-        
-        ax1.plot(agg["num_tools"], agg["accuracy_mean"] * 100, 
-                marker='o', linewidth=2, markersize=8,
-                color=color, linestyle=linestyle, label=f"{doc_length.capitalize()}")
-        
-        if agg["accuracy_std"].notna().any():
-            ax1.fill_between(
-                agg["num_tools"],
-                (agg["accuracy_mean"] - agg["accuracy_std"]) * 100,
-                (agg["accuracy_mean"] + agg["accuracy_std"]) * 100,
-                alpha=0.1, color=color
-            )
-    
-    ax1.set_xlabel("Number of Tools")
-    ax1.set_ylabel("Accuracy (%)")
-    ax1.set_title("RAG: Accuracy by Verbosity", fontsize=14, fontweight='bold')
-    ax1.set_ylim(0, 105)
-    ax1.legend(loc='lower left', frameon=True)
-    ax1.grid(True, alpha=0.3)
-    
-    # Right: Token usage comparison
-    ax2 = axes[1]
-    for doc_length in ["medium", "verbose"]:
-        subset = rag_df[rag_df["doc_length"] == doc_length]
-        if subset.empty:
-            continue
-        
-        agg = subset.groupby("num_tools").agg({
-            "avg_tokens_input": ["mean", "std"]
-        }).reset_index()
-        agg.columns = ["num_tools", "tokens_mean", "tokens_std"]
-        agg = agg.sort_values("num_tools")
-        
-        color = "#2ca02c" if doc_length == "medium" else "#27ae60"
-        linestyle = "-" if doc_length == "medium" else "--"
-        
-        ax2.plot(agg["num_tools"], agg["tokens_mean"], 
-                marker='s', linewidth=2, markersize=8,
-                color=color, linestyle=linestyle, label=f"{doc_length.capitalize()}")
-        
-        if agg["tokens_std"].notna().any():
-            ax2.fill_between(
-                agg["num_tools"],
-                agg["tokens_mean"] - agg["tokens_std"],
-                agg["tokens_mean"] + agg["tokens_std"],
-                alpha=0.1, color=color
-            )
-    
-    ax2.set_xlabel("Number of Tools")
-    ax2.set_ylabel("Average Input Tokens")
-    ax2.set_title("RAG: Token Usage by Verbosity", fontsize=14, fontweight='bold')
-    ax2.legend(loc='upper left', frameon=True)
-    ax2.grid(True, alpha=0.3)
     
     plt.tight_layout()
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
@@ -2253,16 +2019,6 @@ def generate_limits_html_report(
                 <p class="figure-caption">Category confusion matrix showing which categories are mistaken for others.</p>
             </div>
             
-            <div class="figure">
-                <img src="limits_figures/06_clustering_steps.png" alt="Clustering Steps">
-                <p class="figure-caption">Average steps per call - more steps means higher latency.</p>
-            </div>
-            
-            <div class="figure">
-                <img src="limits_figures/07_clustering_latency.png" alt="Clustering Latency">
-                <p class="figure-caption">Latency comparison across methodologies.</p>
-            </div>
-            
             <h3>Category Selection Accuracy vs Tool Count</h3>
             
             <div class="figure">
@@ -2330,11 +2086,6 @@ def generate_limits_html_report(
             <div class="figure">
                 <img src="limits_figures/13_rag_tokens_vs_tools.png" alt="RAG Tokens vs Tools">
                 <p class="figure-caption">RAG token usage is constant - independent of total tools.</p>
-            </div>
-            
-            <div class="figure">
-                <img src="limits_figures/14_rag_verbosity_comparison.png" alt="RAG Verbosity Comparison">
-                <p class="figure-caption">Comparison of medium vs verbose documentation for RAG methodology.</p>
             </div>
             
             <h3>Impact of K (Retrieved Tools) on Performance</h3>
@@ -2518,8 +2269,6 @@ def generate_report(
     generate_clustering_accuracy_vs_tools(df, figures_dir / "03_clustering_accuracy_vs_tools.png")
     generate_clustering_tokens_vs_tools(df, figures_dir / "04_clustering_tokens_vs_tools.png")
     generate_clustering_category_confusion_matrix(df, details_df, figures_dir / "05_clustering_category_confusion.png")
-    generate_clustering_steps_chart(df, figures_dir / "06_clustering_steps.png")
-    generate_clustering_latency_comparison(df, figures_dir / "07_clustering_latency.png")
     generate_clustering_category_accuracy(df, figures_dir / "07a_clustering_category_accuracy.png")
     
     # Section 3: Hybrid Methodology
@@ -2533,7 +2282,6 @@ def generate_report(
     logger.info("Generating Section 4: RAG Improvement...")
     generate_rag_accuracy_vs_tools(df, figures_dir / "12_rag_accuracy_vs_tools.png")
     generate_rag_tokens_vs_tools(df, figures_dir / "13_rag_tokens_vs_tools.png")
-    generate_rag_verbosity_comparison(df, figures_dir / "14_rag_verbosity_comparison.png")
     generate_rag_k_accuracy_impact(df, figures_dir / "14a_rag_k_accuracy_impact.png")
     generate_rag_k_tokens_impact(df, figures_dir / "14b_rag_k_tokens_impact.png")
     generate_rag_recall_vs_accuracy(df, figures_dir / "14d_rag_recall_vs_accuracy.png")
