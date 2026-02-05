@@ -1,0 +1,801 @@
+category: category_12
+tools:
+- name: get_one_anime_by_ranking
+  descriptions:
+    minimal: Fetches the details of an anime based on its...
+    short: Fetches the details of an anime based on its ranking from the Anime DB API.
+    medium: Fetches the details of an anime based on its ranking from the Anime DB API.
+    long: Fetches the details of an anime based on its ranking from the Anime DB API.
+    verbose: Fetches the details of an anime based on its ranking from the Anime DB API.
+  parameters:
+  - name: rank
+    type: integer
+    description: The ranking position of the desired anime.
+    required: true
+    default: '1'
+  tags:
+  - get
+  - one
+  - anime
+  test_prompts:
+    single:
+    - Retrieve details of the 200th ranked anime in the Anime DB.
+    single_clear:
+    - Retrieve details of the 200th ranked anime in the Anime DB.
+- name: get_dns_records
+  descriptions:
+    minimal: Fetch DNS records for a given domain using the...
+    short: Fetch DNS records for a given domain using the specified parameters.
+    medium: Fetch DNS records for a given domain using the specified parameters.
+    long: Fetch DNS records for a given domain using the specified parameters.
+    verbose: Fetch DNS records for a given domain using the specified parameters.
+  parameters:
+  - name: domain
+    type: string
+    description: The domain for which to fetch the DNS records.
+    required: true
+    default: rapidapi.com
+  - name: record_type
+    type: string
+    description: A comma-separated string specifying the types of DNS records to fetch. Possible values include 'a', 'ns',
+      'mx', 'txt', and 'cname'. Defaults to 'a,mx'.
+    required: false
+    default: a,mx
+  - name: response_type_seperator
+    type: string
+    description: Specifies the delimiter to use when the response type is 'target'. Default is ',' (comma).
+    required: false
+    default: ','
+  - name: response_type
+    type: string
+    description: Specifies the kind of data to return, such as 'ip', 'txt', or 'target'. Default is 'target'.
+    required: false
+    default: target
+  tags:
+  - get
+  - dns
+  - records
+  test_prompts:
+    single:
+    - What are the DNS records for example.com, including A and MX records?
+    single_clear:
+    - What are the DNS records for example.com, including A and MX records?
+- name: options_historical
+  descriptions:
+    minimal: Returns historical options data based on the...
+    short: Returns historical options data based on the given parameters.
+    medium: Returns historical options data based on the given parameters.
+    long: Returns historical options data based on the given parameters.
+    verbose: Returns historical options data based on the given parameters.
+  parameters:
+  - name: expiration
+    type: string
+    description: The expiration date of the option in the format YYYY-mm-dd, e.g., '2018-04-20'.
+    required: true
+    default: '2018-04-20'
+  - name: type
+    type: string
+    description: The type of option contract, either 'Call' or 'Put'.
+    required: true
+    default: Call
+  - name: strike
+    type: integer
+    description: The strike price of the option, e.g., 100.
+    required: true
+    default: '100'
+  - name: symbol
+    type: string
+    description: The symbol of the asset, e.g., 'AAPL' for Apple Inc, 'MSFT' for Microsoft.
+    required: true
+    default: AAPL
+  tags:
+  - options
+  - historical
+  test_prompts:
+    single:
+    - I'm looking for the historical Put options data for Microsoft with a strike price of 200 expiring on 2024-01-01.
+    - Obtain historical data for a Put option on Amazon with an expiration date of 2023-09-10 and a strike price of 3000.
+    single_clear:
+    - I'm looking for the historical Put options data for Microsoft with a strike price of 200 expiring on 2024-01-01.
+    - Obtain historical data for a Put option on Amazon with an expiration date of 2023-09-10 and a strike price of 3000.
+- name: find_pairs_with_sum
+  descriptions:
+    minimal: Finds all pairs of integers in a list that sum up...
+    short: Finds all pairs of integers in a list that sum up to a target value.
+    medium: Finds all pairs of integers in a list that sum up to a target value.
+    long: Finds all pairs of integers in a list that sum up to a target value.
+    verbose: Finds all pairs of integers in a list that sum up to a target value.
+  parameters:
+  - name: nums
+    type: string
+    description: The list of integers.
+    required: true
+  - name: target
+    type: integer
+    description: The target sum value.
+    required: true
+  tags:
+  - find
+  - pairs
+  - with
+  test_prompts:
+    single:
+    - Find all pairs of integers in the list [1, 2, 3, 4, 5] that sum up to 5.
+    - Find all pairs of integers in the list [3, 7, 1, 9, 2, 6] that sum up to 10.
+    - Find all pairs of integers in the list [1, 2, 3, 4, 5] that sum up to 5.
+    - Identify all pairs of numbers in the list [1, 2, 3, 4, 5] that sum up to 5.
+    - Find all pairs in the list [1, 2, 3, 4, 5] that sum up to 6.
+    - Find all pairs of numbers in the list [2, 4, 6, 8, 10] that sum up to 12.
+    - Find all pairs in the list [2, 4, 3, 5, 6, -2, 4, 7, 8, 9] that sum up to 7.
+    - Find all pairs in the list [1, 2, 3, 4, 5] that sum up to 6.
+    single_clear:
+    - Find all pairs of integers in the list [1, 2, 3, 4, 5] that sum up to 5.
+    - Find all pairs of integers in the list [3, 7, 1, 9, 2, 6] that sum up to 10.
+    - Find all pairs of integers in the list [1, 2, 3, 4, 5] that sum up to 5.
+    - Identify all pairs of numbers in the list [1, 2, 3, 4, 5] that sum up to 5.
+    - Find all pairs in the list [1, 2, 3, 4, 5] that sum up to 6.
+    - Find all pairs of numbers in the list [2, 4, 6, 8, 10] that sum up to 12.
+    - Find all pairs in the list [2, 4, 3, 5, 6, -2, 4, 7, 8, 9] that sum up to 7.
+    - Find all pairs in the list [1, 2, 3, 4, 5] that sum up to 6.
+- name: analysis_list_deprecated
+  descriptions:
+    minimal: Fetches a list of analyses for a specified...
+    short: Fetches a list of analyses for a specified financial symbol using the Seeking Alpha API.
+    medium: Fetches a list of analyses for a specified financial symbol using the Seeking Alpha API.
+    long: Fetches a list of analyses for a specified financial symbol using the Seeking Alpha API.
+    verbose: Fetches a list of analyses for a specified financial symbol using the Seeking Alpha API.
+  parameters:
+  - name: is_id
+    type: string
+    description: The symbol to query for data. Only one symbol is allowed at a time.
+    required: true
+    default: aapl
+  - name: size
+    type: integer
+    description: The number of items per response. Defaults to 20.
+    required: false
+    default: '20'
+  - name: until
+    type: integer
+    description: The value used to load the next page of data. This corresponds to the value of meta/page/minmaxPublishOn/min
+      in the JSON response.
+    required: false
+  tags:
+  - analysis
+  - list
+  - deprecated
+  test_prompts:
+    single:
+    - I need to see the analysis for Tesla, Inc. from a week ago, how can I do that?
+    - What are the recent analyses for Microsoft Corporation? Can you get me 30 of them?
+    single_clear:
+    - I need to see the analysis for Tesla, Inc. from a week ago, how can I do that?
+    - What are the recent analyses for Microsoft Corporation? Can you get me 30 of them?
+- name: actors_list_born_today
+  descriptions:
+    minimal: Fetches a list of actors and actresses born on a...
+    short: Fetches a list of actors and actresses born on a specific day and month from the Online Movie Database via the
+      RapidAPI platform.
+    medium: Fetches a list of actors and actresses born on a specific day and month from the Online Movie Database via the
+      RapidAPI platform.
+    long: Fetches a list of actors and actresses born on a specific day and month from the Online Movie Database via the RapidAPI
+      platform.
+    verbose: Fetches a list of actors and actresses born on a specific day and month from the Online Movie Database via the
+      RapidAPI platform.
+  parameters:
+  - name: month
+    type: integer
+    description: The month of birth of the actors.
+    required: true
+    default: '7'
+  - name: day
+    type: integer
+    description: The day of birth of the actors.
+    required: true
+    default: '27'
+  tags:
+  - actors
+  - list
+  - born
+  test_prompts:
+    single:
+    - List all actors born on October 31st.
+    - I need to know which actors were born on March 15th.
+    single_clear:
+    - List all actors born on October 31st.
+    - I need to know which actors were born on March 15th.
+- name: us_license_plate_to_vin
+  descriptions:
+    minimal: Converts a U.S. state license plate number to a...
+    short: Converts a U.
+    medium: Converts a U.S. state license plate number to a Vehicle Identification Number (VIN).
+    long: Converts a U.S. state license plate number to a Vehicle Identification Number (VIN).
+    verbose: Converts a U.S. state license plate number to a Vehicle Identification Number (VIN).
+  parameters:
+  - name: state_code
+    type: string
+    description: A two-letter U.S. state code where the license plate is registered. Examples include 'CA' for California,
+      'NY' for New York, etc.
+    required: true
+    default: AL
+  - name: license_plate
+    type: string
+    description: The license plate number for which to find the VIN.
+    required: true
+    default: S8TAN
+  tags:
+  - us
+  - license
+  - plate
+  test_prompts:
+    single:
+    - I need to convert a California license plate 'ABC123' to a VIN. Can you help?
+    - Can you find the VIN for a car with the license plate 'ABC123' registered in California?
+    single_clear:
+    - I need to convert a California license plate 'ABC123' to a VIN. Can you help?
+    - Can you find the VIN for a car with the license plate 'ABC123' registered in California?
+- name: topic_headlines
+  descriptions:
+    minimal: Fetches the latest news headlines for a specified...
+    short: Fetches the latest news headlines for a specified topic.
+    medium: Fetches the latest news headlines for a specified topic.
+    long: Fetches the latest news headlines for a specified topic.
+    verbose: Fetches the latest news headlines for a specified topic.
+  parameters:
+  - name: topic
+    type: string
+    description: 'The topic for which to get news headlines. Available topics include:'
+    required: true
+    default: WORLD
+  - name: lang
+    type: string
+    description: The language for the results, specified as a 2-letter language code (ISO 639-1 alpha-2). Default is 'en'.
+    required: false
+    default: en
+  - name: country
+    type: string
+    description: The country code for filtering the results (ISO 3166-1 alpha-2). Default is 'US'.
+    required: false
+    default: US
+  tags:
+  - topic
+  - headlines
+  test_prompts:
+    single:
+    - Retrieve the latest news headlines on the topic of 'TECHNOLOGY' in French language from France.
+    single_clear:
+    - Retrieve the latest news headlines on the topic of 'TECHNOLOGY' in French language from France.
+- name: get_all_users_paged_by_hundreds
+  descriptions:
+    minimal: Fetches a list of users from a specified page...
+    short: Fetches a list of users from a specified page, with each page containing up to one hundred users, using the provided
+      RapidAPI key.
+    medium: Fetches a list of users from a specified page, with each page containing up to one hundred users, using the provided
+      RapidAPI key.
+    long: Fetches a list of users from a specified page, with each page containing up to one hundred users, using the provided
+      RapidAPI key.
+    verbose: Fetches a list of users from a specified page, with each page containing up to one hundred users, using the provided
+      RapidAPI key.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number to retrieve the users from.
+    required: true
+    default: '0'
+  tags:
+  - get
+  - all
+  - users
+  test_prompts:
+    single:
+    - Obtain user details from page 15.
+    - Fetch user data from page 1.
+    single_clear:
+    - Obtain user details from page 15.
+    - Fetch user data from page 1.
+- name: getmatchesbyteam
+  descriptions:
+    minimal: Fetches all matches for a specified team using...
+    short: Fetches all matches for a specified team using the RapidAPI IPL endpoint.
+    medium: Fetches all matches for a specified team using the RapidAPI IPL endpoint.
+    long: Fetches all matches for a specified team using the RapidAPI IPL endpoint.
+    verbose: Fetches all matches for a specified team using the RapidAPI IPL endpoint.
+  parameters:
+  - name: team
+    type: string
+    description: The name of the team for which to retrieve matches.
+    required: true
+    default: Kolkata Knight Riders
+  tags:
+  - getmatchesbyteam
+  test_prompts:
+    single:
+    - Fetch all matches for the team 'Royal Challengers Bangalore'.
+    single_clear:
+    - Fetch all matches for the team 'Royal Challengers Bangalore'.
+- name: linear_regression_prediction
+  descriptions:
+    minimal: Predicts the y-value for a given x-value using...
+    short: Predicts the y-value for a given x-value using linear regression.
+    medium: Predicts the y-value for a given x-value using linear regression.
+    long: Predicts the y-value for a given x-value using linear regression.
+    verbose: Predicts the y-value for a given x-value using linear regression.
+  parameters:
+  - name: x_values
+    type: string
+    description: The x-coordinates of the data points.
+    required: true
+  - name: y_values
+    type: string
+    description: The y-coordinates of the data points.
+    required: true
+  - name: target_x
+    type: number
+    description: The x-value for which to predict the y-value.
+    required: true
+  tags:
+  - linear
+  - regression
+  - prediction
+  test_prompts:
+    single:
+    - Predict the y-value for an x-value of 7 using linear regression based on the data points (1, 2), (2, 4), and (3, 6).
+    - Predict the salary of an employee with 5 years of experience based on data where employees with 2, 3, and 4 years of
+      experience earn 50000, 60000, and 70000 respectively.
+    - Estimate the electricity consumption when the temperature is 30 degrees Celsius, based on data that shows consumption
+      was 500 kWh at 20 degrees and 600 kWh at 25 degrees.
+    - Predict the y-value for an x-value of 20 in a dataset where x_values are [5, 10, 15] and y_values are [10, 20, 30].
+    single_clear:
+    - Predict the y-value for an x-value of 7 using linear regression based on the data points (1, 2), (2, 4), and (3, 6).
+    - Predict the salary of an employee with 5 years of experience based on data where employees with 2, 3, and 4 years of
+      experience earn 50000, 60000, and 70000 respectively.
+    - Estimate the electricity consumption when the temperature is 30 degrees Celsius, based on data that shows consumption
+      was 500 kWh at 20 degrees and 600 kWh at 25 degrees.
+    - Predict the y-value for an x-value of 20 in a dataset where x_values are [5, 10, 15] and y_values are [10, 20, 30].
+- name: permutation_count
+  descriptions:
+    minimal: Calculates the number of permutations of k...
+    short: Calculates the number of permutations of k elements from a set of n elements.
+    medium: Calculates the number of permutations of k elements from a set of n elements.
+    long: Calculates the number of permutations of k elements from a set of n elements.
+    verbose: Calculates the number of permutations of k elements from a set of n elements.
+  parameters:
+  - name: n
+    type: integer
+    description: The total number of elements in the set.
+    required: true
+  - name: k
+    type: integer
+    description: The number of elements to choose for the permutation.
+    required: true
+  tags:
+  - permutation
+  - count
+  test_prompts:
+    single:
+    - Determine the number of permutations when selecting 3 items from a set of 10.
+    - Calculate the number of permutations of 3 items from a set of 7 items.
+    - Count the permutations of selecting 3 items from a set of 8 items.
+    - Calculate the permutations of 3 items from a set of 7.
+    single_clear:
+    - Determine the number of permutations when selecting 3 items from a set of 10.
+    - Calculate the number of permutations of 3 items from a set of 7 items.
+    - Count the permutations of selecting 3 items from a set of 8 items.
+    - Calculate the permutations of 3 items from a set of 7.
+- name: live_giveaways_by_platform
+  descriptions:
+    minimal: Fetches live giveaways for a specified gaming...
+    short: Fetches live giveaways for a specified gaming platform using the GamerPower API.
+    medium: Fetches live giveaways for a specified gaming platform using the GamerPower API.
+    long: Fetches live giveaways for a specified gaming platform using the GamerPower API.
+    verbose: Fetches live giveaways for a specified gaming platform using the GamerPower API.
+  parameters:
+  - name: platform
+    type: string
+    description: The gaming platform to fetch giveaways for (e.g., pc, steam, epic-games-store, uplay, gog, itch.io, ps4,
+      xbox-one, switch, android, ios, vr, battlenet).
+    required: true
+    default: pc
+  tags:
+  - live
+  - giveaways
+  - by
+  test_prompts:
+    single:
+    - List live giveaways for the 'epic-games-store' platform.
+    single_clear:
+    - List live giveaways for the 'epic-games-store' platform.
+- name: v1_hobbies
+  descriptions:
+    minimal: Fetches a random hobby and a Wikipedia link...
+    short: Fetches a random hobby and a Wikipedia link detailing the hobby from the Hobbies by API Ninjas API.
+    medium: Fetches a random hobby and a Wikipedia link detailing the hobby from the Hobbies by API Ninjas API.
+    long: Fetches a random hobby and a Wikipedia link detailing the hobby from the Hobbies by API Ninjas API.
+    verbose: Fetches a random hobby and a Wikipedia link detailing the hobby from the Hobbies by API Ninjas API.
+  parameters:
+  - name: category
+    type: string
+    description: The category of hobbies to fetch. Possible values are 'general', 'sports_and_outdoors',
+    required: true
+    default: general
+  tags:
+  - v1
+  - hobbies
+  test_prompts:
+    single:
+    - Retrieve a hobby from the 'education' category and also get its Wikipedia link.
+    single_clear:
+    - Retrieve a hobby from the 'education' category and also get its Wikipedia link.
+- name: rocp
+  descriptions:
+    minimal: Calculates the Rate of Change Percentage (ROCP)...
+    short: Calculates the Rate of Change Percentage (ROCP) for a given financial instrument over a specified time period.
+    medium: Calculates the Rate of Change Percentage (ROCP) for a given financial instrument over a specified time period.
+    long: Calculates the Rate of Change Percentage (ROCP) for a given financial instrument over a specified time period.
+    verbose: Calculates the Rate of Change Percentage (ROCP) for a given financial instrument over a specified time period.
+  parameters:
+  - name: interval
+    type: string
+    description: Interval between two consecutive points in the time series. Supports `1min`, `5min`, `15min`, `30min`, `45min`,
+      `1h`, `2h`, `4h`, `1day`, `1week`, `1month`.
+    required: true
+    default: 1min
+  - name: symbol
+    type: string
+    description: Financial instrument symbol, can be any equity, index, ETF, forex, or cryptocurrency (e.g., `AAPL`, `EUR/USD`,
+      `ETH/BTC`).
+    required: true
+    default: AAPL
+  - name: outputsize
+    type: integer
+    description: Number of data points to be retrieved. Default is `30` if no date parameters are set.
+    required: false
+    default: 30
+  - name: time_period
+    type: integer
+    description: Number of intervals used to calculate the ROCP. Default is `9`.
+    required: false
+    default: 9
+  - name: format
+    type: string
+    description: Format of the output data. Can be `csv` or `json`. Default is `json`.
+    required: false
+    default: json
+  - name: series_type
+    type: string
+    description: The type of price series to use. Supports `open`, `high`, `low`, or `close`. Default is `close`.
+    required: false
+    default: close
+  tags:
+  - rocp
+  test_prompts:
+    single:
+    - Calculate the ROCP for Apple Inc. stock over the last 9 days using daily intervals and the closing prices.
+    single_clear:
+    - Calculate the ROCP for Apple Inc. stock over the last 9 days using daily intervals and the closing prices.
+- name: search_content
+  descriptions:
+    minimal: Searches for content based on a provided query...
+    short: Searches for content based on a provided query using the RapidAPI content extractor.
+    medium: Searches for content based on a provided query using the RapidAPI content extractor.
+    long: Searches for content based on a provided query using the RapidAPI content extractor.
+    verbose: Searches for content based on a provided query using the RapidAPI content extractor.
+  parameters:
+  - name: query
+    type: string
+    description: The search query string.
+    required: true
+  tags:
+  - search
+  - content
+  test_prompts:
+    single:
+    - Search for content related to 'climate change'.
+    single_clear:
+    - Search for content related to 'climate change'.
+- name: trapezoidal_integration
+  descriptions:
+    minimal: Calculates the definite integral of a function...
+    short: Calculates the definite integral of a function using the trapezoidal rule.
+    medium: Calculates the definite integral of a function using the trapezoidal rule.
+    long: Calculates the definite integral of a function using the trapezoidal rule.
+    verbose: Calculates the definite integral of a function using the trapezoidal rule.
+  parameters:
+  - name: func
+    type: string
+    description: The function to integrate, expressed as a string (e.g., "x**2 + 2*x").
+    required: true
+    default: 10000
+  - name: a
+    type: number
+    description: The lower limit of integration.
+    required: true
+    default: 10000
+  - name: b
+    type: number
+    description: The upper limit of integration.
+    required: true
+  - name: n
+    type: integer
+    description: The number of subdivisions for the trapezoidal approximation. Defaults to 10000.
+    required: false
+  tags:
+  - trapezoidal
+  - integration
+  test_prompts:
+    single:
+    - Calculate the integral of the function x^2 from 0 to 1 using the trapezoidal rule.
+    - Estimate the integral of the function sin(x) from pi/2 to pi using the trapezoidal rule.
+    - Compute the integral of the function 2x + 3 from 1 to 4 using the trapezoidal rule.
+    - Estimate the integral of the function x^2 from 1 to 3 using the trapezoidal rule with 5000 subdivisions.
+    - What is the integral of the function x^2 from 0 to 1 using 10000 subdivisions?
+    - Estimate the integral of the function x^2 from 0 to 2 using the trapezoidal rule with 10000 subdivisions.
+    single_clear:
+    - Calculate the integral of the function x^2 from 0 to 1 using the trapezoidal rule.
+    - Estimate the integral of the function sin(x) from pi/2 to pi using the trapezoidal rule.
+    - Compute the integral of the function 2x + 3 from 1 to 4 using the trapezoidal rule.
+    - Estimate the integral of the function x^2 from 1 to 3 using the trapezoidal rule with 5000 subdivisions.
+    - What is the integral of the function x^2 from 0 to 1 using 10000 subdivisions?
+    - Estimate the integral of the function x^2 from 0 to 2 using the trapezoidal rule with 10000 subdivisions.
+- name: trending_videos
+  descriptions:
+    minimal: Fetches a list of trending YouTube videos based...
+    short: Fetches a list of trending YouTube videos based on the given parameters.
+    medium: Fetches a list of trending YouTube videos based on the given parameters.
+    long: Fetches a list of trending YouTube videos based on the given parameters.
+    verbose: Fetches a list of trending YouTube videos based on the given parameters.
+  parameters:
+  - name: country
+    type: string
+    description: The country code for which to retrieve trending videos. Defaults to 'us'.
+    required: false
+    default: us
+  - name: lang
+    type: string
+    description: The language code for the video titles and descriptions. Defaults to 'en'.
+    required: false
+    default: en
+  - name: section
+    type: string
+    description: The section of trending videos to retrieve. Possible values are "Now", "Music", "Movies", "Gaming". Defaults
+      to 'Now'.
+    required: false
+    default: Now
+  tags:
+  - trending
+  - videos
+  test_prompts:
+    single:
+    - Retrieve the current trending videos in English for Canada.
+    - Retrieve the trending videos in the 'Movies' section for Germany in German.
+    - Fetch the trending videos in the 'Gaming' section for Japan in Japanese.
+    - Fetch trending videos in the 'Gaming' section for Japan in Japanese.
+    single_clear:
+    - Retrieve the current trending videos in English for Canada.
+    - Retrieve the trending videos in the 'Movies' section for Germany in German.
+    - Fetch the trending videos in the 'Gaming' section for Japan in Japanese.
+    - Fetch trending videos in the 'Gaming' section for Japan in Japanese.
+- name: qualifyingresults
+  descriptions:
+    minimal: Fetches the qualifying results for a specific...
+    short: Fetches the qualifying results for a specific year and round of the Formula 1 season.
+    medium: Fetches the qualifying results for a specific year and round of the Formula 1 season.
+    long: Fetches the qualifying results for a specific year and round of the Formula 1 season.
+    verbose: Fetches the qualifying results for a specific year and round of the Formula 1 season.
+  parameters:
+  - name: year
+    type: string
+    description: The year of the Formula 1 season.
+    required: true
+    default: year
+  - name: round
+    type: string
+    description: The round of the Formula 1 season.
+    required: true
+    default: round
+  tags:
+  - qualifyingresults
+  test_prompts:
+    single:
+    - Can you provide the qualifying results for the last round of the 2022 Formula 1 season?
+    - Fetch the qualifying results for the 21st round of the 2021 Formula 1 season.
+    single_clear:
+    - Can you provide the qualifying results for the last round of the 2022 Formula 1 season?
+    - Fetch the qualifying results for the 21st round of the 2021 Formula 1 season.
+- name: get_artist
+  descriptions:
+    minimal: Gets artist information from the Spotify Data API...
+    short: Gets artist information from the Spotify Data API using the artist's ID.
+    medium: Gets artist information from the Spotify Data API using the artist's ID.
+    long: Gets artist information from the Spotify Data API using the artist's ID.
+    verbose: Gets artist information from the Spotify Data API using the artist's ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The Spotify ID of the artist.
+    required: true
+    default: 0TnOYISbd1XYRBk9myaseg
+  tags:
+  - get
+  - artist
+  test_prompts:
+    single:
+    - Get details for the artist identified by Spotify ID '0LyfQWJT6nXafLPZqxe9Of'.
+    single_clear:
+    - Get details for the artist identified by Spotify ID '0LyfQWJT6nXafLPZqxe9Of'.
+- name: web_pair_details
+  descriptions:
+    minimal: Fetches detailed information about a trading pair...
+    short: Fetches detailed information about a trading pair from a specified blockchain using the RapidAPI service.
+    medium: Fetches detailed information about a trading pair from a specified blockchain using the RapidAPI service.
+    long: Fetches detailed information about a trading pair from a specified blockchain using the RapidAPI service.
+    verbose: Fetches detailed information about a trading pair from a specified blockchain using the RapidAPI service.
+  parameters:
+  - name: chain_slug
+    type: string
+    description: Blockchain slug (e.g., "ethereum").
+    required: true
+    default: ethereum
+  - name: pair_slug
+    type: string
+    description: Trading pair presentation or pool contract address. Examples include `ETH-USDC`, `eth-usdc`, `WETH-USDC`,
+      `USDC-WETH`, or a pool contract address.
+    required: true
+    default: ETH-USDC
+  - name: exchange_slug
+    type: string
+    description: Exchange path slug (e.g., 'sushiswap').
+    required: true
+    default: sushiswap
+  tags:
+  - web
+  - pair
+  - details
+  test_prompts:
+    single:
+    - Get detailed information about the ETH-USDC trading pair on the Ethereum blockchain using SushiSwap.
+    - Get detailed information about the USDC-DAI trading pair on the Polygon blockchain using Quickswap.
+    single_clear:
+    - Get detailed information about the ETH-USDC trading pair on the Ethereum blockchain using SushiSwap.
+    - Get detailed information about the USDC-DAI trading pair on the Polygon blockchain using Quickswap.
+- name: stocks_get_financials
+  descriptions:
+    minimal: Fetches financial information related to a stock...
+    short: Fetches financial information related to a stock ticker or symbol.
+    medium: Fetches financial information related to a stock ticker or symbol.
+    long: Fetches financial information related to a stock ticker or symbol.
+    verbose: Fetches financial information related to a stock ticker or symbol.
+  parameters:
+  - name: symbol
+    type: string
+    description: The stock exchange and ticker symbol in the format "exchange:symbol" (e.g., "NASDAQ:TSLA").
+    required: true
+    default: NASDAQ:TSLA
+  - name: columns
+    type: string
+    description: A comma-separated list of financial metrics to retrieve (e.g., "ADR,ADX,average_volume").
+    required: true
+    default: name,average_volume,close,open,change
+  - name: screenername
+    type: string
+    description: The screener name field value as returned by the /countries/list endpoint. Defaults to 'america'.
+    required: false
+    default: america
+  - name: lang
+    type: string
+    description: The language code for the returned data. Defaults to 'en'.
+    required: false
+    default: en
+  tags:
+  - stocks
+  - get
+  - financials
+  test_prompts:
+    single:
+    - What are the financial metrics for Netflix from NASDAQ? I'm particularly interested in their EBITDA and long-term debt.
+    single_clear:
+    - What are the financial metrics for Netflix from NASDAQ? I'm particularly interested in their EBITDA and long-term debt.
+- name: compound_interest
+  descriptions:
+    minimal: Calculates the compound interest of an investment.
+    short: Calculates the compound interest of an investment.
+    medium: Calculates the compound interest of an investment.
+    long: Calculates the compound interest of an investment.
+    verbose: Calculates the compound interest of an investment.
+  parameters:
+  - name: principal
+    type: number
+    description: The initial investment amount.
+    required: true
+    default: 1
+  - name: rate
+    type: number
+    description: The annual interest rate expressed as a decimal.
+    required: true
+    default: 1
+  - name: time
+    type: number
+    description: The time in years for which the investment is held.
+    required: true
+  - name: n
+    type: integer
+    description: The number of times interest is compounded per year. Defaults to 1.
+    required: false
+  tags:
+  - compound
+  - interest
+  test_prompts:
+    single:
+    - Calculate the compound interest on $5000 at 4% annual interest for 5 years, compounded semi-annually.
+    - How much will an investment of $1000 grow to if it earns 5% annual interest compounded quarterly over 10 years?
+    - Can you calculate the final amount if I invest $5000 at an annual interest rate of 5% for 10 years, compounded annually?
+    - What is the compound interest on an investment of $1000 at 5% annual interest for 3 years, compounded quarterly?
+    - How much will I have if I invest $5000 at 3% annual interest for 5 years, compounded semi-annually?
+    - Calculate the amount after investing five thousand dollars at an interest rate of six percent for a duration of three
+      years, compounded biannually.
+    - Calculate the compound interest on $1000 at 5% annual interest rate for 10 years, compounded quarterly.
+    - Calculate the compound interest on an initial investment of $1000 at a 5% annual interest rate over 10 years, compounded
+      quarterly.
+    - Calculate the final amount after 10 years if $10000 is invested at an annual interest rate of 4% compounded monthly.
+    - Calculate the compound interest on $15000 at a 4.5% annual rate, compounded quarterly for 3 years.
+    - Determine the final amount after 5 years of investing $5000 at an annual interest rate of 3%, compounded monthly.
+    single_clear:
+    - Calculate the compound interest on $5000 at 4% annual interest for 5 years, compounded semi-annually.
+    - How much will an investment of $1000 grow to if it earns 5% annual interest compounded quarterly over 10 years?
+    - Can you calculate the final amount if I invest $5000 at an annual interest rate of 5% for 10 years, compounded annually?
+    - What is the compound interest on an investment of $1000 at 5% annual interest for 3 years, compounded quarterly?
+    - How much will I have if I invest $5000 at 3% annual interest for 5 years, compounded semi-annually?
+    - Calculate the amount after investing five thousand dollars at an interest rate of six percent for a duration of three
+      years, compounded biannually.
+    - Calculate the compound interest on $1000 at 5% annual interest rate for 10 years, compounded quarterly.
+    - Calculate the compound interest on an initial investment of $1000 at a 5% annual interest rate over 10 years, compounded
+      quarterly.
+    - Calculate the final amount after 10 years if $10000 is invested at an annual interest rate of 4% compounded monthly.
+    - Calculate the compound interest on $15000 at a 4.5% annual rate, compounded quarterly for 3 years.
+    - Determine the final amount after 5 years of investing $5000 at an annual interest rate of 3%, compounded monthly.
+- name: download_video_or_reel
+  descriptions:
+    minimal: Downloads Facebook video or reel links in HD and...
+    short: Downloads Facebook video or reel links in HD and SD formats.
+    medium: Downloads Facebook video or reel links in HD and SD formats.
+    long: Downloads Facebook video or reel links in HD and SD formats.
+    verbose: Downloads Facebook video or reel links in HD and SD formats.
+  parameters:
+  - name: url
+    type: string
+    description: The URL of the Facebook video or reel to be downloaded.
+    required: true
+    default: https://www.facebook.com/antarikshTV/videos/958242908874442/
+  tags:
+  - download
+  - video
+  - or
+  test_prompts:
+    single:
+    - Can you download the Facebook video from the URL 'https://www.facebook.com/video123'?
+    single_clear:
+    - Can you download the Facebook video from the URL 'https://www.facebook.com/video123'?
+- name: getrandomuser
+  descriptions:
+    minimal: Fetches random user data such as name, e-mail...
+    short: Fetches random user data such as name, e-mail, etc.
+    medium: Fetches random user data such as name, e-mail, etc., from the specified API.
+    long: Fetches random user data such as name, e-mail, etc., from the specified API.
+    verbose: Fetches random user data such as name, e-mail, etc., from the specified API.
+  parameters:
+  - name: count
+    type: integer
+    description: The number of user records to retrieve. Defaults to -2 if not specified.
+    required: true
+    default: '-2'
+  tags:
+  - getrandomuser
+  test_prompts:
+    single:
+    - Get 5 random users for a user interface testing.
+    - Fetch a single user record for a quick verification.
+    - How many user records can I get if I request 3 at a time?
+    single_clear:
+    - Get 5 random users for a user interface testing.
+    - Fetch a single user record for a quick verification.
+    - How many user records can I get if I request 3 at a time?

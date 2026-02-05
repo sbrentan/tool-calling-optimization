@@ -1,0 +1,1237 @@
+category: caching_operations
+description: Cache management and optimization operations
+tools:
+  - name: cache_set
+    descriptions:
+      minimal: "Set cache"
+      short: "Set a cache value"
+      medium: "Store a value in the cache with optional TTL."
+      long: "Set a value in the cache. Supports TTL and cache tags. Example: cache_set(key='user:123', value='{...}', ttl=3600)."
+      verbose: "Store values in distributed cache. Features: TTL (expiration), tags for grouped invalidation, serialization options, conditional set (NX/XX). Backends: Redis, Memcached, in-memory. Example: cache_set(key='user:123:profile', value='{\"name\": \"John\"}', ttl=3600, tags='[\"user:123\", \"profiles\"]', condition='NX'). Note: TTL prevents stale data accumulation. Warning: Large values may impact performance."
+    parameters:
+      - name: key
+        type: string
+        description: "Cache key"
+        required: true
+      - name: value
+        type: string
+        description: "Value to cache (JSON string)"
+        required: true
+      - name: ttl
+        type: integer
+        description: "Time to live (seconds)"
+        required: false
+      - name: tags
+        type: string
+        description: "JSON array of cache tags"
+        required: false
+      - name: condition
+        type: string
+        description: "Set condition"
+        required: false
+        enum: ["always", "NX", "XX"]
+    tags: ["cache", "set", "store", "ttl", "redis"]
+    test_prompts:
+      single:
+        - "Cache this value"
+        - "Store in cache"
+        - "Set cache with 1 hour TTL"
+        - "Save to Redis"
+      single_clear:
+        - "I need to store a value in the cache. Cache this value"
+        - "I need to store a value in the cache. Store in cache"
+        - "I need to store a value in the cache. Set cache with 1 hour TTL"
+        - "I need to store a value in the cache. Save to Redis"
+
+  - name: cache_get
+    descriptions:
+      minimal: "Get cache"
+      short: "Get a cached value"
+      medium: "Retrieve a value from the cache."
+      long: "Get a value from the cache by key. Returns null if not found or expired. Example: cache_get(key='user:123')."
+      verbose: "Retrieve cached values. Features: single or bulk get, include metadata (TTL remaining). Returns: value, hit/miss status, remaining TTL. Example: cache_get(keys='[\"user:123\", \"user:456\"]', include_ttl=true). Note: Cache misses should trigger data fetch. Warning: Don't rely on cache for critical data."
+    parameters:
+      - name: key
+        type: string
+        description: "Cache key"
+        required: false
+      - name: keys
+        type: string
+        description: "JSON array of keys (bulk get)"
+        required: false
+      - name: include_ttl
+        type: boolean
+        description: "Include remaining TTL"
+        required: false
+        default: false
+    tags: ["cache", "get", "retrieve", "read", "redis"]
+    test_prompts:
+      single:
+        - "Get cached value"
+        - "Retrieve from cache"
+        - "Check the cache"
+        - "Get from Redis"
+      single_clear:
+        - "Please retrieve a value from the cache. Get cached value"
+        - "Please retrieve a value from the cache. Retrieve from cache"
+        - "Please retrieve a value from the cache. Check the cache"
+        - "Please retrieve a value from the cache. Get from Redis"
+
+  - name: cache_invalidate
+    descriptions:
+      minimal: "Invalidate cache"
+      short: "Invalidate cache entries"
+      medium: "Delete or invalidate cache entries by key or pattern."
+      long: "Invalidate cache entries. Delete by key, pattern, or tag. Example: cache_invalidate(pattern='user:*')."
+      verbose: "Cache invalidation operations. Methods: 'key' (single), 'pattern' (wildcard), 'tags' (grouped), 'all' (flush). Example: cache_invalidate(tags='[\"user:123\"]') removes all entries tagged with 'user:123'. Use cases: data update, logout, deployment. Note: Pattern invalidation may be slow on large caches. Warning: Flushing all cache causes thundering herd."
+    parameters:
+      - name: key
+        type: string
+        description: "Specific key to invalidate"
+        required: false
+      - name: pattern
+        type: string
+        description: "Key pattern (with wildcards)"
+        required: false
+      - name: tags
+        type: string
+        description: "JSON array of tags to invalidate"
+        required: false
+      - name: all
+        type: boolean
+        description: "Flush all cache"
+        required: false
+        default: false
+    tags: ["cache", "invalidate", "delete", "flush", "clear"]
+    test_prompts:
+      single:
+        - "Clear the cache"
+        - "Invalidate user cache"
+        - "Delete cached data"
+        - "Flush Redis cache"
+      single_clear:
+        - "I need to remove a value from the cache. Clear the cache"
+        - "I need to remove a value from the cache. Invalidate user cache"
+        - "I need to remove a value from the cache. Delete cached data"
+        - "I need to remove a value from the cache. Flush Redis cache"
+
+  - name: cache_stats
+    descriptions:
+      minimal: "Cache stats"
+      short: "Get cache statistics"
+      medium: "Retrieve cache performance statistics."
+      long: "Get cache statistics. View hit rate, memory usage, and key counts. Example: cache_stats(namespace='sessions')."
+      verbose: "Cache performance statistics. Metrics: hit/miss ratio, memory usage, evictions, connected clients, key count, ops/sec. Scopes: global, namespace, key pattern. Example: cache_stats(namespace='api_responses', period='1h'). Note: Monitor hit rate to evaluate caching effectiveness. Warning: Stats collection may have slight overhead."
+    parameters:
+      - name: namespace
+        type: string
+        description: "Cache namespace"
+        required: false
+      - name: period
+        type: string
+        description: "Stats period"
+        required: false
+        default: "1h"
+      - name: metrics
+        type: string
+        description: "JSON array of specific metrics"
+        required: false
+    tags: ["cache", "stats", "metrics", "monitoring", "performance"]
+    test_prompts:
+      single:
+        - "Get cache statistics"
+        - "Show cache hit rate"
+        - "Check Redis stats"
+        - "Cache performance metrics"
+      single_clear:
+        - "I need to view cache performance statistics. Get cache statistics"
+        - "I need to view cache performance statistics. Show cache hit rate"
+        - "I need to view cache performance statistics. Check Redis stats"
+        - "I need to view cache performance statistics. Cache performance metrics"
+
+  - name: cache_warm
+    descriptions:
+      minimal: "Warm cache"
+      short: "Pre-warm the cache"
+      medium: "Pre-populate cache with frequently accessed data."
+      long: "Warm cache by pre-loading data. Prevent cold cache after deployment. Example: cache_warm(source='database', query='SELECT * FROM products')."
+      verbose: "Cache warming/pre-population. Sources: database query, API endpoints, file data. Strategies: full load, top-N by access frequency, scheduled refresh. Example: cache_warm(source='database', query='SELECT id, data FROM products WHERE active=true', key_template='product:{id}', ttl=7200, batch_size=100). Note: Warm cache during off-peak hours. Warning: Large datasets may overwhelm cache memory."
+    parameters:
+      - name: source
+        type: string
+        description: "Data source type"
+        required: true
+        enum: ["database", "api", "file"]
+      - name: query
+        type: string
+        description: "Source query or path"
+        required: true
+      - name: key_template
+        type: string
+        description: "Cache key template"
+        required: true
+      - name: ttl
+        type: integer
+        description: "TTL for cached entries"
+        required: false
+        default: 3600
+      - name: batch_size
+        type: integer
+        description: "Batch size for loading"
+        required: false
+        default: 100
+    tags: ["cache", "warm", "preload", "populate", "performance"]
+    test_prompts:
+      single:
+        - "Warm the cache"
+        - "Pre-load cache data"
+        - "Populate cache from database"
+        - "Initialize cache"
+      single_clear:
+        - "I need to pre-populate the cache with data. Warm the cache"
+        - "I need to pre-populate the cache with data. Pre-load cache data"
+        - "I need to pre-populate the cache with data. Populate cache from database"
+        - "I need to pre-populate the cache with data. Initialize cache"
+
+  - name: cache_lock
+    descriptions:
+      minimal: "Cache lock"
+      short: "Acquire a distributed lock"
+      medium: "Acquire or release a distributed lock using cache."
+      long: "Distributed locking via cache. Prevent race conditions in distributed systems. Example: cache_lock(key='order:123:lock', action='acquire', ttl=30)."
+      verbose: "Distributed lock management using cache. Actions: 'acquire' (get lock), 'release' (free lock), 'extend' (renew TTL), 'check' (verify status). Features: auto-expire TTL, owner identification, blocking/non-blocking. Example: cache_lock(key='inventory:sku-001', action='acquire', ttl=30, owner='worker-1', wait=5). Note: Always set TTL to prevent deadlocks. Warning: Long-held locks may cause timeouts."
+    parameters:
+      - name: key
+        type: string
+        description: "Lock key"
+        required: true
+      - name: action
+        type: string
+        description: "Lock action"
+        required: true
+        enum: ["acquire", "release", "extend", "check"]
+      - name: ttl
+        type: integer
+        description: "Lock TTL (seconds)"
+        required: false
+        default: 30
+      - name: owner
+        type: string
+        description: "Lock owner identifier"
+        required: false
+      - name: wait
+        type: integer
+        description: "Wait time for acquire (seconds)"
+        required: false
+        default: 0
+    tags: ["cache", "lock", "distributed", "mutex", "concurrency"]
+    test_prompts:
+      single:
+        - "Acquire a lock"
+        - "Release the lock"
+        - "Create distributed lock"
+        - "Lock the resource"
+      single_clear:
+        - "I need to manage a distributed lock in the cache. Acquire a lock"
+        - "I need to manage a distributed lock in the cache. Release the lock"
+        - "I need to manage a distributed lock in the cache. Create distributed lock"
+        - "I need to manage a distributed lock in the cache. Lock the resource"
+
+  - name: cache_increment
+    descriptions:
+      minimal: "Increment"
+      short: "Increment cache counter"
+      medium: "Atomically increment a numeric value in cache."
+      long: "Atomic increment/decrement of cached numbers. Useful for counters and rate limiting. Example: cache_increment(key='page:views:123', delta=1)."
+      verbose: "Atomic counter operations in cache. Operations: increment, decrement, get-and-set. Use cases: view counters, rate limiting, inventory. Example: cache_increment(key='api:ratelimit:user:123', delta=1, max=100, ttl=60). Returns: new value, limit reached status. Note: Atomic operations prevent race conditions. Warning: Counters reset on cache flush."
+    parameters:
+      - name: key
+        type: string
+        description: "Counter key"
+        required: true
+      - name: delta
+        type: integer
+        description: "Increment amount (negative for decrement)"
+        required: false
+        default: 1
+      - name: initial
+        type: integer
+        description: "Initial value if not exists"
+        required: false
+        default: 0
+      - name: max
+        type: integer
+        description: "Maximum allowed value"
+        required: false
+      - name: ttl
+        type: integer
+        description: "TTL for counter"
+        required: false
+    tags: ["cache", "counter", "increment", "atomic", "rate"]
+    test_prompts:
+      single:
+        - "Increment the counter"
+        - "Increase view count"
+        - "Decrement inventory"
+        - "Update rate limit counter"
+      single_clear:
+        - "I need to atomically increment a counter in the cache. Increment the counter"
+        - "I need to atomically increment a counter in the cache. Increase view count"
+        - "I need to atomically increment a counter in the cache. Decrement inventory"
+        - "I need to atomically increment a counter in the cache. Update rate limit counter"
+
+  - name: cache_list_ops
+    descriptions:
+      minimal: "List operations"
+      short: "Perform list operations"
+      medium: "Perform list operations like push, pop, and range queries."
+      long: "List data structure operations. Push, pop, and retrieve ranges. Example: cache_list_ops(key='queue:tasks', action='push', values='[\"task1\", \"task2\"]')."
+      verbose: "List/queue operations in cache. Actions: 'push' (append), 'pop' (remove), 'range' (get slice), 'length', 'trim'. Sides: left (LPUSH/LPOP) or right (RPUSH/RPOP). Example: cache_list_ops(key='notifications:user:123', action='push', side='right', values='[{\"type\": \"message\", \"text\": \"...\"}]', trim=100). Note: Lists are great for queues and feeds. Warning: Very long lists consume memory."
+    parameters:
+      - name: key
+        type: string
+        description: "List key"
+        required: true
+      - name: action
+        type: string
+        description: "List action"
+        required: true
+        enum: ["push", "pop", "range", "length", "trim"]
+      - name: values
+        type: string
+        description: "JSON array of values (for push)"
+        required: false
+      - name: side
+        type: string
+        description: "List side"
+        required: false
+        default: "right"
+        enum: ["left", "right"]
+      - name: start
+        type: integer
+        description: "Range start index"
+        required: false
+        default: 0
+      - name: end
+        type: integer
+        description: "Range end index"
+        required: false
+        default: -1
+    tags: ["cache", "list", "queue", "push", "pop"]
+    test_prompts:
+      single:
+        - "Add to the queue"
+        - "Pop from list"
+        - "Get recent notifications"
+        - "Push to Redis list"
+      single_clear:
+        - "I need to perform list operations in the cache. Add to the queue"
+        - "I need to perform list operations in the cache. Pop from list"
+        - "I need to perform list operations in the cache. Get recent notifications"
+        - "I need to perform list operations in the cache. Push to Redis list"
+
+  - name: cache_hash_ops
+    descriptions:
+      minimal: "Hash operations"
+      short: "Perform hash operations"
+      medium: "Perform hash/map operations for structured data."
+      long: "Hash data structure operations. Store and retrieve field-value pairs. Example: cache_hash_ops(key='user:123', action='set', fields='{\"name\": \"John\", \"email\": \"...\"}'."
+      verbose: "Hash/map operations in cache. Actions: 'set' (set fields), 'get' (get fields), 'getall' (all fields), 'delete' (remove fields), 'increment' (numeric field). Example: cache_hash_ops(key='session:abc123', action='set', fields='{\"user_id\": \"123\", \"last_active\": \"...\", \"cart_count\": 5}', ttl=1800). Note: Hashes are memory-efficient for objects. Warning: Getting all fields on large hashes is expensive."
+    parameters:
+      - name: key
+        type: string
+        description: "Hash key"
+        required: true
+      - name: action
+        type: string
+        description: "Hash action"
+        required: true
+        enum: ["set", "get", "getall", "delete", "increment"]
+      - name: fields
+        type: string
+        description: "JSON field-value pairs or array of field names"
+        required: false
+      - name: ttl
+        type: integer
+        description: "TTL for hash"
+        required: false
+    tags: ["cache", "hash", "map", "object", "fields"]
+    test_prompts:
+      single:
+        - "Store user data in hash"
+        - "Get hash fields"
+        - "Update session hash"
+        - "Set Redis hash"
+      single_clear:
+        - "I need to perform hash operations for structured data. Store user data in hash"
+        - "I need to perform hash operations for structured data. Get hash fields"
+        - "I need to perform hash operations for structured data. Update session hash"
+        - "I need to perform hash operations for structured data. Set Redis hash"
+
+  - name: cache_pubsub
+    descriptions:
+      minimal: "Pub/sub"
+      short: "Publish/subscribe messaging"
+      medium: "Publish messages or subscribe to cache channels."
+      long: "Pub/sub messaging via cache. Publish events or subscribe to channels. Example: cache_pubsub(action='publish', channel='events', message='{...}')."
+      verbose: "Publish/subscribe messaging using cache infrastructure. Actions: 'publish' (send message), 'subscribe' (listen to channel), 'unsubscribe', 'channels' (list active). Use cases: real-time events, cache invalidation broadcast, inter-service messaging. Example: cache_pubsub(action='publish', channel='cache:invalidate', message='{\"type\": \"user\", \"id\": \"123\"}', pattern=false). Note: Messages are fire-and-forget. Warning: Subscribers must be connected to receive messages."
+    parameters:
+      - name: action
+        type: string
+        description: "Pub/sub action"
+        required: true
+        enum: ["publish", "subscribe", "unsubscribe", "channels"]
+      - name: channel
+        type: string
+        description: "Channel name"
+        required: false
+      - name: message
+        type: string
+        description: "Message to publish (JSON)"
+        required: false
+      - name: pattern
+        type: boolean
+        description: "Use pattern matching for subscribe"
+        required: false
+        default: false
+    tags: ["cache", "pubsub", "publish", "subscribe", "messaging"]
+    test_prompts:
+      single:
+        - "Publish an event"
+        - "Subscribe to channel"
+        - "Send cache invalidation"
+        - "Broadcast message"
+      single_clear:
+        - "I need to use pub/sub messaging via the cache. Publish an event"
+        - "I need to use pub/sub messaging via the cache. Subscribe to channel"
+        - "I need to use pub/sub messaging via the cache. Send cache invalidation"
+        - "I need to use pub/sub messaging via the cache. Broadcast message"
+  - name: configure_cache_cluster
+    descriptions:
+      minimal: "Configure cluster"
+      short: "Configure cache cluster"
+      medium: "Configure distributed cache cluster settings and topology."
+      long: "Configure cache cluster. Set replication, sharding, and failover. Example: configure_cache_cluster(cluster='main', nodes=3, replication_factor=2)."
+      verbose: "Configure distributed cache cluster topology. Settings: node count, replication factor, sharding strategy, failover policy. Example: configure_cache_cluster(cluster='production', action='scale', nodes=6, replication_factor=2, sharding='consistent_hash', failover='automatic', maintenance_window='sun:03:00-sun:05:00'). Returns: cluster status, configuration applied. Note: Scaling may cause temporary performance impact. Warning: Reducing nodes can cause data loss without proper replication."
+    parameters:
+      - name: cluster
+        type: string
+        description: "Cluster name"
+        required: true
+      - name: action
+        type: string
+        description: "Configuration action"
+        required: true
+        enum: ["configure", "scale", "rebalance", "status"]
+      - name: nodes
+        type: integer
+        description: "Number of nodes"
+        required: false
+      - name: replication_factor
+        type: integer
+        description: "Data replication factor"
+        required: false
+        default: 1
+      - name: sharding
+        type: string
+        description: "Sharding strategy"
+        required: false
+        enum: ["consistent_hash", "range", "modulo"]
+      - name: failover
+        type: string
+        description: "Failover policy"
+        required: false
+        enum: ["automatic", "manual"]
+    tags: ["cache", "cluster", "distributed", "configuration", "scaling"]
+    test_prompts:
+      single:
+        - "Scale cache cluster"
+        - "Configure replication"
+        - "Check cluster status"
+        - "Rebalance cache nodes"
+      single_clear:
+        - "I need to configure the distributed cache cluster. Scale cache cluster"
+        - "I need to configure the distributed cache cluster. Configure replication"
+        - "I need to configure the distributed cache cluster. Check cluster status"
+        - "I need to configure the distributed cache cluster. Rebalance cache nodes"
+
+  - name: warm_cache
+    descriptions:
+      minimal: "Warm cache"
+      short: "Warm up cache"
+      medium: "Pre-populate cache with commonly accessed data."
+      long: "Warm cache with data before traffic. Prevents cold cache issues. Example: warm_cache(source='database', query='SELECT * FROM products', key_prefix='product:')."
+      verbose: "Cache warming for cold start prevention. Sources: database queries, API endpoints, file imports. Example: warm_cache(source='database', query='SELECT id, data FROM hot_items ORDER BY access_count DESC LIMIT 1000', key_template='item:{id}', ttl=3600, batch_size=100, parallel=4). Returns: items warmed, time taken, errors. Note: Warming too much data wastes memory. Warning: Large warm operations may impact source system."
+    parameters:
+      - name: source
+        type: string
+        description: "Data source type"
+        required: true
+        enum: ["database", "api", "file"]
+      - name: query
+        type: string
+        description: "Database query or API endpoint"
+        required: true
+      - name: key_template
+        type: string
+        description: "Cache key template"
+        required: true
+      - name: ttl
+        type: integer
+        description: "TTL for warmed items (seconds)"
+        required: false
+        default: 3600
+      - name: batch_size
+        type: integer
+        description: "Batch size for warming"
+        required: false
+        default: 100
+      - name: parallel
+        type: integer
+        description: "Parallel warming threads"
+        required: false
+        default: 2
+    tags: ["cache", "warm", "preload", "startup", "performance"]
+    test_prompts:
+      single:
+        - "Warm the cache"
+        - "Pre-populate cache"
+        - "Load data into cache"
+        - "Prepare cache for traffic"
+      single_clear:
+        - "I need to warm up the cache before traffic. Warm the cache"
+        - "I need to warm up the cache before traffic. Pre-populate cache"
+        - "I need to warm up the cache before traffic. Load data into cache"
+        - "I need to warm up the cache before traffic. Prepare cache for traffic"
+
+  - name: analyze_cache_performance
+    descriptions:
+      minimal: "Analyze cache"
+      short: "Analyze cache performance"
+      medium: "Analyze cache hit rates, memory usage, and performance metrics."
+      long: "Analyze cache performance metrics. View hit rates, memory, latency. Example: analyze_cache_performance(period='24h', metrics='[\"hit_rate\", \"memory\"]')."
+      verbose: "Comprehensive cache performance analysis. Metrics: hit/miss rates, latency percentiles, memory usage, evictions, connections. Example: analyze_cache_performance(period='7d', metrics='[\"hit_rate\", \"latency_p99\", \"memory_usage\", \"eviction_rate\"]', granularity='1h', breakdown_by='key_pattern'). Returns: time-series data, aggregates, recommendations. Note: High eviction rates indicate memory pressure. Warning: Low hit rates suggest caching strategy issues."
+    parameters:
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: false
+        default: "24h"
+      - name: metrics
+        type: string
+        description: "JSON array of metrics"
+        required: true
+      - name: granularity
+        type: string
+        description: "Data granularity"
+        required: false
+        default: "5m"
+        enum: ["1m", "5m", "1h", "1d"]
+      - name: breakdown_by
+        type: string
+        description: "Breakdown dimension"
+        required: false
+        enum: ["key_pattern", "command", "client"]
+    tags: ["cache", "analytics", "performance", "metrics", "monitoring"]
+    test_prompts:
+      single:
+        - "Analyze cache hit rate"
+        - "Check cache performance"
+        - "Show cache metrics"
+        - "Monitor cache health"
+      single_clear:
+        - "I need to analyze cache performance metrics. Analyze cache hit rate"
+        - "I need to analyze cache performance metrics. Check cache performance"
+        - "I need to analyze cache performance metrics. Show cache metrics"
+        - "I need to analyze cache performance metrics. Monitor cache health"
+
+  - name: manage_cache_policy
+    descriptions:
+      minimal: "Manage policy"
+      short: "Manage cache policy"
+      medium: "Configure cache eviction and expiration policies."
+      long: "Manage cache eviction policies. Set memory limits and eviction strategies. Example: manage_cache_policy(maxmemory='4gb', policy='allkeys-lru')."
+      verbose: "Configure cache eviction and memory policies. Eviction policies: noeviction, allkeys-lru, allkeys-lfu, volatile-lru, volatile-ttl. Example: manage_cache_policy(maxmemory='8gb', policy='allkeys-lfu', maxmemory_samples=10, lazyfree_lazy_eviction=true). Note: LFU is better for frequency-based access patterns. Warning: noeviction will reject writes when memory is full."
+    parameters:
+      - name: maxmemory
+        type: string
+        description: "Maximum memory (e.g., '4gb')"
+        required: false
+      - name: policy
+        type: string
+        description: "Eviction policy"
+        required: false
+        enum: ["noeviction", "allkeys-lru", "allkeys-lfu", "allkeys-random", "volatile-lru", "volatile-lfu", "volatile-ttl"]
+      - name: maxmemory_samples
+        type: integer
+        description: "LRU/LFU sample size"
+        required: false
+        default: 5
+      - name: lazyfree_lazy_eviction
+        type: boolean
+        description: "Async eviction"
+        required: false
+        default: false
+    tags: ["cache", "policy", "eviction", "memory", "configuration"]
+    test_prompts:
+      single:
+        - "Set cache memory limit"
+        - "Configure eviction policy"
+        - "Update cache policy"
+        - "Set LRU eviction"
+      single_clear:
+        - "I need to configure cache eviction and memory policies. Set cache memory limit"
+        - "I need to configure cache eviction and memory policies. Configure eviction policy"
+        - "I need to configure cache eviction and memory policies. Update cache policy"
+        - "I need to configure cache eviction and memory policies. Set LRU eviction"
+
+  - name: replicate_cache
+    descriptions:
+      minimal: "Replicate cache"
+      short: "Replicate cache data"
+      medium: "Set up cache replication between primary and replica nodes."
+      long: "Configure cache replication for high availability. Set up primary-replica topology. Example: replicate_cache(primary='cache-1', replica='cache-2', sync='async')."
+      verbose: "Configure cache replication for high availability. Modes: async (fast, eventual consistency), sync (consistent, slower). Example: replicate_cache(primary='redis-primary.internal:6379', replicas='[\"redis-replica-1.internal:6379\", \"redis-replica-2.internal:6379\"]', mode='async', read_from_replicas=true). Returns: replication status, lag. Note: Sync replication adds latency. Warning: Replication lag during high write loads."
+    parameters:
+      - name: primary
+        type: string
+        description: "Primary node address"
+        required: true
+      - name: replicas
+        type: string
+        description: "JSON array of replica addresses"
+        required: true
+      - name: mode
+        type: string
+        description: "Replication mode"
+        required: false
+        default: "async"
+        enum: ["async", "sync"]
+      - name: read_from_replicas
+        type: boolean
+        description: "Allow reads from replicas"
+        required: false
+        default: true
+    tags: ["cache", "replication", "ha", "primary", "replica"]
+    test_prompts:
+      single:
+        - "Set up cache replication"
+        - "Add cache replica"
+        - "Configure primary-replica"
+        - "Enable high availability"
+      single_clear:
+        - "I need to set up cache replication for high availability. Set up cache replication"
+        - "I need to set up cache replication for high availability. Add cache replica"
+        - "I need to set up cache replication for high availability. Configure primary-replica"
+        - "I need to set up cache replication for high availability. Enable high availability"
+
+  - name: backup_cache
+    descriptions:
+      minimal: "Backup cache"
+      short: "Backup cache data"
+      medium: "Create a backup snapshot of cache data."
+      long: "Create cache backup for disaster recovery. Save to file or cloud storage. Example: backup_cache(destination='s3://backups/cache/', compression=true)."
+      verbose: "Backup cache data for recovery. Methods: RDB snapshot (point-in-time), AOF (append-only log). Destinations: local file, S3, GCS. Example: backup_cache(method='rdb', destination='s3://cache-backups/daily/', compression=true, schedule='0 3 * * *', retention_days=30). Returns: backup path, size, duration. Note: RDB is faster but may lose recent data. Warning: Large caches take time to backup."
+    parameters:
+      - name: method
+        type: string
+        description: "Backup method"
+        required: false
+        default: "rdb"
+        enum: ["rdb", "aof"]
+      - name: destination
+        type: string
+        description: "Backup destination path"
+        required: true
+      - name: compression
+        type: boolean
+        description: "Compress backup"
+        required: false
+        default: true
+      - name: schedule
+        type: string
+        description: "Cron schedule for recurring"
+        required: false
+      - name: retention_days
+        type: integer
+        description: "Backup retention period"
+        required: false
+        default: 7
+    tags: ["cache", "backup", "snapshot", "recovery", "disaster"]
+    test_prompts:
+      single:
+        - "Backup cache data"
+        - "Create cache snapshot"
+        - "Schedule cache backup"
+        - "Export cache to S3"
+      single_clear:
+        - "I need to create a backup of the cache data. Backup cache data"
+        - "I need to create a backup of the cache data. Create cache snapshot"
+        - "I need to create a backup of the cache data. Schedule cache backup"
+        - "I need to create a backup of the cache data. Export cache to S3"
+
+  - name: restore_cache
+    descriptions:
+      minimal: "Restore cache"
+      short: "Restore cache from backup"
+      medium: "Restore cache data from a backup snapshot."
+      long: "Restore cache from backup. Recovery from snapshots or AOF files. Example: restore_cache(source='s3://backups/cache/latest.rdb', target='cache-new')."
+      verbose: "Restore cache from backup for recovery. Options: full restore, selective keys, different target. Example: restore_cache(source='s3://cache-backups/cache-2024-01-15.rdb', target='redis://cache-restore:6379', flush_before=true, key_filter='user:*'). Returns: keys restored, duration. Note: Restore to staging first to verify. Warning: Flush option destroys existing data."
+    parameters:
+      - name: source
+        type: string
+        description: "Backup source path"
+        required: true
+      - name: target
+        type: string
+        description: "Target cache connection"
+        required: true
+      - name: flush_before
+        type: boolean
+        description: "Clear target before restore"
+        required: false
+        default: false
+      - name: key_filter
+        type: string
+        description: "Only restore matching keys"
+        required: false
+    tags: ["cache", "restore", "recovery", "backup", "disaster"]
+    test_prompts:
+      single:
+        - "Restore cache from backup"
+        - "Recover cache data"
+        - "Load backup into cache"
+        - "Restore yesterday's cache"
+      single_clear:
+        - "I need to restore cache data from a backup. Restore cache from backup"
+        - "I need to restore cache data from a backup. Recover cache data"
+        - "I need to restore cache data from a backup. Load backup into cache"
+        - "I need to restore cache data from a backup. Restore yesterday's cache"
+
+  - name: manage_cache_locks
+    descriptions:
+      minimal: "Manage locks"
+      short: "Manage distributed locks"
+      medium: "Acquire, release, or check distributed locks in cache."
+      long: "Manage distributed locks for coordination. Prevent race conditions. Example: manage_cache_locks(action='acquire', key='order:123:lock', ttl=30)."
+      verbose: "Distributed locking for coordination. Actions: acquire (get lock), release (free lock), extend (renew TTL), check (lock status). Example: manage_cache_locks(action='acquire', key='resource:456:lock', ttl=30, wait_timeout=10, owner_id='worker-1'). Returns: lock acquired (boolean), owner, remaining TTL. Note: Always set TTL to prevent deadlocks. Warning: Release locks only if you own them."
+    parameters:
+      - name: action
+        type: string
+        description: "Lock action"
+        required: true
+        enum: ["acquire", "release", "extend", "check"]
+      - name: key
+        type: string
+        description: "Lock key"
+        required: true
+      - name: ttl
+        type: integer
+        description: "Lock TTL (seconds)"
+        required: false
+        default: 30
+      - name: wait_timeout
+        type: integer
+        description: "Max wait time (seconds)"
+        required: false
+        default: 0
+      - name: owner_id
+        type: string
+        description: "Lock owner identifier"
+        required: false
+    tags: ["cache", "lock", "distributed", "mutex", "coordination"]
+    test_prompts:
+      single:
+        - "Acquire distributed lock"
+        - "Release the lock"
+        - "Check lock status"
+        - "Extend lock TTL"
+      single_clear:
+        - "I need to manage distributed locks for coordination. Acquire distributed lock"
+        - "I need to manage distributed locks for coordination. Release the lock"
+        - "I need to manage distributed locks for coordination. Check lock status"
+        - "I need to manage distributed locks for coordination. Extend lock TTL"
+
+  - name: scan_cache_keys
+    descriptions:
+      minimal: "Scan keys"
+      short: "Scan cache keys"
+      medium: "Scan and list cache keys matching a pattern."
+      long: "Scan cache keys by pattern. Find keys without blocking. Example: scan_cache_keys(pattern='user:*', count=100)."
+      verbose: "Non-blocking key scanning for large caches. Safer than KEYS command. Example: scan_cache_keys(pattern='session:*', count=1000, type='string', include_ttl=true). Returns: matching keys, cursor for pagination, TTL info. Note: Count is a hint, not guaranteed. Warning: Very broad patterns may return many keys."
+    parameters:
+      - name: pattern
+        type: string
+        description: "Key pattern to match"
+        required: true
+      - name: count
+        type: integer
+        description: "Approximate keys per scan"
+        required: false
+        default: 100
+      - name: type
+        type: string
+        description: "Filter by value type"
+        required: false
+        enum: ["string", "list", "set", "zset", "hash"]
+      - name: cursor
+        type: string
+        description: "Cursor for pagination"
+        required: false
+        default: "0"
+      - name: include_ttl
+        type: boolean
+        description: "Include TTL for each key"
+        required: false
+        default: false
+    tags: ["cache", "scan", "keys", "search", "list"]
+    test_prompts:
+      single:
+        - "Find keys matching pattern"
+        - "List user session keys"
+        - "Scan cache for keys"
+      single_clear:
+        - "I need to scan and list cache keys by pattern. Find keys matching pattern"
+        - "I need to scan and list cache keys by pattern. List user session keys"
+        - "I need to scan and list cache keys by pattern. Scan cache for keys"
+
+  - name: configure_cache_cluster
+    descriptions:
+      minimal: "Configure cluster"
+      short: "Configure cache cluster"
+      medium: "Configure and manage cache cluster settings and nodes."
+      long: "Manage cache cluster configuration including nodes, replication, and sharding. Example: configure_cache_cluster(action='add_node', node='cache-node-3', role='replica')."
+      verbose: "Cache cluster management operations. Actions: add_node, remove_node, rebalance, failover, configure. Features: automatic sharding, replica configuration, slot assignment. Cluster types: Redis Cluster, Memcached, ElastiCache. Example: configure_cache_cluster(action='add_node', node='cache-node-3.internal:6379', role='replica', master='cache-node-1', rebalance=true, notify_slots=true). Note: Adding nodes triggers automatic rebalancing. Warning: Remove nodes carefully to avoid data loss during migration."
+    parameters:
+      - name: action
+        type: string
+        description: "Cluster management action"
+        required: true
+        enum: ["add_node", "remove_node", "rebalance", "failover", "configure", "status"]
+      - name: node
+        type: string
+        description: "Node address"
+        required: false
+      - name: role
+        type: string
+        description: "Node role"
+        required: false
+        enum: ["master", "replica"]
+      - name: master
+        type: string
+        description: "Master node for replica"
+        required: false
+      - name: rebalance
+        type: boolean
+        description: "Trigger rebalancing"
+        required: false
+        default: false
+      - name: notify_slots
+        type: boolean
+        description: "Notify slot migration"
+        required: false
+        default: true
+    tags: ["cache", "cluster", "nodes", "scaling", "replication"]
+    test_prompts:
+      single:
+        - "Add node to cache cluster"
+        - "Rebalance cache shards"
+        - "Configure cluster replication"
+        - "Check cluster status"
+      single_clear:
+        - "I need to manage cache cluster nodes and configuration. Add node to cache cluster"
+        - "I need to manage cache cluster nodes and configuration. Rebalance cache shards"
+        - "I need to manage cache cluster nodes and configuration. Configure cluster replication"
+        - "I need to manage cache cluster nodes and configuration. Check cluster status"
+
+  - name: manage_cache_policy
+    descriptions:
+      minimal: "Manage policy"
+      short: "Manage cache eviction policy"
+      medium: "Configure cache eviction policies and memory management settings."
+      long: "Set up eviction policies like LRU, LFU, and memory limits. Example: manage_cache_policy(policy='allkeys-lru', maxmemory='4gb')."
+      verbose: "Cache eviction and memory policy management. Policies: noeviction, allkeys-lru, volatile-lru, allkeys-lfu, volatile-lfu, allkeys-random, volatile-random, volatile-ttl. Memory settings: maxmemory, samples, lazy eviction. Example: manage_cache_policy(policy='allkeys-lfu', maxmemory='8gb', maxmemory_samples=10, lazyfree_lazy_eviction=true, active_defrag=true). Note: LFU is better for access patterns with varying popularity. Warning: noeviction policy will cause write errors when memory is full."
+    parameters:
+      - name: policy
+        type: string
+        description: "Eviction policy"
+        required: true
+        enum: ["noeviction", "allkeys-lru", "volatile-lru", "allkeys-lfu", "volatile-lfu", "allkeys-random", "volatile-random", "volatile-ttl"]
+      - name: maxmemory
+        type: string
+        description: "Maximum memory limit"
+        required: false
+      - name: maxmemory_samples
+        type: integer
+        description: "Eviction sample size"
+        required: false
+        default: 5
+      - name: lazyfree_lazy_eviction
+        type: boolean
+        description: "Enable lazy eviction"
+        required: false
+        default: false
+      - name: active_defrag
+        type: boolean
+        description: "Enable active defragmentation"
+        required: false
+        default: false
+    tags: ["cache", "eviction", "policy", "memory", "management"]
+    test_prompts:
+      single:
+        - "Set cache eviction policy"
+        - "Configure LRU eviction"
+        - "Set memory limit"
+        - "Enable LFU caching"
+      single_clear:
+        - "I need to configure cache eviction policy and memory settings. Set cache eviction policy"
+        - "I need to configure cache eviction policy and memory settings. Configure LRU eviction"
+        - "I need to configure cache eviction policy and memory settings. Set memory limit"
+        - "I need to configure cache eviction policy and memory settings. Enable LFU caching"
+
+  - name: create_cache_index
+    descriptions:
+      minimal: "Create index"
+      short: "Create cache search index"
+      medium: "Create a search index on cached data for fast querying."
+      long: "Create secondary indexes for searching cached data. Example: create_cache_index(index='user-idx', prefix='user:', schema='[{\"field\": \"name\", \"type\": \"text\"}]')."
+      verbose: "Create search indexes on cache (Redis Search). Index types: full-text, numeric, tag, geo. Schema fields: TEXT, NUMERIC, TAG, GEO. Options: prefix filtering, stemming, stopwords. Example: create_cache_index(index='products-idx', prefix='product:', schema='[{\"field\": \"name\", \"type\": \"TEXT\", \"weight\": 2.0}, {\"field\": \"price\", \"type\": \"NUMERIC\", \"sortable\": true}, {\"field\": \"category\", \"type\": \"TAG\"}]', language='english', stopwords='default'). Note: Indexes consume additional memory. Warning: Large indexes may slow down write operations."
+    parameters:
+      - name: index
+        type: string
+        description: "Index name"
+        required: true
+      - name: prefix
+        type: string
+        description: "Key prefix to index"
+        required: true
+      - name: schema
+        type: string
+        description: "JSON schema definition"
+        required: true
+      - name: language
+        type: string
+        description: "Language for text fields"
+        required: false
+        default: "english"
+      - name: stopwords
+        type: string
+        description: "Stopwords configuration"
+        required: false
+        default: "default"
+      - name: temporary
+        type: boolean
+        description: "Create temporary index"
+        required: false
+        default: false
+    tags: ["cache", "index", "search", "query", "secondary"]
+    test_prompts:
+      single:
+        - "Create cache search index"
+        - "Index cached products"
+        - "Add full-text search to cache"
+        - "Create secondary index"
+      single_clear:
+        - "I need to create a search index on cached data. Create cache search index"
+        - "I need to create a search index on cached data. Index cached products"
+        - "I need to create a search index on cached data. Add full-text search to cache"
+        - "I need to create a search index on cached data. Create secondary index"
+
+  - name: configure_cache_persistence
+    descriptions:
+      minimal: "Configure persistence"
+      short: "Configure cache persistence"
+      medium: "Configure cache persistence options for data durability."
+      long: "Set up RDB snapshots or AOF logging for cache persistence. Example: configure_cache_persistence(mode='rdb', save_intervals='[{\"seconds\": 900, \"changes\": 1}]')."
+      verbose: "Cache persistence configuration. Modes: RDB (snapshots), AOF (append-only file), hybrid. RDB settings: save intervals, compression, filename. AOF settings: fsync policy, rewrite triggers, auto-rewrite. Example: configure_cache_persistence(mode='hybrid', rdb_save='[{\"seconds\": 900, \"changes\": 1}, {\"seconds\": 300, \"changes\": 10}]', aof_fsync='everysec', aof_rewrite_percentage=100, rdb_compression=true). Note: AOF provides better durability but higher disk usage. Warning: Persistence affects performance; tune based on durability needs."
+    parameters:
+      - name: mode
+        type: string
+        description: "Persistence mode"
+        required: true
+        enum: ["rdb", "aof", "hybrid", "none"]
+      - name: rdb_save
+        type: string
+        description: "JSON RDB save intervals"
+        required: false
+      - name: rdb_compression
+        type: boolean
+        description: "Enable RDB compression"
+        required: false
+        default: true
+      - name: aof_fsync
+        type: string
+        description: "AOF fsync policy"
+        required: false
+        default: "everysec"
+        enum: ["always", "everysec", "no"]
+      - name: aof_rewrite_percentage
+        type: integer
+        description: "AOF rewrite trigger percentage"
+        required: false
+        default: 100
+    tags: ["cache", "persistence", "rdb", "aof", "durability"]
+    test_prompts:
+      single:
+        - "Enable cache persistence"
+        - "Configure RDB snapshots"
+        - "Set up AOF logging"
+        - "Configure cache durability"
+      single_clear:
+        - "I need to configure cache persistence for data durability. Enable cache persistence"
+        - "I need to configure cache persistence for data durability. Configure RDB snapshots"
+        - "I need to configure cache persistence for data durability. Set up AOF logging"
+        - "I need to configure cache persistence for data durability. Configure cache durability"
+
+  - name: manage_cache_streams
+    descriptions:
+      minimal: "Manage streams"
+      short: "Manage cache streams"
+      medium: "Manage cache streams for event and message processing."
+      long: "Work with Redis Streams for event-driven data. Example: manage_cache_streams(stream='events', action='add', data='{\"type\": \"order\", \"id\": 123}')."
+      verbose: "Cache stream management (Redis Streams). Actions: add (append entry), read (consume), create_group (consumer group), ack (acknowledge), trim (limit size). Features: consumer groups, pending messages, claim. Example: manage_cache_streams(stream='order-events', action='add', data='{\"event\": \"created\", \"order_id\": \"ORD-123\"}', maxlen=10000, approximate=true). Consumer example: manage_cache_streams(stream='order-events', action='read', group='order-processor', consumer='worker-1', count=10, block=5000). Note: Streams persist until explicitly deleted. Warning: Large streams consume significant memory."
+    parameters:
+      - name: stream
+        type: string
+        description: "Stream name"
+        required: true
+      - name: action
+        type: string
+        description: "Stream action"
+        required: true
+        enum: ["add", "read", "create_group", "ack", "trim", "info", "delete"]
+      - name: data
+        type: string
+        description: "JSON data for add action"
+        required: false
+      - name: group
+        type: string
+        description: "Consumer group name"
+        required: false
+      - name: consumer
+        type: string
+        description: "Consumer name"
+        required: false
+      - name: count
+        type: integer
+        description: "Number of entries to read"
+        required: false
+        default: 10
+      - name: maxlen
+        type: integer
+        description: "Maximum stream length for trim"
+        required: false
+      - name: block
+        type: integer
+        description: "Block timeout in ms"
+        required: false
+    tags: ["cache", "streams", "events", "messaging", "redis"]
+    test_prompts:
+      single:
+        - "Add event to stream"
+        - "Read from cache stream"
+        - "Create consumer group"
+        - "Trim stream size"
+      single_clear:
+        - "I need to manage cache streams for event processing. Add event to stream"
+        - "I need to manage cache streams for event processing. Read from cache stream"
+        - "I need to manage cache streams for event processing. Create consumer group"
+        - "I need to manage cache streams for event processing. Trim stream size"
+
+  - name: export_cache_data
+    descriptions:
+      minimal: "Export cache"
+      short: "Export cache data"
+      medium: "Export cache data to a file or external storage."
+      long: "Export cache contents for backup or migration. Example: export_cache_data(pattern='user:*', format='json', output='backup.json')."
+      verbose: "Cache data export for backup and migration. Formats: JSON, RDB, RESP, CSV. Options: key pattern filtering, include TTL, compression. Destinations: file, S3, GCS, Azure Blob. Example: export_cache_data(pattern='*', format='json', output='s3://backups/cache-2024-01-15.json.gz', include_ttl=true, compress=true, batch_size=1000). Note: Large exports may take significant time. Warning: Exporting during high load may impact performance."
+    parameters:
+      - name: pattern
+        type: string
+        description: "Key pattern to export"
+        required: false
+        default: "*"
+      - name: format
+        type: string
+        description: "Export format"
+        required: true
+        enum: ["json", "rdb", "resp", "csv"]
+      - name: output
+        type: string
+        description: "Output path or URL"
+        required: true
+      - name: include_ttl
+        type: boolean
+        description: "Include TTL information"
+        required: false
+        default: true
+      - name: compress
+        type: boolean
+        description: "Compress output"
+        required: false
+        default: false
+      - name: batch_size
+        type: integer
+        description: "Keys per batch"
+        required: false
+        default: 1000
+    tags: ["cache", "export", "backup", "migration", "data"]
+    test_prompts:
+      single:
+        - "Export cache to file"
+        - "Backup cache data"
+        - "Export keys to JSON"
+        - "Create cache backup"
+      single_clear:
+        - "I need to export cache data to a file. Export cache to file"
+        - "I need to export cache data to a file. Backup cache data"
+        - "I need to export cache data to a file. Export keys to JSON"
+        - "I need to export cache data to a file. Create cache backup"
+
+  - name: import_cache_data
+    descriptions:
+      minimal: "Import cache"
+      short: "Import cache data"
+      medium: "Import cache data from a file or external source."
+      long: "Import cache data from backup or migration source. Example: import_cache_data(input='backup.json', format='json', overwrite=false)."
+      verbose: "Cache data import for restore and migration. Formats: JSON, RDB, RESP. Options: key prefix, TTL handling, conflict resolution. Sources: file, S3, GCS, Azure Blob. Example: import_cache_data(input='s3://backups/cache-2024-01-15.json.gz', format='json', prefix='restored:', ttl_mode='preserve', on_conflict='skip', dry_run=true). Note: Import performance depends on data size and network. Warning: Large imports may temporarily impact cache performance."
+    parameters:
+      - name: input
+        type: string
+        description: "Input path or URL"
+        required: true
+      - name: format
+        type: string
+        description: "Import format"
+        required: true
+        enum: ["json", "rdb", "resp"]
+      - name: prefix
+        type: string
+        description: "Key prefix to add"
+        required: false
+      - name: ttl_mode
+        type: string
+        description: "TTL handling mode"
+        required: false
+        default: "preserve"
+        enum: ["preserve", "ignore", "reset"]
+      - name: on_conflict
+        type: string
+        description: "Conflict resolution"
+        required: false
+        default: "overwrite"
+        enum: ["overwrite", "skip", "error"]
+      - name: dry_run
+        type: boolean
+        description: "Preview without importing"
+        required: false
+        default: false
+    tags: ["cache", "import", "restore", "migration", "data"]
+    test_prompts:
+      single:
+        - "Import cache from backup"
+        - "Restore cache data"
+        - "Load JSON into cache"
+        - "Migrate cache data"
+      single_clear:
+        - "I need to import cache data from an external source. Import cache from backup"
+        - "I need to import cache data from an external source. Restore cache data"
+        - "I need to import cache data from an external source. Load JSON into cache"
+        - "I need to import cache data from an external source. Migrate cache data"
+
+  - name: configure_cache_replication
+    descriptions:
+      minimal: "Configure replication"
+      short: "Configure cache replication"
+      medium: "Configure master-replica replication for cache high availability."
+      long: "Set up cache replication between master and replicas. Example: configure_cache_replication(action='add_replica', master='cache-1:6379', replica='cache-2:6379')."
+      verbose: "Cache replication configuration for HA. Actions: add_replica, remove_replica, promote, configure, status. Features: async/sync replication, read replicas, diskless sync. Settings: repl-backlog, min-replicas, timeout. Example: configure_cache_replication(action='add_replica', master='master.cache:6379', replica='replica.cache:6379', diskless_sync=true, repl_backlog_size='64mb', min_replicas_to_write=1). Note: Replication lag may occur under heavy load. Warning: Promoting replica breaks replication chain."
+    parameters:
+      - name: action
+        type: string
+        description: "Replication action"
+        required: true
+        enum: ["add_replica", "remove_replica", "promote", "configure", "status"]
+      - name: master
+        type: string
+        description: "Master node address"
+        required: false
+      - name: replica
+        type: string
+        description: "Replica node address"
+        required: false
+      - name: diskless_sync
+        type: boolean
+        description: "Use diskless sync"
+        required: false
+        default: false
+      - name: repl_backlog_size
+        type: string
+        description: "Replication backlog size"
+        required: false
+        default: "1mb"
+      - name: min_replicas_to_write
+        type: integer
+        description: "Minimum replicas for write"
+        required: false
+        default: 0
+    tags: ["cache", "replication", "ha", "master", "replica"]
+    test_prompts:
+      single:
+        - "Set up cache replication"
+        - "Add cache replica"
+        - "Promote replica to master"
+        - "Configure replication settings"
+      single_clear:
+        - "I need to configure master-replica replication for cache. Set up cache replication"
+        - "I need to configure master-replica replication for cache. Add cache replica"
+        - "I need to configure master-replica replication for cache. Promote replica to master"
+        - "I need to configure master-replica replication for cache. Configure replication settings"
+
+  - name: manage_cache_lua_scripts
+    descriptions:
+      minimal: "Manage scripts"
+      short: "Manage Lua scripts"
+      medium: "Load and execute Lua scripts in the cache for atomic operations."
+      long: "Manage Lua scripts for complex atomic operations. Example: manage_cache_lua_scripts(action='load', script='return redis.call(\"get\", KEYS[1])')."
+      verbose: "Lua script management in cache (Redis). Actions: load (cache script), eval (execute), evalsha (execute by SHA), list, delete. Benefits: atomic operations, reduced network round-trips, complex logic. Example: manage_cache_lua_scripts(action='load', script='local current = redis.call(\"get\", KEYS[1]); if current then return redis.call(\"incr\", KEYS[1]) else return redis.call(\"set\", KEYS[1], ARGV[1]) end', name='increment_or_set'). Eval example: manage_cache_lua_scripts(action='evalsha', sha='abc123', keys='[\"counter:1\"]', args='[\"0\"]'). Note: Scripts block other operations while running. Warning: Long-running scripts can cause timeouts."
+    parameters:
+      - name: action
+        type: string
+        description: "Script action"
+        required: true
+        enum: ["load", "eval", "evalsha", "list", "delete", "flush"]
+      - name: script
+        type: string
+        description: "Lua script content"
+        required: false
+      - name: sha
+        type: string
+        description: "Script SHA for evalsha"
+        required: false
+      - name: name
+        type: string
+        description: "Script name for reference"
+        required: false
+      - name: keys
+        type: string
+        description: "JSON array of keys"
+        required: false
+      - name: args
+        type: string
+        description: "JSON array of arguments"
+        required: false
+    tags: ["cache", "lua", "scripts", "atomic", "operations"]
+    test_prompts:
+      single:
+        - "Load Lua script"
+        - "Execute cache script"
+        - "Run atomic operation"
+        - "Manage cache scripts"
+      single_clear:
+        - "I need to manage Lua scripts for atomic cache operations. Load Lua script"
+        - "I need to manage Lua scripts for atomic cache operations. Execute cache script"
+        - "I need to manage Lua scripts for atomic cache operations. Run atomic operation"
+        - "I need to manage Lua scripts for atomic cache operations. Manage cache scripts"
+
+        - "Search cache keys"

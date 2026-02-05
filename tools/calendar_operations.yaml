@@ -1,0 +1,1357 @@
+category: calendar_operations
+
+tools:
+  - name: create_event
+    descriptions:
+      minimal: "Create calendar event"
+      short: "Create a new event in a calendar"
+      medium: "Create a new event in a calendar with title, date, time, duration, and optional attendees."
+      long: "Create a new calendar event with specified details including title, start time, duration, and attendees. Supports recurring events. Example: create_event(title='Team Meeting', start='2024-01-15 10:00', duration=60, attendees=['john@example.com'])."
+      verbose: "Create a new calendar event with comprehensive options. Required: title and start time. Optional: duration (minutes), end time, location, description, attendees (email list), reminders, recurrence rules (daily, weekly, monthly), visibility (public/private), and calendar ID for multi-calendar setups. Example: create_event(title='Sprint Planning', start='2024-01-15T10:00:00', duration=90, location='Conference Room A', attendees=['team@company.com'], reminder_minutes=[30, 10], recurrence='weekly', calendar_id='work'). Note: All-day events can be created by setting all_day=true. Warning: Check timezone settings to avoid scheduling errors."
+    parameters:
+      - name: title
+        type: string
+        description: "Event title"
+        required: true
+      - name: start
+        type: string
+        description: "Start date/time (ISO format or natural language)"
+        required: true
+      - name: duration
+        type: integer
+        description: "Duration in minutes"
+        required: false
+        default: 60
+      - name: end
+        type: string
+        description: "End date/time (alternative to duration)"
+        required: false
+      - name: location
+        type: string
+        description: "Event location"
+        required: false
+      - name: description
+        type: string
+        description: "Event description"
+        required: false
+      - name: attendees
+        type: array
+        description: "List of attendee email addresses"
+        required: false
+      - name: reminder_minutes
+        type: array
+        description: "Minutes before event for reminders"
+        required: false
+      - name: all_day
+        type: boolean
+        description: "Whether this is an all-day event"
+        required: false
+        default: false
+      - name: recurrence
+        type: string
+        description: "Recurrence pattern"
+        required: false
+        enum: ["none", "daily", "weekly", "monthly", "yearly"]
+      - name: calendar_id
+        type: string
+        description: "Target calendar ID"
+        required: false
+    tags: ["calendar", "event", "create", "schedule", "meeting"]
+    test_prompts:
+      single:
+        - "Create a meeting for tomorrow at 3pm called 'Project Review'"
+        - "Schedule a team standup for Monday at 9am"
+        - "Add a birthday reminder on March 15th"
+        - "Create a weekly recurring meeting called 'Sync'"
+      single_clear:
+        - "I need to create a new calendar event with title, date, time, and optional attendees. Create a meeting for tomorrow at 3pm called 'Project Review'"
+        - "I need to create a new calendar event with title, date, time, and optional attendees. Schedule a team standup for Monday at 9am"
+        - "I need to create a new calendar event with title, date, time, and optional attendees. Add a birthday reminder on March 15th"
+        - "I need to create a new calendar event with title, date, time, and optional attendees. Create a weekly recurring meeting called 'Sync'"
+
+  - name: delete_event
+    descriptions:
+      minimal: "Delete calendar event"
+      short: "Delete an event from a calendar"
+      medium: "Delete an existing calendar event by ID or by matching title and date."
+      long: "Remove a calendar event permanently. Can delete by event ID or by matching title and date. For recurring events, can delete single instance or all occurrences. Example: delete_event(event_id='abc123') or delete_event(title='Team Meeting', date='2024-01-15')."
+      verbose: "Delete a calendar event from the specified calendar. Identification methods: event_id (exact match), or combination of title and date (fuzzy match). For recurring events, specify delete_series=true to remove all occurrences, or provide specific date to delete single instance. Can notify attendees of cancellation. Example: delete_event(event_id='evt_12345', notify_attendees=true, cancellation_message='Meeting postponed'). Note: Deleted events may be recoverable from trash for limited time. Warning: Deleting recurring series removes all past and future instances."
+    parameters:
+      - name: event_id
+        type: string
+        description: "Unique event identifier"
+        required: false
+      - name: title
+        type: string
+        description: "Event title to match"
+        required: false
+      - name: date
+        type: string
+        description: "Event date to match"
+        required: false
+      - name: delete_series
+        type: boolean
+        description: "Delete all occurrences of recurring event"
+        required: false
+        default: false
+      - name: notify_attendees
+        type: boolean
+        description: "Send cancellation notice to attendees"
+        required: false
+        default: true
+      - name: calendar_id
+        type: string
+        description: "Calendar containing the event"
+        required: false
+    tags: ["calendar", "event", "delete", "remove", "cancel"]
+    test_prompts:
+      single:
+        - "Delete the meeting scheduled for tomorrow"
+        - "Remove the 'Team Sync' event from my calendar"
+        - "Cancel all occurrences of the weekly standup"
+        - "Delete the event with ID evt_12345"
+      single_clear:
+        - "Please delete an existing calendar event. Delete the meeting scheduled for tomorrow"
+        - "Please delete an existing calendar event. Remove the 'Team Sync' event from my calendar"
+        - "Please delete an existing calendar event. Cancel all occurrences of the weekly standup"
+        - "Please delete an existing calendar event. Delete the event with ID evt_12345"
+
+  - name: update_event
+    descriptions:
+      minimal: "Update calendar event"
+      short: "Modify an existing calendar event"
+      medium: "Update the details of an existing calendar event including time, location, or attendees."
+      long: "Modify an existing calendar event. Can update title, time, duration, location, description, or attendees. Example: update_event(event_id='abc123', start='2024-01-16 11:00', location='Room B')."
+      verbose: "Update one or more properties of an existing calendar event. Provide event_id and any fields to update. For recurring events, specify update_series=true to modify all occurrences, or update single instance by providing specific date. Changes can trigger notifications to attendees. Example: update_event(event_id='evt_12345', title='Updated Meeting Title', start='2024-01-16T14:00:00', duration=45, add_attendees=['newperson@company.com'], notify_attendees=true). Note: Updating start time of recurring event may reset recurrence. Warning: Major changes may require re-confirmation from attendees."
+    parameters:
+      - name: event_id
+        type: string
+        description: "Unique event identifier"
+        required: true
+      - name: title
+        type: string
+        description: "New event title"
+        required: false
+      - name: start
+        type: string
+        description: "New start date/time"
+        required: false
+      - name: duration
+        type: integer
+        description: "New duration in minutes"
+        required: false
+      - name: location
+        type: string
+        description: "New location"
+        required: false
+      - name: description
+        type: string
+        description: "New description"
+        required: false
+      - name: add_attendees
+        type: array
+        description: "Attendees to add"
+        required: false
+      - name: remove_attendees
+        type: array
+        description: "Attendees to remove"
+        required: false
+      - name: update_series
+        type: boolean
+        description: "Update all occurrences"
+        required: false
+        default: false
+      - name: notify_attendees
+        type: boolean
+        description: "Notify attendees of changes"
+        required: false
+        default: true
+    tags: ["calendar", "event", "update", "modify", "reschedule"]
+    test_prompts:
+      single:
+        - "Move the meeting to 3pm instead"
+        - "Change the location of tomorrow's event to Room C"
+        - "Add john@example.com to the meeting attendees"
+        - "Reschedule the project review to next Monday"
+      single_clear:
+        - "I need to modify the details of an existing calendar event. Move the meeting to 3pm instead"
+        - "I need to modify the details of an existing calendar event. Change the location of tomorrow's event to Room C"
+        - "I need to modify the details of an existing calendar event. Add john@example.com to the meeting attendees"
+        - "I need to modify the details of an existing calendar event. Reschedule the project review to next Monday"
+
+  - name: list_events
+    descriptions:
+      minimal: "List calendar events"
+      short: "List events from a calendar"
+      medium: "Retrieve a list of calendar events within a date range, optionally filtered by keyword."
+      long: "Get events from a calendar within a specified date range. Can filter by keyword in title or description. Example: list_events(start_date='2024-01-01', end_date='2024-01-31', keyword='meeting')."
+      verbose: "Retrieve calendar events within a date range with various filtering options. Can filter by keyword (searches title and description), attendee, location, or calendar ID. Results can be sorted and limited. Returns event details including ID, title, time, location, and attendees. Example: list_events(start_date='2024-01-15', end_date='2024-01-22', keyword='project', calendar_id='work', include_recurring=true, max_results=50, order_by='start'). Note: Large date ranges may return many events; use max_results to limit. Warning: Private events may be hidden depending on permissions."
+    parameters:
+      - name: start_date
+        type: string
+        description: "Start of date range"
+        required: true
+      - name: end_date
+        type: string
+        description: "End of date range"
+        required: true
+      - name: keyword
+        type: string
+        description: "Filter by keyword in title/description"
+        required: false
+      - name: attendee
+        type: string
+        description: "Filter by attendee email"
+        required: false
+      - name: calendar_id
+        type: string
+        description: "Specific calendar to query"
+        required: false
+      - name: include_recurring
+        type: boolean
+        description: "Include recurring event instances"
+        required: false
+        default: true
+      - name: max_results
+        type: integer
+        description: "Maximum events to return"
+        required: false
+        default: 100
+    tags: ["calendar", "event", "list", "query", "search"]
+    test_prompts:
+      single:
+        - "Show all events for next week"
+        - "List my meetings for January"
+        - "What events do I have tomorrow?"
+        - "Find all events with 'review' in the title"
+      single_clear:
+        - "Please list all calendar events within a date range. Show all events for next week"
+        - "Please list all calendar events within a date range. List my meetings for January"
+        - "Please list all calendar events within a date range. What events do I have tomorrow?"
+        - "Please list all calendar events within a date range. Find all events with 'review' in the title"
+
+  - name: check_availability
+    descriptions:
+      minimal: "Check calendar availability"
+      short: "Check free/busy status for a time range"
+      medium: "Check if a time slot is available on one or more calendars to find free times."
+      long: "Check availability across one or more calendars for a given time range. Returns free/busy information. Example: check_availability(emails=['john@example.com', 'jane@example.com'], start='2024-01-15 09:00', end='2024-01-15 17:00')."
+      verbose: "Query free/busy information across multiple calendars to find available meeting times. Provide list of attendee emails and time range to check. Returns busy periods and identifies free slots. Can suggest optimal meeting times based on all attendees' availability. Example: check_availability(emails=['alice@company.com', 'bob@company.com'], start='2024-01-15T09:00:00', end='2024-01-19T17:00:00', duration_needed=60, suggest_times=true, working_hours_only=true). Note: Respects calendar sharing permissions. Warning: Private events may show as 'busy' without details."
+    parameters:
+      - name: emails
+        type: array
+        description: "List of calendar owner emails to check"
+        required: true
+      - name: start
+        type: string
+        description: "Start of time range to check"
+        required: true
+      - name: end
+        type: string
+        description: "End of time range to check"
+        required: true
+      - name: duration_needed
+        type: integer
+        description: "Required meeting duration in minutes"
+        required: false
+      - name: suggest_times
+        type: boolean
+        description: "Suggest available time slots"
+        required: false
+        default: false
+      - name: working_hours_only
+        type: boolean
+        description: "Only consider working hours"
+        required: false
+        default: true
+    tags: ["calendar", "availability", "free", "busy", "schedule"]
+    test_prompts:
+      single:
+        - "When is John available for a meeting this week?"
+        - "Find a free time slot for a 1-hour meeting with the team"
+        - "Check if 2pm tomorrow works for everyone"
+        - "Show me the availability of alice@company.com"
+      single_clear:
+        - "I need to check when a person or room is available for a meeting. When is John available for a meeting this week?"
+        - "I need to check when a person or room is available for a meeting. Find a free time slot for a 1-hour meeting with the team"
+        - "I need to check when a person or room is available for a meeting. Check if 2pm tomorrow works for everyone"
+        - "I need to check when a person or room is available for a meeting. Show me the availability of alice@company.com"
+
+  - name: set_reminder
+    descriptions:
+      minimal: "Set reminder"
+      short: "Set a reminder for a specific time"
+      medium: "Create a standalone reminder that triggers at a specified date and time with a custom message."
+      long: "Set a reminder that will alert at the specified time. Not tied to a calendar event. Supports various notification methods. Example: set_reminder(message='Call dentist', time='2024-01-15 10:00', notify_via='push')."
+      verbose: "Create a standalone reminder that triggers at a specified time. Unlike calendar events, reminders are personal alerts not shared with others. Notification methods: 'push' (mobile/desktop notification), 'email', 'sms', 'popup'. Can set recurring reminders and snooze options. Example: set_reminder(message='Take medication', time='08:00', recurrence='daily', notify_via=['push', 'email'], snooze_minutes=[5, 10]). Note: Reminders require notification permissions. Warning: SMS reminders may incur carrier charges."
+    parameters:
+      - name: message
+        type: string
+        description: "Reminder message"
+        required: true
+      - name: time
+        type: string
+        description: "When to trigger the reminder"
+        required: true
+      - name: notify_via
+        type: string
+        description: "Notification method"
+        required: false
+        default: "push"
+        enum: ["push", "email", "sms", "popup"]
+      - name: recurrence
+        type: string
+        description: "Recurrence pattern"
+        required: false
+        enum: ["none", "daily", "weekly", "monthly"]
+      - name: snooze_minutes
+        type: array
+        description: "Snooze interval options"
+        required: false
+    tags: ["calendar", "reminder", "alert", "notification", "schedule"]
+    test_prompts:
+      single:
+        - "Remind me to call mom at 5pm"
+        - "Set a reminder for the meeting in 30 minutes"
+        - "Create a daily reminder to check emails at 9am"
+        - "Remind me to submit the report tomorrow morning"
+      single_clear:
+        - "I need to set a standalone reminder that triggers at a specified time. Remind me to call mom at 5pm"
+        - "I need to set a standalone reminder that triggers at a specified time. Set a reminder for the meeting in 30 minutes"
+        - "I need to set a standalone reminder that triggers at a specified time. Create a daily reminder to check emails at 9am"
+        - "I need to set a standalone reminder that triggers at a specified time. Remind me to submit the report tomorrow morning"
+
+  - name: get_event_details
+    descriptions:
+      minimal: "Get event details"
+      short: "Get full details of a calendar event"
+      medium: "Retrieve complete information about a specific calendar event by ID."
+      long: "Get comprehensive details of a calendar event including all attendees, responses, attachments, and conference info. Example: get_event_details(event_id='abc123')."
+      verbose: "Retrieve complete information about a specific calendar event. Returns: title, description, start/end times, location, organizer, attendees with response status, attachments, conference/video call links, recurrence rules, reminders, and custom properties. Example: get_event_details(event_id='evt_12345', include_attachments=true, include_attendee_responses=true). Note: Some details may be hidden based on your access level. Warning: Large events with many attendees may have truncated responses."
+    parameters:
+      - name: event_id
+        type: string
+        description: "Unique event identifier"
+        required: true
+      - name: include_attachments
+        type: boolean
+        description: "Include file attachments"
+        required: false
+        default: true
+      - name: include_attendee_responses
+        type: boolean
+        description: "Include RSVP status for attendees"
+        required: false
+        default: true
+      - name: calendar_id
+        type: string
+        description: "Calendar containing the event"
+        required: false
+    tags: ["calendar", "event", "details", "info", "view"]
+    test_prompts:
+      single:
+        - "Show me the details of the meeting tomorrow"
+        - "Get information about event ID evt_12345"
+        - "What are the attendees for the project review meeting?"
+        - "Show full details of the conference call"
+      single_clear:
+        - "I need to retrieve complete information about a specific calendar event. Show me the details of the meeting tomorrow"
+        - "I need to retrieve complete information about a specific calendar event. Get information about event ID evt_12345"
+        - "I need to retrieve complete information about a specific calendar event. What are the attendees for the project review meeting?"
+        - "I need to retrieve complete information about a specific calendar event. Show full details of the conference call"
+
+  - name: respond_to_event
+    descriptions:
+      minimal: "Respond to event"
+      short: "RSVP to a calendar invitation"
+      medium: "Respond to a calendar event invitation with accept, decline, or tentative."
+      long: "Send your response to a calendar event invitation. Options are accept, decline, or tentative. Can include a message with your response. Example: respond_to_event(event_id='abc123', response='accept')."
+      verbose: "Respond to a calendar event invitation with your attendance status. Response options: 'accept' (confirmed attendance), 'decline' (cannot attend), 'tentative' (might attend), 'propose_new_time' (suggest alternative). Can include optional message to organizer. Supports responding to single instance of recurring events. Example: respond_to_event(event_id='evt_12345', response='accept', message='Looking forward to it!', propose_new_time='2024-01-16T15:00:00'). Note: Response is sent to organizer immediately. Warning: Changing response multiple times may send multiple notifications."
+    parameters:
+      - name: event_id
+        type: string
+        description: "Event to respond to"
+        required: true
+      - name: response
+        type: string
+        description: "Your response"
+        required: true
+        enum: ["accept", "decline", "tentative", "propose_new_time"]
+      - name: message
+        type: string
+        description: "Optional message to organizer"
+        required: false
+      - name: propose_new_time
+        type: string
+        description: "Proposed alternative time"
+        required: false
+    tags: ["calendar", "event", "rsvp", "respond", "invitation"]
+    test_prompts:
+      single:
+        - "Accept the meeting invitation from John"
+        - "Decline the event for tomorrow"
+        - "Mark myself as tentative for the team lunch"
+        - "RSVP yes to the conference"
+      single_clear:
+        - "I need to respond to a calendar event invitation with accept, decline, or tentative. Accept the meeting invitation from John"
+        - "I need to respond to a calendar event invitation with accept, decline, or tentative. Decline the event for tomorrow"
+        - "I need to respond to a calendar event invitation with accept, decline, or tentative. Mark myself as tentative for the team lunch"
+        - "I need to respond to a calendar event invitation with accept, decline, or tentative. RSVP yes to the conference"
+
+  - name: create_calendar
+    descriptions:
+      minimal: "Create new calendar"
+      short: "Create a new calendar"
+      medium: "Create a new calendar with a name, color, and optional timezone settings."
+      long: "Create a new calendar in your account. Specify name, description, color, and timezone. Example: create_calendar(name='Personal', color='blue', timezone='America/New_York')."
+      verbose: "Create a new calendar in your calendar account. Each calendar can have its own color, timezone, and sharing settings. Useful for separating work, personal, and project-specific events. Example: create_calendar(name='Project Alpha', description='Events for Project Alpha', color='#FF5733', timezone='Europe/London', default_reminders=[30, 10]). Note: Calendar names don't need to be unique. Warning: Too many calendars may make management difficult."
+    parameters:
+      - name: name
+        type: string
+        description: "Calendar name"
+        required: true
+      - name: description
+        type: string
+        description: "Calendar description"
+        required: false
+      - name: color
+        type: string
+        description: "Display color (name or hex)"
+        required: false
+      - name: timezone
+        type: string
+        description: "Default timezone for events"
+        required: false
+      - name: default_reminders
+        type: array
+        description: "Default reminder times in minutes"
+        required: false
+    tags: ["calendar", "create", "new", "setup"]
+    test_prompts:
+      single:
+        - "Create a new calendar called 'Work Projects'"
+        - "Add a personal calendar with blue color"
+        - "Create a calendar for the marketing team"
+        - "Set up a new calendar for family events"
+      single_clear:
+        - "I need to create a new calendar with a name, color, and timezone settings. Create a new calendar called 'Work Projects'"
+        - "I need to create a new calendar with a name, color, and timezone settings. Add a personal calendar with blue color"
+        - "I need to create a new calendar with a name, color, and timezone settings. Create a calendar for the marketing team"
+        - "I need to create a new calendar with a name, color, and timezone settings. Set up a new calendar for family events"
+
+  - name: share_calendar
+    descriptions:
+      minimal: "Share calendar"
+      short: "Share a calendar with others"
+      medium: "Share a calendar with other users, specifying view or edit permissions."
+      long: "Share a calendar with other users by email. Set permission level: view only, edit events, or full control. Example: share_calendar(calendar_id='work', email='colleague@company.com', permission='edit')."
+      verbose: "Share a calendar with other users or make it public. Permission levels: 'free_busy' (only see when busy), 'read' (view event details), 'write' (add/edit events), 'owner' (full control including sharing). Can share with specific users, groups, or make public. Example: share_calendar(calendar_id='cal_12345', email='team@company.com', permission='write', send_notification=true, message='Shared team calendar with you'). Note: Owner permission allows the recipient to re-share. Warning: Be careful with public calendars containing sensitive information."
+    parameters:
+      - name: calendar_id
+        type: string
+        description: "Calendar to share"
+        required: true
+      - name: email
+        type: string
+        description: "Email of user to share with"
+        required: true
+      - name: permission
+        type: string
+        description: "Permission level"
+        required: true
+        enum: ["free_busy", "read", "write", "owner"]
+      - name: send_notification
+        type: boolean
+        description: "Notify the recipient"
+        required: false
+        default: true
+      - name: message
+        type: string
+        description: "Message to include in notification"
+        required: false
+    tags: ["calendar", "share", "permissions", "collaborate"]
+    test_prompts:
+      single:
+        - "Share my work calendar with john@company.com"
+        - "Give Jane edit access to the project calendar"
+        - "Make the team calendar viewable by everyone"
+        - "Share the event calendar with the marketing department"
+      single_clear:
+        - "I need to share a calendar with other users and set view or edit permissions. Share my work calendar with john@company.com"
+        - "I need to share a calendar with other users and set view or edit permissions. Give Jane edit access to the project calendar"
+        - "I need to share a calendar with other users and set view or edit permissions. Make the team calendar viewable by everyone"
+        - "I need to share a calendar with other users and set view or edit permissions. Share the event calendar with the marketing department"
+  - name: set_working_hours
+    descriptions:
+      minimal: "Set working hours"
+      short: "Configure working hours for scheduling"
+      medium: "Set your available working hours for each day of the week to help with meeting scheduling."
+      long: "Define working hours for automatic scheduling. Specify start and end times for each day. Meetings will only be scheduled during these hours. Example: set_working_hours(monday={start: '09:00', end: '17:00'}, timezone='America/New_York')."
+      verbose: "Configure working hours to optimize meeting scheduling and show availability. Set different hours for each weekday, mark days as unavailable, and specify timezone. Features: block lunch hours, set focus time periods, sync across calendars. Example: set_working_hours(schedule='{\"monday\": {\"start\": \"09:00\", \"end\": \"17:00\"}, \"friday\": {\"start\": \"09:00\", \"end\": \"14:00\"}}', timezone='Europe/London', lunch_block='{\"start\": \"12:00\", \"duration\": 60}'). Note: Working hours affect free/busy visibility. Warning: Changes may affect existing meeting requests."
+    parameters:
+      - name: schedule
+        type: string
+        description: "JSON object with day-wise working hours"
+        required: true
+      - name: timezone
+        type: string
+        description: "Timezone for working hours"
+        required: true
+      - name: lunch_block
+        type: string
+        description: "JSON object for automatic lunch block"
+        required: false
+      - name: calendar_id
+        type: string
+        description: "Calendar to apply settings to"
+        required: false
+    tags: ["calendar", "working hours", "availability", "schedule"]
+    test_prompts:
+      single:
+        - "Set my working hours to 9am to 5pm"
+        - "Configure work schedule for Monday through Friday"
+        - "Block off lunch time every day"
+        - "Set up my available hours for scheduling"
+      single_clear:
+        - "I need to define my available working hours for each day to help with meeting scheduling. Set my working hours to 9am to 5pm"
+        - "I need to define my available working hours for each day to help with meeting scheduling. Configure work schedule for Monday through Friday"
+        - "I need to define my available working hours for each day to help with meeting scheduling. Block off lunch time every day"
+        - "I need to define my available working hours for each day to help with meeting scheduling. Set up my available hours for scheduling"
+
+  - name: create_recurring_exception
+    descriptions:
+      minimal: "Create recurring exception"
+      short: "Modify a single instance of a recurring event"
+      medium: "Create an exception to a recurring event, modifying or skipping a specific occurrence."
+      long: "Modify a single instance of a recurring event without affecting other occurrences. Change time, location, or skip entirely. Example: create_recurring_exception(event_id='evt_123', occurrence_date='2024-01-22', new_time='14:00')."
+      verbose: "Create exceptions for specific occurrences of recurring events. Actions: reschedule (change date/time), modify (change details), cancel (skip this occurrence). Only affects the specified occurrence; other instances remain unchanged. Example: create_recurring_exception(event_id='recurring_123', occurrence_date='2024-02-14', action='reschedule', new_start='2024-02-15T10:00:00', new_location='Virtual', notify_attendees=true, reason='Rescheduled due to holiday'). Note: Too many exceptions may indicate need to recreate the series. Warning: Exceptions don't sync if the series is later modified."
+    parameters:
+      - name: event_id
+        type: string
+        description: "Recurring event ID"
+        required: true
+      - name: occurrence_date
+        type: string
+        description: "Date of specific occurrence"
+        required: true
+      - name: action
+        type: string
+        description: "Exception action"
+        required: true
+        enum: ["reschedule", "modify", "cancel"]
+      - name: new_start
+        type: string
+        description: "New start time (for reschedule)"
+        required: false
+      - name: new_location
+        type: string
+        description: "New location"
+        required: false
+      - name: new_title
+        type: string
+        description: "New title for this occurrence"
+        required: false
+      - name: notify_attendees
+        type: boolean
+        description: "Notify attendees of change"
+        required: false
+        default: true
+    tags: ["calendar", "recurring", "exception", "modify"]
+    test_prompts:
+      single:
+        - "Skip next week's standup meeting"
+        - "Move this Friday's team meeting to Monday"
+        - "Cancel just this occurrence of the weekly sync"
+        - "Change the location for tomorrow's recurring meeting"
+      single_clear:
+        - "I need to modify or skip a single instance of a recurring event without affecting other occurrences. Skip next week's standup meeting"
+        - "I need to modify or skip a single instance of a recurring event without affecting other occurrences. Move this Friday's team meeting to Monday"
+        - "I need to modify or skip a single instance of a recurring event without affecting other occurrences. Cancel just this occurrence of the weekly sync"
+        - "I need to modify or skip a single instance of a recurring event without affecting other occurrences. Change the location for tomorrow's recurring meeting"
+
+  - name: import_calendar
+    descriptions:
+      minimal: "Import calendar"
+      short: "Import events from an external calendar file"
+      medium: "Import calendar events from an ICS file or external calendar URL."
+      long: "Import calendar data from ICS files, external URLs, or other calendar services. Merge with existing calendar or create new. Example: import_calendar(source='https://example.com/calendar.ics', target_calendar='imported')."
+      verbose: "Import calendar events from various sources. Formats: ICS/iCal files, calendar URLs, Google Calendar, Outlook, Apple Calendar. Options: create new calendar or merge into existing, handle conflicts (skip, overwrite, duplicate), import specific date range. Example: import_calendar(source='https://calendar.example.com/feed.ics', target_calendar='team_events', conflict_resolution='overwrite', date_range='{\"start\": \"2024-01-01\", \"end\": \"2024-12-31\"}'). Note: URL imports can be set to sync periodically. Warning: Large imports may take time; duplicates possible if reimporting."
+    parameters:
+      - name: source
+        type: string
+        description: "ICS file path or calendar URL"
+        required: true
+      - name: target_calendar
+        type: string
+        description: "Calendar to import into"
+        required: false
+      - name: create_new
+        type: boolean
+        description: "Create new calendar for import"
+        required: false
+        default: false
+      - name: conflict_resolution
+        type: string
+        description: "How to handle conflicts"
+        required: false
+        default: "skip"
+        enum: ["skip", "overwrite", "duplicate"]
+      - name: date_range
+        type: string
+        description: "JSON date range to import"
+        required: false
+    tags: ["calendar", "import", "ics", "sync", "external"]
+    test_prompts:
+      single:
+        - "Import calendar from ICS file"
+        - "Add events from external calendar URL"
+        - "Sync my Google Calendar events"
+        - "Import holidays calendar"
+      single_clear:
+        - "I need to import calendar events from an ICS file or external calendar URL. Import calendar from ICS file"
+        - "I need to import calendar events from an ICS file or external calendar URL. Add events from external calendar URL"
+        - "I need to import calendar events from an ICS file or external calendar URL. Sync my Google Calendar events"
+        - "I need to import calendar events from an ICS file or external calendar URL. Import holidays calendar"
+
+  - name: export_calendar
+    descriptions:
+      minimal: "Export calendar"
+      short: "Export calendar events to a file"
+      medium: "Export calendar events to ICS format for backup or sharing."
+      long: "Export calendar events to an ICS file. Filter by date range, event type, or export entire calendar. Example: export_calendar(calendar_id='work', format='ics', date_range={start: '2024-01-01', end: '2024-12-31'})."
+      verbose: "Export calendar data to portable formats. Formats: ICS (iCalendar standard), CSV, JSON. Options: select calendars, filter by date range, include/exclude declined events, export attachments. Example: export_calendar(calendar_ids='[\"work\", \"personal\"]', format='ics', date_range='{\"start\": \"2024-01-01\", \"end\": \"2024-12-31\"}', include_attachments=true, output_path='/exports/calendar_backup.ics'). Note: ICS format is most compatible across calendar apps. Warning: Exported files may contain sensitive event details."
+    parameters:
+      - name: calendar_ids
+        type: string
+        description: "JSON array of calendar IDs to export"
+        required: true
+      - name: format
+        type: string
+        description: "Export format"
+        required: false
+        default: "ics"
+        enum: ["ics", "csv", "json"]
+      - name: date_range
+        type: string
+        description: "JSON date range to export"
+        required: false
+      - name: output_path
+        type: string
+        description: "Output file path"
+        required: false
+      - name: include_attachments
+        type: boolean
+        description: "Include event attachments"
+        required: false
+        default: false
+    tags: ["calendar", "export", "backup", "ics", "download"]
+    test_prompts:
+      single:
+        - "Export my calendar to ICS file"
+        - "Backup all calendar events"
+        - "Download calendar as CSV"
+        - "Export this year's events"
+      single_clear:
+        - "I need to export calendar events to ICS format for backup or sharing. Export my calendar to ICS file"
+        - "I need to export calendar events to ICS format for backup or sharing. Backup all calendar events"
+        - "I need to export calendar events to ICS format for backup or sharing. Download calendar as CSV"
+        - "I need to export calendar events to ICS format for backup or sharing. Export this year's events"
+
+  - name: schedule_meeting_poll
+    descriptions:
+      minimal: "Create meeting poll"
+      short: "Create a poll to find the best meeting time"
+      medium: "Create a meeting poll with multiple time options for attendees to vote on."
+      long: "Create a scheduling poll with proposed times. Attendees vote for their available slots, and the best time is determined. Example: schedule_meeting_poll(title='Team Sync', options=['2024-01-15 10:00', '2024-01-15 14:00', '2024-01-16 10:00'], attendees=['alice@co.com', 'bob@co.com'])."
+      verbose: "Create a scheduling poll to find optimal meeting times. Features: multiple time slot options, attendee voting (available/maybe/unavailable), automatic availability detection, deadline for responses, auto-schedule when consensus reached. Example: schedule_meeting_poll(title='Quarterly Review', duration=60, options='[\"2024-01-15T10:00\", \"2024-01-15T14:00\", \"2024-01-16T10:00\"]', attendees='[\"ceo@company.com\", \"cfo@company.com\"]', deadline='2024-01-10', auto_schedule=true, include_video_link=true). Note: Connected calendars show attendee conflicts automatically. Warning: Ensure all timezone are clear to participants."
+    parameters:
+      - name: title
+        type: string
+        description: "Meeting title"
+        required: true
+      - name: options
+        type: string
+        description: "JSON array of proposed datetime options"
+        required: true
+      - name: attendees
+        type: string
+        description: "JSON array of attendee emails"
+        required: true
+      - name: duration
+        type: integer
+        description: "Meeting duration in minutes"
+        required: false
+        default: 60
+      - name: deadline
+        type: string
+        description: "Voting deadline date"
+        required: false
+      - name: auto_schedule
+        type: boolean
+        description: "Auto-create event when time chosen"
+        required: false
+        default: true
+    tags: ["calendar", "poll", "scheduling", "meeting", "vote"]
+    test_prompts:
+      single:
+        - "Create a poll to find the best meeting time"
+        - "Send scheduling poll to team"
+        - "Find availability for project kickoff meeting"
+        - "Let attendees vote on meeting times"
+      single_clear:
+        - "I need to create a meeting poll with multiple time options for attendees to vote on. Create a poll to find the best meeting time"
+        - "I need to create a meeting poll with multiple time options for attendees to vote on. Send scheduling poll to team"
+        - "I need to create a meeting poll with multiple time options for attendees to vote on. Find availability for project kickoff meeting"
+        - "I need to create a meeting poll with multiple time options for attendees to vote on. Let attendees vote on meeting times"
+
+  - name: book_room
+    descriptions:
+      minimal: "Book room"
+      short: "Reserve a meeting room or resource"
+      medium: "Book a conference room or resource for a specific time and duration."
+      long: "Reserve a meeting room, equipment, or other bookable resource. Check availability and book for specified time. Example: book_room(room='Conference Room A', start='2024-01-15 10:00', duration=60, title='Team Meeting')."
+      verbose: "Reserve meeting rooms, conference spaces, or equipment. Features: real-time availability check, capacity filtering, amenity requirements (video, whiteboard, phone), recurring bookings, automatic release if no-show. Example: book_room(room='Board Room', start='2024-01-15T14:00:00', duration=120, title='Client Presentation', attendees=8, amenities='[\"video_conference\", \"whiteboard\"]', setup_time=15, catering_request='Coffee and snacks'). Note: Some rooms may require approval. Warning: Overbooked rooms may have wait list; check confirmation status."
+    parameters:
+      - name: room
+        type: string
+        description: "Room name or ID"
+        required: true
+      - name: start
+        type: string
+        description: "Booking start time"
+        required: true
+      - name: duration
+        type: integer
+        description: "Duration in minutes"
+        required: true
+      - name: title
+        type: string
+        description: "Meeting title"
+        required: false
+      - name: attendees
+        type: integer
+        description: "Number of attendees"
+        required: false
+      - name: amenities
+        type: string
+        description: "JSON array of required amenities"
+        required: false
+      - name: recurring
+        type: string
+        description: "Recurrence pattern"
+        required: false
+    tags: ["calendar", "room", "booking", "resource", "reserve"]
+    test_prompts:
+      single:
+        - "Book the conference room for 2pm"
+        - "Reserve a meeting room for tomorrow"
+        - "Find and book a room with video conferencing"
+        - "Schedule the board room for 2 hours"
+      single_clear:
+        - "I need to reserve a meeting room or resource for a specific time and duration. Book the conference room for 2pm"
+        - "I need to reserve a meeting room or resource for a specific time and duration. Reserve a meeting room for tomorrow"
+        - "I need to reserve a meeting room or resource for a specific time and duration. Find and book a room with video conferencing"
+        - "I need to reserve a meeting room or resource for a specific time and duration. Schedule the board room for 2 hours"
+
+  - name: set_out_of_office
+    descriptions:
+      minimal: "Set out of office"
+      short: "Configure out of office status and auto-reply"
+      medium: "Set out of office dates with automatic meeting decline and email response."
+      long: "Configure out of office status for vacation or leave. Automatically decline meeting invites and send auto-replies. Example: set_out_of_office(start='2024-01-20', end='2024-01-27', message='On vacation, returning Jan 28')."
+      verbose: "Configure comprehensive out of office settings. Features: date range, auto-decline meetings (with message), email auto-reply, delegate assignment, calendar blocking, status update across systems. Example: set_out_of_office(start='2024-01-20', end='2024-01-27', message='On vacation until Jan 28. For urgent matters, contact backup@company.com', decline_meetings=true, delegate='colleague@company.com', block_calendar=true, external_reply='Out of office until Jan 28.'). Note: Delegate can manage calendar during absence. Warning: Ensure coverage for critical meetings before enabling."
+    parameters:
+      - name: start
+        type: string
+        description: "Start date of absence"
+        required: true
+      - name: end
+        type: string
+        description: "End date of absence"
+        required: true
+      - name: message
+        type: string
+        description: "Auto-reply message"
+        required: true
+      - name: decline_meetings
+        type: boolean
+        description: "Auto-decline meeting invites"
+        required: false
+        default: true
+      - name: delegate
+        type: string
+        description: "Email of delegate user"
+        required: false
+      - name: block_calendar
+        type: boolean
+        description: "Block calendar as busy"
+        required: false
+        default: true
+    tags: ["calendar", "out of office", "vacation", "absence", "auto-reply"]
+    test_prompts:
+      single:
+        - "Set out of office for next week"
+        - "Configure vacation auto-reply"
+        - "Block my calendar for the holidays"
+        - "Enable out of office with meeting decline"
+      single_clear:
+        - "I need to configure out of office status with automatic meeting decline and email response. Set out of office for next week"
+        - "I need to configure out of office status with automatic meeting decline and email response. Configure vacation auto-reply"
+        - "I need to configure out of office status with automatic meeting decline and email response. Block my calendar for the holidays"
+        - "I need to configure out of office status with automatic meeting decline and email response. Enable out of office with meeting decline"
+
+  - name: sync_calendars
+    descriptions:
+      minimal: "Sync calendars"
+      short: "Synchronize multiple calendars"
+      medium: "Sync events between multiple calendar accounts or services."
+      long: "Synchronize calendars across different platforms (Google, Outlook, Apple). Configure sync direction and conflict handling. Example: sync_calendars(source='google', target='outlook', direction='bidirectional')."
+      verbose: "Synchronize calendars across different platforms and accounts. Platforms: Google Calendar, Outlook/Exchange, Apple iCloud, CalDAV servers. Sync modes: one-way (mirror), two-way (bidirectional), selective (specific calendars only). Options: conflict resolution, category mapping, privacy settings, sync frequency. Example: sync_calendars(source='google_work', target='outlook_personal', direction='bidirectional', conflict_resolution='source_wins', sync_private=false, categories='[\"meetings\", \"deadlines\"]', interval_minutes=15). Note: Initial sync may take time for large calendars. Warning: Bidirectional sync can create duplicates if not configured properly."
+    parameters:
+      - name: source
+        type: string
+        description: "Source calendar/account"
+        required: true
+      - name: target
+        type: string
+        description: "Target calendar/account"
+        required: true
+      - name: direction
+        type: string
+        description: "Sync direction"
+        required: false
+        default: "one_way"
+        enum: ["one_way", "bidirectional"]
+      - name: conflict_resolution
+        type: string
+        description: "How to handle conflicts"
+        required: false
+        default: "source_wins"
+        enum: ["source_wins", "target_wins", "newest_wins", "manual"]
+      - name: sync_private
+        type: boolean
+        description: "Include private events"
+        required: false
+        default: true
+      - name: interval_minutes
+        type: integer
+        description: "Sync interval in minutes"
+        required: false
+        default: 30
+    tags: ["calendar", "sync", "integration", "cross-platform"]
+    test_prompts:
+      single:
+        - "Sync my Google and Outlook calendars"
+        - "Set up calendar synchronization"
+        - "Mirror work calendar to personal"
+        - "Enable two-way calendar sync"
+      single_clear:
+        - "I need to synchronize events between multiple calendar accounts or services. Sync my Google and Outlook calendars"
+        - "I need to synchronize events between multiple calendar accounts or services. Set up calendar synchronization"
+        - "I need to synchronize events between multiple calendar accounts or services. Mirror work calendar to personal"
+        - "I need to synchronize events between multiple calendar accounts or services. Enable two-way calendar sync"
+
+  - name: analyze_calendar_usage
+    descriptions:
+      minimal: "Analyze calendar"
+      short: "Analyze calendar usage and meeting patterns"
+      medium: "Generate analytics on meeting time, frequency, and patterns from calendar data."
+      long: "Analyze calendar usage to understand meeting patterns, time allocation, and productivity insights. Example: analyze_calendar_usage(period='month', include_categories=true)."
+      verbose: "Generate comprehensive calendar analytics and insights. Metrics: total meeting hours, average meeting length, meeting-free time, busiest days, common meeting times, attendee frequency, category breakdown, recurring vs one-time ratio, declined/accepted rates. Example: analyze_calendar_usage(calendars='[\"work\", \"personal\"]', period='quarter', group_by='category', include_trends=true, compare_to_previous=true). Output: detailed report with visualizations, recommendations for schedule optimization. Note: Analysis based on event metadata; accuracy depends on proper categorization. Warning: Personal calendars may skew work-focused analytics."
+    parameters:
+      - name: calendars
+        type: string
+        description: "JSON array of calendar IDs to analyze"
+        required: false
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: false
+        default: "month"
+        enum: ["week", "month", "quarter", "year"]
+      - name: group_by
+        type: string
+        description: "Grouping dimension"
+        required: false
+        enum: ["category", "attendee", "day", "time"]
+      - name: include_trends
+        type: boolean
+        description: "Include trend analysis"
+        required: false
+        default: true
+      - name: compare_to_previous
+        type: boolean
+        description: "Compare to previous period"
+        required: false
+        default: false
+    tags: ["calendar", "analytics", "insights", "productivity", "reports"]
+    test_prompts:
+      single:
+        - "Analyze my meeting time this month"
+        - "Show calendar usage statistics"
+        - "How much time do I spend in meetings?"
+        - "Generate calendar productivity report"
+      single_clear:
+        - "I need to generate analytics on meeting time, frequency, and patterns from calendar data. Analyze my meeting time this month"
+        - "I need to generate analytics on meeting time, frequency, and patterns from calendar data. Show calendar usage statistics"
+        - "I need to generate analytics on meeting time, frequency, and patterns from calendar data. How much time do I spend in meetings?"
+        - "I need to generate analytics on meeting time, frequency, and patterns from calendar data. Generate calendar productivity report"
+
+  - name: create_booking_page
+    descriptions:
+      minimal: "Create booking page"
+      short: "Create appointment booking page"
+      medium: "Create a public booking page for external scheduling."
+      long: "Set up a booking page with available time slots for external scheduling. Example: create_booking_page(name='30min-meeting', duration=30, available_hours='{\"mon\": \"9-17\"}')."
+      verbose: "Create public appointment booking pages. Features: custom availability, buffer times, booking limits, intake questions, payments. Settings: duration options, booking window, confirmation emails. Example: create_booking_page(name='discovery-call', slug='discovery', duration=30, available_hours='{\"mon-fri\": \"09:00-17:00\"}', buffer_before=10, buffer_after=5, max_per_day=6, questions='[{\"q\": \"Company name?\", \"required\": true}]', confirmation_email=true, calendar_invite=true). Note: Booking pages sync with your calendar availability. Warning: Set appropriate limits to avoid overbooking."
+    parameters:
+      - name: name
+        type: string
+        description: "Booking page name"
+        required: true
+      - name: slug
+        type: string
+        description: "URL slug"
+        required: true
+      - name: duration
+        type: integer
+        description: "Meeting duration in minutes"
+        required: true
+      - name: available_hours
+        type: string
+        description: "JSON availability schedule"
+        required: true
+      - name: buffer_before
+        type: integer
+        description: "Buffer time before meeting"
+        required: false
+        default: 0
+      - name: buffer_after
+        type: integer
+        description: "Buffer time after meeting"
+        required: false
+        default: 0
+      - name: max_per_day
+        type: integer
+        description: "Maximum bookings per day"
+        required: false
+      - name: questions
+        type: string
+        description: "JSON intake questions"
+        required: false
+      - name: confirmation_email
+        type: boolean
+        description: "Send confirmation email"
+        required: false
+        default: true
+    tags: ["calendar", "booking", "scheduling", "appointments", "external"]
+    test_prompts:
+      single:
+        - "Create booking page"
+        - "Set up appointment scheduling"
+        - "Create Calendly-like page"
+        - "Make public scheduling link"
+      single_clear:
+        - "I need to create a public booking page with available time slots for external scheduling. Create booking page"
+        - "I need to create a public booking page with available time slots for external scheduling. Set up appointment scheduling"
+        - "I need to create a public booking page with available time slots for external scheduling. Create Calendly-like page"
+        - "I need to create a public booking page with available time slots for external scheduling. Make public scheduling link"
+
+  - name: manage_calendar_subscription
+    descriptions:
+      minimal: "Manage subscription"
+      short: "Manage calendar subscriptions"
+      medium: "Subscribe to or manage external calendar feeds."
+      long: "Subscribe to external iCal feeds or manage existing subscriptions. Example: manage_calendar_subscription(action='subscribe', url='https://example.com/cal.ics', name='Team Events')."
+      verbose: "Calendar subscription management. Actions: subscribe (add feed), unsubscribe, refresh, list. Feed types: iCal/ICS, Google Calendar, Outlook. Settings: refresh interval, color, visibility, notifications. Example: manage_calendar_subscription(action='subscribe', url='https://calendar.google.com/calendar/ical/...', name='Company Holidays', color='#FF5722', refresh_interval='1h', show_as='free', notify=false). Note: Subscribed calendars are read-only. Warning: External feeds may have sync delays."
+    parameters:
+      - name: action
+        type: string
+        description: "Subscription action"
+        required: true
+        enum: ["subscribe", "unsubscribe", "refresh", "list", "update"]
+      - name: url
+        type: string
+        description: "Calendar feed URL"
+        required: false
+      - name: name
+        type: string
+        description: "Subscription name"
+        required: false
+      - name: subscription_id
+        type: string
+        description: "Subscription ID for update/remove"
+        required: false
+      - name: color
+        type: string
+        description: "Calendar color"
+        required: false
+      - name: refresh_interval
+        type: string
+        description: "Refresh interval"
+        required: false
+        default: "1h"
+      - name: notify
+        type: boolean
+        description: "Enable notifications"
+        required: false
+        default: false
+    tags: ["calendar", "subscription", "ical", "feed", "sync"]
+    test_prompts:
+      single:
+        - "Subscribe to calendar feed"
+        - "Add external calendar"
+        - "Import iCal feed"
+        - "Manage calendar subscriptions"
+      single_clear:
+        - "I need to subscribe to or manage external calendar feeds. Subscribe to calendar feed"
+        - "I need to subscribe to or manage external calendar feeds. Add external calendar"
+        - "I need to subscribe to or manage external calendar feeds. Import iCal feed"
+        - "I need to subscribe to or manage external calendar feeds. Manage calendar subscriptions"
+
+  - name: configure_working_hours
+    descriptions:
+      minimal: "Set working hours"
+      short: "Configure working hours"
+      medium: "Configure your working hours and availability preferences."
+      long: "Set working hours for scheduling and availability display. Example: configure_working_hours(schedule='{\"mon-fri\": \"09:00-17:00\"}', timezone='America/New_York')."
+      verbose: "Working hours and availability configuration. Features: per-day schedule, multiple time blocks, timezone handling, exceptions. Settings: lunch breaks, meeting-free times, focus time. Example: configure_working_hours(schedule='{\"mon\": \"08:00-12:00,13:00-18:00\", \"tue-thu\": \"09:00-17:00\", \"fri\": \"09:00-15:00\"}', timezone='America/New_York', block_focus_time=true, focus_hours='09:00-11:00', lunch_block='12:00-13:00'). Note: Working hours affect free/busy visibility. Warning: Timezone changes affect all scheduled meetings."
+    parameters:
+      - name: schedule
+        type: string
+        description: "JSON working hours schedule"
+        required: true
+      - name: timezone
+        type: string
+        description: "Timezone"
+        required: true
+      - name: block_focus_time
+        type: boolean
+        description: "Block focus time on calendar"
+        required: false
+        default: false
+      - name: focus_hours
+        type: string
+        description: "Daily focus time block"
+        required: false
+      - name: lunch_block
+        type: string
+        description: "Lunch break time"
+        required: false
+      - name: apply_to_booking
+        type: boolean
+        description: "Apply to booking pages"
+        required: false
+        default: true
+    tags: ["calendar", "working_hours", "availability", "schedule", "preferences"]
+    test_prompts:
+      single:
+        - "Set my working hours"
+        - "Configure availability"
+        - "Set up work schedule"
+        - "Block lunch time"
+      single_clear:
+        - "I need to configure my working hours and availability preferences for scheduling. Set my working hours"
+        - "I need to configure my working hours and availability preferences for scheduling. Configure availability"
+        - "I need to configure my working hours and availability preferences for scheduling. Set up work schedule"
+        - "I need to configure my working hours and availability preferences for scheduling. Block lunch time"
+
+  - name: create_event_template
+    descriptions:
+      minimal: "Create template"
+      short: "Create event template"
+      medium: "Create a reusable template for recurring event types."
+      long: "Create event templates for frequently scheduled meeting types. Example: create_event_template(name='Team Standup', duration=15, default_attendees='[\"team@company.com\"]')."
+      verbose: "Create reusable event templates. Components: title, duration, default attendees, location, conferencing, description, reminders, attachments. Uses: team meetings, 1:1s, interviews, recurring events. Example: create_event_template(name='Interview - Technical', duration=60, default_attendees='[\"hiring@company.com\"]', location='virtual', conferencing='zoom', description='Technical interview template', reminders='[{\"minutes\": 15, \"method\": \"popup\"}]', color='#9C27B0'). Note: Templates save time for repeated event types. Warning: Template changes don't affect existing events."
+    parameters:
+      - name: name
+        type: string
+        description: "Template name"
+        required: true
+      - name: duration
+        type: integer
+        description: "Default duration in minutes"
+        required: true
+      - name: default_attendees
+        type: string
+        description: "JSON array of default attendees"
+        required: false
+      - name: location
+        type: string
+        description: "Default location"
+        required: false
+      - name: conferencing
+        type: string
+        description: "Default conferencing"
+        required: false
+        enum: ["zoom", "meet", "teams", "none"]
+      - name: description
+        type: string
+        description: "Default description"
+        required: false
+      - name: reminders
+        type: string
+        description: "JSON array of reminders"
+        required: false
+      - name: color
+        type: string
+        description: "Event color"
+        required: false
+    tags: ["calendar", "template", "event", "reusable", "meeting"]
+    test_prompts:
+      single:
+        - "Create event template"
+        - "Save meeting template"
+        - "Create reusable event"
+        - "Set up standup template"
+      single_clear:
+        - "I need to create a reusable template for frequently scheduled meeting types. Create event template"
+        - "I need to create a reusable template for frequently scheduled meeting types. Save meeting template"
+        - "I need to create a reusable template for frequently scheduled meeting types. Create reusable event"
+        - "I need to create a reusable template for frequently scheduled meeting types. Set up standup template"
+
+  - name: manage_calendar_permissions
+    descriptions:
+      minimal: "Manage permissions"
+      short: "Manage calendar sharing permissions"
+      medium: "Manage who can view or edit your calendar."
+      long: "Configure calendar sharing and access permissions. Example: manage_calendar_permissions(action='share', email='colleague@company.com', permission='read')."
+      verbose: "Calendar sharing and permissions management. Actions: share, revoke, update, list. Permission levels: see free/busy, see details, make changes, full control. Scopes: specific users, groups, domain, public. Example: manage_calendar_permissions(action='share', email='assistant@company.com', permission='make_changes', calendar_id='primary', notify=true). Domain sharing: manage_calendar_permissions(action='share', scope='domain', permission='see_details'). Note: Shared calendars respect privacy settings. Warning: 'make_changes' allows editing and deleting events."
+    parameters:
+      - name: action
+        type: string
+        description: "Permission action"
+        required: true
+        enum: ["share", "revoke", "update", "list"]
+      - name: calendar_id
+        type: string
+        description: "Calendar ID"
+        required: false
+        default: "primary"
+      - name: email
+        type: string
+        description: "User email to share with"
+        required: false
+      - name: scope
+        type: string
+        description: "Sharing scope"
+        required: false
+        enum: ["user", "group", "domain", "public"]
+      - name: permission
+        type: string
+        description: "Permission level"
+        required: false
+        enum: ["free_busy", "see_details", "make_changes", "full_control"]
+      - name: notify
+        type: boolean
+        description: "Notify the user"
+        required: false
+        default: true
+    tags: ["calendar", "permissions", "sharing", "access", "security"]
+    test_prompts:
+      single:
+        - "Share my calendar"
+        - "Give calendar access"
+        - "Revoke calendar sharing"
+        - "Check calendar permissions"
+      single_clear:
+        - "I need to manage who can view or edit my calendar and configure sharing permissions. Share my calendar"
+        - "I need to manage who can view or edit my calendar and configure sharing permissions. Give calendar access"
+        - "I need to manage who can view or edit my calendar and configure sharing permissions. Revoke calendar sharing"
+        - "I need to manage who can view or edit my calendar and configure sharing permissions. Check calendar permissions"
+
+  - name: detect_scheduling_conflicts
+    descriptions:
+      minimal: "Detect conflicts"
+      short: "Detect scheduling conflicts"
+      medium: "Find scheduling conflicts in your calendar or when planning events."
+      long: "Detect double-bookings and scheduling conflicts. Example: detect_scheduling_conflicts(date_range='{\"start\": \"2024-02-01\", \"end\": \"2024-02-28\"}')."
+      verbose: "Scheduling conflict detection and resolution. Detection: overlapping events, back-to-back meetings, travel time conflicts, resource conflicts. Resolution suggestions: reschedule options, conflict severity, affected attendees. Example: detect_scheduling_conflicts(date_range='{\"start\": \"2024-02-01\", \"end\": \"2024-02-28\"}', include_tentative=true, check_travel_time=true, suggest_resolution=true). For new event: detect_scheduling_conflicts(proposed_event='{\"start\": \"2024-02-15T10:00\", \"end\": \"2024-02-15T11:00\", \"attendees\": [\"a@b.com\"]}'). Note: Tentative events may create soft conflicts. Warning: External calendar conflicts depend on sync freshness."
+    parameters:
+      - name: date_range
+        type: string
+        description: "JSON date range to check"
+        required: false
+      - name: proposed_event
+        type: string
+        description: "JSON proposed event to check"
+        required: false
+      - name: include_tentative
+        type: boolean
+        description: "Include tentative events"
+        required: false
+        default: true
+      - name: check_travel_time
+        type: boolean
+        description: "Check for travel time conflicts"
+        required: false
+        default: false
+      - name: check_attendees
+        type: boolean
+        description: "Check attendee availability"
+        required: false
+        default: true
+      - name: suggest_resolution
+        type: boolean
+        description: "Suggest conflict resolution"
+        required: false
+        default: true
+    tags: ["calendar", "conflicts", "detection", "scheduling", "availability"]
+    test_prompts:
+      single:
+        - "Find scheduling conflicts"
+        - "Check for double bookings"
+        - "Detect calendar conflicts"
+        - "Will this time conflict?"
+      single_clear:
+        - "I need to find double-bookings and scheduling conflicts in my calendar. Find scheduling conflicts"
+        - "I need to find double-bookings and scheduling conflicts in my calendar. Check for double bookings"
+        - "I need to find double-bookings and scheduling conflicts in my calendar. Detect calendar conflicts"
+        - "I need to find double-bookings and scheduling conflicts in my calendar. Will this time conflict?"
+
+  - name: sync_calendars
+    descriptions:
+      minimal: "Sync calendars"
+      short: "Sync multiple calendars"
+      medium: "Synchronize events between multiple calendar accounts."
+      long: "Sync events across Google, Outlook, and other calendar services. Example: sync_calendars(source='google', destination='outlook', sync_type='two_way')."
+      verbose: "Multi-calendar synchronization. Sync types: one-way, two-way, copy (no deletion). Filters: by calendar, by date range, by category. Conflict resolution: source wins, destination wins, newest wins, manual. Example: sync_calendars(source='{\"provider\": \"google\", \"calendar\": \"primary\"}', destination='{\"provider\": \"outlook\", \"calendar\": \"Calendar\"}', sync_type='two_way', filter='{\"start\": \"now\", \"end\": \"+90d\"}', conflict_resolution='newest', include_attendees=false). Note: Two-way sync may cause duplicate notifications. Warning: Test with small date range before full sync."
+    parameters:
+      - name: source
+        type: string
+        description: "JSON source calendar config"
+        required: true
+      - name: destination
+        type: string
+        description: "JSON destination calendar config"
+        required: true
+      - name: sync_type
+        type: string
+        description: "Synchronization type"
+        required: false
+        default: "two_way"
+        enum: ["one_way", "two_way", "copy"]
+      - name: filter
+        type: string
+        description: "JSON sync filter"
+        required: false
+      - name: conflict_resolution
+        type: string
+        description: "Conflict resolution strategy"
+        required: false
+        default: "source"
+        enum: ["source", "destination", "newest", "manual"]
+      - name: include_attendees
+        type: boolean
+        description: "Sync attendee information"
+        required: false
+        default: true
+    tags: ["calendar", "sync", "multi-calendar", "integration", "copy"]
+    test_prompts:
+      single:
+        - "Sync Google and Outlook calendars"
+        - "Copy events to work calendar"
+        - "Synchronize my calendars"
+        - "Set up calendar sync"
+      single_clear:
+        - "I need to synchronize events between multiple calendar accounts. Sync Google and Outlook calendars"
+        - "I need to synchronize events between multiple calendar accounts. Copy events to work calendar"
+        - "I need to synchronize events between multiple calendar accounts. Synchronize my calendars"
+        - "I need to synchronize events between multiple calendar accounts. Set up calendar sync"
+
+  - name: export_calendar
+    descriptions:
+      minimal: "Export calendar"
+      short: "Export calendar events"
+      medium: "Export calendar events to a file or external format."
+      long: "Export events to ICS, CSV, or other formats. Example: export_calendar(calendar_id='primary', format='ics', date_range='{\"start\": \"2024-01-01\", \"end\": \"2024-12-31\"}')."
+      verbose: "Calendar export to various formats. Formats: ICS/iCal, CSV, JSON, PDF (agenda). Options: date range, event filtering, recurring expansion. Uses: backup, migration, printing, sharing. Example: export_calendar(calendar_id='primary', format='ics', date_range='{\"start\": \"2024-01-01\", \"end\": \"2024-06-30\"}', include_private=false, expand_recurring=true, output='calendar_backup.ics'). Note: ICS format preserves most event properties. Warning: Large exports with expanded recurring events may be slow."
+    parameters:
+      - name: calendar_id
+        type: string
+        description: "Calendar to export"
+        required: true
+      - name: format
+        type: string
+        description: "Export format"
+        required: true
+        enum: ["ics", "csv", "json", "pdf"]
+      - name: date_range
+        type: string
+        description: "JSON date range"
+        required: false
+      - name: include_private
+        type: boolean
+        description: "Include private events"
+        required: false
+        default: true
+      - name: expand_recurring
+        type: boolean
+        description: "Expand recurring events"
+        required: false
+        default: false
+      - name: output
+        type: string
+        description: "Output file path"
+        required: true
+    tags: ["calendar", "export", "backup", "ics", "download"]
+    test_prompts:
+      single:
+        - "Export my calendar"
+        - "Download calendar as ICS"
+        - "Backup calendar events"
+        - "Export calendar to CSV"
+      single_clear:
+        - "I need to export calendar events to a file or external format. Export my calendar"
+        - "I need to export calendar events to a file or external format. Download calendar as ICS"
+        - "I need to export calendar events to a file or external format. Backup calendar events"
+        - "I need to export calendar events to a file or external format. Export calendar to CSV"
+
+  - name: manage_calendar_notifications
+    descriptions:
+      minimal: "Manage notifications"
+      short: "Manage calendar notifications"
+      medium: "Configure calendar notification preferences and defaults."
+      long: "Set up notification preferences for events and reminders. Example: manage_calendar_notifications(default_reminders='[{\"minutes\": 10, \"method\": \"popup\"}]')."
+      verbose: "Calendar notification configuration. Notification types: event reminders, invitation responses, event changes, daily agenda. Methods: popup, email, SMS, push. Settings: default reminders, per-calendar settings, quiet hours. Example: manage_calendar_notifications(default_reminders='[{\"minutes\": 30, \"method\": \"email\"}, {\"minutes\": 10, \"method\": \"popup\"}]', daily_agenda=true, daily_agenda_time='07:00', quiet_hours='{\"start\": \"22:00\", \"end\": \"08:00\"}', notify_on_changes=true). Note: Quiet hours only affect non-urgent notifications. Warning: Disabling notifications may cause missed meetings."
+    parameters:
+      - name: default_reminders
+        type: string
+        description: "JSON array of default reminders"
+        required: false
+      - name: daily_agenda
+        type: boolean
+        description: "Enable daily agenda email"
+        required: false
+        default: false
+      - name: daily_agenda_time
+        type: string
+        description: "Time for daily agenda"
+        required: false
+        default: "08:00"
+      - name: quiet_hours
+        type: string
+        description: "JSON quiet hours config"
+        required: false
+      - name: notify_on_changes
+        type: boolean
+        description: "Notify on event changes"
+        required: false
+        default: true
+      - name: notify_on_responses
+        type: boolean
+        description: "Notify on RSVP responses"
+        required: false
+        default: true
+    tags: ["calendar", "notifications", "reminders", "preferences", "alerts"]
+    test_prompts:
+      single:
+        - "Set calendar reminders"
+        - "Configure notifications"
+        - "Enable daily agenda email"
+        - "Set quiet hours"
+      single_clear:
+        - "I need to configure calendar notification preferences and default reminders. Set calendar reminders"
+        - "I need to configure calendar notification preferences and default reminders. Configure notifications"
+        - "I need to configure calendar notification preferences and default reminders. Enable daily agenda email"
+        - "I need to configure calendar notification preferences and default reminders. Set quiet hours"

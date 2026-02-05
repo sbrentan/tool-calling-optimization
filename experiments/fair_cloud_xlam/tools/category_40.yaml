@@ -1,0 +1,263 @@
+category: category_40
+tools:
+- name: calculate_grid_coordinate_points
+  descriptions:
+    minimal: Calculate all grid coordinate points based on a...
+    short: Calculate all grid coordinate points based on a center geocoordinate point and distance arguments.
+    medium: Calculate all grid coordinate points based on a center geocoordinate point and distance arguments.
+    long: Calculate all grid coordinate points based on a center geocoordinate point and distance arguments.
+    verbose: Calculate all grid coordinate points based on a center geocoordinate point and distance arguments.
+  parameters:
+  - name: radius
+    type: string
+    description: The distance between coordinate points (on the same row/column in the grid). The units of the radius are
+      determined by the `radius_units` parameter. Allowed values are 0.1-100. Default is 1.
+    required: true
+    default: '1'
+  - name: lng
+    type: string
+    description: Grid center coordinate point longitude value.
+    required: true
+    default: '-121.938314'
+  - name: grid_size
+    type: string
+    description: The size of the grid (e.g., 3x3, 5x5, 7x7, etc). Allowed values are 3, 5, 7, 9, 11, 13, 15.
+    required: true
+    default: '3'
+  - name: lat
+    type: string
+    description: Grid center coordinate point latitude value.
+    required: true
+    default: '37.341759'
+  - name: radius_units
+    type: string
+    description: Distance measurement units for the radius parameter. Allowed values are 'km' for kilometers and 'mi' for
+      miles. Default is 'km'.
+    required: false
+  tags:
+  - calculate
+  - grid
+  - coordinate
+  test_prompts:
+    single:
+    - Compute grid points for a 7x7 grid around (34.0522° N, 118.2437° W) with a radius of 3 miles.
+    single_clear:
+    - Compute grid points for a 7x7 grid around (34.0522° N, 118.2437° W) with a radius of 3 miles.
+- name: get_a_specific_remote_job_by_id
+  descriptions:
+    minimal: Fetch detailed information about a specific...
+    short: Fetch detailed information about a specific remote job using its ID.
+    medium: Fetch detailed information about a specific remote job using its ID.
+    long: Fetch detailed information about a specific remote job using its ID.
+    verbose: Fetch detailed information about a specific remote job using its ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The unique identifier of the job to fetch details for.
+    required: true
+  tags:
+  - get
+  - a
+  - specific
+  test_prompts:
+    single:
+    - I need to know the details of the remote job with ID 'RJ001234'.
+    single_clear:
+    - I need to know the details of the remote job with ID 'RJ001234'.
+- name: get_reel_by_shortcode
+  descriptions:
+    minimal: Fetch information about an Instagram reel using...
+    short: Fetch information about an Instagram reel using its shortcode.
+    medium: Fetch information about an Instagram reel using its shortcode.
+    long: Fetch information about an Instagram reel using its shortcode.
+    verbose: Fetch information about an Instagram reel using its shortcode.
+  parameters:
+  - name: shortcode
+    type: string
+    description: The unique identifier for the Instagram reel.
+    required: true
+    default: CrgVBtHr3DP
+  tags:
+  - get
+  - reel
+  - by
+  test_prompts:
+    single:
+    - Fetch detailed information about the Instagram reel with shortcode 'CL1P3'
+    single_clear:
+    - Fetch detailed information about the Instagram reel with shortcode 'CL1P3'
+- name: daily_match_list_results
+  descriptions:
+    minimal: Retrieves the list of daily match results for ice...
+    short: Retrieves the list of daily match results for ice hockey games from the RapidAPI service.
+    medium: Retrieves the list of daily match results for ice hockey games from the RapidAPI service.
+    long: Retrieves the list of daily match results for ice hockey games from the RapidAPI service.
+    verbose: Retrieves the list of daily match results for ice hockey games from the RapidAPI service.
+  parameters:
+  - name: date
+    type: string
+    description: The date of the matches in the format {dd/MM/yyyy}. The match list data can only be retrieved for a period
+      of ±7 days from the specified date.
+    required: true
+    default: 28/01/2021
+  tags:
+  - daily
+  - match
+  - list
+  test_prompts:
+    single:
+    - Can you provide the daily match results for ice hockey on January 15, 2024?
+    single_clear:
+    - Can you provide the daily match results for ice hockey on January 15, 2024?
+- name: feriados_dos_estados
+  descriptions:
+    minimal: Retrieves the holidays for a given Brazilian...
+    short: Retrieves the holidays for a given Brazilian state and year.
+    medium: Retrieves the holidays for a given Brazilian state and year.
+    long: Retrieves the holidays for a given Brazilian state and year.
+    verbose: Retrieves the holidays for a given Brazilian state and year.
+  parameters:
+  - name: estado
+    type: string
+    description: Abbreviation of the Brazilian state in uppercase letters.
+    required: true
+    default: MG
+  - name: ano
+    type: string
+    description: Year for which to retrieve the holidays.
+    required: true
+    default: '2023'
+  tags:
+  - feriados
+  - dos
+  - estados
+  test_prompts:
+    single:
+    - What are the holidays in Minas Gerais state for the year 2025?
+    single_clear:
+    - What are the holidays in Minas Gerais state for the year 2025?
+- name: getteams
+  descriptions:
+    minimal: Fetches NHL team data for a given season with...
+    short: Fetches NHL team data for a given season with optional expanded information.
+    medium: Fetches NHL team data for a given season with optional expanded information.
+    long: Fetches NHL team data for a given season with optional expanded information.
+    verbose: Fetches NHL team data for a given season with optional expanded information.
+  parameters:
+  - name: season
+    type: integer
+    description: The specific season to return team data for. Defaults to 20172018.
+    required: false
+    default: 20172018
+  - name: expand
+    type: string
+    description: A parameter to expand the response with additional data, such as team rosters. Defaults to 'team.roster'.
+    required: false
+    default: team.roster
+  tags:
+  - getteams
+  test_prompts:
+    single:
+    - Fetch the roster of all teams for the 2019-2020 NHL season.
+    single_clear:
+    - Fetch the roster of all teams for the 2019-2020 NHL season.
+- name: stock_news
+  descriptions:
+    minimal: Fetches the latest news related to a specific...
+    short: Fetches the latest news related to a specific stock symbol/ticker.
+    medium: Fetches the latest news related to a specific stock symbol/ticker.
+    long: Fetches the latest news related to a specific stock symbol/ticker.
+    verbose: Fetches the latest news related to a specific stock symbol/ticker.
+  parameters:
+  - name: symbol
+    type: string
+    description: The stock symbol or ticker for which to fetch news. Examples include 'MSFT:NASDAQ', 'MSFT', '^DJI', and 'VTSAX'.
+    required: true
+    default: AAPL:NASDAQ
+  - name: language
+    type: string
+    description: The language in which to return the results, specified as a 2-letter ISO 639-1 code. Default is 'en'.
+    required: false
+    default: en
+  tags:
+  - stock
+  - news
+  test_prompts:
+    single:
+    - What are the latest news articles about Tesla Inc. (TSLA) in Spanish?
+    single_clear:
+    - What are the latest news articles about Tesla Inc. (TSLA) in Spanish?
+- name: get_3_month_historical_daily_prices
+  descriptions:
+    minimal: Fetches 3 months of historical daily stock prices...
+    short: Fetches 3 months of historical daily stock prices for the given ticker.
+    medium: Fetches 3 months of historical daily stock prices for the given ticker.
+    long: Fetches 3 months of historical daily stock prices for the given ticker.
+    verbose: Fetches 3 months of historical daily stock prices for the given ticker.
+  parameters:
+  - name: ticker
+    type: string
+    description: The stock ticker symbol to fetch historical prices for.
+    required: true
+    default: AAPL
+  tags:
+  - get
+  - '3'
+  - month
+  test_prompts:
+    single:
+    - Can you fetch the historical daily prices for Apple Inc. (AAPL) for the past 3 months?
+    single_clear:
+    - Can you fetch the historical daily prices for Apple Inc. (AAPL) for the past 3 months?
+- name: airport_search
+  descriptions:
+    minimal: Search for airports using the RapidAPI Flight...
+    short: Search for airports using the RapidAPI Flight Fare Search API.
+    medium: Search for airports using the RapidAPI Flight Fare Search API.
+    long: Search for airports using the RapidAPI Flight Fare Search API.
+    verbose: Search for airports using the RapidAPI Flight Fare Search API.
+  parameters:
+  - name: query
+    type: string
+    description: The search term to use for finding airports.
+    required: true
+    default: LHR
+  tags:
+  - airport
+  - search
+  test_prompts:
+    single:
+    - Search for airports in New York.
+    single_clear:
+    - Search for airports in New York.
+- name: estimated_salary
+  descriptions:
+    minimal: Fetch the estimated salary for a given job title...
+    short: Fetch the estimated salary for a given job title within a specified radius around a particular location.
+    medium: Fetch the estimated salary for a given job title within a specified radius around a particular location.
+    long: Fetch the estimated salary for a given job title within a specified radius around a particular location.
+    verbose: Fetch the estimated salary for a given job title within a specified radius around a particular location.
+  parameters:
+  - name: location
+    type: string
+    description: The geographic location to search within for the salary estimation.
+    required: true
+    default: New-York, NY, USA
+  - name: job_title
+    type: string
+    description: The job title for which the salary estimation is to be fetched.
+    required: true
+    default: NodeJS Developer
+  - name: radius
+    type: integer
+    description: The radius in kilometers within which to search from the provided location. Default is 100 km.
+    required: false
+    default: '100'
+  tags:
+  - estimated
+  - salary
+  test_prompts:
+    single:
+    - Estimate the salary for a Mechanical Engineer in Chicago, IL within a 75 km radius.
+    single_clear:
+    - Estimate the salary for a Mechanical Engineer in Chicago, IL within a 75 km radius.

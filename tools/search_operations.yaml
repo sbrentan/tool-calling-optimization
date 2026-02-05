@@ -1,0 +1,1273 @@
+category: search_operations
+description: Search and indexing operations
+tools:
+  - name: search_documents
+    descriptions:
+      minimal: "Search"
+      short: "Search documents"
+      medium: "Search documents using full-text or semantic search."
+      long: "Search documents with full-text, semantic, or hybrid search. Example: search_documents(query='machine learning tutorial', index='articles')."
+      verbose: "Full-text and semantic document search. Types: 'fulltext' (keyword), 'semantic' (vector), 'hybrid' (combined). Features: filters, facets, highlighting, pagination. Example: search_documents(query='machine learning python', index='articles', type='hybrid', filters='{\"category\": \"tutorials\", \"date\": {\"gte\": \"2024-01-01\"}}', highlight=true, size=20). Note: Semantic search requires embeddings. Warning: Large result sets impact performance."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query"
+        required: true
+      - name: index
+        type: string
+        description: "Index to search"
+        required: true
+      - name: type
+        type: string
+        description: "Search type"
+        required: false
+        default: "fulltext"
+        enum: ["fulltext", "semantic", "hybrid"]
+      - name: filters
+        type: string
+        description: "JSON filter conditions"
+        required: false
+      - name: size
+        type: integer
+        description: "Number of results"
+        required: false
+        default: 10
+      - name: highlight
+        type: boolean
+        description: "Highlight matches"
+        required: false
+        default: false
+    tags: ["search", "query", "fulltext", "semantic", "find"]
+    test_prompts:
+      single:
+        - "Search for articles"
+        - "Find documents about AI"
+        - "Search the knowledge base"
+        - "Look up tutorials"
+      single_clear:
+        - "I need to search documents. Search for articles"
+        - "I need to search documents. Find documents about AI"
+        - "I need to search documents. Search the knowledge base"
+        - "I need to search documents. Look up tutorials"
+
+  - name: index_document
+    descriptions:
+      minimal: "Index"
+      short: "Index a document"
+      medium: "Add or update a document in the search index."
+      long: "Index a document for searching. Creates or updates document in index. Example: index_document(index='articles', id='123', document='{...}')."
+      verbose: "Add documents to search index. Operations: create, update, upsert. Features: auto-generate embeddings, custom analyzers, field mappings. Example: index_document(index='products', id='sku-001', document='{\"name\": \"Widget\", \"description\": \"...\", \"category\": \"tools\"}', generate_embeddings=true, refresh=true). Note: Indexing is near-real-time. Warning: Frequent individual indexing is slower than bulk."
+    parameters:
+      - name: index
+        type: string
+        description: "Index name"
+        required: true
+      - name: id
+        type: string
+        description: "Document ID"
+        required: true
+      - name: document
+        type: string
+        description: "Document content (JSON)"
+        required: true
+      - name: generate_embeddings
+        type: boolean
+        description: "Generate vector embeddings"
+        required: false
+        default: false
+      - name: refresh
+        type: boolean
+        description: "Refresh index immediately"
+        required: false
+        default: false
+    tags: ["search", "index", "document", "add", "update"]
+    test_prompts:
+      single:
+        - "Index this document"
+        - "Add to search index"
+        - "Update the indexed document"
+        - "Index the article"
+      single_clear:
+        - "Please index a document for search. Index this document"
+        - "Please index a document for search. Add to search index"
+        - "Please index a document for search. Update the indexed document"
+        - "Please index a document for search. Index the article"
+
+  - name: bulk_index
+    descriptions:
+      minimal: "Bulk index"
+      short: "Bulk index documents"
+      medium: "Index multiple documents in a single operation."
+      long: "Bulk index documents for efficiency. Add, update, or delete multiple documents. Example: bulk_index(index='products', documents='[{...}, {...}]')."
+      verbose: "Bulk indexing for high-volume ingestion. Operations per document: 'index' (upsert), 'create' (new only), 'delete'. Features: batch size, error handling, progress tracking. Example: bulk_index(index='logs', documents='[{\"id\": \"1\", \"action\": \"index\", \"doc\": {...}}, ...]', batch_size=1000, stop_on_error=false). Note: Bulk is 10-100x faster than individual. Warning: Large batches may timeout."
+    parameters:
+      - name: index
+        type: string
+        description: "Index name"
+        required: true
+      - name: documents
+        type: string
+        description: "JSON array of documents"
+        required: true
+      - name: batch_size
+        type: integer
+        description: "Documents per batch"
+        required: false
+        default: 500
+      - name: stop_on_error
+        type: boolean
+        description: "Stop on first error"
+        required: false
+        default: false
+    tags: ["search", "bulk", "index", "import", "batch"]
+    test_prompts:
+      single:
+        - "Bulk index documents"
+        - "Import documents to search"
+        - "Batch index products"
+        - "Load documents into index"
+      single_clear:
+        - "I need to bulk index multiple documents. Bulk index documents"
+        - "I need to bulk index multiple documents. Import documents to search"
+        - "I need to bulk index multiple documents. Batch index products"
+        - "I need to bulk index multiple documents. Load documents into index"
+
+  - name: create_index
+    descriptions:
+      minimal: "Create index"
+      short: "Create a search index"
+      medium: "Create a new search index with mappings and settings."
+      long: "Create search index with field mappings. Define analyzers and data types. Example: create_index(name='articles', mappings='{...}')."
+      verbose: "Create search index with configuration. Settings: shards, replicas, refresh interval. Mappings: field types (text, keyword, date, number, vector), analyzers, nested objects. Example: create_index(name='products', settings='{\"number_of_shards\": 3}', mappings='{\"name\": {\"type\": \"text\"}, \"price\": {\"type\": \"float\"}, \"embedding\": {\"type\": \"dense_vector\", \"dims\": 768}}}'). Note: Mappings cannot be changed after creation. Warning: Plan schema carefully."
+    parameters:
+      - name: name
+        type: string
+        description: "Index name"
+        required: true
+      - name: mappings
+        type: string
+        description: "Field mappings (JSON)"
+        required: true
+      - name: settings
+        type: string
+        description: "Index settings (JSON)"
+        required: false
+      - name: aliases
+        type: string
+        description: "JSON array of aliases"
+        required: false
+    tags: ["search", "index", "create", "schema", "mapping"]
+    test_prompts:
+      single:
+        - "Create a search index"
+        - "Set up the products index"
+        - "Create index with mappings"
+        - "Define search schema"
+      single_clear:
+        - "I want to create a new search index. Create a search index"
+        - "I want to create a new search index. Set up the products index"
+        - "I want to create a new search index. Create index with mappings"
+        - "I want to create a new search index. Define search schema"
+
+  - name: delete_from_index
+    descriptions:
+      minimal: "Delete"
+      short: "Delete from index"
+      medium: "Delete documents from the search index."
+      long: "Delete documents from index by ID or query. Example: delete_from_index(index='articles', id='123')."
+      verbose: "Delete documents from search index. Methods: by ID (single), by query (bulk), by filter. Example: delete_from_index(index='logs', query='{\"range\": {\"timestamp\": {\"lt\": \"2023-01-01\"}}}', confirm=true). Note: Deletion is permanent. Warning: Query-based deletion can affect many documents."
+    parameters:
+      - name: index
+        type: string
+        description: "Index name"
+        required: true
+      - name: id
+        type: string
+        description: "Document ID"
+        required: false
+      - name: query
+        type: string
+        description: "Delete query (JSON)"
+        required: false
+      - name: confirm
+        type: boolean
+        description: "Confirm bulk delete"
+        required: false
+        default: false
+    tags: ["search", "delete", "remove", "index", "cleanup"]
+    test_prompts:
+      single:
+        - "Delete from index"
+        - "Remove the document"
+        - "Delete old logs"
+        - "Remove from search"
+      single_clear:
+        - "I need to delete something from the search index. Delete from index"
+        - "I need to delete something from the search index. Remove the document"
+        - "I need to delete something from the search index. Delete old logs"
+        - "I need to delete something from the search index. Remove from search"
+
+  - name: get_suggestions
+    descriptions:
+      minimal: "Suggestions"
+      short: "Get search suggestions"
+      medium: "Get autocomplete or 'did you mean' suggestions."
+      long: "Get search suggestions. Autocomplete and spelling corrections. Example: get_suggestions(query='pythn', index='articles', type='completion')."
+      verbose: "Search suggestions for better UX. Types: 'completion' (autocomplete), 'phrase' (did-you-mean), 'term' (spelling). Features: fuzzy matching, context-aware, popularity weighting. Example: get_suggestions(query='pythno tutoral', index='articles', type='phrase', fuzzy=true, size=5). Note: Suggestions require proper index configuration. Warning: Completion suggester needs suggest field type."
+    parameters:
+      - name: query
+        type: string
+        description: "Partial or misspelled query"
+        required: true
+      - name: index
+        type: string
+        description: "Index to search"
+        required: true
+      - name: type
+        type: string
+        description: "Suggestion type"
+        required: false
+        default: "completion"
+        enum: ["completion", "phrase", "term"]
+      - name: fuzzy
+        type: boolean
+        description: "Enable fuzzy matching"
+        required: false
+        default: true
+      - name: size
+        type: integer
+        description: "Number of suggestions"
+        required: false
+        default: 5
+    tags: ["search", "suggest", "autocomplete", "completion", "typo"]
+    test_prompts:
+      single:
+        - "Get search suggestions"
+        - "Autocomplete the query"
+        - "Did you mean..."
+        - "Suggest corrections"
+      single_clear:
+        - "I need search suggestions. Get search suggestions"
+        - "I need search suggestions. Autocomplete the query"
+        - "I need search suggestions. Did you mean..."
+        - "I need search suggestions. Suggest corrections"
+
+  - name: get_aggregations
+    descriptions:
+      minimal: "Aggregations"
+      short: "Get search aggregations"
+      medium: "Get aggregations and facets from search results."
+      long: "Get aggregations for analytics and faceting. Counts, stats, histograms. Example: get_aggregations(index='products', aggs='{\"categories\": {\"terms\": {\"field\": \"category\"}}}')."
+      verbose: "Search aggregations for analytics and faceted navigation. Types: terms (categories), histogram (ranges), date histogram, stats, cardinality. Example: get_aggregations(index='orders', query='*', aggs='{\"by_status\": {\"terms\": {\"field\": \"status\"}}, \"total_by_day\": {\"date_histogram\": {\"field\": \"date\", \"interval\": \"day\"}}, \"avg_amount\": {\"avg\": {\"field\": \"amount\"}}}'). Note: Aggregations can be nested. Warning: High cardinality aggregations are expensive."
+    parameters:
+      - name: index
+        type: string
+        description: "Index to aggregate"
+        required: true
+      - name: aggs
+        type: string
+        description: "Aggregation definitions (JSON)"
+        required: true
+      - name: query
+        type: string
+        description: "Filter query"
+        required: false
+        default: "*"
+      - name: size
+        type: integer
+        description: "Number of buckets"
+        required: false
+        default: 10
+    tags: ["search", "aggregation", "facet", "analytics", "stats"]
+    test_prompts:
+      single:
+        - "Get category counts"
+        - "Aggregate by status"
+        - "Show search facets"
+        - "Get order statistics"
+      single_clear:
+        - "I need to get search aggregations. Get category counts"
+        - "I need to get search aggregations. Aggregate by status"
+        - "I need to get search aggregations. Show search facets"
+        - "I need to get search aggregations. Get order statistics"
+
+  - name: reindex
+    descriptions:
+      minimal: "Reindex"
+      short: "Reindex documents"
+      medium: "Copy and transform documents between indices."
+      long: "Reindex documents to new index. Apply transformations or mapping changes. Example: reindex(source='articles_v1', dest='articles_v2')."
+      verbose: "Reindex documents between indices. Use cases: mapping changes, data transformation, splitting indices. Features: query filter, field selection, script transformation. Example: reindex(source='products_v1', dest='products_v2', query='{\"term\": {\"active\": true}}', script='ctx._source.updated = params.now', wait=false). Note: Reindexing can take hours for large indices. Warning: Does not copy index settings."
+    parameters:
+      - name: source
+        type: string
+        description: "Source index name"
+        required: true
+      - name: dest
+        type: string
+        description: "Destination index name"
+        required: true
+      - name: query
+        type: string
+        description: "Filter query (JSON)"
+        required: false
+      - name: script
+        type: string
+        description: "Transformation script"
+        required: false
+      - name: wait
+        type: boolean
+        description: "Wait for completion"
+        required: false
+        default: true
+    tags: ["search", "reindex", "migrate", "copy", "transform"]
+    test_prompts:
+      single:
+        - "Reindex to new version"
+        - "Migrate the index"
+        - "Copy documents to new index"
+        - "Transform and reindex"
+      single_clear:
+        - "I need to reindex documents. Reindex to new version"
+        - "I need to reindex documents. Migrate the index"
+        - "I need to reindex documents. Copy documents to new index"
+        - "I need to reindex documents. Transform and reindex"
+
+  - name: manage_synonyms
+    descriptions:
+      minimal: "Synonyms"
+      short: "Manage search synonyms"
+      medium: "Add, update, or remove synonyms for better search."
+      long: "Manage synonyms for improved search relevance. Add domain-specific synonyms. Example: manage_synonyms(index='products', action='add', synonyms='laptop => notebook, computer')."
+      verbose: "Search synonym management. Actions: 'add', 'update', 'delete', 'list'. Synonym types: equivalent (a, b, c), explicit (a => b, c). Example: manage_synonyms(index='products', action='update', synonyms_set='product_synonyms', synonyms='[{\"synonym\": \"laptop, notebook, computer\"}, {\"synonym\": \"TV => television, display\"}]', reload=true). Note: Synonym changes require analyzer reload. Warning: Too many synonyms can impact performance."
+    parameters:
+      - name: index
+        type: string
+        description: "Index name"
+        required: true
+      - name: action
+        type: string
+        description: "Synonym action"
+        required: true
+        enum: ["add", "update", "delete", "list"]
+      - name: synonyms_set
+        type: string
+        description: "Synonym set name"
+        required: false
+        default: "default"
+      - name: synonyms
+        type: string
+        description: "Synonym definitions (JSON array)"
+        required: false
+      - name: reload
+        type: boolean
+        description: "Reload analyzers"
+        required: false
+        default: true
+    tags: ["search", "synonyms", "relevance", "mapping", "language"]
+    test_prompts:
+      single:
+        - "Add search synonyms"
+        - "Update synonyms list"
+        - "Configure synonyms"
+        - "Add product synonyms"
+      single_clear:
+        - "I need to manage search synonyms. Add search synonyms"
+        - "I need to manage search synonyms. Update synonyms list"
+        - "I need to manage search synonyms. Configure synonyms"
+        - "I need to manage search synonyms. Add product synonyms"
+
+  - name: analyze_query
+    descriptions:
+      minimal: "Analyze"
+      short: "Analyze search query"
+      medium: "Analyze how a search query is processed and tokenized."
+      long: "Analyze query processing. See how text is tokenized and analyzed. Example: analyze_query(text='machine-learning', index='articles')."
+      verbose: "Query analysis for debugging and optimization. Shows: tokenization, filters applied, final tokens. Options: specify analyzer, custom tokenizer, explain scoring. Example: analyze_query(text='Machine Learning 2024', index='articles', analyzer='english', explain=true). Note: Useful for debugging search issues. Warning: Different analyzers produce different tokens."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to analyze"
+        required: true
+      - name: index
+        type: string
+        description: "Index (for its analyzers)"
+        required: false
+      - name: analyzer
+        type: string
+        description: "Specific analyzer to use"
+        required: false
+      - name: field
+        type: string
+        description: "Field (for its analyzer)"
+        required: false
+      - name: explain
+        type: boolean
+        description: "Explain analysis steps"
+        required: false
+        default: false
+    tags: ["search", "analyze", "tokenize", "debug", "query"]
+    test_prompts:
+      single:
+        - "Analyze this query"
+        - "How is the text tokenized?"
+        - "Debug search query"
+        - "Explain query analysis"
+      single_clear:
+        - "I need to analyze a search query. Analyze this query"
+        - "I need to analyze a search query. How is the text tokenized?"
+        - "I need to analyze a search query. Debug search query"
+        - "I need to analyze a search query. Explain query analysis"
+  - name: semantic_search
+    descriptions:
+      minimal: "Semantic search"
+      short: "Perform semantic/vector search"
+      medium: "Search using semantic similarity with vector embeddings instead of keyword matching."
+      long: "Perform semantic search using vector embeddings. Find conceptually similar content even without keyword matches. Example: semantic_search(query='how to improve code quality', index='documentation', top_k=10)."
+      verbose: "Execute semantic search using dense vector embeddings. Finds semantically similar content regardless of exact keyword matches. Features: embedding generation, similarity scoring (cosine, dot product, euclidean), hybrid search (combine with keywords). Example: semantic_search(query='machine learning best practices', index='knowledge_base', embedding_model='text-embedding-ada-002', top_k=10, min_score=0.7, filter='{\"category\": \"tutorials\"}', include_vectors=false). Note: Requires vectorized content in index. Warning: Embedding quality affects search relevance."
+    parameters:
+      - name: query
+        type: string
+        description: "Natural language query"
+        required: true
+      - name: index
+        type: string
+        description: "Vector index to search"
+        required: true
+      - name: embedding_model
+        type: string
+        description: "Model for query embedding"
+        required: false
+      - name: top_k
+        type: integer
+        description: "Number of results"
+        required: false
+        default: 10
+      - name: min_score
+        type: number
+        description: "Minimum similarity score"
+        required: false
+      - name: filter
+        type: string
+        description: "JSON metadata filters"
+        required: false
+      - name: include_vectors
+        type: boolean
+        description: "Include vectors in response"
+        required: false
+        default: false
+    tags: ["search", "semantic", "vector", "embeddings", "similarity"]
+    test_prompts:
+      single:
+        - "Find similar documents to this query"
+        - "Search by meaning not keywords"
+        - "Do semantic search for tutorials"
+        - "Find conceptually related articles"
+      single_clear:
+        - "I want to perform a semantic search. Find similar documents to this query"
+        - "I want to perform a semantic search. Search by meaning not keywords"
+        - "I want to perform a semantic search. Do semantic search for tutorials"
+        - "I want to perform a semantic search. Find conceptually related articles"
+
+  - name: manage_search_synonyms
+    descriptions:
+      minimal: "Manage synonyms"
+      short: "Manage search synonyms"
+      medium: "Add, update, or remove synonym rules for improving search relevance."
+      long: "Manage synonym rules to improve search by recognizing equivalent terms. Example: manage_search_synonyms(action='add', synonyms='[\"laptop\", \"notebook\", \"portable computer\"]')."
+      verbose: "Configure search synonyms for better recall. Types: equivalent (bidirectional), explicit (one-way mappings), replacement. Example: manage_search_synonyms(action='add', index='products', synonym_type='equivalent', synonyms='[\"tv\", \"television\", \"telly\"]') or explicit: manage_search_synonyms(action='add', synonym_type='explicit', mappings='[{\"input\": \"ipod\", \"synonyms\": [\"mp3 player\", \"music player\"]}]'). Note: Synonym changes may require re-indexing. Warning: Too many synonyms can reduce precision."
+    parameters:
+      - name: action
+        type: string
+        description: "Synonym action"
+        required: true
+        enum: ["add", "update", "delete", "list"]
+      - name: index
+        type: string
+        description: "Search index"
+        required: true
+      - name: synonym_type
+        type: string
+        description: "Synonym type"
+        required: false
+        default: "equivalent"
+        enum: ["equivalent", "explicit", "replacement"]
+      - name: synonyms
+        type: string
+        description: "JSON array of synonyms"
+        required: false
+      - name: mappings
+        type: string
+        description: "JSON explicit mappings"
+        required: false
+    tags: ["search", "synonyms", "relevance", "nlp", "vocabulary"]
+    test_prompts:
+      single:
+        - "Add search synonyms"
+        - "Set up synonym rules"
+        - "Make laptop and notebook synonyms"
+        - "Configure synonym mappings"
+      single_clear:
+        - "I need to manage search synonym rules. Add search synonyms"
+        - "I need to manage search synonym rules. Set up synonym rules"
+        - "I need to manage search synonym rules. Make laptop and notebook synonyms"
+        - "I need to manage search synonym rules. Configure synonym mappings"
+
+  - name: boost_search_results
+    descriptions:
+      minimal: "Boost results"
+      short: "Configure search result boosting"
+      medium: "Set up boosting rules to prioritize certain results in search."
+      long: "Configure boosting rules to influence search result ranking. Boost by field, recency, popularity, or custom factors. Example: boost_search_results(index='products', boost_field='is_featured', boost_factor=2.0)."
+      verbose: "Configure search result boosting and ranking signals. Boost types: field value boost, freshness/recency, popularity/clicks, category, custom scoring. Example: boost_search_results(index='products', rules='[{\"field\": \"is_featured\", \"factor\": 2.0}, {\"field\": \"rating\", \"factor\": 1.5, \"modifier\": \"log1p\"}, {\"type\": \"recency\", \"field\": \"created_at\", \"decay\": \"exponential\", \"scale\": \"7d\"}]'). Note: Multiple boosts are combined multiplicatively. Warning: Excessive boosting can override relevance."
+    parameters:
+      - name: index
+        type: string
+        description: "Search index"
+        required: true
+      - name: rules
+        type: string
+        description: "JSON boost rules array"
+        required: true
+      - name: boost_field
+        type: string
+        description: "Field to boost"
+        required: false
+      - name: boost_factor
+        type: number
+        description: "Boost multiplier"
+        required: false
+      - name: enabled
+        type: boolean
+        description: "Enable boost rules"
+        required: false
+        default: true
+    tags: ["search", "boost", "ranking", "relevance", "scoring"]
+    test_prompts:
+      single:
+        - "Boost featured products in search"
+        - "Prioritize recent content"
+        - "Configure search ranking boost"
+        - "Increase relevance of popular items"
+      single_clear:
+        - "I need to boost search results. Boost featured products in search"
+        - "I need to boost search results. Prioritize recent content"
+        - "I need to boost search results. Configure search ranking boost"
+        - "I need to boost search results. Increase relevance of popular items"
+
+  - name: search_with_filters
+    descriptions:
+      minimal: "Filtered search"
+      short: "Search with faceted filters"
+      medium: "Execute search with multiple filters and facets for refined results."
+      long: "Perform search with faceted filtering. Apply multiple filter criteria and get facet counts. Example: search_with_filters(query='shoes', filters='{\"brand\": \"Nike\", \"size\": \"10\"}', facets='[\"color\", \"material\"]')."
+      verbose: "Execute faceted search with filters. Filter types: term (exact), range (numeric/date), geo (location), nested. Facets: get counts per value for refinement UI. Example: search_with_filters(query='laptop', index='products', filters='{\"brand\": [\"Dell\", \"HP\"], \"price\": {\"gte\": 500, \"lte\": 1500}, \"in_stock\": true}', facets='[\"brand\", \"screen_size\", \"ram\"]', facet_size=20). Returns: results + facet counts. Note: Filters are applied before facet counts. Warning: Many facets increase query time."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query"
+        required: true
+      - name: index
+        type: string
+        description: "Search index"
+        required: true
+      - name: filters
+        type: string
+        description: "JSON filter criteria"
+        required: true
+      - name: facets
+        type: string
+        description: "JSON array of facet fields"
+        required: false
+      - name: facet_size
+        type: integer
+        description: "Max values per facet"
+        required: false
+        default: 10
+      - name: page
+        type: integer
+        description: "Page number"
+        required: false
+        default: 1
+      - name: per_page
+        type: integer
+        description: "Results per page"
+        required: false
+        default: 20
+    tags: ["search", "filter", "facet", "refine", "navigation"]
+    test_prompts:
+      single:
+        - "Search with filters applied"
+        - "Find products with facets"
+        - "Filter search by price range"
+        - "Search with category filter"
+      single_clear:
+        - "I need to search with filters. Search with filters applied"
+        - "I need to search with filters. Find products with facets"
+        - "I need to search with filters. Filter search by price range"
+        - "I need to search with filters. Search with category filter"
+
+  - name: configure_search_relevance
+    descriptions:
+      minimal: "Configure relevance"
+      short: "Configure search relevance tuning"
+      medium: "Tune search relevance by adjusting field weights and scoring parameters."
+      long: "Configure search relevance tuning. Adjust field weights, scoring algorithms, and ranking factors. Example: configure_search_relevance(index='products', field_weights='{\"title\": 3, \"description\": 1}')."
+      verbose: "Fine-tune search relevance settings. Configuration: field weights (relative importance), scoring algorithm (BM25, TF-IDF), minimum should match, tie breaker for multi-match. Example: configure_search_relevance(index='products', field_weights='{\"title\": 3.0, \"brand\": 2.0, \"description\": 1.0, \"tags\": 1.5}', algorithm='bm25', bm25_params='{\"k1\": 1.2, \"b\": 0.75}', min_match='75%'). Note: Changes affect all searches on the index. Warning: Test thoroughly before production deployment."
+    parameters:
+      - name: index
+        type: string
+        description: "Search index"
+        required: true
+      - name: field_weights
+        type: string
+        description: "JSON field weight map"
+        required: true
+      - name: algorithm
+        type: string
+        description: "Scoring algorithm"
+        required: false
+        default: "bm25"
+        enum: ["bm25", "tfidf", "boolean"]
+      - name: bm25_params
+        type: string
+        description: "JSON BM25 parameters"
+        required: false
+      - name: min_match
+        type: string
+        description: "Minimum should match"
+        required: false
+    tags: ["search", "relevance", "tuning", "scoring", "weights"]
+    test_prompts:
+      single:
+        - "Tune search relevance"
+        - "Adjust field weights"
+        - "Configure search scoring"
+        - "Set title field to higher weight"
+      single_clear:
+        - "I need to configure search relevance. Tune search relevance"
+        - "I need to configure search relevance. Adjust field weights"
+        - "I need to configure search relevance. Configure search scoring"
+        - "I need to configure search relevance. Set title field to higher weight"
+
+  - name: search_typeahead
+    descriptions:
+      minimal: "Typeahead search"
+      short: "Get typeahead/autocomplete suggestions"
+      medium: "Get real-time typeahead suggestions as the user types."
+      long: "Provide typeahead/autocomplete suggestions for search-as-you-type. Fast prefix matching. Example: search_typeahead(prefix='lap', index='products', field='name', limit=5)."
+      verbose: "Real-time typeahead/autocomplete for search boxes. Modes: prefix match, fuzzy, completion suggester. Sources: product names, search history, popular queries. Example: search_typeahead(prefix='macb', index='products', fields='[\"name\", \"brand\"]', limit=8, fuzzy=true, highlight=true, categories=true). Returns: suggestions with highlighting, grouped by category optional. Note: Optimize for <50ms response time. Warning: Index must be configured for typeahead."
+    parameters:
+      - name: prefix
+        type: string
+        description: "User input prefix"
+        required: true
+      - name: index
+        type: string
+        description: "Search index"
+        required: true
+      - name: fields
+        type: string
+        description: "JSON fields to search"
+        required: false
+      - name: limit
+        type: integer
+        description: "Max suggestions"
+        required: false
+        default: 10
+      - name: fuzzy
+        type: boolean
+        description: "Enable fuzzy matching"
+        required: false
+        default: true
+      - name: highlight
+        type: boolean
+        description: "Highlight matching text"
+        required: false
+        default: true
+    tags: ["search", "typeahead", "autocomplete", "suggestions", "realtime"]
+    test_prompts:
+      single:
+        - "Get autocomplete suggestions"
+        - "Show typeahead for search"
+        - "Suggest completions for query"
+        - "Real-time search suggestions"
+      single_clear:
+        - "I need typeahead search suggestions. Get autocomplete suggestions"
+        - "I need typeahead search suggestions. Show typeahead for search"
+        - "I need typeahead search suggestions. Suggest completions for query"
+        - "I need typeahead search suggestions. Real-time search suggestions"
+
+  - name: log_search_event
+    descriptions:
+      minimal: "Log search event"
+      short: "Log a search event for analytics"
+      medium: "Log search queries and clicks for analytics and relevance tuning."
+      long: "Log search events for analytics, personalization, and relevance learning. Track queries, clicks, and conversions. Example: log_search_event(type='query', query='running shoes', results_count=42)."
+      verbose: "Log search events for analytics and ML-based relevance. Event types: 'query' (search executed), 'click' (result clicked), 'conversion' (purchased after search), 'no_results', 'refinement'. Example: log_search_event(type='click', session_id='sess_123', query='wireless mouse', result_id='prod_456', position=3, user_id='user_789'). Uses: search analytics, click-through learning, personalization. Note: Aggregate data improves relevance over time. Warning: Ensure PII handling compliance."
+    parameters:
+      - name: type
+        type: string
+        description: "Event type"
+        required: true
+        enum: ["query", "click", "conversion", "no_results", "refinement"]
+      - name: query
+        type: string
+        description: "Search query"
+        required: true
+      - name: session_id
+        type: string
+        description: "Search session ID"
+        required: false
+      - name: result_id
+        type: string
+        description: "Clicked result ID"
+        required: false
+      - name: position
+        type: integer
+        description: "Result position clicked"
+        required: false
+      - name: results_count
+        type: integer
+        description: "Total results returned"
+        required: false
+      - name: user_id
+        type: string
+        description: "User ID"
+        required: false
+    tags: ["search", "analytics", "logging", "events", "tracking"]
+    test_prompts:
+      single:
+        - "Log the search query"
+        - "Track search click"
+        - "Record search conversion"
+        - "Log search analytics event"
+      single_clear:
+        - "I need to log a search event. Log the search query"
+        - "I need to log a search event. Track search click"
+        - "I need to log a search event. Record search conversion"
+        - "I need to log a search event. Log search analytics event"
+
+  - name: rerank_results
+    descriptions:
+      minimal: "Rerank results"
+      short: "Rerank search results"
+      medium: "Apply machine learning reranking to improve search result order."
+      long: "Apply ML-based reranking to search results for improved relevance. Use cross-encoders or custom models. Example: rerank_results(query='best laptop for programming', results='[...]', model='cross-encoder')."
+      verbose: "Apply ML reranking for improved search relevance. Models: cross-encoder (BERT-based), LTR (learning to rank), custom. Reranking takes initial results and reorders based on deeper semantic understanding. Example: rerank_results(query='comfortable running shoes', results=initial_results, model='cross-encoder-ms-marco', top_n=20, return_scores=true). Note: Reranking adds latency; apply to top-N only. Warning: Model must be loaded/warmed up for fast inference."
+    parameters:
+      - name: query
+        type: string
+        description: "Original search query"
+        required: true
+      - name: results
+        type: string
+        description: "JSON initial results array"
+        required: true
+      - name: model
+        type: string
+        description: "Reranking model"
+        required: false
+        default: "cross-encoder"
+        enum: ["cross-encoder", "ltr", "colbert", "custom"]
+      - name: top_n
+        type: integer
+        description: "Results to rerank"
+        required: false
+        default: 50
+      - name: return_scores
+        type: boolean
+        description: "Include rerank scores"
+        required: false
+        default: false
+    tags: ["search", "rerank", "ml", "relevance", "transformer"]
+    test_prompts:
+      single:
+        - "Rerank search results"
+        - "Apply ML reranking"
+        - "Improve result ordering"
+        - "Use cross-encoder to rerank"
+      single_clear:
+        - "I need to rerank search results. Rerank search results"
+        - "I need to rerank search results. Apply ML reranking"
+        - "I need to rerank search results. Improve result ordering"
+        - "I need to rerank search results. Use cross-encoder to rerank"
+
+  - name: personalize_search
+    descriptions:
+      minimal: "Personalize search"
+      short: "Apply search personalization"
+      medium: "Personalize search results based on user history and preferences."
+      long: "Apply personalization to search results based on user behavior and preferences. Boost relevant results for each user. Example: personalize_search(query='laptop', user_id='u123', use_history=true)."
+      verbose: "Personalize search results per user. Signals: search history, click history, purchase history, browsing behavior, explicit preferences. Methods: collaborative filtering, content-based, hybrid. Example: personalize_search(query='headphones', user_id='user_abc', use_history=true, use_purchases=true, use_preferences=true, personalization_weight=0.3). Returns: personalized results with explanation optional. Note: Cold-start users get default results. Warning: Balance personalization vs. filter bubbles."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query"
+        required: true
+      - name: user_id
+        type: string
+        description: "User ID"
+        required: true
+      - name: index
+        type: string
+        description: "Search index"
+        required: true
+      - name: use_history
+        type: boolean
+        description: "Use search history"
+        required: false
+        default: true
+      - name: use_purchases
+        type: boolean
+        description: "Use purchase history"
+        required: false
+        default: true
+      - name: personalization_weight
+        type: number
+        description: "Personalization strength (0-1)"
+        required: false
+        default: 0.3
+      - name: explain
+        type: boolean
+        description: "Explain personalization"
+        required: false
+        default: false
+    tags: ["search", "personalization", "user", "recommendation", "history"]
+    test_prompts:
+      single:
+        - "Personalize search for user"
+        - "Show personalized results"
+        - "Apply user preferences to search"
+        - "Customize results based on history"
+      single_clear:
+        - "I need to personalize search results. Personalize search for user"
+        - "I need to personalize search results. Show personalized results"
+        - "I need to personalize search results. Apply user preferences to search"
+        - "I need to personalize search results. Customize results based on history"
+
+  - name: search_images
+    descriptions:
+      minimal: "Search images"
+      short: "Search for images"
+      medium: "Search for images by text query, tags, or visual similarity."
+      long: "Search image collections by text or image. Example: search_images(query='sunset beach', index='photos', limit=20)."
+      verbose: "Image search capabilities. Modes: text-to-image (CLIP), image-to-image (similarity), tag-based, metadata. Example: search_images(query='modern kitchen interior', index='stock_photos', limit=50, filters='{\"orientation\": \"landscape\", \"min_resolution\": 1920}', sort_by='relevance'). Features: color filtering, style matching, safe search. Note: Visual similarity requires reference image. Warning: Large result sets may be slow."
+    parameters:
+      - name: query
+        type: string
+        description: "Text search query"
+        required: false
+      - name: image_url
+        type: string
+        description: "Reference image for similarity"
+        required: false
+      - name: index
+        type: string
+        description: "Image index to search"
+        required: true
+      - name: limit
+        type: integer
+        description: "Maximum results"
+        required: false
+        default: 20
+      - name: filters
+        type: string
+        description: "JSON filters (orientation, size, etc.)"
+        required: false
+      - name: safe_search
+        type: boolean
+        description: "Enable safe search"
+        required: false
+        default: true
+    tags: ["search", "image", "visual", "similarity", "photos"]
+    test_prompts:
+      single:
+        - "Search for images"
+        - "Find photos of beaches"
+        - "Search stock images"
+        - "Find similar images"
+      single_clear:
+        - "I need to search for images. Search for images"
+        - "I need to search for images. Find photos of beaches"
+        - "I need to search for images. Search stock images"
+        - "I need to search for images. Find similar images"
+
+  - name: search_logs
+    descriptions:
+      minimal: "Search logs"
+      short: "Search application logs"
+      medium: "Search log entries with filters and aggregations."
+      long: "Search and analyze log data. Example: search_logs(query='error', timeframe='1h', source='api-server')."
+      verbose: "Full-text log search with analytics. Features: time range, source filtering, regex, aggregations, field extraction. Example: search_logs(query='status:500 AND path:/api/*', timeframe='24h', sources='[\"api-server\", \"worker\"]', aggregations='{\"group_by\": \"path\", \"metric\": \"count\"}', limit=1000). Returns: matching log entries with context. Note: Queries use Lucene syntax. Warning: Large time ranges may be slow and expensive."
+    parameters:
+      - name: query
+        type: string
+        description: "Log search query"
+        required: true
+      - name: timeframe
+        type: string
+        description: "Time range (e.g., 1h, 24h, 7d)"
+        required: false
+        default: "1h"
+      - name: sources
+        type: string
+        description: "JSON array of log sources"
+        required: false
+      - name: aggregations
+        type: string
+        description: "Aggregation config (JSON)"
+        required: false
+      - name: limit
+        type: integer
+        description: "Maximum results"
+        required: false
+        default: 100
+    tags: ["search", "logs", "monitoring", "debug", "analysis"]
+    test_prompts:
+      single:
+        - "Search application logs"
+        - "Find error logs"
+        - "Query log entries"
+        - "Search for log patterns"
+      single_clear:
+        - "I need to search application logs. Search application logs"
+        - "I need to search application logs. Find error logs"
+        - "I need to search application logs. Query log entries"
+        - "I need to search application logs. Search for log patterns"
+
+  - name: search_code
+    descriptions:
+      minimal: "Search code"
+      short: "Search source code"
+      medium: "Search source code repositories for patterns and definitions."
+      long: "Search codebases for code patterns. Example: search_code(query='function parseConfig', repos='[\"main-app\"]')."
+      verbose: "Code search across repositories. Features: regex, symbol search, language filtering, file type filtering. Example: search_code(query='class.*Repository', is_regex=true, repos='[\"backend\", \"services\"]', languages='[\"java\", \"kotlin\"]', include_context=true, context_lines=3). Returns: matching files with line numbers and context. Note: Regex searches are slower. Warning: Large repos may have rate limits."
+    parameters:
+      - name: query
+        type: string
+        description: "Code search pattern"
+        required: true
+      - name: is_regex
+        type: boolean
+        description: "Treat query as regex"
+        required: false
+        default: false
+      - name: repos
+        type: string
+        description: "JSON array of repositories"
+        required: false
+      - name: languages
+        type: string
+        description: "JSON array of languages"
+        required: false
+      - name: include_context
+        type: boolean
+        description: "Include surrounding lines"
+        required: false
+        default: true
+      - name: context_lines
+        type: integer
+        description: "Lines of context"
+        required: false
+        default: 2
+    tags: ["search", "code", "repository", "source", "grep"]
+    test_prompts:
+      single:
+        - "Search source code"
+        - "Find function definitions"
+        - "Search codebase for pattern"
+        - "Grep across repositories"
+      single_clear:
+        - "I need to search source code. Search source code"
+        - "I need to search source code. Find function definitions"
+        - "I need to search source code. Search codebase for pattern"
+        - "I need to search source code. Grep across repositories"
+
+  - name: search_documents
+    descriptions:
+      minimal: "Search docs"
+      short: "Search documents"
+      medium: "Search within documents including PDFs, Word docs, and more."
+      long: "Full-text search within documents. Example: search_documents(query='quarterly report', file_types='[\"pdf\", \"docx\"]')."
+      verbose: "Document content search. Formats: PDF, DOCX, PPTX, TXT, HTML, MD. Features: OCR for scanned docs, metadata search, highlighting, snippets. Example: search_documents(query='revenue projections 2024', folder='/reports', file_types='[\"pdf\", \"xlsx\"]', include_metadata=true, highlight=true). Returns: documents with matching excerpts. Note: OCR-processed documents may have errors. Warning: Large document libraries may require indexing."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query"
+        required: true
+      - name: folder
+        type: string
+        description: "Folder path to search"
+        required: false
+      - name: file_types
+        type: string
+        description: "JSON array of file types"
+        required: false
+      - name: include_metadata
+        type: boolean
+        description: "Include document metadata"
+        required: false
+        default: true
+      - name: highlight
+        type: boolean
+        description: "Highlight matches"
+        required: false
+        default: true
+      - name: limit
+        type: integer
+        description: "Maximum results"
+        required: false
+        default: 20
+    tags: ["search", "documents", "fulltext", "pdf", "files"]
+    test_prompts:
+      single:
+        - "Search in documents"
+        - "Find in PDF files"
+        - "Search document content"
+        - "Full-text document search"
+      single_clear:
+        - "I need to search within documents. Search in documents"
+        - "I need to search within documents. Find in PDF files"
+        - "I need to search within documents. Search document content"
+        - "I need to search within documents. Full-text document search"
+
+  - name: search_database
+    descriptions:
+      minimal: "Search database"
+      short: "Search database records"
+      medium: "Search database tables with advanced filtering."
+      long: "Search structured database data. Example: search_database(table='customers', query='name:John', filters='{\"status\": \"active\"}')."
+      verbose: "Database search with full-text and structured queries. Features: column search, joins, aggregations, pagination. Example: search_database(table='orders', query='shipped', filters='{\"date_gte\": \"2024-01-01\", \"total_gt\": 100}', select='[\"id\", \"customer\", \"total\"]', order_by='date DESC', limit=50). Returns: matching records with specified columns. Note: Complex queries may impact database performance. Warning: Ensure proper indexing for large tables."
+    parameters:
+      - name: table
+        type: string
+        description: "Table or collection name"
+        required: true
+      - name: query
+        type: string
+        description: "Full-text search query"
+        required: false
+      - name: filters
+        type: string
+        description: "JSON filter conditions"
+        required: false
+      - name: select
+        type: string
+        description: "JSON array of columns"
+        required: false
+      - name: order_by
+        type: string
+        description: "Sort order"
+        required: false
+      - name: limit
+        type: integer
+        description: "Maximum results"
+        required: false
+        default: 100
+    tags: ["search", "database", "query", "records", "sql"]
+    test_prompts:
+      single:
+        - "Search database records"
+        - "Query customer table"
+        - "Find database entries"
+        - "Search in database"
+      single_clear:
+        - "I need to search database records. Search database records"
+        - "I need to search database records. Query customer table"
+        - "I need to search database records. Find database entries"
+        - "I need to search database records. Search in database"
+
+  - name: search_events
+    descriptions:
+      minimal: "Search events"
+      short: "Search calendar events"
+      medium: "Search for calendar events and meetings."
+      long: "Search calendar events by text and filters. Example: search_events(query='standup', start_date='2024-01-01', calendars='[\"work\"]')."
+      verbose: "Calendar event search. Features: text search in title/description, date range, attendees, location, recurring events. Example: search_events(query='project review', start_date='2024-01-01', end_date='2024-03-31', calendars='[\"work\", \"team\"]', attendee='boss@company.com', include_recurring=true). Returns: matching events with details. Note: Recurring events may return multiple instances. Warning: Permission required for shared calendars."
+    parameters:
+      - name: query
+        type: string
+        description: "Search text"
+        required: false
+      - name: start_date
+        type: string
+        description: "Start date (ISO 8601)"
+        required: false
+      - name: end_date
+        type: string
+        description: "End date (ISO 8601)"
+        required: false
+      - name: calendars
+        type: string
+        description: "JSON array of calendars"
+        required: false
+      - name: attendee
+        type: string
+        description: "Filter by attendee"
+        required: false
+      - name: include_recurring
+        type: boolean
+        description: "Include recurring instances"
+        required: false
+        default: true
+    tags: ["search", "events", "calendar", "meetings", "schedule"]
+    test_prompts:
+      single:
+        - "Search calendar events"
+        - "Find meetings about project"
+        - "Search for appointments"
+        - "Find events with attendee"
+      single_clear:
+        - "I need to search calendar events. Search calendar events"
+        - "I need to search calendar events. Find meetings about project"
+        - "I need to search calendar events. Search for appointments"
+        - "I need to search calendar events. Find events with attendee"
+
+  - name: search_emails
+    descriptions:
+      minimal: "Search emails"
+      short: "Search email messages"
+      medium: "Search email messages with advanced filters."
+      long: "Search email inbox and folders. Example: search_emails(query='invoice', folder='inbox', from='vendor@company.com')."
+      verbose: "Email search with full-text and metadata filtering. Features: subject/body search, sender/recipient, date range, attachments, labels. Example: search_emails(query='contract renewal', folder='all', from='legal@partner.com', has_attachment=true, date_from='2024-01-01', labels='[\"important\"]'). Returns: matching emails with snippets. Note: Searches may not include deleted items. Warning: Large mailboxes may be slow to search."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query"
+        required: true
+      - name: folder
+        type: string
+        description: "Email folder"
+        required: false
+        default: "inbox"
+      - name: from
+        type: string
+        description: "Sender email filter"
+        required: false
+      - name: to
+        type: string
+        description: "Recipient email filter"
+        required: false
+      - name: has_attachment
+        type: boolean
+        description: "Filter emails with attachments"
+        required: false
+      - name: date_from
+        type: string
+        description: "Start date"
+        required: false
+      - name: date_to
+        type: string
+        description: "End date"
+        required: false
+    tags: ["search", "email", "messages", "inbox", "filter"]
+    test_prompts:
+      single:
+        - "Search my emails"
+        - "Find emails from sender"
+        - "Search for attachments"
+        - "Find email about topic"
+      single_clear:
+        - "I need to search emails. Search my emails"
+        - "I need to search emails. Find emails from sender"
+        - "I need to search emails. Search for attachments"
+        - "I need to search emails. Find email about topic"
+
+  - name: search_products
+    descriptions:
+      minimal: "Search products"
+      short: "Search product catalog"
+      medium: "Search products with filters for category, price, and attributes."
+      long: "Search product catalog. Example: search_products(query='wireless headphones', category='electronics', max_price=200)."
+      verbose: "E-commerce product search. Features: text search, category filtering, price range, attributes, availability, ratings. Example: search_products(query='running shoes', category='footwear', min_price=50, max_price=150, attributes='{\"size\": \"10\", \"color\": \"black\"}', in_stock=true, min_rating=4.0, sort_by='rating DESC'). Returns: products with details, images, pricing. Note: Availability is near real-time. Warning: Prices may vary by region."
+    parameters:
+      - name: query
+        type: string
+        description: "Product search query"
+        required: false
+      - name: category
+        type: string
+        description: "Product category"
+        required: false
+      - name: min_price
+        type: number
+        description: "Minimum price"
+        required: false
+      - name: max_price
+        type: number
+        description: "Maximum price"
+        required: false
+      - name: attributes
+        type: string
+        description: "JSON attribute filters"
+        required: false
+      - name: in_stock
+        type: boolean
+        description: "Only in-stock items"
+        required: false
+        default: false
+      - name: sort_by
+        type: string
+        description: "Sort order"
+        required: false
+        default: "relevance"
+    tags: ["search", "products", "ecommerce", "catalog", "shopping"]
+    test_prompts:
+      single:
+        - "Search for products"
+        - "Find headphones under $100"
+        - "Search product catalog"
+        - "Find items in category"
+      single_clear:
+        - "I need to search products. Search for products"
+        - "I need to search products. Find headphones under $100"
+        - "I need to search products. Search product catalog"
+        - "I need to search products. Find items in category"
+
+  - name: search_users
+    descriptions:
+      minimal: "Search users"
+      short: "Search user directory"
+      medium: "Search for users in the directory or database."
+      long: "Search user directory. Example: search_users(query='john', department='engineering', status='active')."
+      verbose: "User directory search. Fields: name, email, department, role, location, status. Example: search_users(query='manager', department='sales', location='New York', status='active', include_details=true, limit=50). Returns: matching user profiles. Features: partial matching, phone lookup, org hierarchy. Note: Results respect permission levels. Warning: PII should be handled according to privacy policies."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query"
+        required: false
+      - name: department
+        type: string
+        description: "Filter by department"
+        required: false
+      - name: role
+        type: string
+        description: "Filter by role"
+        required: false
+      - name: location
+        type: string
+        description: "Filter by location"
+        required: false
+      - name: status
+        type: string
+        description: "User status"
+        required: false
+        enum: ["active", "inactive", "all"]
+      - name: include_details
+        type: boolean
+        description: "Include full profile"
+        required: false
+        default: false
+    tags: ["search", "users", "directory", "people", "employees"]
+    test_prompts:
+      single:
+        - "Search for users"
+        - "Find employees in department"
+        - "Look up user by name"
+        - "Search user directory"
+      single_clear:
+        - "I need to search for users. Search for users"
+        - "I need to search for users. Find employees in department"
+        - "I need to search for users. Look up user by name"
+        - "I need to search for users. Search user directory"

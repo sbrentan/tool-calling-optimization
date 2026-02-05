@@ -1,0 +1,1372 @@
+category: security_operations
+
+tools:
+  - name: encrypt_data
+    descriptions:
+      minimal: "Encrypt data"
+      short: "Encrypt data using a cryptographic algorithm"
+      medium: "Encrypt text or data using symmetric encryption algorithms like AES with a password or key."
+      long: "Encrypt data using symmetric encryption. Supports AES-256, ChaCha20, and other algorithms. Provide a password (key will be derived) or raw key. Example: encrypt_data(data='secret message', password='my_password', algorithm='aes-256-gcm')."
+      verbose: "Encrypt data using symmetric encryption algorithms. Algorithms: 'aes-256-gcm' (recommended, authenticated), 'aes-256-cbc', 'chacha20-poly1305' (fast, modern). Key can be derived from password using PBKDF2, scrypt, or Argon2, or provided directly. Returns ciphertext with IV/nonce. Example: encrypt_data(data='sensitive info', password='strongP@ssw0rd!', algorithm='aes-256-gcm', kdf='argon2', output_format='base64'). Note: GCM and Poly1305 modes provide authentication. Warning: Store encryption keys securely; losing them means losing data access."
+    parameters:
+      - name: data
+        type: string
+        description: "Data to encrypt"
+        required: true
+      - name: password
+        type: string
+        description: "Password for key derivation"
+        required: false
+      - name: key
+        type: string
+        description: "Encryption key (hex or base64)"
+        required: false
+      - name: algorithm
+        type: string
+        description: "Encryption algorithm"
+        required: false
+        default: "aes-256-gcm"
+        enum: ["aes-256-gcm", "aes-256-cbc", "aes-128-gcm", "chacha20-poly1305"]
+      - name: kdf
+        type: string
+        description: "Key derivation function"
+        required: false
+        default: "pbkdf2"
+        enum: ["pbkdf2", "scrypt", "argon2"]
+      - name: output_format
+        type: string
+        description: "Output format"
+        required: false
+        default: "base64"
+        enum: ["base64", "hex"]
+    tags: ["security", "encrypt", "aes", "crypto", "cipher"]
+    test_prompts:
+      single:
+        - "Encrypt this message with a password"
+        - "Encrypt the sensitive data using AES"
+        - "Secure the text with encryption"
+        - "Encrypt the file contents"
+      single_clear:
+        - "Please encrypt data securely. Encrypt this message with a password"
+        - "Please encrypt data securely. Encrypt the sensitive data using AES"
+        - "Please encrypt data securely. Secure the text with encryption"
+        - "Please encrypt data securely. Encrypt the file contents"
+
+  - name: decrypt_data
+    descriptions:
+      minimal: "Decrypt data"
+      short: "Decrypt encrypted data"
+      medium: "Decrypt data that was encrypted with symmetric encryption using the corresponding password or key."
+      long: "Decrypt symmetrically encrypted data. Provide the same password/key and algorithm used for encryption. Example: decrypt_data(data='encrypted_base64', password='my_password', algorithm='aes-256-gcm')."
+      verbose: "Decrypt data encrypted with symmetric encryption. Must use the same algorithm, key (or password with same KDF settings), and provide the IV/nonce. Authenticated modes (GCM, Poly1305) verify integrity automatically. Example: decrypt_data(data='base64_ciphertext', password='strongP@ssw0rd!', algorithm='aes-256-gcm', kdf='argon2', input_format='base64'). Note: Decryption fails if password or key is incorrect. Warning: Authentication failure in GCM mode indicates tampering."
+    parameters:
+      - name: data
+        type: string
+        description: "Encrypted data"
+        required: true
+      - name: password
+        type: string
+        description: "Password for key derivation"
+        required: false
+      - name: key
+        type: string
+        description: "Decryption key (hex or base64)"
+        required: false
+      - name: algorithm
+        type: string
+        description: "Encryption algorithm used"
+        required: false
+        default: "aes-256-gcm"
+        enum: ["aes-256-gcm", "aes-256-cbc", "aes-128-gcm", "chacha20-poly1305"]
+      - name: kdf
+        type: string
+        description: "Key derivation function used"
+        required: false
+        default: "pbkdf2"
+        enum: ["pbkdf2", "scrypt", "argon2"]
+      - name: input_format
+        type: string
+        description: "Input format"
+        required: false
+        default: "base64"
+        enum: ["base64", "hex"]
+    tags: ["security", "decrypt", "aes", "crypto", "cipher"]
+    test_prompts:
+      single:
+        - "Decrypt this encrypted message"
+        - "Decrypt the data with the password"
+        - "Decode the encrypted content"
+        - "Unlock the encrypted file"
+      single_clear:
+        - "I need to decrypt encrypted data. Decrypt this encrypted message"
+        - "I need to decrypt encrypted data. Decrypt the data with the password"
+        - "I need to decrypt encrypted data. Decode the encrypted content"
+        - "I need to decrypt encrypted data. Unlock the encrypted file"
+
+  - name: generate_keypair
+    descriptions:
+      minimal: "Generate key pair"
+      short: "Generate a cryptographic key pair"
+      medium: "Generate a public/private key pair for asymmetric encryption or digital signatures."
+      long: "Generate an asymmetric key pair for encryption or signing. Supports RSA, ECDSA, and Ed25519. Example: generate_keypair(algorithm='rsa', key_size=4096, output_format='pem')."
+      verbose: "Generate cryptographic key pairs for asymmetric operations. Algorithms: 'rsa' (widely compatible, larger keys), 'ecdsa' (smaller keys, fast), 'ed25519' (modern, fast, recommended for signatures). RSA key sizes: 2048, 3072, 4096. ECDSA curves: P-256, P-384, P-521. Output formats: 'pem' (text), 'der' (binary), 'jwk' (JSON Web Key). Example: generate_keypair(algorithm='ed25519', output_format='pem', passphrase='protect_private_key'). Note: Ed25519 keys are always 256 bits. Warning: Protect private keys; compromise allows impersonation."
+    parameters:
+      - name: algorithm
+        type: string
+        description: "Key algorithm"
+        required: true
+        enum: ["rsa", "ecdsa", "ed25519", "x25519"]
+      - name: key_size
+        type: integer
+        description: "Key size for RSA"
+        required: false
+        default: 4096
+      - name: curve
+        type: string
+        description: "Curve for ECDSA"
+        required: false
+        default: "P-256"
+        enum: ["P-256", "P-384", "P-521"]
+      - name: output_format
+        type: string
+        description: "Key format"
+        required: false
+        default: "pem"
+        enum: ["pem", "der", "jwk"]
+      - name: passphrase
+        type: string
+        description: "Passphrase to protect private key"
+        required: false
+      - name: output_private
+        type: string
+        description: "File path for private key"
+        required: false
+      - name: output_public
+        type: string
+        description: "File path for public key"
+        required: false
+    tags: ["security", "keypair", "rsa", "ecdsa", "asymmetric", "crypto"]
+    test_prompts:
+      single:
+        - "Generate an RSA key pair"
+        - "Create a new SSH key pair"
+        - "Generate an Ed25519 key pair"
+        - "Create public and private keys"
+      single_clear:
+        - "I want to generate a cryptographic key pair. Generate an RSA key pair"
+        - "I want to generate a cryptographic key pair. Create a new SSH key pair"
+        - "I want to generate a cryptographic key pair. Generate an Ed25519 key pair"
+        - "I want to generate a cryptographic key pair. Create public and private keys"
+
+  - name: sign_data
+    descriptions:
+      minimal: "Sign data"
+      short: "Create a digital signature"
+      medium: "Create a cryptographic signature for data using a private key to verify authenticity."
+      long: "Sign data with a private key to create a verifiable signature. Others can verify the signature using the corresponding public key. Example: sign_data(data='message to sign', private_key_file='private.pem', algorithm='rsa-sha256')."
+      verbose: "Create a digital signature to prove data authenticity and integrity. Sign algorithms: 'rsa-sha256', 'rsa-sha384', 'rsa-sha512', 'ecdsa-sha256', 'ed25519'. The signature can be verified with the public key without revealing the private key. Example: sign_data(data='important document', private_key='-----BEGIN PRIVATE KEY-----...', algorithm='ed25519', output_format='base64'). Note: Ed25519 signatures are always 64 bytes. Warning: Never share your private key."
+    parameters:
+      - name: data
+        type: string
+        description: "Data to sign"
+        required: true
+      - name: private_key
+        type: string
+        description: "Private key (PEM format)"
+        required: false
+      - name: private_key_file
+        type: string
+        description: "Path to private key file"
+        required: false
+      - name: passphrase
+        type: string
+        description: "Private key passphrase if encrypted"
+        required: false
+      - name: algorithm
+        type: string
+        description: "Signature algorithm"
+        required: false
+        default: "rsa-sha256"
+        enum: ["rsa-sha256", "rsa-sha384", "rsa-sha512", "ecdsa-sha256", "ed25519"]
+      - name: output_format
+        type: string
+        description: "Signature format"
+        required: false
+        default: "base64"
+        enum: ["base64", "hex"]
+    tags: ["security", "sign", "signature", "crypto", "verify"]
+    test_prompts:
+      single:
+        - "Sign this document with my private key"
+        - "Create a digital signature for the data"
+        - "Sign the message for verification"
+        - "Generate a signature for the file"
+      single_clear:
+        - "I need to create a digital signature. Sign this document with my private key"
+        - "I need to create a digital signature. Create a digital signature for the data"
+        - "I need to create a digital signature. Sign the message for verification"
+        - "I need to create a digital signature. Generate a signature for the file"
+
+  - name: verify_signature
+    descriptions:
+      minimal: "Verify signature"
+      short: "Verify a digital signature"
+      medium: "Verify that a digital signature is valid for the given data and public key."
+      long: "Verify a digital signature using the signer's public key. Confirms data hasn't been tampered with and was signed by the private key holder. Example: verify_signature(data='original message', signature='base64_sig', public_key_file='public.pem')."
+      verbose: "Verify a digital signature to confirm data integrity and authenticity. Returns true if valid, false if invalid. A valid signature proves: 1) data hasn't changed since signing, 2) signature was created with the corresponding private key. Example: verify_signature(data='important document', signature='base64_signature', public_key='-----BEGIN PUBLIC KEY-----...', algorithm='ed25519'). Note: Verification doesn't require the private key. Warning: Invalid signature may indicate tampering or wrong key."
+    parameters:
+      - name: data
+        type: string
+        description: "Original signed data"
+        required: true
+      - name: signature
+        type: string
+        description: "Signature to verify"
+        required: true
+      - name: public_key
+        type: string
+        description: "Public key (PEM format)"
+        required: false
+      - name: public_key_file
+        type: string
+        description: "Path to public key file"
+        required: false
+      - name: algorithm
+        type: string
+        description: "Signature algorithm"
+        required: false
+        default: "rsa-sha256"
+        enum: ["rsa-sha256", "rsa-sha384", "rsa-sha512", "ecdsa-sha256", "ed25519"]
+      - name: signature_format
+        type: string
+        description: "Signature format"
+        required: false
+        default: "base64"
+        enum: ["base64", "hex"]
+    tags: ["security", "verify", "signature", "crypto", "authenticate"]
+    test_prompts:
+      single:
+        - "Verify the signature on this document"
+        - "Check if the signature is valid"
+        - "Validate the digital signature"
+        - "Verify the message authenticity"
+      single_clear:
+        - "I want to verify a digital signature. Verify the signature on this document"
+        - "I want to verify a digital signature. Check if the signature is valid"
+        - "I want to verify a digital signature. Validate the digital signature"
+        - "I want to verify a digital signature. Verify the message authenticity"
+
+  - name: generate_password
+    descriptions:
+      minimal: "Generate password"
+      short: "Generate a secure random password"
+      medium: "Generate a cryptographically secure random password with customizable length and character sets."
+      long: "Generate a secure random password. Customize length, character types, and excluded characters. Example: generate_password(length=20, uppercase=true, lowercase=true, numbers=true, symbols=true)."
+      verbose: "Generate cryptographically secure random passwords using secure random number generators. Options for character sets: uppercase, lowercase, numbers, symbols. Can exclude ambiguous characters (0/O, 1/l/I). Can require at least one character from each selected set. Example: generate_password(length=24, uppercase=true, lowercase=true, numbers=true, symbols=true, exclude_ambiguous=true, require_each=true). Note: Longer passwords are exponentially harder to crack. Warning: Default system RNG may not be suitable for high-security applications."
+    parameters:
+      - name: length
+        type: integer
+        description: "Password length"
+        required: false
+        default: 16
+      - name: uppercase
+        type: boolean
+        description: "Include uppercase letters (A-Z)"
+        required: false
+        default: true
+      - name: lowercase
+        type: boolean
+        description: "Include lowercase letters (a-z)"
+        required: false
+        default: true
+      - name: numbers
+        type: boolean
+        description: "Include numbers (0-9)"
+        required: false
+        default: true
+      - name: symbols
+        type: boolean
+        description: "Include symbols (!@#$%^&*...)"
+        required: false
+        default: true
+      - name: exclude_ambiguous
+        type: boolean
+        description: "Exclude ambiguous characters (0O1lI)"
+        required: false
+        default: false
+      - name: require_each
+        type: boolean
+        description: "Require at least one of each selected type"
+        required: false
+        default: false
+      - name: exclude_chars
+        type: string
+        description: "Specific characters to exclude"
+        required: false
+    tags: ["security", "password", "generate", "random", "secret"]
+    test_prompts:
+      single:
+        - "Generate a strong password"
+        - "Create a 20 character random password"
+        - "Generate a password without special characters"
+        - "Make a secure password for my account"
+      single_clear:
+        - "I need to generate a secure password. Generate a strong password"
+        - "I need to generate a secure password. Create a 20 character random password"
+        - "I need to generate a secure password. Generate a password without special characters"
+        - "I need to generate a secure password. Make a secure password for my account"
+
+  - name: check_password_strength
+    descriptions:
+      minimal: "Check password strength"
+      short: "Analyze password strength"
+      medium: "Analyze a password to determine its strength, including entropy and estimated crack time."
+      long: "Evaluate password strength. Returns score, entropy, estimated crack time, and improvement suggestions. Example: check_password_strength(password='MyP@ssw0rd123')."
+      verbose: "Analyze password strength using multiple metrics. Evaluates: length, character diversity, common patterns, dictionary words, keyboard sequences. Returns: strength score (0-100), entropy bits, estimated crack times (online/offline), specific weaknesses, and suggestions. Uses zxcvbn-style analysis. Example: check_password_strength(password='MyP@ssw0rd123', check_breached=true). Note: 'Breached' check queries haveibeenpwned API. Warning: Common passwords like 'password123' are considered weak despite meeting complexity requirements."
+    parameters:
+      - name: password
+        type: string
+        description: "Password to analyze"
+        required: true
+      - name: check_breached
+        type: boolean
+        description: "Check against known breach databases"
+        required: false
+        default: false
+      - name: user_inputs
+        type: string
+        description: "JSON array of user-related strings to penalize"
+        required: false
+    tags: ["security", "password", "strength", "analyze", "check"]
+    test_prompts:
+      single:
+        - "Check how strong this password is"
+        - "Analyze the password strength"
+        - "Is this a secure password?"
+        - "Rate the strength of my password"
+      single_clear:
+        - "I need to analyze password strength. Check how strong this password is"
+        - "I need to analyze password strength. Analyze the password strength"
+        - "I need to analyze password strength. Is this a secure password?"
+        - "I need to analyze password strength. Rate the strength of my password"
+
+  - name: hash_password
+    descriptions:
+      minimal: "Hash password"
+      short: "Hash a password for secure storage"
+      medium: "Hash a password using a secure password hashing algorithm suitable for storage."
+      long: "Hash a password using algorithms designed for password storage. Includes salt and is designed to be slow to resist brute force. Example: hash_password(password='user_password', algorithm='argon2')."
+      verbose: "Hash passwords securely for database storage. Algorithms: 'argon2id' (recommended, memory-hard), 'bcrypt' (widely supported, good), 'scrypt' (memory-hard), 'pbkdf2' (compatible, needs high iterations). Each algorithm has tunable cost parameters. Returns hash including algorithm, salt, and parameters. Example: hash_password(password='userP@ss', algorithm='argon2id', memory_cost=65536, time_cost=3). Note: Password hashing is intentionally slow. Warning: Never use fast hashes like MD5/SHA for passwords."
+    parameters:
+      - name: password
+        type: string
+        description: "Password to hash"
+        required: true
+      - name: algorithm
+        type: string
+        description: "Hashing algorithm"
+        required: false
+        default: "argon2id"
+        enum: ["argon2id", "argon2i", "bcrypt", "scrypt", "pbkdf2"]
+      - name: memory_cost
+        type: integer
+        description: "Memory cost for Argon2 (KB)"
+        required: false
+        default: 65536
+      - name: time_cost
+        type: integer
+        description: "Time cost/iterations"
+        required: false
+        default: 3
+      - name: parallelism
+        type: integer
+        description: "Parallelism for Argon2"
+        required: false
+        default: 4
+    tags: ["security", "password", "hash", "bcrypt", "argon2"]
+    test_prompts:
+      single:
+        - "Hash this password for storage"
+        - "Create a bcrypt hash of the password"
+        - "Hash the password using Argon2"
+        - "Securely hash the user's password"
+      single_clear:
+        - "I need to securely hash a password. Hash this password for storage"
+        - "I need to securely hash a password. Create a bcrypt hash of the password"
+        - "I need to securely hash a password. Hash the password using Argon2"
+        - "I need to securely hash a password. Securely hash the user's password"
+
+  - name: verify_password_hash
+    descriptions:
+      minimal: "Verify password hash"
+      short: "Verify a password against a hash"
+      medium: "Verify that a password matches a previously created password hash."
+      long: "Verify a password against a stored hash. Returns true if the password matches. Example: verify_password_hash(password='user_input', hash='$argon2id$...')."
+      verbose: "Verify a password against its stored hash for authentication. The hash includes the algorithm and parameters used, so no additional configuration needed. Uses constant-time comparison to prevent timing attacks. Example: verify_password_hash(password='userInputPassword', hash='$argon2id$v=19$m=65536,t=3,p=4$...'). Note: Verification is as slow as hashing (by design). Warning: Return only 'valid' or 'invalid'; don't reveal which part failed."
+    parameters:
+      - name: password
+        type: string
+        description: "Password to verify"
+        required: true
+      - name: hash
+        type: string
+        description: "Password hash to verify against"
+        required: true
+    tags: ["security", "password", "verify", "hash", "authenticate"]
+    test_prompts:
+      single:
+        - "Check if the password matches the hash"
+        - "Verify the user's password"
+        - "Validate the password against the stored hash"
+        - "Does this password match?"
+      single_clear:
+        - "I need to verify a password hash. Check if the password matches the hash"
+        - "I need to verify a password hash. Verify the user's password"
+        - "I need to verify a password hash. Validate the password against the stored hash"
+        - "I need to verify a password hash. Does this password match?"
+
+  - name: generate_api_key
+    descriptions:
+      minimal: "Generate API key"
+      short: "Generate a random API key"
+      medium: "Generate a secure random API key with optional prefix and configurable format."
+      long: "Generate a cryptographically secure API key. Customize format, length, prefix, and character set. Example: generate_api_key(length=32, prefix='sk_live_', format='base62')."
+      verbose: "Generate secure API keys for authentication. Formats: 'hex' (0-9a-f), 'base62' (0-9a-zA-Z), 'base64' (includes +/), 'base64url' (URL-safe). Can add prefix (like 'sk_live_', 'pk_test_'), checksum for validation, and timestamp. Example: generate_api_key(length=32, prefix='api_', format='base62', add_checksum=true). Note: Keys should be stored hashed, not plaintext. Warning: Treat API keys like passwords; rotate if compromised."
+    parameters:
+      - name: length
+        type: integer
+        description: "Key length in characters"
+        required: false
+        default: 32
+      - name: prefix
+        type: string
+        description: "Key prefix (e.g., 'sk_live_')"
+        required: false
+      - name: format
+        type: string
+        description: "Character format"
+        required: false
+        default: "base62"
+        enum: ["hex", "base62", "base64", "base64url"]
+      - name: add_checksum
+        type: boolean
+        description: "Add checksum suffix"
+        required: false
+        default: false
+    tags: ["security", "api", "key", "generate", "token"]
+    test_prompts:
+      single:
+        - "Generate a new API key"
+        - "Create a secret key for the API"
+        - "Generate an API token with a prefix"
+        - "Make a new authentication key"
+      single_clear:
+        - "I need to generate an API key. Generate a new API key"
+        - "I need to generate an API key. Create a secret key for the API"
+        - "I need to generate an API key. Generate an API token with a prefix"
+        - "I need to generate an API key. Make a new authentication key"
+
+  - name: generate_totp_secret
+    descriptions:
+      minimal: "Generate TOTP secret"
+      short: "Generate a TOTP secret for 2FA"
+      medium: "Generate a secret key for Time-based One-Time Passwords (TOTP/2FA) with optional QR code."
+      long: "Generate a TOTP secret for two-factor authentication. Compatible with Google Authenticator and similar apps. Can generate provisioning URI and QR code. Example: generate_totp_secret(issuer='MyApp', account='user@example.com')."
+      verbose: "Generate TOTP secrets for two-factor authentication. Creates secret compatible with RFC 6238 and major authenticator apps. Returns: secret key (base32), provisioning URI for QR codes, optional QR code image. Parameters: algorithm (SHA1/SHA256/SHA512), digits (6 or 8), period (default 30s). Example: generate_totp_secret(issuer='MyService', account='john@example.com', algorithm='SHA256', digits=6, period=30, generate_qr=true). Note: SHA1 with 6 digits and 30s period is most compatible. Warning: Store secrets securely; they allow account access bypass."
+    parameters:
+      - name: issuer
+        type: string
+        description: "Service name (appears in authenticator app)"
+        required: true
+      - name: account
+        type: string
+        description: "User identifier (usually email)"
+        required: true
+      - name: algorithm
+        type: string
+        description: "HMAC algorithm"
+        required: false
+        default: "SHA1"
+        enum: ["SHA1", "SHA256", "SHA512"]
+      - name: digits
+        type: integer
+        description: "Number of digits in OTP"
+        required: false
+        default: "6"
+        enum: ["6", "8"]
+      - name: period
+        type: integer
+        description: "Time period in seconds"
+        required: false
+        default: 30
+      - name: generate_qr
+        type: boolean
+        description: "Generate QR code image"
+        required: false
+        default: true
+      - name: qr_output
+        type: string
+        description: "Path for QR code image"
+        required: false
+    tags: ["security", "totp", "2fa", "mfa", "otp"]
+    test_prompts:
+      single:
+        - "Generate a 2FA secret for my app"
+        - "Create a TOTP secret for the user"
+        - "Set up two-factor authentication"
+        - "Generate an authenticator app secret"
+      single_clear:
+        - "I need to set up two-factor authentication. Generate a 2FA secret for my app"
+        - "I need to set up two-factor authentication. Create a TOTP secret for the user"
+        - "I need to set up two-factor authentication. Set up two-factor authentication"
+        - "I need to set up two-factor authentication. Generate an authenticator app secret"
+
+  - name: verify_totp
+    descriptions:
+      minimal: "Verify TOTP"
+      short: "Verify a TOTP code"
+      medium: "Verify a TOTP code entered by a user against their secret key."
+      long: "Verify a TOTP code for two-factor authentication. Allows for clock drift with configurable window. Example: verify_totp(secret='BASE32SECRET', code='123456')."
+      verbose: "Verify a Time-based One-Time Password for 2FA authentication. Compares the user-entered code against the expected code for the current time window. Window parameter allows for clock drift (1 = check ±1 period). Returns valid/invalid and optionally the matching time offset. Example: verify_totp(secret='JBSWY3DPEHPK3PXP', code='123456', window=1, algorithm='SHA1'). Note: Each code should only be accepted once (implement replay prevention). Warning: Server time must be accurate for TOTP to work."
+    parameters:
+      - name: secret
+        type: string
+        description: "TOTP secret (base32)"
+        required: true
+      - name: code
+        type: string
+        description: "TOTP code to verify"
+        required: true
+      - name: window
+        type: integer
+        description: "Time window tolerance (periods)"
+        required: false
+        default: 1
+      - name: algorithm
+        type: string
+        description: "HMAC algorithm"
+        required: false
+        default: "SHA1"
+        enum: ["SHA1", "SHA256", "SHA512"]
+      - name: digits
+        type: integer
+        description: "Expected number of digits"
+        required: false
+        default: 6
+      - name: period
+        type: integer
+        description: "Time period in seconds"
+        required: false
+        default: 30
+    tags: ["security", "totp", "2fa", "verify", "otp"]
+    test_prompts:
+      single:
+        - "Verify the 2FA code"
+        - "Check if the TOTP code is valid"
+        - "Validate the authenticator code"
+        - "Verify the one-time password"
+      single_clear:
+        - "I need to verify a two-factor authentication code. Verify the 2FA code"
+        - "I need to verify a two-factor authentication code. Check if the TOTP code is valid"
+        - "I need to verify a two-factor authentication code. Validate the authenticator code"
+        - "I need to verify a two-factor authentication code. Verify the one-time password"
+
+  - name: generate_jwt
+    descriptions:
+      minimal: "Generate JWT"
+      short: "Generate a JSON Web Token"
+      medium: "Create a JSON Web Token (JWT) with custom claims and signature."
+      long: "Generate a signed JWT for authentication or authorization. Include custom claims, expiration, and choose signing algorithm. Example: generate_jwt(payload='{\"user_id\": 123}', secret='my_secret', algorithm='HS256', expires_in=3600)."
+      verbose: "Create JSON Web Tokens for stateless authentication. Algorithms: 'HS256/384/512' (symmetric, shared secret), 'RS256/384/512' (asymmetric, RSA keys), 'ES256/384/512' (asymmetric, ECDSA). Standard claims: iss (issuer), sub (subject), aud (audience), exp (expiration), nbf (not before), iat (issued at), jti (JWT ID). Example: generate_jwt(payload='{\"user_id\": 123, \"roles\": [\"admin\"]}', secret='strong_secret_key', algorithm='HS256', expires_in=3600, issuer='myapp'). Note: Short expiration times improve security. Warning: Never include sensitive data in JWT payloads (they're base64, not encrypted)."
+    parameters:
+      - name: payload
+        type: string
+        description: "JSON object of claims"
+        required: true
+      - name: secret
+        type: string
+        description: "Secret for HMAC signing"
+        required: false
+      - name: private_key
+        type: string
+        description: "Private key for RSA/ECDSA"
+        required: false
+      - name: algorithm
+        type: string
+        description: "Signing algorithm"
+        required: false
+        default: "HS256"
+        enum: ["HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512"]
+      - name: expires_in
+        type: integer
+        description: "Expiration time in seconds"
+        required: false
+        default: 3600
+      - name: issuer
+        type: string
+        description: "Token issuer (iss claim)"
+        required: false
+      - name: audience
+        type: string
+        description: "Token audience (aud claim)"
+        required: false
+      - name: subject
+        type: string
+        description: "Token subject (sub claim)"
+        required: false
+    tags: ["security", "jwt", "token", "auth", "generate"]
+    test_prompts:
+      single:
+        - "Generate a JWT for the user"
+        - "Create an authentication token"
+        - "Generate a JWT that expires in 1 hour"
+        - "Create a signed JWT with user claims"
+      single_clear:
+        - "I need to generate a JSON Web Token. Generate a JWT for the user"
+        - "I need to generate a JSON Web Token. Create an authentication token"
+        - "I need to generate a JSON Web Token. Generate a JWT that expires in 1 hour"
+        - "I need to generate a JSON Web Token. Create a signed JWT with user claims"
+
+  - name: verify_jwt
+    descriptions:
+      minimal: "Verify JWT"
+      short: "Verify and decode a JWT"
+      medium: "Verify a JWT's signature and decode its payload, checking expiration and other claims."
+      long: "Verify a JWT signature and extract the payload. Checks signature validity, expiration, and optionally issuer/audience. Example: verify_jwt(token='eyJ...', secret='my_secret')."
+      verbose: "Verify JSON Web Token signature and validate claims. Checks: signature validity, expiration (exp), not-before (nbf), issuer (iss) if provided, audience (aud) if provided. Returns decoded payload or validation error. Example: verify_jwt(token='eyJhbGciOiJIUzI1NiJ9...', secret='strong_secret', verify_expiration=true, issuer='myapp', audience='api'). Note: Always verify tokens on the server side. Warning: Expired or invalid tokens should be rejected entirely."
+    parameters:
+      - name: token
+        type: string
+        description: "JWT to verify"
+        required: true
+      - name: secret
+        type: string
+        description: "Secret for HMAC verification"
+        required: false
+      - name: public_key
+        type: string
+        description: "Public key for RSA/ECDSA"
+        required: false
+      - name: algorithms
+        type: string
+        description: "JSON array of allowed algorithms"
+        required: false
+        default: "[\"HS256\"]"
+      - name: verify_expiration
+        type: boolean
+        description: "Check expiration claim"
+        required: false
+        default: true
+      - name: issuer
+        type: string
+        description: "Expected issuer"
+        required: false
+      - name: audience
+        type: string
+        description: "Expected audience"
+        required: false
+    tags: ["security", "jwt", "verify", "token", "decode"]
+    test_prompts:
+      single:
+        - "Verify and decode this JWT"
+        - "Check if the token is valid"
+        - "Validate the authentication token"
+        - "Decode the JWT and verify its signature"
+      single_clear:
+        - "I need to verify a JWT token. Verify and decode this JWT"
+        - "I need to verify a JWT token. Check if the token is valid"
+        - "I need to verify a JWT token. Validate the authentication token"
+        - "I need to verify a JWT token. Decode the JWT and verify its signature"
+
+  - name: encrypt_file
+    descriptions:
+      minimal: "Encrypt file"
+      short: "Encrypt a file"
+      medium: "Encrypt a file using a password or key, creating a secure encrypted version."
+      long: "Encrypt an entire file using symmetric encryption. The encrypted file can only be decrypted with the same password/key. Example: encrypt_file(input='document.pdf', output='document.pdf.enc', password='secure_password')."
+      verbose: "Encrypt files for secure storage or transfer. Uses authenticated encryption (AES-GCM) by default. Large files are processed in chunks for memory efficiency. Can embed filename and metadata in encrypted container. Example: encrypt_file(input='sensitive.xlsx', output='sensitive.xlsx.enc', password='strongP@ssword!', algorithm='aes-256-gcm', embed_filename=true). Note: Original file is not deleted automatically. Warning: Losing the password means permanent data loss."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to file to encrypt"
+        required: true
+      - name: output
+        type: string
+        description: "Path for encrypted file"
+        required: true
+      - name: password
+        type: string
+        description: "Encryption password"
+        required: false
+      - name: key_file
+        type: string
+        description: "Path to key file"
+        required: false
+      - name: algorithm
+        type: string
+        description: "Encryption algorithm"
+        required: false
+        default: "aes-256-gcm"
+        enum: ["aes-256-gcm", "aes-256-cbc", "chacha20-poly1305"]
+      - name: embed_filename
+        type: boolean
+        description: "Store original filename in encrypted data"
+        required: false
+        default: true
+      - name: delete_original
+        type: boolean
+        description: "Delete original file after encryption"
+        required: false
+        default: false
+    tags: ["security", "encrypt", "file", "aes", "protect"]
+    test_prompts:
+      single:
+        - "Encrypt this sensitive file"
+        - "Password protect the document"
+        - "Encrypt the file for secure transfer"
+        - "Secure the file with encryption"
+      single_clear:
+        - "I need to encrypt a file securely. Encrypt this sensitive file"
+        - "I need to encrypt a file securely. Password protect the document"
+        - "I need to encrypt a file securely. Encrypt the file for secure transfer"
+        - "I need to encrypt a file securely. Secure the file with encryption"
+
+  - name: decrypt_file
+    descriptions:
+      minimal: "Decrypt file"
+      short: "Decrypt an encrypted file"
+      medium: "Decrypt a file that was encrypted with encrypt_file using the correct password or key."
+      long: "Decrypt a file encrypted with symmetric encryption. Provide the same password/key used for encryption. Example: decrypt_file(input='document.pdf.enc', output='document.pdf', password='secure_password')."
+      verbose: "Decrypt files encrypted with the encrypt_file tool. Automatically detects algorithm and parameters from encrypted file header. Verifies integrity using authenticated encryption. Can restore original filename if embedded. Example: decrypt_file(input='sensitive.xlsx.enc', output='./decrypted/', password='strongP@ssword!', restore_filename=true). Note: Decryption fails if password is wrong or file was tampered. Warning: Authentication failure indicates potential tampering."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to encrypted file"
+        required: true
+      - name: output
+        type: string
+        description: "Path for decrypted file (or directory)"
+        required: true
+      - name: password
+        type: string
+        description: "Decryption password"
+        required: false
+      - name: key_file
+        type: string
+        description: "Path to key file"
+        required: false
+      - name: restore_filename
+        type: boolean
+        description: "Restore original filename if embedded"
+        required: false
+        default: false
+    tags: ["security", "decrypt", "file", "unlock", "restore"]
+    test_prompts:
+      single:
+        - "Decrypt the encrypted file"
+        - "Unlock the password-protected file"
+        - "Decrypt and restore the document"
+        - "Unencrypt the secure file"
+      single_clear:
+        - "I need to decrypt an encrypted file. Decrypt the encrypted file"
+        - "I need to decrypt an encrypted file. Unlock the password-protected file"
+        - "I need to decrypt an encrypted file. Decrypt and restore the document"
+        - "I need to decrypt an encrypted file. Unencrypt the secure file"
+
+  - name: generate_certificate
+    descriptions:
+      minimal: "Generate certificate"
+      short: "Generate a self-signed SSL certificate"
+      medium: "Generate a self-signed X.509 certificate for testing or internal use."
+      long: "Generate a self-signed SSL/TLS certificate. Useful for development or internal services. Example: generate_certificate(common_name='localhost', days=365, key_size=2048)."
+      verbose: "Generate self-signed X.509 certificates for SSL/TLS. Includes key pair generation. Subject fields: CN (Common Name), O (Organization), OU (Organizational Unit), C (Country), ST (State), L (Locality). Can generate certificates for multiple domains (SANs). Example: generate_certificate(common_name='myserver.local', organization='My Company', days=365, key_size=4096, sans='[\"localhost\", \"127.0.0.1\", \"*.local\"]'). Note: Self-signed certs trigger browser warnings. Warning: For production, use certificates from trusted CAs."
+    parameters:
+      - name: common_name
+        type: string
+        description: "Common Name (CN, usually domain)"
+        required: true
+      - name: organization
+        type: string
+        description: "Organization name"
+        required: false
+        default: "Self-Signed"
+      - name: days
+        type: integer
+        description: "Validity period in days"
+        required: false
+        default: 365
+      - name: key_size
+        type: integer
+        description: "RSA key size"
+        required: false
+        default: 2048
+      - name: sans
+        type: string
+        description: "JSON array of Subject Alternative Names"
+        required: false
+      - name: output_cert
+        type: string
+        description: "Path for certificate file"
+        required: false
+      - name: output_key
+        type: string
+        description: "Path for private key file"
+        required: false
+    tags: ["security", "certificate", "ssl", "tls", "x509"]
+    test_prompts:
+      single:
+        - "Generate a self-signed SSL certificate"
+        - "Create a certificate for localhost"
+        - "Generate a development HTTPS certificate"
+        - "Create an SSL cert for testing"
+      single_clear:
+        - "I need to generate an SSL certificate. Generate a self-signed SSL certificate"
+        - "I need to generate an SSL certificate. Create a certificate for localhost"
+        - "I need to generate an SSL certificate. Generate a development HTTPS certificate"
+        - "I need to generate an SSL certificate. Create an SSL cert for testing"
+
+  - name: scan_vulnerabilities
+    descriptions:
+      minimal: "Scan vulnerabilities"
+      short: "Scan for security vulnerabilities"
+      medium: "Scan a codebase or dependencies for known security vulnerabilities."
+      long: "Scan project dependencies or code for known vulnerabilities. Checks against CVE databases and security advisories. Example: scan_vulnerabilities(path='./project', scan_type='dependencies')."
+      verbose: "Scan for security vulnerabilities in code or dependencies. Types: 'dependencies' (check package versions against CVE databases), 'secrets' (find hardcoded passwords/keys), 'code' (static analysis for common vulnerabilities). Supports multiple ecosystems: npm, pip, Maven, Go, Rust. Example: scan_vulnerabilities(path='./myproject', scan_type='dependencies', ecosystem='npm', severity_threshold='medium'). Note: Vulnerability databases are constantly updated. Warning: Findings should be verified; false positives are possible."
+    parameters:
+      - name: path
+        type: string
+        description: "Path to project or file"
+        required: true
+      - name: scan_type
+        type: string
+        description: "Type of vulnerability scan"
+        required: false
+        default: "dependencies"
+        enum: ["dependencies", "secrets", "code", "all"]
+      - name: ecosystem
+        type: string
+        description: "Package ecosystem"
+        required: false
+        enum: ["npm", "pip", "maven", "go", "rust", "auto"]
+      - name: severity_threshold
+        type: string
+        description: "Minimum severity to report"
+        required: false
+        default: "low"
+        enum: ["critical", "high", "medium", "low"]
+      - name: ignore_patterns
+        type: string
+        description: "JSON array of patterns to ignore"
+        required: false
+    tags: ["security", "vulnerability", "scan", "cve", "audit"]
+    test_prompts:
+      single:
+        - "Scan the project for vulnerabilities"
+        - "Check dependencies for security issues"
+        - "Find hardcoded secrets in the code"
+        - "Audit the project for CVEs"
+      single_clear:
+        - "I need to scan for security vulnerabilities. Scan the project for vulnerabilities"
+        - "I need to scan for security vulnerabilities. Check dependencies for security issues"
+        - "I need to scan for security vulnerabilities. Find hardcoded secrets in the code"
+        - "I need to scan for security vulnerabilities. Audit the project for CVEs"
+
+  - name: sanitize_input
+    descriptions:
+      minimal: "Sanitize input"
+      short: "Sanitize user input for security"
+      medium: "Sanitize user input to prevent XSS, SQL injection, and other injection attacks."
+      long: "Sanitize user input for safe use in various contexts. Remove or escape dangerous characters based on target context. Example: sanitize_input(input='<script>alert(1)</script>', context='html')."
+      verbose: "Sanitize user-provided input for safe use in different contexts. Contexts: 'html' (prevent XSS), 'sql' (prevent SQL injection), 'url' (safe for URLs), 'javascript' (safe for JS strings), 'shell' (safe for commands), 'filename' (safe for file paths). Options for strictness level and allowed elements. Example: sanitize_input(input=user_comment, context='html', allow_tags='[\"b\", \"i\", \"a\"]', strip_all_tags=false). Note: Sanitization is context-specific; use the right context. Warning: Sanitization is defense-in-depth; use parameterized queries for SQL."
+    parameters:
+      - name: input
+        type: string
+        description: "Input to sanitize"
+        required: true
+      - name: context
+        type: string
+        description: "Target context for sanitization"
+        required: true
+        enum: ["html", "sql", "url", "javascript", "shell", "filename"]
+      - name: allow_tags
+        type: string
+        description: "JSON array of allowed HTML tags"
+        required: false
+      - name: strip_all_tags
+        type: boolean
+        description: "Remove all HTML tags"
+        required: false
+        default: true
+      - name: max_length
+        type: integer
+        description: "Maximum output length"
+        required: false
+    tags: ["security", "sanitize", "xss", "injection", "input"]
+    test_prompts:
+      single:
+        - "Sanitize this HTML input"
+        - "Clean the user input for SQL"
+        - "Remove dangerous characters from the input"
+        - "Make this input safe for display"
+      single_clear:
+        - "I need to sanitize user input for security. Sanitize this HTML input"
+        - "I need to sanitize user input for security. Clean the user input for SQL"
+        - "I need to sanitize user input for security. Remove dangerous characters from the input"
+        - "I need to sanitize user input for security. Make this input safe for display"
+
+  - name: check_file_signature
+    descriptions:
+      minimal: "Check file signature"
+      short: "Verify a file's type by its signature"
+      medium: "Check a file's magic bytes (signature) to verify its actual type regardless of extension."
+      long: "Verify a file's true type by examining its magic bytes/signature. Detects misnamed files or potential disguised malware. Example: check_file_signature(file_path='document.pdf')."
+      verbose: "Verify file type by examining magic bytes (file signature) in the file header, regardless of file extension. Returns detected type, expected extension, and whether it matches the actual extension. Useful for: validating uploads, detecting disguised files, security scanning. Example: check_file_signature(file_path='uploaded_file.pdf') might return {type: 'executable/windows', expected_ext: '.exe', matches: false}. Note: Some files (like text) don't have distinctive signatures. Warning: Malicious files may have valid signatures; further scanning recommended."
+    parameters:
+      - name: file_path
+        type: string
+        description: "Path to file to check"
+        required: true
+      - name: expected_type
+        type: string
+        description: "Expected file type to verify against"
+        required: false
+    tags: ["security", "file", "signature", "magic", "verify"]
+    test_prompts:
+      single:
+        - "Check if this PDF is actually a PDF"
+        - "Verify the file type by its signature"
+        - "Is this file really what it claims to be?"
+        - "Check the magic bytes of the uploaded file"
+      single_clear:
+        - "I need to verify a file's true type. Check if this PDF is actually a PDF"
+        - "I need to verify a file's true type. Verify the file type by its signature"
+        - "I need to verify a file's true type. Is this file really what it claims to be?"
+        - "I need to verify a file's true type. Check the magic bytes of the uploaded file"
+
+  - name: generate_secure_token
+    descriptions:
+      minimal: "Generate secure token"
+      short: "Generate a cryptographically secure token"
+      medium: "Generate a cryptographically secure random token for sessions, CSRF protection, or other security uses."
+      long: "Generate a cryptographically secure random token. Suitable for session IDs, CSRF tokens, password reset links, etc. Example: generate_secure_token(length=32, format='hex')."
+      verbose: "Generate cryptographically secure random tokens for security-sensitive applications. Uses system's secure random source (CSPRNG). Formats: 'hex' (0-9a-f), 'base64' (standard), 'base64url' (URL-safe), 'bytes' (raw). Common uses: session identifiers, CSRF tokens, password reset tokens, API keys, verification links. Example: generate_secure_token(length=32, format='base64url', url_safe=true). Note: Token length in bytes; output length varies by format. Warning: Always use cryptographic randomness for security tokens."
+    parameters:
+      - name: length
+        type: integer
+        description: "Token length in bytes"
+        required: false
+        default: 32
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "hex"
+        enum: ["hex", "base64", "base64url"]
+    tags: ["security", "token", "random", "session", "csrf"]
+    test_prompts:
+      single:
+        - "Generate a session token"
+        - "Create a CSRF token"
+        - "Generate a secure random token"
+        - "Create a password reset token"
+      single_clear:
+        - "I need to generate a secure random token. Generate a session token"
+        - "I need to generate a secure random token. Create a CSRF token"
+        - "I need to generate a secure random token. Generate a secure random token"
+        - "I need to generate a secure random token. Create a password reset token"
+
+  - name: scan_vulnerabilities
+    descriptions:
+      minimal: "Scan vulnerabilities"
+      short: "Scan for security vulnerabilities"
+      medium: "Scan code, dependencies, or systems for known security vulnerabilities."
+      long: "Scan for security vulnerabilities in code, dependencies, or network services. Returns CVE IDs and severity. Example: scan_vulnerabilities(target='./package.json', type='dependencies')."
+      verbose: "Scan for security vulnerabilities. Types: 'dependencies' (npm/pip packages), 'code' (SAST static analysis), 'network' (port/service scan), 'container' (Docker images). Returns: vulnerability ID (CVE), severity (CVSS), affected component, remediation advice. Example: scan_vulnerabilities(target='./project', type='code', languages='[\"python\", \"javascript\"]', severity_threshold='medium') finds code vulnerabilities. Note: Dependency scans require lock files for accuracy. Warning: Network scans should only target authorized systems."
+    parameters:
+      - name: target
+        type: string
+        description: "Path, URL, or IP to scan"
+        required: true
+      - name: type
+        type: string
+        description: "Scan type"
+        required: true
+        enum: ["dependencies", "code", "network", "container"]
+      - name: languages
+        type: string
+        description: "Languages to scan (for code type)"
+        required: false
+      - name: severity_threshold
+        type: string
+        description: "Minimum severity to report"
+        required: false
+        default: "low"
+        enum: ["critical", "high", "medium", "low"]
+      - name: output_format
+        type: string
+        description: "Report format"
+        required: false
+        default: "json"
+        enum: ["json", "html", "sarif"]
+    tags: ["security", "vulnerability", "scan", "cve", "audit"]
+    test_prompts:
+      single:
+        - "Scan dependencies for vulnerabilities"
+        - "Check for security issues in the code"
+        - "Audit the project for CVEs"
+        - "Find vulnerabilities in the Docker image"
+      single_clear:
+        - "I need to scan for security vulnerabilities. Scan dependencies for vulnerabilities"
+        - "I need to scan for security vulnerabilities. Check for security issues in the code"
+        - "I need to scan for security vulnerabilities. Audit the project for CVEs"
+        - "I need to scan for security vulnerabilities. Find vulnerabilities in the Docker image"
+
+  - name: verify_signature
+    descriptions:
+      minimal: "Verify signature"
+      short: "Verify a digital signature"
+      medium: "Verify the digital signature of a file or message to ensure authenticity."
+      long: "Verify digital signatures (GPG, PGP, or custom) to confirm file/message authenticity and integrity. Example: verify_signature(file='release.tar.gz', signature='release.tar.gz.sig', public_key='key.pub')."
+      verbose: "Verify digital signatures to ensure data authenticity and integrity. Signature types: 'gpg' (OpenPGP), 'pkcs7' (S/MIME), 'jwt' (JSON Web Token), 'x509' (code signing). Returns: valid/invalid, signer info, signing time, certificate chain. Example: verify_signature(file='package.zip', signature='package.zip.asc', public_key='developer.pub', type='gpg') verifies GPG signature. Note: Public key must match the signer. Warning: Valid signature doesn't guarantee key trustworthiness."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to file to verify"
+        required: true
+      - name: signature
+        type: string
+        description: "Path to signature file"
+        required: true
+      - name: public_key
+        type: string
+        description: "Path to public key or certificate"
+        required: true
+      - name: type
+        type: string
+        description: "Signature type"
+        required: false
+        default: "gpg"
+        enum: ["gpg", "pkcs7", "x509"]
+    tags: ["security", "signature", "verify", "gpg", "authenticity"]
+    test_prompts:
+      single:
+        - "Verify the GPG signature"
+        - "Check if the file signature is valid"
+        - "Validate the digital signature"
+        - "Verify authenticity of the download"
+      single_clear:
+        - "I need to verify a file signature. Verify the GPG signature"
+        - "I need to verify a file signature. Check if the file signature is valid"
+        - "I need to verify a file signature. Validate the digital signature"
+        - "I need to verify a file signature. Verify authenticity of the download"
+
+  - name: create_signature
+    descriptions:
+      minimal: "Sign data"
+      short: "Create a digital signature"
+      medium: "Create a digital signature for a file or message using a private key."
+      long: "Sign a file or message with a digital signature using your private key. Creates verifiable proof of authenticity. Example: create_signature(file='document.pdf', private_key='my_key.pem', output='document.pdf.sig')."
+      verbose: "Create digital signatures for files or messages. Types: 'gpg' (detached PGP), 'pkcs7' (S/MIME), 'jwt' (JSON Web Token). Options: armor (ASCII output), timestamp, hash algorithm. Example: create_signature(file='release.tar.gz', private_key='signing_key.gpg', type='gpg', armor=true, output='release.tar.gz.asc'). Note: Keep private keys secure. Warning: Signing implies responsibility; verify content before signing."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to file to sign"
+        required: true
+      - name: private_key
+        type: string
+        description: "Path to private key"
+        required: true
+      - name: output
+        type: string
+        description: "Output signature file path"
+        required: true
+      - name: type
+        type: string
+        description: "Signature type"
+        required: false
+        default: "gpg"
+        enum: ["gpg", "pkcs7"]
+      - name: armor
+        type: boolean
+        description: "ASCII-armor output"
+        required: false
+        default: true
+      - name: passphrase
+        type: string
+        description: "Key passphrase (if encrypted)"
+        required: false
+    tags: ["security", "signature", "sign", "gpg", "crypto"]
+    test_prompts:
+      single:
+        - "Sign this file with my key"
+        - "Create a GPG signature"
+        - "Digitally sign the document"
+        - "Generate a signature for the release"
+      single_clear:
+        - "I need to digitally sign a file. Sign this file with my key"
+        - "I need to digitally sign a file. Create a GPG signature"
+        - "I need to digitally sign a file. Digitally sign the document"
+        - "I need to digitally sign a file. Generate a signature for the release"
+
+  - name: rotate_keys
+    descriptions:
+      minimal: "Rotate keys"
+      short: "Rotate encryption/API keys"
+      medium: "Rotate encryption keys or API keys, re-encrypting data with new keys."
+      long: "Rotate cryptographic or API keys. Re-encrypts data with new keys and invalidates old keys. Example: rotate_keys(key_type='encryption', old_key='old.key', new_key='new.key', data_path='./encrypted/')."
+      verbose: "Rotate cryptographic or API keys for security best practices. Operations: generate new key, re-encrypt data with new key, update references, archive/destroy old key. Types: 'encryption' (data keys), 'signing' (signature keys), 'api' (API tokens). Example: rotate_keys(key_type='encryption', old_key='/keys/current.key', new_key='/keys/new.key', data_path='/data/encrypted/', backup_old=true). Note: Ensure atomic rotation to prevent data access issues. Warning: Test rotation in staging before production."
+    parameters:
+      - name: key_type
+        type: string
+        description: "Type of key to rotate"
+        required: true
+        enum: ["encryption", "signing", "api"]
+      - name: old_key
+        type: string
+        description: "Path to current key"
+        required: true
+      - name: new_key
+        type: string
+        description: "Path for new key (or 'generate')"
+        required: true
+      - name: data_path
+        type: string
+        description: "Path to data to re-encrypt"
+        required: false
+      - name: backup_old
+        type: boolean
+        description: "Backup old key before rotation"
+        required: false
+        default: true
+    tags: ["security", "key", "rotate", "crypto", "maintenance"]
+    test_prompts:
+      single:
+        - "Rotate the encryption keys"
+        - "Generate a new API key and rotate"
+        - "Re-encrypt data with new key"
+        - "Rotate signing keys"
+      single_clear:
+        - "I need to rotate encryption keys. Rotate the encryption keys"
+        - "I need to rotate encryption keys. Generate a new API key and rotate"
+        - "I need to rotate encryption keys. Re-encrypt data with new key"
+        - "I need to rotate encryption keys. Rotate signing keys"
+
+  - name: check_ssl_certificate
+    descriptions:
+      minimal: "Check SSL"
+      short: "Check SSL certificate status"
+      medium: "Check an SSL/TLS certificate for validity, expiration, and configuration issues."
+      long: "Check SSL/TLS certificate status for a domain or file. Returns validity, expiration, issuer, and security grade. Example: check_ssl_certificate(domain='example.com')."
+      verbose: "Analyze SSL/TLS certificates for security issues. Checks: validity period, expiration warning, certificate chain, issuer, subject, SANs, key size, signature algorithm, protocol support, vulnerabilities (Heartbleed, etc.). Example: check_ssl_certificate(domain='api.example.com', port=443, warn_days=30) returns {valid: true, expires: '2025-01-01', days_left: 180, grade: 'A', issues: []}. Note: Includes OCSP/CRL revocation check. Warning: Self-signed certs will show as untrusted chain."
+    parameters:
+      - name: domain
+        type: string
+        description: "Domain to check"
+        required: false
+      - name: file
+        type: string
+        description: "Path to certificate file"
+        required: false
+      - name: port
+        type: integer
+        description: "Port to connect (for domain)"
+        required: false
+        default: 443
+      - name: warn_days
+        type: integer
+        description: "Days before expiry to warn"
+        required: false
+        default: 30
+      - name: check_chain
+        type: boolean
+        description: "Verify certificate chain"
+        required: false
+        default: true
+    tags: ["security", "ssl", "tls", "certificate", "check"]
+    test_prompts:
+      single:
+        - "Check SSL certificate for example.com"
+        - "When does the certificate expire?"
+        - "Is the SSL certificate valid?"
+        - "Analyze the TLS configuration"
+      single_clear:
+        - "I need to check an SSL certificate. Check SSL certificate for example.com"
+        - "I need to check an SSL certificate. When does the certificate expire?"
+        - "I need to check an SSL certificate. Is the SSL certificate valid?"
+        - "I need to check an SSL certificate. Analyze the TLS configuration"
+
+  - name: generate_otp
+    descriptions:
+      minimal: "Generate OTP"
+      short: "Generate one-time password"
+      medium: "Generate a time-based (TOTP) or counter-based (HOTP) one-time password."
+      long: "Generate OTP for two-factor authentication. Supports TOTP (time-based) and HOTP (counter-based). Example: generate_otp(secret='JBSWY3DPEHPK3PXP', type='totp')."
+      verbose: "Generate one-time passwords for 2FA. Types: 'totp' (time-based, RFC 6238), 'hotp' (counter-based, RFC 4226). Compatible with Google Authenticator, Authy, etc. Example: generate_otp(secret='JBSWY3DPEHPK3PXP', type='totp', digits=6, period=30) returns {code: '123456', valid_for: 15, next_code: '789012'}. Note: Secret should be base32 encoded. Warning: Time sync is critical for TOTP; clock skew causes failures."
+    parameters:
+      - name: secret
+        type: string
+        description: "Base32-encoded secret key"
+        required: true
+      - name: type
+        type: string
+        description: "OTP type"
+        required: false
+        default: "totp"
+        enum: ["totp", "hotp"]
+      - name: digits
+        type: integer
+        description: "Number of digits"
+        required: false
+        default: 6
+      - name: period
+        type: integer
+        description: "Time period in seconds (for TOTP)"
+        required: false
+        default: 30
+      - name: counter
+        type: integer
+        description: "Counter value (for HOTP)"
+        required: false
+    tags: ["security", "otp", "2fa", "totp", "authentication"]
+    test_prompts:
+      single:
+        - "Generate a TOTP code"
+        - "Get the current OTP"
+        - "Generate 2FA code"
+        - "What's the current authenticator code?"
+      single_clear:
+        - "I need to generate a one-time password. Generate a TOTP code"
+        - "I need to generate a one-time password. Get the current OTP"
+        - "I need to generate a one-time password. Generate 2FA code"
+        - "I need to generate a one-time password. What's the current authenticator code?"
+
+  - name: verify_otp
+    descriptions:
+      minimal: "Verify OTP"
+      short: "Verify one-time password"
+      medium: "Verify a TOTP or HOTP code against a secret."
+      long: "Verify an OTP code for two-factor authentication. Supports window for clock drift. Example: verify_otp(secret='JBSWY3DPEHPK3PXP', code='123456')."
+      verbose: "Verify one-time passwords for 2FA. Validates code against secret with optional time window to account for clock drift. Example: verify_otp(secret='JBSWY3DPEHPK3PXP', code='123456', type='totp', window=1) returns {valid: true, drift: 0}. Window of 1 checks current and adjacent time periods. Note: HOTP verification should increment counter on success. Warning: Limit verification attempts to prevent brute force."
+    parameters:
+      - name: secret
+        type: string
+        description: "Base32-encoded secret key"
+        required: true
+      - name: code
+        type: string
+        description: "OTP code to verify"
+        required: true
+      - name: type
+        type: string
+        description: "OTP type"
+        required: false
+        default: "totp"
+        enum: ["totp", "hotp"]
+      - name: window
+        type: integer
+        description: "Verification window (periods)"
+        required: false
+        default: 1
+      - name: counter
+        type: integer
+        description: "Expected counter (for HOTP)"
+        required: false
+    tags: ["security", "otp", "verify", "2fa", "authentication"]
+    test_prompts:
+      single:
+        - "Verify this OTP code"
+        - "Is this 2FA code valid?"
+        - "Check if the TOTP is correct"
+        - "Validate the authenticator code"
+      single_clear:
+        - "I need to verify a one-time password. Verify this OTP code"
+        - "I need to verify a one-time password. Is this 2FA code valid?"
+        - "I need to verify a one-time password. Check if the TOTP is correct"
+        - "I need to verify a one-time password. Validate the authenticator code"
+
+  - name: audit_permissions
+    descriptions:
+      minimal: "Audit permissions"
+      short: "Audit file or user permissions"
+      medium: "Audit file permissions, ACLs, or user access rights for security issues."
+      long: "Audit permissions on files, directories, or user accounts. Identifies overly permissive access. Example: audit_permissions(path='/var/www', recursive=true)."
+      verbose: "Audit permissions and access controls. Checks: world-writable files, SUID/SGID binaries, insecure ownership, weak ACLs, excessive user privileges. Targets: filesystem paths, user accounts, database roles. Example: audit_permissions(path='/opt/app', recursive=true, check_suid=true, report='./audit_report.json') identifies security issues. Note: Some findings may be intentional. Warning: Requires appropriate privileges to read all permission data."
+    parameters:
+      - name: path
+        type: string
+        description: "Path to audit"
+        required: true
+      - name: recursive
+        type: boolean
+        description: "Recurse into subdirectories"
+        required: false
+        default: false
+      - name: check_suid
+        type: boolean
+        description: "Check for SUID/SGID"
+        required: false
+        default: true
+      - name: check_world_writable
+        type: boolean
+        description: "Check for world-writable"
+        required: false
+        default: true
+      - name: report
+        type: string
+        description: "Path for audit report"
+        required: false
+    tags: ["security", "permissions", "audit", "acl", "access"]
+    test_prompts:
+      single:
+        - "Audit permissions on /var/www"
+        - "Check for insecure file permissions"
+        - "Find world-writable files"
+        - "Audit access controls"
+      single_clear:
+        - "I need to audit file permissions. Audit permissions on /var/www"
+        - "I need to audit file permissions. Check for insecure file permissions"
+        - "I need to audit file permissions. Find world-writable files"
+        - "I need to audit file permissions. Audit access controls"
+
+  - name: secrets_scan
+    descriptions:
+      minimal: "Scan secrets"
+      short: "Scan for exposed secrets"
+      medium: "Scan code or files for accidentally committed secrets like API keys and passwords."
+      long: "Scan repositories or files for exposed secrets like API keys, passwords, tokens. Example: secrets_scan(path='./src', output='secrets_report.json')."
+      verbose: "Scan for accidentally exposed secrets in code and files. Detects: API keys, passwords, tokens, private keys, credentials in URLs, AWS/GCP/Azure credentials. Methods: pattern matching, entropy analysis, known provider formats. Example: secrets_scan(path='./repo', include_git_history=true, exclude='[\"*.test.js\", \"node_modules\"]', output='report.json'). Note: False positives possible for high-entropy strings. Warning: Detected secrets should be rotated immediately."
+    parameters:
+      - name: path
+        type: string
+        description: "Path to scan"
+        required: true
+      - name: include_git_history
+        type: boolean
+        description: "Scan git history"
+        required: false
+        default: false
+      - name: exclude
+        type: string
+        description: "JSON array of patterns to exclude"
+        required: false
+      - name: output
+        type: string
+        description: "Report output path"
+        required: false
+      - name: verify
+        type: boolean
+        description: "Attempt to verify secrets are active"
+        required: false
+        default: false
+    tags: ["security", "secrets", "scan", "credentials", "leak"]
+    test_prompts:
+      single:
+        - "Scan for exposed API keys"
+        - "Find secrets in the codebase"
+        - "Check for leaked credentials"
+        - "Scan git history for secrets"
+      single_clear:
+        - "I need to scan for exposed secrets. Scan for exposed API keys"
+        - "I need to scan for exposed secrets. Find secrets in the codebase"
+        - "I need to scan for exposed secrets. Check for leaked credentials"
+        - "I need to scan for exposed secrets. Scan git history for secrets"

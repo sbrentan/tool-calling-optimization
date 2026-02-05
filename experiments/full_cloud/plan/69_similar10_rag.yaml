@@ -1,0 +1,21 @@
+# Similar tools test - 10 similar tools
+
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+name: similar10_rag_100tools
+
+num_tools: 100
+doc_length: medium
+prompt_type: concise
+categories: null
+num_similar_tools: 10
+include_no_tool: false
+
+methodology: rag
+rag_config:
+  top_k: 10
+  similarity_threshold: 0.0
+
+output_dir: experiments/full_cloud/results

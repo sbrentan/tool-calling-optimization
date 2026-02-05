@@ -1,0 +1,417 @@
+category: rate_limiting_operations
+description: "Rate limiting, throttling, and quota management operations"
+
+tools:
+  - name: create_rate_limit
+    descriptions:
+      minimal: "Create rate limit"
+      short: "Create rate limit rule"
+      medium: "Create a rate limiting rule for API or service endpoints."
+      long: "Set up rate limiting. Example: create_rate_limit(name='api-limit', limit=1000, window='1m', key='client_id')."
+      verbose: "Create rate limiting rules for traffic control. Algorithms: token bucket, sliding window, fixed window, leaky bucket. Example: create_rate_limit(name='api-requests', limit=1000, window='1m', key_type='api_key', algorithm='sliding_window', burst=100, actions='{\"on_limit\": \"reject\", \"retry_after\": true}'). Note: Choose algorithm based on use case. Warning: Too restrictive limits impact legitimate users."
+    parameters:
+      - name: name
+        type: string
+        description: "Rate limit rule name"
+        required: true
+      - name: limit
+        type: integer
+        description: "Request limit"
+        required: true
+      - name: window
+        type: string
+        description: "Time window (e.g., '1m', '1h')"
+        required: true
+      - name: key_type
+        type: string
+        description: "Rate limit key"
+        required: true
+        enum: ["ip", "api_key", "user_id", "client_id", "custom"]
+      - name: algorithm
+        type: string
+        description: "Rate limiting algorithm"
+        required: false
+        default: "sliding_window"
+        enum: ["token_bucket", "sliding_window", "fixed_window", "leaky_bucket"]
+      - name: burst
+        type: integer
+        description: "Burst allowance"
+        required: false
+      - name: actions
+        type: string
+        description: "Actions on limit (JSON)"
+        required: false
+    tags: ["rate-limit", "throttle", "create", "api", "traffic"]
+    test_prompts:
+      single:
+        - "Create rate limit"
+        - "Set up API throttling"
+        - "Limit requests per minute"
+        - "Create request limit rule"
+      single_clear:
+        - "I need to create a rate limit rule. Create rate limit"
+        - "Please set up API rate limiting. Set up API throttling"
+        - "I want to configure request limits. Limit requests per minute"
+        - "Please create a new rate limit configuration. Create request limit rule"
+
+  - name: check_rate_limit
+    descriptions:
+      minimal: "Check limit"
+      short: "Check rate limit status"
+      medium: "Check the current rate limit status for a key."
+      long: "Query rate limit status. Example: check_rate_limit(rule='api-limit', key='client_123')."
+      verbose: "Check current rate limit status for a key. Returns: remaining requests, reset time, current usage. Example: check_rate_limit(rule_name='api-requests', key='api_key_abc123'). Returns: {\"limit\": 1000, \"remaining\": 750, \"reset_at\": \"...\", \"window\": \"1m\"}. Note: Status reflects current window. Warning: Status may be slightly delayed in distributed systems."
+    parameters:
+      - name: rule_name
+        type: string
+        description: "Rate limit rule name"
+        required: true
+      - name: key
+        type: string
+        description: "Rate limit key value"
+        required: true
+    tags: ["rate-limit", "check", "status", "remaining", "quota"]
+    test_prompts:
+      single:
+        - "Check rate limit status"
+        - "How many requests left"
+        - "Check API quota"
+        - "Get remaining limit"
+      single_clear:
+        - "I need to check a rate limit status. Check rate limit status"
+        - "Please check remaining requests. How many requests left"
+        - "I want to verify the API quota. Check API quota"
+        - "Please show me the remaining limit. Get remaining limit"
+
+  - name: increment_rate_limit
+    descriptions:
+      minimal: "Increment limit"
+      short: "Increment rate limit counter"
+      medium: "Increment the rate limit counter for a request."
+      long: "Count request against limit. Example: increment_rate_limit(rule='api-limit', key='client_123', cost=1)."
+      verbose: "Increment rate limit counter for tracking. Options: custom cost for weighted limits, conditional increment. Example: increment_rate_limit(rule_name='api-requests', key='api_key_abc123', cost=1, only_if_allowed=true). Returns: allowed (boolean), remaining, reset_at. Note: Use cost>1 for expensive operations. Warning: Increment before processing to prevent overrun."
+    parameters:
+      - name: rule_name
+        type: string
+        description: "Rate limit rule name"
+        required: true
+      - name: key
+        type: string
+        description: "Rate limit key value"
+        required: true
+      - name: cost
+        type: integer
+        description: "Request cost"
+        required: false
+        default: 1
+      - name: only_if_allowed
+        type: boolean
+        description: "Only increment if within limit"
+        required: false
+        default: true
+    tags: ["rate-limit", "increment", "count", "request", "track"]
+    test_prompts:
+      single:
+        - "Increment rate limit"
+        - "Count request"
+        - "Track API usage"
+        - "Record request against limit"
+      single_clear:
+        - "I need to increment the rate limit counter. Increment rate limit"
+        - "Please count this request against the limit. Count request"
+        - "I want to track API usage. Track API usage"
+        - "Please record this request against the rate limit. Record request against limit"
+
+  - name: reset_rate_limit
+    descriptions:
+      minimal: "Reset limit"
+      short: "Reset rate limit"
+      medium: "Reset the rate limit counter for a specific key."
+      long: "Clear rate limit counter. Example: reset_rate_limit(rule='api-limit', key='client_123')."
+      verbose: "Reset rate limit counter for a key. Use for: customer support overrides, testing, error recovery. Example: reset_rate_limit(rule_name='api-requests', key='api_key_abc123', reason='Customer support request'). Note: Reset is immediate. Warning: Resets are logged for audit; use sparingly."
+    parameters:
+      - name: rule_name
+        type: string
+        description: "Rate limit rule name"
+        required: true
+      - name: key
+        type: string
+        description: "Rate limit key value"
+        required: true
+      - name: reason
+        type: string
+        description: "Reset reason"
+        required: false
+    tags: ["rate-limit", "reset", "clear", "override", "support"]
+    test_prompts:
+      single:
+        - "Reset rate limit"
+        - "Clear API limit"
+        - "Reset throttle counter"
+        - "Override rate limit"
+      single_clear:
+        - "I need to reset a rate limit. Reset rate limit"
+        - "Please clear the API rate limit. Clear API limit"
+        - "I want to reset the throttle counter. Reset throttle counter"
+        - "Please override the rate limit for a user. Override rate limit"
+
+  - name: create_quota
+    descriptions:
+      minimal: "Create quota"
+      short: "Create usage quota"
+      medium: "Create a usage quota for a customer or resource."
+      long: "Set up usage quota. Example: create_quota(name='storage-quota', limit=100, unit='GB', period='month')."
+      verbose: "Create usage quotas for resource management. Types: hard (block), soft (warn), burstable. Example: create_quota(name='api-monthly', limit=100000, unit='requests', period='month', type='hard', entity_type='customer', alert_thresholds='[50, 80, 95]', overage_policy='{\"allow\": true, \"rate\": 0.01}'). Note: Set appropriate alert thresholds. Warning: Hard quotas may disrupt service."
+    parameters:
+      - name: name
+        type: string
+        description: "Quota name"
+        required: true
+      - name: limit
+        type: integer
+        description: "Quota limit"
+        required: true
+      - name: unit
+        type: string
+        description: "Quota unit"
+        required: true
+        enum: ["requests", "bytes", "GB", "TB", "units", "dollars"]
+      - name: period
+        type: string
+        description: "Quota period"
+        required: true
+        enum: ["hour", "day", "week", "month", "year"]
+      - name: type
+        type: string
+        description: "Quota type"
+        required: false
+        default: "hard"
+        enum: ["hard", "soft", "burstable"]
+      - name: entity_type
+        type: string
+        description: "Entity type"
+        required: false
+        default: "customer"
+      - name: alert_thresholds
+        type: string
+        description: "Alert thresholds (JSON array %)"
+        required: false
+        default: "[80, 95]"
+      - name: overage_policy
+        type: string
+        description: "Overage policy (JSON)"
+        required: false
+    tags: ["quota", "create", "limit", "usage", "customer"]
+    test_prompts:
+      single:
+        - "Create usage quota"
+        - "Set monthly limit"
+        - "Create customer quota"
+        - "Set up storage quota"
+      single_clear:
+        - "I need to create a usage quota. Create usage quota"
+        - "Please set up a monthly limit. Set monthly limit"
+        - "I want to create a customer quota. Create customer quota"
+        - "Please configure a storage quota. Set up storage quota"
+
+  - name: get_quota_usage
+    descriptions:
+      minimal: "Get usage"
+      short: "Get quota usage"
+      medium: "Get current quota usage for an entity."
+      long: "Check quota usage. Example: get_quota_usage(quota='storage-quota', entity_id='customer_123')."
+      verbose: "Retrieve current quota usage and status. Returns: used, limit, percentage, reset date. Example: get_quota_usage(quota_name='api-monthly', entity_id='cust_abc123', include_history=true). Returns: {\"used\": 75000, \"limit\": 100000, \"percentage\": 75, \"reset_at\": \"...\", \"history\": [...]}. Note: Usage may be slightly delayed. Warning: Near-limit usage should trigger customer notification."
+    parameters:
+      - name: quota_name
+        type: string
+        description: "Quota name"
+        required: true
+      - name: entity_id
+        type: string
+        description: "Entity ID"
+        required: true
+      - name: include_history
+        type: boolean
+        description: "Include usage history"
+        required: false
+        default: false
+    tags: ["quota", "usage", "check", "status", "monitor"]
+    test_prompts:
+      single:
+        - "Get quota usage"
+        - "Check storage usage"
+        - "How much quota used"
+        - "Get customer usage"
+      single_clear:
+        - "I need to get the quota usage. Get quota usage"
+        - "Please check the storage usage. Check storage usage"
+        - "I want to see how much quota is used. How much quota used"
+        - "Please retrieve customer usage data. Get customer usage"
+
+  - name: update_quota
+    descriptions:
+      minimal: "Update quota"
+      short: "Update quota limit"
+      medium: "Update quota limit for an entity."
+      long: "Modify quota limits. Example: update_quota(quota='storage-quota', entity_id='customer_123', new_limit=200)."
+      verbose: "Update quota limits for specific entities. Use for: plan upgrades, custom limits, promotional increases. Example: update_quota(quota_name='api-monthly', entity_id='cust_abc123', new_limit=200000, reason='Plan upgrade to Pro', effective_date='2024-02-01'). Note: Changes may be immediate or scheduled. Warning: Decreasing limits may affect active usage."
+    parameters:
+      - name: quota_name
+        type: string
+        description: "Quota name"
+        required: true
+      - name: entity_id
+        type: string
+        description: "Entity ID"
+        required: true
+      - name: new_limit
+        type: integer
+        description: "New quota limit"
+        required: true
+      - name: reason
+        type: string
+        description: "Change reason"
+        required: false
+      - name: effective_date
+        type: string
+        description: "Effective date (ISO 8601)"
+        required: false
+    tags: ["quota", "update", "modify", "limit", "upgrade"]
+    test_prompts:
+      single:
+        - "Update quota limit"
+        - "Increase customer quota"
+        - "Change storage limit"
+        - "Upgrade quota tier"
+      single_clear:
+        - "I need to update a quota limit. Update quota limit"
+        - "Please increase the customer quota. Increase customer quota"
+        - "I want to change the storage limit. Change storage limit"
+        - "Please upgrade the quota tier. Upgrade quota tier"
+
+  - name: create_throttle_policy
+    descriptions:
+      minimal: "Create throttle"
+      short: "Create throttle policy"
+      medium: "Create a throttling policy for gradual traffic reduction."
+      long: "Set up throttling. Example: create_throttle_policy(name='overload-protection', trigger='cpu > 80', action='reduce_50')."
+      verbose: "Create dynamic throttling policies. Triggers: resource utilization, queue depth, error rate. Actions: reject percentage, delay, queue. Example: create_throttle_policy(name='overload-protection', triggers='[{\"metric\": \"cpu_usage\", \"threshold\": 80}, {\"metric\": \"queue_depth\", \"threshold\": 1000}]', actions='[{\"type\": \"reject\", \"percentage\": 50}, {\"type\": \"delay\", \"ms\": 100}]', priority_bypass='[\"premium\"]'). Note: Test throttle policies under load. Warning: Aggressive throttling impacts user experience."
+    parameters:
+      - name: name
+        type: string
+        description: "Policy name"
+        required: true
+      - name: triggers
+        type: string
+        description: "Throttle triggers (JSON array)"
+        required: true
+      - name: actions
+        type: string
+        description: "Throttle actions (JSON array)"
+        required: true
+      - name: priority_bypass
+        type: string
+        description: "Priority tiers to bypass (JSON array)"
+        required: false
+      - name: cooldown
+        type: string
+        description: "Cooldown period"
+        required: false
+        default: "1m"
+    tags: ["throttle", "policy", "create", "protection", "overload"]
+    test_prompts:
+      single:
+        - "Create throttle policy"
+        - "Set up overload protection"
+        - "Configure traffic throttling"
+        - "Create backpressure policy"
+      single_clear:
+        - "I need to create a throttle policy. Create throttle policy"
+        - "Please set up overload protection. Set up overload protection"
+        - "I want to configure traffic throttling. Configure traffic throttling"
+        - "Please create a backpressure policy. Create backpressure policy"
+
+  - name: get_rate_limit_metrics
+    descriptions:
+      minimal: "Get metrics"
+      short: "Get rate limit metrics"
+      medium: "Get metrics and analytics for rate limiting."
+      long: "Analyze rate limit data. Example: get_rate_limit_metrics(rule='api-limit', period='24h')."
+      verbose: "Rate limiting analytics and metrics. Metrics: total requests, limited requests, limit percentage, top limited keys. Example: get_rate_limit_metrics(rule_name='api-requests', period='7d', granularity='1h', include_top_keys=true, top_keys_count=20). Returns: time series data, aggregates, patterns. Note: Use for capacity planning. Warning: High cardinality keys may impact metric storage."
+    parameters:
+      - name: rule_name
+        type: string
+        description: "Rate limit rule name"
+        required: true
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: true
+      - name: granularity
+        type: string
+        description: "Data granularity"
+        required: false
+        default: "1h"
+      - name: include_top_keys
+        type: boolean
+        description: "Include top limited keys"
+        required: false
+        default: true
+      - name: top_keys_count
+        type: integer
+        description: "Number of top keys"
+        required: false
+        default: 10
+    tags: ["rate-limit", "metrics", "analytics", "monitoring", "stats"]
+    test_prompts:
+      single:
+        - "Get rate limit metrics"
+        - "Show throttling stats"
+        - "Rate limit analytics"
+        - "How many requests limited"
+      single_clear:
+        - "I need to get rate limit metrics. Get rate limit metrics"
+        - "Please show me the throttling stats. Show throttling stats"
+        - "I want to see rate limit analytics. Rate limit analytics"
+        - "Please tell me how many requests were limited. How many requests limited"
+
+  - name: whitelist_key
+    descriptions:
+      minimal: "Whitelist key"
+      short: "Whitelist from rate limit"
+      medium: "Whitelist a key from rate limiting."
+      long: "Bypass rate limits for key. Example: whitelist_key(rule='api-limit', key='internal_service', reason='Internal service')."
+      verbose: "Exempt keys from rate limiting. Use for: internal services, premium customers, partners, testing. Example: whitelist_key(rule_name='api-requests', key='internal-monitoring-service', reason='Internal monitoring service', expires='2024-12-31', audit_user='admin@company.com'). Note: Whitelist entries are audited. Warning: Review whitelist regularly; unlimited access poses risks."
+    parameters:
+      - name: rule_name
+        type: string
+        description: "Rate limit rule name"
+        required: true
+      - name: key
+        type: string
+        description: "Key to whitelist"
+        required: true
+      - name: reason
+        type: string
+        description: "Whitelist reason"
+        required: true
+      - name: expires
+        type: string
+        description: "Expiration date (ISO 8601)"
+        required: false
+      - name: audit_user
+        type: string
+        description: "User making change"
+        required: false
+    tags: ["rate-limit", "whitelist", "bypass", "exempt", "allow"]
+    test_prompts:
+      single:
+        - "Whitelist from rate limit"
+        - "Exempt key from throttling"
+        - "Bypass rate limit"
+        - "Allow unlimited access"
+      single_clear:
+        - "I need to whitelist a key from rate limiting. Whitelist from rate limit"
+        - "Please exempt a key from throttling. Exempt key from throttling"
+        - "I want to bypass rate limit for a key. Bypass rate limit"
+        - "Please allow unlimited access for a key. Allow unlimited access"

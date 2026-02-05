@@ -1,0 +1,1248 @@
+category: document_operations
+description: Document processing and conversion operations
+tools:
+  - name: convert_document
+    descriptions:
+      minimal: "Convert document"
+      short: "Convert document format"
+      medium: "Convert documents between formats like PDF, DOCX, HTML, and Markdown."
+      long: "Convert documents between formats. Supports PDF, DOCX, ODT, HTML, Markdown, TXT, and more. Example: convert_document(input='report.docx', output='report.pdf')."
+      verbose: "Convert documents between various formats. Input formats: DOCX, ODT, RTF, HTML, Markdown, LaTeX, EPUB, TXT. Output formats: PDF, DOCX, HTML, Markdown, TXT, EPUB. Options: page size, margins, fonts, table of contents. Example: convert_document(input='thesis.md', output='thesis.pdf', page_size='A4', toc=true, template='academic'). Note: Complex formatting may not survive all conversions. Warning: PDF to editable format conversion may lose layout fidelity."
+    parameters:
+      - name: input
+        type: string
+        description: "Input document path"
+        required: true
+      - name: output
+        type: string
+        description: "Output document path"
+        required: true
+      - name: page_size
+        type: string
+        description: "Page size for PDF output"
+        required: false
+        default: "letter"
+        enum: ["letter", "A4", "legal", "A3"]
+      - name: toc
+        type: boolean
+        description: "Generate table of contents"
+        required: false
+        default: false
+      - name: template
+        type: string
+        description: "Document template"
+        required: false
+    tags: ["document", "convert", "pdf", "docx", "format"]
+    test_prompts:
+      single:
+        - "Convert this Word document to PDF"
+        - "Change the document format"
+        - "Convert Markdown to HTML"
+        - "Export as PDF"
+      single_clear:
+        - "Please convert a document to a different format. Convert this Word document to PDF"
+        - "Please convert a document to a different format. Change the document format"
+        - "Please convert a document to a different format. Convert Markdown to HTML"
+        - "Please convert a document to a different format. Export as PDF"
+
+  - name: merge_documents
+    descriptions:
+      minimal: "Merge documents"
+      short: "Merge multiple documents"
+      medium: "Combine multiple documents into a single file."
+      long: "Merge multiple documents into one. Supports PDFs and Word documents. Example: merge_documents(inputs='[\"doc1.pdf\", \"doc2.pdf\"]', output='combined.pdf')."
+      verbose: "Combine multiple documents into a single file. Document types: PDFs (concatenate pages), DOCX (merge content with section breaks). Options: page numbers, section breaks, bookmarks from source files. Example: merge_documents(inputs='[\"cover.pdf\", \"chapter1.pdf\", \"chapter2.pdf\", \"appendix.pdf\"]', output='book.pdf', add_bookmarks=true, add_page_numbers=true). Note: Mixed formats require conversion first. Warning: Large merged documents may have memory issues."
+    parameters:
+      - name: inputs
+        type: string
+        description: "JSON array of document paths"
+        required: true
+      - name: output
+        type: string
+        description: "Output document path"
+        required: true
+      - name: add_bookmarks
+        type: boolean
+        description: "Add bookmarks from source files"
+        required: false
+        default: false
+      - name: add_page_numbers
+        type: boolean
+        description: "Add page numbers"
+        required: false
+        default: false
+      - name: section_break
+        type: boolean
+        description: "Add section breaks between docs"
+        required: false
+        default: true
+    tags: ["document", "merge", "combine", "pdf", "docx"]
+    test_prompts:
+      single:
+        - "Merge these PDF files"
+        - "Combine the documents"
+        - "Join the Word documents"
+        - "Create one PDF from these files"
+      single_clear:
+        - "I need to merge multiple documents. Merge these PDF files"
+        - "I need to merge multiple documents. Combine the documents"
+        - "I need to merge multiple documents. Join the Word documents"
+        - "I need to merge multiple documents. Create one PDF from these files"
+
+  - name: split_document
+    descriptions:
+      minimal: "Split document"
+      short: "Split document into parts"
+      medium: "Split a document into multiple files by pages or sections."
+      long: "Split a document into multiple files. Split by page ranges, every N pages, or by bookmarks/headings. Example: split_document(input='book.pdf', mode='pages', pages='[[1,10], [11,20]]', output_dir='./chapters/')."
+      verbose: "Split documents into multiple files. Modes: 'pages' (specific page ranges), 'every' (every N pages), 'bookmarks' (at PDF bookmarks), 'headings' (at heading levels for DOCX). Example: split_document(input='manual.pdf', mode='every', every=10, output_dir='./sections/', naming='section_{n}.pdf'). Note: Bookmark splitting requires properly structured PDF. Warning: Splitting by headings may not work with inconsistent formatting."
+    parameters:
+      - name: input
+        type: string
+        description: "Input document path"
+        required: true
+      - name: output_dir
+        type: string
+        description: "Output directory"
+        required: true
+      - name: mode
+        type: string
+        description: "Split mode"
+        required: true
+        enum: ["pages", "every", "bookmarks", "headings"]
+      - name: pages
+        type: string
+        description: "Page ranges as JSON (for pages mode)"
+        required: false
+      - name: every
+        type: integer
+        description: "Split every N pages (for every mode)"
+        required: false
+      - name: naming
+        type: string
+        description: "Output naming pattern"
+        required: false
+        default: "part_{n}"
+    tags: ["document", "split", "divide", "pages", "extract"]
+    test_prompts:
+      single:
+        - "Split this PDF into chapters"
+        - "Extract pages 1-10"
+        - "Split every 5 pages"
+        - "Divide the document by bookmarks"
+      single_clear:
+        - "I need to split a document into parts. Split this PDF into chapters"
+        - "I need to split a document into parts. Extract pages 1-10"
+        - "I need to split a document into parts. Split every 5 pages"
+        - "I need to split a document into parts. Divide the document by bookmarks"
+
+  - name: extract_text
+    descriptions:
+      minimal: "Extract text"
+      short: "Extract text from document"
+      medium: "Extract plain text content from a document."
+      long: "Extract text from documents including PDFs, DOCX, and images (OCR). Example: extract_text(input='scan.pdf', ocr=true)."
+      verbose: "Extract text content from documents. Supports: PDF (native or OCR), DOCX, ODT, PPTX, images (OCR). OCR options: language, DPI, preprocessing. Output: plain text, with or without layout preservation. Example: extract_text(input='scanned_contract.pdf', ocr=true, language='eng', preserve_layout=true, output='contract.txt'). Note: OCR accuracy depends on image quality. Warning: Complex layouts may not preserve structure."
+    parameters:
+      - name: input
+        type: string
+        description: "Input document path"
+        required: true
+      - name: output
+        type: string
+        description: "Output text file path"
+        required: false
+      - name: ocr
+        type: boolean
+        description: "Use OCR for scanned documents"
+        required: false
+        default: false
+      - name: language
+        type: string
+        description: "OCR language code"
+        required: false
+        default: "eng"
+      - name: preserve_layout
+        type: boolean
+        description: "Preserve original layout"
+        required: false
+        default: false
+      - name: pages
+        type: string
+        description: "Specific pages to extract"
+        required: false
+    tags: ["document", "extract", "text", "ocr", "content"]
+    test_prompts:
+      single:
+        - "Extract text from this PDF"
+        - "Get the text content"
+        - "OCR this scanned document"
+        - "Pull text from the Word file"
+      single_clear:
+        - "I need to extract text from a document. Extract text from this PDF"
+        - "I need to extract text from a document. Get the text content"
+        - "I need to extract text from a document. OCR this scanned document"
+        - "I need to extract text from a document. Pull text from the Word file"
+
+  - name: add_page_numbers
+    descriptions:
+      minimal: "Add page numbers"
+      short: "Add page numbers to document"
+      medium: "Add page numbers to a PDF document."
+      long: "Add page numbers to PDF pages. Customize position, format, and starting number. Example: add_page_numbers(input='thesis.pdf', position='bottom-center', output='thesis_numbered.pdf')."
+      verbose: "Add page numbers to PDF documents. Position: top/bottom, left/center/right. Formats: '1', '1/N', 'Page 1', 'Page 1 of N', Roman numerals. Options: starting number, skip pages, font, size, color, margins. Example: add_page_numbers(input='report.pdf', position='bottom-center', format='Page {n} of {total}', start=1, skip_pages=[0], font='Helvetica', size=10, output='numbered.pdf'). Note: Skip pages are 0-indexed. Warning: Existing page numbers will not be replaced."
+    parameters:
+      - name: input
+        type: string
+        description: "Input PDF path"
+        required: true
+      - name: output
+        type: string
+        description: "Output PDF path"
+        required: true
+      - name: position
+        type: string
+        description: "Page number position"
+        required: false
+        default: "bottom-center"
+        enum: ["top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right"]
+      - name: format
+        type: string
+        description: "Number format (use {n} and {total})"
+        required: false
+        default: "{n}"
+      - name: start
+        type: integer
+        description: "Starting page number"
+        required: false
+        default: 1
+      - name: font_size
+        type: integer
+        description: "Font size"
+        required: false
+        default: 12
+    tags: ["document", "pdf", "pages", "numbers", "format"]
+    test_prompts:
+      single:
+        - "Add page numbers to this PDF"
+        - "Number the pages"
+        - "Put page numbers at the bottom"
+        - "Add 'Page X of Y' to each page"
+      single_clear:
+        - "I need to add page numbers to a document. Add page numbers to this PDF"
+        - "I need to add page numbers to a document. Number the pages"
+        - "I need to add page numbers to a document. Put page numbers at the bottom"
+        - "I need to add page numbers to a document. Add 'Page X of Y' to each page"
+
+  - name: add_watermark
+    descriptions:
+      minimal: "Add watermark"
+      short: "Add watermark to document"
+      medium: "Add a text or image watermark to document pages."
+      long: "Add watermark to PDF pages. Supports text or image watermarks with opacity and rotation. Example: add_watermark(input='contract.pdf', text='CONFIDENTIAL', output='marked.pdf')."
+      verbose: "Add watermarks to PDF documents. Types: text (with font, size, color), image (PNG/JPEG). Properties: opacity, rotation, position, scale. Can apply to all pages or specific pages. Example: add_watermark(input='document.pdf', type='text', text='DRAFT', opacity=0.3, rotation=45, color='#FF0000', font_size=72, output='draft.pdf'). Note: Watermarks are added as overlay; may cover content. Warning: Watermarks can be removed by PDF editing tools."
+    parameters:
+      - name: input
+        type: string
+        description: "Input PDF path"
+        required: true
+      - name: output
+        type: string
+        description: "Output PDF path"
+        required: true
+      - name: type
+        type: string
+        description: "Watermark type"
+        required: false
+        default: "text"
+        enum: ["text", "image"]
+      - name: text
+        type: string
+        description: "Watermark text"
+        required: false
+      - name: image
+        type: string
+        description: "Watermark image path"
+        required: false
+      - name: opacity
+        type: number
+        description: "Opacity (0.0 to 1.0)"
+        required: false
+        default: 0.3
+      - name: rotation
+        type: integer
+        description: "Rotation in degrees"
+        required: false
+        default: 45
+      - name: pages
+        type: string
+        description: "Pages to watermark (all if omitted)"
+        required: false
+    tags: ["document", "pdf", "watermark", "stamp", "overlay"]
+    test_prompts:
+      single:
+        - "Add a 'CONFIDENTIAL' watermark"
+        - "Stamp the document as DRAFT"
+        - "Add my logo as watermark"
+        - "Put a watermark on every page"
+      single_clear:
+        - "I need to add a watermark to a document. Add a 'CONFIDENTIAL' watermark"
+        - "I need to add a watermark to a document. Stamp the document as DRAFT"
+        - "I need to add a watermark to a document. Add my logo as watermark"
+        - "I need to add a watermark to a document. Put a watermark on every page"
+
+  - name: fill_form
+    descriptions:
+      minimal: "Fill form"
+      short: "Fill PDF form fields"
+      medium: "Fill in the fields of a PDF form."
+      long: "Fill PDF form fields programmatically. Supports text, checkboxes, radio buttons, and dropdowns. Example: fill_form(input='application.pdf', data='{\"name\": \"John\", \"email\": \"john@example.com\"}', output='filled.pdf')."
+      verbose: "Fill PDF form fields with data. Field types: text, checkbox, radio, dropdown, date. Input: JSON object mapping field names to values. Options: flatten (make fields uneditable), list fields (get available field names). Example: fill_form(input='tax_form.pdf', data='{\"first_name\": \"John\", \"ssn\": \"XXX-XX-1234\", \"married\": true}', flatten=true, output='completed_tax.pdf'). Note: Use list_fields=true first to get field names. Warning: Flattening is irreversible."
+    parameters:
+      - name: input
+        type: string
+        description: "Input PDF form path"
+        required: true
+      - name: output
+        type: string
+        description: "Output PDF path"
+        required: true
+      - name: data
+        type: string
+        description: "JSON object with field values"
+        required: true
+      - name: flatten
+        type: boolean
+        description: "Flatten form (make uneditable)"
+        required: false
+        default: false
+      - name: list_fields
+        type: boolean
+        description: "List available fields instead of filling"
+        required: false
+        default: false
+    tags: ["document", "pdf", "form", "fill", "fields"]
+    test_prompts:
+      single:
+        - "Fill out this PDF form"
+        - "Complete the form with this data"
+        - "What fields are in this form?"
+        - "Fill the application form"
+      single_clear:
+        - "I need to fill in a PDF form. Fill out this PDF form"
+        - "I need to fill in a PDF form. Complete the form with this data"
+        - "I need to fill in a PDF form. What fields are in this form?"
+        - "I need to fill in a PDF form. Fill the application form"
+
+  - name: sign_document
+    descriptions:
+      minimal: "Sign document"
+      short: "Digitally sign a document"
+      medium: "Add a digital signature to a PDF document."
+      long: "Digitally sign a PDF with a certificate or image signature. Example: sign_document(input='contract.pdf', certificate='my_cert.p12', password='secret', output='signed.pdf')."
+      verbose: "Add digital signatures to PDF documents. Types: 'certificate' (cryptographic PKI signature), 'image' (visual signature image), 'both'. Certificate formats: P12/PFX, PEM. Signature fields: appearance, reason, location, contact. Example: sign_document(input='agreement.pdf', type='certificate', certificate='signer.p12', password='pass', reason='Contract approval', location='New York', appearance='John Doe', output='signed_agreement.pdf'). Note: Certificate signatures are legally binding in many jurisdictions. Warning: Signed documents should not be modified."
+    parameters:
+      - name: input
+        type: string
+        description: "Input PDF path"
+        required: true
+      - name: output
+        type: string
+        description: "Output PDF path"
+        required: true
+      - name: type
+        type: string
+        description: "Signature type"
+        required: false
+        default: "certificate"
+        enum: ["certificate", "image", "both"]
+      - name: certificate
+        type: string
+        description: "Path to certificate file"
+        required: false
+      - name: password
+        type: string
+        description: "Certificate password"
+        required: false
+      - name: image
+        type: string
+        description: "Signature image path"
+        required: false
+      - name: reason
+        type: string
+        description: "Signing reason"
+        required: false
+      - name: location
+        type: string
+        description: "Signing location"
+        required: false
+    tags: ["document", "pdf", "sign", "signature", "certificate"]
+    test_prompts:
+      single:
+        - "Sign this document"
+        - "Add my digital signature"
+        - "Sign the contract with my certificate"
+        - "Put a signature on the PDF"
+      single_clear:
+        - "I need to digitally sign a document. Sign this document"
+        - "I need to digitally sign a document. Add my digital signature"
+        - "I need to digitally sign a document. Sign the contract with my certificate"
+        - "I need to digitally sign a document. Put a signature on the PDF"
+
+  - name: compress_document
+    descriptions:
+      minimal: "Compress document"
+      short: "Compress document file size"
+      medium: "Compress a PDF or document to reduce file size."
+      long: "Compress PDF to reduce file size. Optimize images, remove metadata, and more. Example: compress_document(input='large.pdf', quality='medium', output='small.pdf')."
+      verbose: "Compress PDF documents to reduce file size. Optimization levels: 'low' (minimal compression), 'medium' (balanced), 'high' (maximum compression). Options: image compression, downsampling, remove duplicate objects, linearize for web. Example: compress_document(input='photos.pdf', quality='high', image_quality=75, max_image_dpi=150, output='optimized.pdf'). Note: High compression may affect image quality. Warning: Extremely compressed PDFs may not print well."
+    parameters:
+      - name: input
+        type: string
+        description: "Input document path"
+        required: true
+      - name: output
+        type: string
+        description: "Output document path"
+        required: true
+      - name: quality
+        type: string
+        description: "Compression level"
+        required: false
+        default: "medium"
+        enum: ["low", "medium", "high"]
+      - name: image_quality
+        type: integer
+        description: "JPEG quality for images (1-100)"
+        required: false
+        default: 85
+      - name: max_image_dpi
+        type: integer
+        description: "Max image DPI"
+        required: false
+        default: 150
+      - name: remove_metadata
+        type: boolean
+        description: "Remove document metadata"
+        required: false
+        default: false
+    tags: ["document", "pdf", "compress", "optimize", "size"]
+    test_prompts:
+      single:
+        - "Compress this PDF"
+        - "Reduce the file size"
+        - "Optimize the document"
+        - "Make this PDF smaller"
+      single_clear:
+        - "I need to compress a document to reduce file size. Compress this PDF"
+        - "I need to compress a document to reduce file size. Reduce the file size"
+        - "I need to compress a document to reduce file size. Optimize the document"
+        - "I need to compress a document to reduce file size. Make this PDF smaller"
+
+  - name: protect_document
+    descriptions:
+      minimal: "Protect document"
+      short: "Password protect a document"
+      medium: "Add password protection and permissions to a PDF document."
+      long: "Protect PDF with password and set permissions. Control printing, copying, and editing. Example: protect_document(input='sensitive.pdf', password='secret123', output='protected.pdf')."
+      verbose: "Add security to PDF documents. Password types: 'user' (required to open), 'owner' (required to change permissions). Permissions: print, copy, modify, annotate, fill forms, extract. Encryption: 128-bit AES, 256-bit AES. Example: protect_document(input='confidential.pdf', user_password='viewonly', owner_password='admin123', allow_print=true, allow_copy=false, encryption='256-AES', output='secured.pdf'). Note: Some PDF readers may not respect permissions. Warning: Password protection is not foolproof security."
+    parameters:
+      - name: input
+        type: string
+        description: "Input PDF path"
+        required: true
+      - name: output
+        type: string
+        description: "Output PDF path"
+        required: true
+      - name: user_password
+        type: string
+        description: "Password to open document"
+        required: false
+      - name: owner_password
+        type: string
+        description: "Password for full access"
+        required: true
+      - name: allow_print
+        type: boolean
+        description: "Allow printing"
+        required: false
+        default: true
+      - name: allow_copy
+        type: boolean
+        description: "Allow copying text"
+        required: false
+        default: true
+      - name: allow_modify
+        type: boolean
+        description: "Allow modifications"
+        required: false
+        default: false
+      - name: encryption
+        type: string
+        description: "Encryption strength"
+        required: false
+        default: "256-AES"
+        enum: ["128-AES", "256-AES"]
+    tags: ["document", "pdf", "protect", "password", "security"]
+    test_prompts:
+      single:
+        - "Password protect this PDF"
+        - "Add security to the document"
+        - "Protect this file with a password"
+        - "Lock the PDF from editing"
+      single_clear:
+        - "I need to password protect a document. Password protect this PDF"
+        - "I need to password protect a document. Add security to the document"
+        - "I need to password protect a document. Protect this file with a password"
+        - "I need to password protect a document. Lock the PDF from editing"
+  - name: redact_document
+    descriptions:
+      minimal: "Redact content"
+      short: "Redact sensitive content"
+      medium: "Permanently remove sensitive information from a document."
+      long: "Redact sensitive content from PDFs. Permanently removes text, images, or metadata. Example: redact_document(input='contract.pdf', patterns='[\"SSN\", \"credit_card\"]')."
+      verbose: "Permanently remove sensitive information from documents. Redaction types: text patterns (regex), areas (coordinates), metadata, annotations. Built-in patterns: SSN, credit card, phone, email. Example: redact_document(input='application.pdf', patterns='[\"\\\\d{3}-\\\\d{2}-\\\\d{4}\", \"credit_card\"]', areas='[{\"page\": 1, \"x\": 100, \"y\": 200, \"width\": 150, \"height\": 20}]', redact_metadata=true, output='redacted.pdf'). Note: Redaction is permanent and cannot be undone. Warning: Always verify redacted content before sharing."
+    parameters:
+      - name: input
+        type: string
+        description: "Input document path"
+        required: true
+      - name: output
+        type: string
+        description: "Output document path"
+        required: true
+      - name: patterns
+        type: string
+        description: "JSON array of text patterns or regex"
+        required: false
+      - name: areas
+        type: string
+        description: "JSON array of area coordinates"
+        required: false
+      - name: redact_metadata
+        type: boolean
+        description: "Also redact metadata"
+        required: false
+        default: true
+      - name: redaction_color
+        type: string
+        description: "Color of redaction boxes"
+        required: false
+        default: "black"
+    tags: ["document", "pdf", "redact", "security", "privacy"]
+    test_prompts:
+      single:
+        - "Redact SSN from document"
+        - "Remove sensitive information"
+        - "Black out personal data"
+        - "Redact credit card numbers"
+      single_clear:
+        - "I need to redact sensitive information from a document. Redact SSN from document"
+        - "I need to redact sensitive information from a document. Remove sensitive information"
+        - "I need to redact sensitive information from a document. Black out personal data"
+        - "I need to redact sensitive information from a document. Redact credit card numbers"
+
+  - name: add_watermark
+    descriptions:
+      minimal: "Add watermark"
+      short: "Add watermark to document"
+      medium: "Add a text or image watermark to document pages."
+      long: "Add watermarks to PDF pages. Supports text or image watermarks. Example: add_watermark(input='report.pdf', text='CONFIDENTIAL', opacity=0.3)."
+      verbose: "Add watermarks for branding or security. Types: text (with font, size, rotation), image (logo, stamp). Placement: center, diagonal, header/footer, all pages or specific. Example: add_watermark(input='proposal.pdf', text='DRAFT', font_size=72, rotation=45, opacity=0.2, color='#FF0000', pages='all', output='watermarked.pdf'). Note: Watermarks appear behind content. Warning: Watermarks can be removed from unprotected PDFs."
+    parameters:
+      - name: input
+        type: string
+        description: "Input document path"
+        required: true
+      - name: output
+        type: string
+        description: "Output document path"
+        required: true
+      - name: text
+        type: string
+        description: "Watermark text"
+        required: false
+      - name: image
+        type: string
+        description: "Watermark image path"
+        required: false
+      - name: opacity
+        type: number
+        description: "Watermark opacity (0-1)"
+        required: false
+        default: 0.3
+      - name: rotation
+        type: integer
+        description: "Rotation angle in degrees"
+        required: false
+        default: 45
+      - name: pages
+        type: string
+        description: "Pages to watermark"
+        required: false
+        default: "all"
+    tags: ["document", "pdf", "watermark", "branding", "security"]
+    test_prompts:
+      single:
+        - "Add watermark to PDF"
+        - "Stamp document as confidential"
+        - "Add company logo watermark"
+        - "Mark pages as draft"
+      single_clear:
+        - "I need to add a watermark to a document. Add watermark to PDF"
+        - "I need to add a watermark to a document. Stamp document as confidential"
+        - "I need to add a watermark to a document. Add company logo watermark"
+        - "I need to add a watermark to a document. Mark pages as draft"
+
+  - name: flatten_form_fields
+    descriptions:
+      minimal: "Flatten forms"
+      short: "Flatten PDF form fields"
+      medium: "Convert form fields to static content in a PDF."
+      long: "Flatten PDF forms to make them non-editable. Converts fields to static content. Example: flatten_form_fields(input='filled_form.pdf', output='flat.pdf')."
+      verbose: "Flatten PDF form fields to prevent further editing. Converts interactive fields to static content while preserving appearance. Options: flatten all or specific field types. Example: flatten_form_fields(input='completed_application.pdf', flatten_types='[\"text\", \"checkbox\", \"signature\"]', preserve_appearance=true, output='finalized.pdf'). Note: Flattening is irreversible. Warning: Some accessibility features may be lost after flattening."
+    parameters:
+      - name: input
+        type: string
+        description: "Input PDF path"
+        required: true
+      - name: output
+        type: string
+        description: "Output PDF path"
+        required: true
+      - name: flatten_types
+        type: string
+        description: "JSON array of field types to flatten"
+        required: false
+      - name: preserve_appearance
+        type: boolean
+        description: "Preserve field appearance"
+        required: false
+        default: true
+    tags: ["document", "pdf", "form", "flatten", "finalize"]
+    test_prompts:
+      single:
+        - "Flatten PDF form"
+        - "Make form non-editable"
+        - "Finalize filled form"
+        - "Lock form fields"
+      single_clear:
+        - "I need to flatten form fields in a PDF. Flatten PDF form"
+        - "I need to flatten form fields in a PDF. Make form non-editable"
+        - "I need to flatten form fields in a PDF. Finalize filled form"
+        - "I need to flatten form fields in a PDF. Lock form fields"
+
+  - name: compare_documents
+    descriptions:
+      minimal: "Compare documents"
+      short: "Compare two documents"
+      medium: "Compare two documents and highlight differences."
+      long: "Compare two document versions and show differences. Highlights additions, deletions, and changes. Example: compare_documents(original='v1.pdf', modified='v2.pdf', output='diff.pdf')."
+      verbose: "Visual document comparison for review and legal purposes. Comparison types: text (word-by-word), layout (visual differences), metadata. Output: side-by-side, overlay, change list. Example: compare_documents(original='contract_v1.pdf', modified='contract_v2.pdf', comparison_type='text', output_format='overlay', highlight_additions='green', highlight_deletions='red', output='comparison.pdf'). Note: Best results with text-based PDFs. Warning: Scanned documents may require OCR first."
+    parameters:
+      - name: original
+        type: string
+        description: "Original document path"
+        required: true
+      - name: modified
+        type: string
+        description: "Modified document path"
+        required: true
+      - name: output
+        type: string
+        description: "Output comparison path"
+        required: true
+      - name: comparison_type
+        type: string
+        description: "Type of comparison"
+        required: false
+        default: "text"
+        enum: ["text", "layout", "both"]
+      - name: output_format
+        type: string
+        description: "Output format"
+        required: false
+        default: "overlay"
+        enum: ["overlay", "side_by_side", "list"]
+    tags: ["document", "pdf", "compare", "diff", "review"]
+    test_prompts:
+      single:
+        - "Compare two PDFs"
+        - "Show document differences"
+        - "Diff the contract versions"
+        - "What changed between versions"
+      single_clear:
+        - "I need to compare two documents. Compare two PDFs"
+        - "I need to compare two documents. Show document differences"
+        - "I need to compare two documents. Diff the contract versions"
+        - "I need to compare two documents. What changed between versions"
+
+  - name: add_page_numbers
+    descriptions:
+      minimal: "Add page numbers"
+      short: "Add page numbers to document"
+      medium: "Add page numbers to a PDF document."
+      long: "Add page numbers to PDF pages. Customize position, format, and starting number. Example: add_page_numbers(input='book.pdf', position='bottom_center', format='Page {n} of {total}')."
+      verbose: "Add page numbering to documents. Positions: top/bottom, left/center/right. Formats: number only, 'Page X of Y', Roman numerals. Options: start page, starting number, skip pages. Example: add_page_numbers(input='thesis.pdf', position='bottom_center', format='Page {n} of {total}', font='Helvetica', font_size=10, start_page=3, starting_number=1, output='numbered.pdf'). Note: Existing page numbers may conflict. Warning: Check margins to ensure numbers are visible."
+    parameters:
+      - name: input
+        type: string
+        description: "Input document path"
+        required: true
+      - name: output
+        type: string
+        description: "Output document path"
+        required: true
+      - name: position
+        type: string
+        description: "Number position"
+        required: false
+        default: "bottom_center"
+        enum: ["top_left", "top_center", "top_right", "bottom_left", "bottom_center", "bottom_right"]
+      - name: format
+        type: string
+        description: "Number format (use {n} for page, {total} for total)"
+        required: false
+        default: "{n}"
+      - name: start_page
+        type: integer
+        description: "First page to number"
+        required: false
+        default: 1
+      - name: starting_number
+        type: integer
+        description: "Starting number"
+        required: false
+        default: 1
+    tags: ["document", "pdf", "page_numbers", "format", "pagination"]
+    test_prompts:
+      single:
+        - "Add page numbers"
+        - "Number the pages"
+        - "Add Page X of Y footer"
+        - "Insert page numbering"
+      single_clear:
+        - "I need to add page numbers to a document. Add page numbers"
+        - "I need to add page numbers to a document. Number the pages"
+        - "I need to add page numbers to a document. Add Page X of Y footer"
+        - "I need to add page numbers to a document. Insert page numbering"
+
+  - name: add_header_footer
+    descriptions:
+      minimal: "Add header/footer"
+      short: "Add headers and footers"
+      medium: "Add headers and footers to document pages."
+      long: "Add custom headers and footers to PDF pages. Include text, dates, or page numbers. Example: add_header_footer(input='doc.pdf', header='Company Name', footer='{date}')."
+      verbose: "Add headers and footers for professional documents. Variables: {date}, {time}, {page}, {total}, {filename}. Options: different first page, odd/even pages, margins. Example: add_header_footer(input='report.pdf', header_left='CONFIDENTIAL', header_right='{date}', footer_center='Page {page} of {total}', font='Arial', font_size=9, margin_top=36, output='branded.pdf'). Note: Headers/footers use page margin space. Warning: Ensure content doesn't overlap existing text."
+    parameters:
+      - name: input
+        type: string
+        description: "Input document path"
+        required: true
+      - name: output
+        type: string
+        description: "Output document path"
+        required: true
+      - name: header_left
+        type: string
+        description: "Left header text"
+        required: false
+      - name: header_center
+        type: string
+        description: "Center header text"
+        required: false
+      - name: header_right
+        type: string
+        description: "Right header text"
+        required: false
+      - name: footer_left
+        type: string
+        description: "Left footer text"
+        required: false
+      - name: footer_center
+        type: string
+        description: "Center footer text"
+        required: false
+      - name: footer_right
+        type: string
+        description: "Right footer text"
+        required: false
+    tags: ["document", "pdf", "header", "footer", "format"]
+    test_prompts:
+      single:
+        - "Add header to document"
+        - "Add footer with date"
+        - "Insert company header"
+        - "Add page footer"
+      single_clear:
+        - "I need to add headers and footers to a document. Add header to document"
+        - "I need to add headers and footers to a document. Add footer with date"
+        - "I need to add headers and footers to a document. Insert company header"
+        - "I need to add headers and footers to a document. Add page footer"
+
+  - name: rotate_pages
+    descriptions:
+      minimal: "Rotate pages"
+      short: "Rotate document pages"
+      medium: "Rotate one or more pages in a PDF document."
+      long: "Rotate pages in a PDF. Fix orientation or adjust for printing. Example: rotate_pages(input='scanned.pdf', pages='1,3,5', angle=90)."
+      verbose: "Rotate PDF pages to correct orientation. Angles: 90 (clockwise), 180, 270 (counter-clockwise). Apply to: all pages, specific pages, odd/even pages. Example: rotate_pages(input='mixed_orientation.pdf', pages='2,4,6-8', angle=90, output='corrected.pdf'). Note: Rotation is relative to current orientation. Warning: Some viewers may display rotation differently."
+    parameters:
+      - name: input
+        type: string
+        description: "Input PDF path"
+        required: true
+      - name: output
+        type: string
+        description: "Output PDF path"
+        required: true
+      - name: pages
+        type: string
+        description: "Pages to rotate (e.g., '1,3,5-10' or 'all')"
+        required: true
+      - name: angle
+        type: integer
+        description: "Rotation angle"
+        required: true
+        enum: [90, 180, 270]
+    tags: ["document", "pdf", "rotate", "orientation", "fix"]
+    test_prompts:
+      single:
+        - "Rotate page 90 degrees"
+        - "Fix page orientation"
+        - "Turn pages right"
+        - "Rotate landscape to portrait"
+      single_clear:
+        - "I need to rotate pages in a document. Rotate page 90 degrees"
+        - "I need to rotate pages in a document. Fix page orientation"
+        - "I need to rotate pages in a document. Turn pages right"
+        - "I need to rotate pages in a document. Rotate landscape to portrait"
+
+  - name: create_pdf_portfolio
+    descriptions:
+      minimal: "Create portfolio"
+      short: "Create PDF portfolio"
+      medium: "Create a PDF portfolio containing multiple files."
+      long: "Create a PDF portfolio bundling multiple files. Includes navigation and organization. Example: create_pdf_portfolio(files='[\"doc1.pdf\", \"spreadsheet.xlsx\"]', output='portfolio.pdf')."
+      verbose: "Create PDF portfolios for organized file collections. Features: multiple file types, folder structure, cover page, navigation. Supported files: PDF, Office docs, images, text. Example: create_pdf_portfolio(files='[\"proposal.pdf\", \"budget.xlsx\", \"mockups/*.png\"]', cover_page='cover.pdf', layout='details', schema='{\"category\": \"string\", \"date\": \"date\"}', output='project_portfolio.pdf'). Note: Portfolio readers may vary. Warning: Very large portfolios may be slow to open."
+    parameters:
+      - name: files
+        type: string
+        description: "JSON array of file paths"
+        required: true
+      - name: output
+        type: string
+        description: "Output portfolio path"
+        required: true
+      - name: cover_page
+        type: string
+        description: "Cover page PDF"
+        required: false
+      - name: layout
+        type: string
+        description: "Portfolio layout"
+        required: false
+        default: "details"
+        enum: ["details", "tiles", "navigator"]
+      - name: title
+        type: string
+        description: "Portfolio title"
+        required: false
+    tags: ["document", "pdf", "portfolio", "bundle", "collection"]
+    test_prompts:
+      single:
+        - "Create PDF portfolio"
+        - "Bundle files into portfolio"
+        - "Combine documents and images"
+        - "Create file collection"
+      single_clear:
+        - "I need to create a PDF portfolio. Create PDF portfolio"
+        - "I need to create a PDF portfolio. Bundle files into portfolio"
+        - "I need to create a PDF portfolio. Combine documents and images"
+        - "I need to create a PDF portfolio. Create file collection"
+
+  - name: linearize_pdf
+    descriptions:
+      minimal: "Linearize PDF"
+      short: "Optimize PDF for web"
+      medium: "Linearize PDF for fast web viewing (progressive loading)."
+      long: "Linearize PDF for efficient web delivery. Enables progressive loading. Example: linearize_pdf(input='large_report.pdf', output='web_optimized.pdf')."
+      verbose: "Optimize PDFs for web viewing with linearization (Fast Web View). Benefits: first page displays before full download, efficient byte-serving. Also applies other optimizations. Example: linearize_pdf(input='catalog.pdf', remove_unused=true, compress_images=true, output='web_ready.pdf'). Note: Linearization may slightly increase file size. Warning: Editing a linearized PDF removes linearization."
+    parameters:
+      - name: input
+        type: string
+        description: "Input PDF path"
+        required: true
+      - name: output
+        type: string
+        description: "Output PDF path"
+        required: true
+      - name: remove_unused
+        type: boolean
+        description: "Remove unused objects"
+        required: false
+        default: true
+      - name: compress_images
+        type: boolean
+        description: "Also compress images"
+        required: false
+        default: false
+    tags: ["document", "pdf", "linearize", "web", "optimize"]
+    test_prompts:
+      single:
+        - "Optimize PDF for web"
+        - "Enable fast web view"
+        - "Linearize the document"
+        - "Prepare PDF for website"
+      single_clear:
+        - "I need to optimize a PDF for web viewing. Optimize PDF for web"
+        - "I need to optimize a PDF for web viewing. Enable fast web view"
+        - "I need to optimize a PDF for web viewing. Linearize the document"
+        - "I need to optimize a PDF for web viewing. Prepare PDF for website"
+
+  - name: extract_text_from_document
+    descriptions:
+      minimal: "Extract text"
+      short: "Extract text from document"
+      medium: "Extract all text content from a document."
+      long: "Extract text from PDF, Word, or other documents. Example: extract_text_from_document(input='report.pdf', format='plain')."
+      verbose: "Full text extraction from documents. Formats: PDF, DOCX, PPTX, ODT, RTF. Options: plain text, structured (with formatting hints), markdown. Example: extract_text_from_document(input='manual.pdf', format='markdown', include_tables=true, ocr_scanned=true, language='en'). Features: table extraction, OCR for scanned pages. Note: Complex layouts may affect accuracy. Warning: OCR adds processing time."
+    parameters:
+      - name: input
+        type: string
+        description: "Input document path"
+        required: true
+      - name: format
+        type: string
+        description: "Output text format"
+        required: false
+        default: "plain"
+        enum: ["plain", "structured", "markdown", "html"]
+      - name: include_tables
+        type: boolean
+        description: "Extract tables"
+        required: false
+        default: true
+      - name: ocr_scanned
+        type: boolean
+        description: "OCR scanned pages"
+        required: false
+        default: false
+      - name: language
+        type: string
+        description: "OCR language"
+        required: false
+        default: "en"
+    tags: ["document", "extract", "text", "ocr", "content"]
+    test_prompts:
+      single:
+        - "Extract text from PDF"
+        - "Get document text"
+        - "Pull text from file"
+        - "Convert document to text"
+      single_clear:
+        - "I need to extract text from a document. Extract text from PDF"
+        - "I need to extract text from a document. Get document text"
+        - "I need to extract text from a document. Pull text from file"
+        - "I need to extract text from a document. Convert document to text"
+
+  - name: create_document_template
+    descriptions:
+      minimal: "Create template"
+      short: "Create document template"
+      medium: "Create a reusable document template with placeholders."
+      long: "Create template with merge fields. Example: create_document_template(name='Invoice', source='invoice_master.docx', fields='[\"customer_name\", \"amount\"]')."
+      verbose: "Document template creation with variable placeholders. Placeholder syntax: {{field_name}}. Features: conditional sections, loops, formatting. Example: create_document_template(name='Contract', source='contract_template.docx', fields='[{\"name\": \"client_name\", \"type\": \"text\"}, {\"name\": \"services\", \"type\": \"list\"}, {\"name\": \"start_date\", \"type\": \"date\"}]', category='legal'). Note: Test templates with sample data. Warning: Missing placeholders may cause generation errors."
+    parameters:
+      - name: name
+        type: string
+        description: "Template name"
+        required: true
+      - name: source
+        type: string
+        description: "Source document path"
+        required: true
+      - name: fields
+        type: string
+        description: "JSON array of template fields"
+        required: true
+      - name: category
+        type: string
+        description: "Template category"
+        required: false
+      - name: description
+        type: string
+        description: "Template description"
+        required: false
+    tags: ["document", "template", "create", "merge", "fields"]
+    test_prompts:
+      single:
+        - "Create document template"
+        - "Make reusable template"
+        - "Set up mail merge template"
+        - "Create invoice template"
+      single_clear:
+        - "I need to create a document template. Create document template"
+        - "I need to create a document template. Make reusable template"
+        - "I need to create a document template. Set up mail merge template"
+        - "I need to create a document template. Create invoice template"
+
+  - name: generate_document_from_template
+    descriptions:
+      minimal: "Generate from template"
+      short: "Generate document from template"
+      medium: "Generate a document by filling in a template with data."
+      long: "Fill template with data. Example: generate_document_from_template(template='Invoice', data='{\"customer\": \"Acme Corp\", \"amount\": 500}')."
+      verbose: "Document generation from templates. Data sources: JSON, database, API. Features: conditional rendering, loops, formatting, batch generation. Example: generate_document_from_template(template_id='contract_v2', data='{\"client\": \"Acme Corp\", \"services\": [\"Consulting\", \"Support\"], \"value\": 50000}', output='contracts/acme_contract.docx', format='docx'). Note: Validate required fields before generation. Warning: Invalid data types may cause formatting issues."
+    parameters:
+      - name: template_id
+        type: string
+        description: "Template ID or name"
+        required: true
+      - name: data
+        type: string
+        description: "Template data (JSON)"
+        required: true
+      - name: output
+        type: string
+        description: "Output file path"
+        required: true
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "docx"
+        enum: ["docx", "pdf", "html", "txt"]
+    tags: ["document", "generate", "template", "merge", "fill"]
+    test_prompts:
+      single:
+        - "Generate document from template"
+        - "Fill in template"
+        - "Create document from data"
+        - "Mail merge document"
+      single_clear:
+        - "I need to generate a document from a template. Generate document from template"
+        - "I need to generate a document from a template. Fill in template"
+        - "I need to generate a document from a template. Create document from data"
+        - "I need to generate a document from a template. Mail merge document"
+
+  - name: compare_documents
+    descriptions:
+      minimal: "Compare docs"
+      short: "Compare two documents"
+      medium: "Compare two documents and show differences."
+      long: "Compare documents for differences. Example: compare_documents(original='v1.docx', modified='v2.docx', output='diff.html')."
+      verbose: "Document comparison and diff generation. Compares: text content, formatting, images, structure. Output formats: side-by-side, inline markup, change list. Example: compare_documents(original='contract_v1.docx', modified='contract_v2.docx', output='contract_changes.html', format='side_by_side', include_formatting=true). Note: PDF comparison is text-based. Warning: Complex formatting changes may not be fully captured."
+    parameters:
+      - name: original
+        type: string
+        description: "Original document path"
+        required: true
+      - name: modified
+        type: string
+        description: "Modified document path"
+        required: true
+      - name: output
+        type: string
+        description: "Comparison output path"
+        required: true
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "html"
+        enum: ["html", "docx", "pdf", "json"]
+      - name: include_formatting
+        type: boolean
+        description: "Compare formatting changes"
+        required: false
+        default: false
+    tags: ["document", "compare", "diff", "changes", "version"]
+    test_prompts:
+      single:
+        - "Compare two documents"
+        - "Show document differences"
+        - "Diff these files"
+        - "What changed between versions"
+      single_clear:
+        - "I need to compare two documents. Compare two documents"
+        - "I need to compare two documents. Show document differences"
+        - "I need to compare two documents. Diff these files"
+        - "I need to compare two documents. What changed between versions"
+
+  - name: redact_document
+    descriptions:
+      minimal: "Redact document"
+      short: "Redact sensitive content"
+      medium: "Redact sensitive information from a document."
+      long: "Redact sensitive content permanently. Example: redact_document(input='report.pdf', patterns='[\"SSN\", \"credit_card\"]', output='redacted.pdf')."
+      verbose: "Permanent document redaction. Pattern types: SSN, credit_card, email, phone, custom regex. Options: black boxes, replacement text, removal. Example: redact_document(input='customer_data.pdf', patterns='[\"SSN\", \"credit_card\", {\"regex\": \"\\\\bpassword\\\\b.*\", \"replacement\": \"[REDACTED]\"}]', output='safe_document.pdf', style='blackbox'). Note: Redaction is permanent and irreversible. Warning: Verify redaction before sharing; ensure no hidden layers."
+    parameters:
+      - name: input
+        type: string
+        description: "Input document path"
+        required: true
+      - name: output
+        type: string
+        description: "Output document path"
+        required: true
+      - name: patterns
+        type: string
+        description: "JSON array of redaction patterns"
+        required: true
+      - name: style
+        type: string
+        description: "Redaction style"
+        required: false
+        default: "blackbox"
+        enum: ["blackbox", "whitebox", "remove", "replace"]
+      - name: replacement_text
+        type: string
+        description: "Replacement text (for replace style)"
+        required: false
+    tags: ["document", "redact", "privacy", "security", "sensitive"]
+    test_prompts:
+      single:
+        - "Redact sensitive info"
+        - "Remove SSN from document"
+        - "Redact personal data"
+        - "Black out confidential info"
+      single_clear:
+        - "I need to redact sensitive information from a document. Redact sensitive info"
+        - "I need to redact sensitive information from a document. Remove SSN from document"
+        - "I need to redact sensitive information from a document. Redact personal data"
+        - "I need to redact sensitive information from a document. Black out confidential info"
+
+  - name: add_digital_signature
+    descriptions:
+      minimal: "Sign document"
+      short: "Add digital signature"
+      medium: "Add a digital signature to a document."
+      long: "Digitally sign a document. Example: add_digital_signature(input='contract.pdf', certificate='my_cert.p12', output='signed.pdf')."
+      verbose: "Digital signature application. Certificate types: PFX/P12, smart card, cloud signing. Signature types: visible, invisible, certifying. Example: add_digital_signature(input='agreement.pdf', certificate='/certs/signing.p12', password='cert_pass', reason='Contract approval', location='New York', visible=true, page=1, position='{\"x\": 400, \"y\": 100}', output='signed_agreement.pdf'). Note: Visible signatures include appearance. Warning: Modifying signed documents invalidates signature."
+    parameters:
+      - name: input
+        type: string
+        description: "Input document path"
+        required: true
+      - name: output
+        type: string
+        description: "Output document path"
+        required: true
+      - name: certificate
+        type: string
+        description: "Certificate file path"
+        required: true
+      - name: password
+        type: string
+        description: "Certificate password"
+        required: false
+      - name: reason
+        type: string
+        description: "Signing reason"
+        required: false
+      - name: location
+        type: string
+        description: "Signing location"
+        required: false
+      - name: visible
+        type: boolean
+        description: "Show visible signature"
+        required: false
+        default: true
+      - name: page
+        type: integer
+        description: "Signature page"
+        required: false
+        default: 1
+    tags: ["document", "signature", "digital", "sign", "certificate"]
+    test_prompts:
+      single:
+        - "Digitally sign document"
+        - "Add signature to PDF"
+        - "Sign with certificate"
+        - "Apply digital signature"
+      single_clear:
+        - "I need to add a digital signature to a document. Digitally sign document"
+        - "I need to add a digital signature to a document. Add signature to PDF"
+        - "I need to add a digital signature to a document. Sign with certificate"
+        - "I need to add a digital signature to a document. Apply digital signature"
+
+  - name: verify_document_signature
+    descriptions:
+      minimal: "Verify signature"
+      short: "Verify document signature"
+      medium: "Verify the digital signature on a document."
+      long: "Verify document signatures. Example: verify_document_signature(input='signed.pdf', check_revocation=true)."
+      verbose: "Digital signature verification. Checks: signature validity, certificate chain, timestamp, document integrity, revocation status. Example: verify_document_signature(input='signed_contract.pdf', check_revocation=true, trusted_certs='/certs/trusted/'). Returns: {\"valid\": true, \"signer\": \"John Doe\", \"signed_at\": \"...\", \"modified_after_signing\": false}. Note: Revocation checks require network. Warning: Self-signed certificates may not verify."
+    parameters:
+      - name: input
+        type: string
+        description: "Signed document path"
+        required: true
+      - name: check_revocation
+        type: boolean
+        description: "Check certificate revocation"
+        required: false
+        default: true
+      - name: trusted_certs
+        type: string
+        description: "Trusted certificates path"
+        required: false
+    tags: ["document", "signature", "verify", "validate", "certificate"]
+    test_prompts:
+      single:
+        - "Verify document signature"
+        - "Check if signature is valid"
+        - "Validate signed PDF"
+        - "Is this document authentic"
+      single_clear:
+        - "I need to verify a digital signature on a document. Verify document signature"
+        - "I need to verify a digital signature on a document. Check if signature is valid"
+        - "I need to verify a digital signature on a document. Validate signed PDF"
+        - "I need to verify a digital signature on a document. Is this document authentic"
+
+  - name: flatten_pdf
+    descriptions:
+      minimal: "Flatten PDF"
+      short: "Flatten PDF form fields"
+      medium: "Flatten form fields and annotations in a PDF."
+      long: "Flatten PDF to merge forms and annotations into content. Example: flatten_pdf(input='form_filled.pdf', output='flattened.pdf')."
+      verbose: "PDF flattening for form fields and annotations. Flattening: converts interactive elements to static content. Options: flatten forms only, annotations only, or both. Example: flatten_pdf(input='completed_application.pdf', flatten_forms=true, flatten_annotations=true, flatten_layers=false, output='final_application.pdf'). Use case: archiving, preventing further edits. Note: Flattening is irreversible. Warning: Flattened forms cannot be edited."
+    parameters:
+      - name: input
+        type: string
+        description: "Input PDF path"
+        required: true
+      - name: output
+        type: string
+        description: "Output PDF path"
+        required: true
+      - name: flatten_forms
+        type: boolean
+        description: "Flatten form fields"
+        required: false
+        default: true
+      - name: flatten_annotations
+        type: boolean
+        description: "Flatten annotations"
+        required: false
+        default: true
+      - name: flatten_layers
+        type: boolean
+        description: "Flatten optional content layers"
+        required: false
+        default: false
+    tags: ["document", "pdf", "flatten", "form", "annotations"]
+    test_prompts:
+      single:
+        - "Flatten PDF form"
+        - "Lock form fields"
+        - "Make PDF non-editable"
+        - "Flatten PDF annotations"
+      single_clear:
+        - "I need to flatten a PDF to make it non-editable. Flatten PDF form"
+        - "I need to flatten a PDF to make it non-editable. Lock form fields"
+        - "I need to flatten a PDF to make it non-editable. Make PDF non-editable"
+        - "I need to flatten a PDF to make it non-editable. Flatten PDF annotations"

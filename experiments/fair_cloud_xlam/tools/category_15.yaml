@@ -1,0 +1,757 @@
+category: category_15
+tools:
+- name: transactions_feed
+  descriptions:
+    minimal: Fetches the latest large whale transactions for...
+    short: Fetches the latest large whale transactions for popular blockchains with optional filtering.
+    medium: Fetches the latest large whale transactions for popular blockchains with optional filtering.
+    long: Fetches the latest large whale transactions for popular blockchains with optional filtering.
+    verbose: Fetches the latest large whale transactions for popular blockchains with optional filtering.
+  parameters:
+  - name: s_amount_usd
+    type: string
+    description: Filters transactions by value in USD. Use 'desc' for descending order.
+    required: true
+    default: desc
+  - name: size
+    type: string
+    description: Number of transactions to fetch. Defaults to '20'.
+    required: true
+    default: '20'
+  - name: t_blockchain
+    type: string
+    description: Specifies the blockchain to filter transactions. Defaults to 'ethereum'.
+    required: true
+    default: ethereum
+  tags:
+  - transactions
+  - feed
+  test_prompts:
+    single:
+    - Fetch the latest large whale transactions on the Ethereum blockchain, sorted by descending transaction value in USD,
+      with a size of 50 transactions.
+    - Get the smallest 5 transactions on the Litecoin blockchain in ascending order of value.
+    single_clear:
+    - Fetch the latest large whale transactions on the Ethereum blockchain, sorted by descending transaction value in USD,
+      with a size of 50 transactions.
+    - Get the smallest 5 transactions on the Litecoin blockchain in ascending order of value.
+- name: webcams_list_orderby_order_sort
+  descriptions:
+    minimal: Fetches a list of webcams ordered and sorted...
+    short: Fetches a list of webcams ordered and sorted based on the specified parameters.
+    medium: Fetches a list of webcams ordered and sorted based on the specified parameters.
+    long: Fetches a list of webcams ordered and sorted based on the specified parameters.
+    verbose: Fetches a list of webcams ordered and sorted based on the specified parameters.
+  parameters:
+  - name: sort
+    type: string
+    description: The sorting direction for the results. Possible values are "asc" (ascending) or "desc" (descending).
+    required: true
+  - name: order
+    type: string
+    description: 'The criterion by which the results will be ordered. Possible values are:'
+    required: true
+  - name: lang
+    type: string
+    description: The language for localizing the results, if available. Default is "en".
+    required: false
+    default: en
+  - name: show
+    type: string
+    description: 'The content to be listed in the response. Default is "webcams:image,location". Possible values include:'
+    required: false
+    default: webcams:image,location
+  tags:
+  - webcams
+  - list
+  - orderby
+  test_prompts:
+    single:
+    - List webcams ordered by popularity in descending order and sorted in ascending order, localized in German.
+    - Sort webcams by 'popularity' in descending order.
+    single_clear:
+    - List webcams ordered by popularity in descending order and sorted in ascending order, localized in German.
+    - Sort webcams by 'popularity' in descending order.
+- name: innings_cricket
+  descriptions:
+    minimal: Fetch innings data for a cricket event given the...
+    short: Fetch innings data for a cricket event given the event ID.
+    medium: Fetch innings data for a cricket event given the event ID.
+    long: Fetch innings data for a cricket event given the event ID.
+    verbose: Fetch innings data for a cricket event given the event ID.
+  parameters:
+  - name: event_id
+    type: integer
+    description: The unique identifier of the cricket event.
+    required: true
+    default: '10188874'
+  tags:
+  - innings
+  - cricket
+  test_prompts:
+    single:
+    - What are the innings details for cricket event ID 12345?
+    - What is the innings data for the cricket match identified by ID 97531?
+    single_clear:
+    - What are the innings details for cricket event ID 12345?
+    - What is the innings data for the cricket match identified by ID 97531?
+- name: random_address_by_id
+  descriptions:
+    minimal: Retrieve a fake address based on a given ID using...
+    short: Retrieve a fake address based on a given ID using the RapidAPI service.
+    medium: Retrieve a fake address based on a given ID using the RapidAPI service.
+    long: Retrieve a fake address based on a given ID using the RapidAPI service.
+    verbose: Retrieve a fake address based on a given ID using the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID for which to retrieve the fake address.
+    required: true
+    default: '1'
+  tags:
+  - random
+  - address
+  - by
+  test_prompts:
+    single:
+    - Generate a random address using ID '789' from the fake data generator API.
+    - Generate a random address using ID '101' from the fake data generator API.
+    single_clear:
+    - Generate a random address using ID '789' from the fake data generator API.
+    - Generate a random address using ID '101' from the fake data generator API.
+- name: playlist_details
+  descriptions:
+    minimal: Fetches the details of a YouTube playlist based...
+    short: Fetches the details of a YouTube playlist based on the provided playlist ID and part specifications.
+    medium: Fetches the details of a YouTube playlist based on the provided playlist ID and part specifications.
+    long: Fetches the details of a YouTube playlist based on the provided playlist ID and part specifications.
+    verbose: Fetches the details of a YouTube playlist based on the provided playlist ID and part specifications.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the playlist to fetch details for.
+    required: true
+    default: RDZiQo7nAkQHU
+  - name: part
+    type: string
+    description: The part parameter specifies a comma-separated list of one or more playlist resource properties that the
+      API response will include.
+    required: true
+    default: snippet
+  tags:
+  - playlist
+  - details
+  test_prompts:
+    single:
+    - Fetch details of the YouTube playlist with ID PL987654321 and include 'snippet,contentDetails'.
+    single_clear:
+    - Fetch details of the YouTube playlist with ID PL987654321 and include 'snippet,contentDetails'.
+- name: video_details
+  descriptions:
+    minimal: Fetches all publicly available details about a...
+    short: Fetches all publicly available details about a YouTube video using the given video ID and an optional RapidAPI
+      key for authentication.
+    medium: Fetches all publicly available details about a YouTube video using the given video ID and an optional RapidAPI
+      key for authentication.
+    long: Fetches all publicly available details about a YouTube video using the given video ID and an optional RapidAPI key
+      for authentication.
+    verbose: Fetches all publicly available details about a YouTube video using the given video ID and an optional RapidAPI
+      key for authentication.
+  parameters:
+  - name: video_id
+    type: string
+    description: The unique identifier of the YouTube video.
+    required: true
+    default: PuQFESk0BrA
+  tags:
+  - video
+  - details
+  test_prompts:
+    single:
+    - What is the upload date of the video 'N0N533N0N53'?
+    - Find me the details of the YouTube video 'KsdfJH2345'.
+    - Can you provide details about the YouTube video with ID 'dQw4w9WgXcQ'?
+    - What are the details of the video '456789abc' in Korean for users in South Korea?
+    single_clear:
+    - What is the upload date of the video 'N0N533N0N53'?
+    - Find me the details of the YouTube video 'KsdfJH2345'.
+    - Can you provide details about the YouTube video with ID 'dQw4w9WgXcQ'?
+    - What are the details of the video '456789abc' in Korean for users in South Korea?
+- name: forex_quotes
+  descriptions:
+    minimal: Fetches the real-time price of a forex currency...
+    short: Fetches the real-time price of a forex currency pair.
+    medium: Fetches the real-time price of a forex currency pair.
+    long: Fetches the real-time price of a forex currency pair.
+    verbose: Fetches the real-time price of a forex currency pair.
+  parameters:
+  - name: target
+    type: string
+    description: The target currency code (e.g., 'USD').
+    required: true
+    default: USD
+  - name: source
+    type: string
+    description: The source currency code (e.g., 'EUR').
+    required: true
+    default: EUR
+  tags:
+  - forex
+  - quotes
+  test_prompts:
+    single:
+    - Fetch the real-time forex quote for the currency pair EUR to USD.
+    single_clear:
+    - Fetch the real-time forex quote for the currency pair EUR to USD.
+- name: timezone
+  descriptions:
+    minimal: Fetches the timezone information for a given...
+    short: Fetches the timezone information for a given geographic coordinate and timestamp using the RapidAPI service.
+    medium: Fetches the timezone information for a given geographic coordinate and timestamp using the RapidAPI service.
+    long: Fetches the timezone information for a given geographic coordinate and timestamp using the RapidAPI service.
+    verbose: Fetches the timezone information for a given geographic coordinate and timestamp using the RapidAPI service.
+  parameters:
+  - name: lng
+    type: integer
+    description: Longitude of the geographic coordinate.
+    required: true
+    default: '-123.045868'
+  - name: timestamp
+    type: integer
+    description: The desired time as seconds since midnight, January 1, 1970 UTC.
+    required: true
+    default: '1646179205'
+  - name: lat
+    type: integer
+    description: Latitude of the geographic coordinate.
+    required: true
+    default: '49.282409'
+  tags:
+  - timezone
+  test_prompts:
+    single:
+    - What timezone is in use in Beijing, China at 2:00 PM on May 1, 2022?
+    - What timezone applies to London, UK at 5:00 PM on October 31, 2022?
+    - Determine the timezone in New York City at 3:00 AM on December 25, 2022.
+    single_clear:
+    - What timezone is in use in Beijing, China at 2:00 PM on May 1, 2022?
+    - What timezone applies to London, UK at 5:00 PM on October 31, 2022?
+    - Determine the timezone in New York City at 3:00 AM on December 25, 2022.
+- name: timezones
+  descriptions:
+    minimal: Fetch a list of the world's time zones with...
+    short: Fetch a list of the world's time zones with various filtering options.
+    medium: Fetch a list of the world's time zones with various filtering options.
+    long: Fetch a list of the world's time zones with various filtering options.
+    verbose: Fetch a list of the world's time zones with various filtering options.
+  parameters:
+  - name: offset
+    type: string
+    description: Filter on non-daylight savings offset in hours.
+    required: false
+  - name: name
+    type: string
+    description: Filter as "contains" on timezone name in the chosen language.
+    required: false
+  - name: code
+    type: string
+    description: Filter on 3-letter non-daylight savings timezone code (not unique).
+    required: false
+  - name: timezone
+    type: string
+    description: Filter on timezone name in English.
+    required: false
+  - name: daylights_offset
+    type: string
+    description: Filter on daylight savings offset in hours.
+    required: false
+  - name: lang
+    type: string
+    description: Language selection ISO 639-1 two-letter code. Overrides the Accept-Language header. Default is 'de'.
+    required: false
+    default: de
+  - name: daylights_code
+    type: string
+    description: Filter on daylight savings letter code (not unique).
+    required: false
+  - name: fields
+    type: string
+    description: Select fields to return in the result. Default is 'offset,daylights_offset,daylights,daylights_code,timezone'.
+    required: false
+    default: offset,daylights_offset,daylights,daylights_code,timezone
+  - name: daylights
+    type: string
+    description: Filter on daylight savings/non-daylight savings time zones (`true` or `false`).
+    required: false
+  tags:
+  - timezones
+  test_prompts:
+    single:
+    - Fetch time zones that have the name containing 'Pacific' in German.
+    single_clear:
+    - Fetch time zones that have the name containing 'Pacific' in German.
+- name: staffs_get_short_info
+  descriptions:
+    minimal: Fetch short information for one or more staff...
+    short: Fetch short information for one or more staff members given their IDs.
+    medium: Fetch short information for one or more staff members given their IDs.
+    long: Fetch short information for one or more staff members given their IDs.
+    verbose: Fetch short information for one or more staff members given their IDs.
+  parameters:
+  - name: ids
+    type: string
+    description: 'Comma-separated list of staff IDs. Example: `60805,39208,17455`.'
+    required: true
+    default: 60805,39208,17455,38756,72819,48174
+  - name: domain
+    type: string
+    description: 'Specifies the domain. One of the following: `com`, `de`, `be`, `es`, `it`, `nl`, `pl`, `pt`, `com.tr`, `world`.
+      Defaults to `de`.'
+    required: false
+    default: de
+  tags:
+  - staffs
+  - get
+  - short
+  test_prompts:
+    single:
+    - Provide the short information for staff IDs '77777,88888,99999' in the Dutch domain.
+    - Could you find information for staff members 78901, 23456, and 89012 from the Spanish domain?
+    - Retrieve short info for staff members with IDs 60805, 39208, and 17455 from the German domain.
+    - Can you provide short information for staff members with IDs 12345, 67890, and 54321?
+    - Get brief details for staff members 45678, 90123, and 44556 from the international domain.
+    single_clear:
+    - Provide the short information for staff IDs '77777,88888,99999' in the Dutch domain.
+    - Could you find information for staff members 78901, 23456, and 89012 from the Spanish domain?
+    - Retrieve short info for staff members with IDs 60805, 39208, and 17455 from the German domain.
+    - Can you provide short information for staff members with IDs 12345, 67890, and 54321?
+    - Get brief details for staff members 45678, 90123, and 44556 from the international domain.
+- name: mlem_id
+  descriptions:
+    minimal: Fetches a mlem image by its ID in JSON format...
+    short: Fetches a mlem image by its ID in JSON format using the Mlem API.
+    medium: Fetches a mlem image by its ID in JSON format using the Mlem API.
+    long: Fetches a mlem image by its ID in JSON format using the Mlem API.
+    verbose: Fetches a mlem image by its ID in JSON format using the Mlem API.
+  parameters:
+  - name: mlemid
+    type: integer
+    description: The ID of the mlem image to fetch.
+    required: true
+  tags:
+  - mlem
+  - id
+  test_prompts:
+    single:
+    - Can you fetch details for mlem ID 12345?
+    single_clear:
+    - Can you fetch details for mlem ID 12345?
+- name: trending_tags_from_country
+  descriptions:
+    minimal: Fetches trending tags from a specified country...
+    short: Fetches trending tags from a specified country using the Hashtag5 API.
+    medium: Fetches trending tags from a specified country using the Hashtag5 API.
+    long: Fetches trending tags from a specified country using the Hashtag5 API.
+    verbose: Fetches trending tags from a specified country using the Hashtag5 API.
+  parameters:
+  - name: country_name
+    type: string
+    description: The name of the country for which to fetch trending tags.
+    required: true
+    default: United States
+  tags:
+  - trending
+  - tags
+  - from
+  test_prompts:
+    single:
+    - What are the trending tags in France right now?
+    single_clear:
+    - What are the trending tags in France right now?
+- name: generate_random_string
+  descriptions:
+    minimal: Generates a random string of specified length and...
+    short: Generates a random string of specified length and character types.
+    medium: Generates a random string of specified length and character types.
+    long: Generates a random string of specified length and character types.
+    verbose: Generates a random string of specified length and character types.
+  parameters:
+  - name: length
+    type: integer
+    description: The length of the random string.
+    required: true
+    default: true
+  - name: uppercase
+    type: boolean
+    description: Include uppercase letters. Defaults to True.
+    required: false
+    default: true
+  - name: lowercase
+    type: boolean
+    description: Include lowercase letters. Defaults to True.
+    required: false
+    default: true
+  - name: digits
+    type: boolean
+    description: Include digits. Defaults to True.
+    required: false
+  - name: special_chars
+    type: boolean
+    description: Include special characters. Defaults to False.
+    required: false
+    default: true
+  tags:
+  - generate
+  - random
+  - string
+  test_prompts:
+    single:
+    - Can you generate a random password of length 10 with uppercase, lowercase, and digits, but no special characters?
+    - Generate a 12-character random string with all types of characters including special ones.
+    - Generate a random string of length 18 with all character types except lowercase.
+    - Create a random 10-character string with only lowercase letters.
+    - Generate a random string of length 10 with all character types.
+    - Generate a random string of length 10 with uppercase, lowercase, and digits.
+    - Generate a random string of length 15 with all character types included.
+    - Generate a 16-character password including uppercase, lowercase, digits, and special characters.
+    - Produce a 12-character password including special characters.
+    - I want a 8-character password with uppercase, digits, and special characters.
+    - Generate a random string of length 10 with only lowercase letters.
+    - Create a random string of length 30 that includes all character types except uppercase.
+    - Make a 20-character random string with all but special characters.
+    - Create a random password of length 10 with uppercase, lowercase, and digits.
+    - Create a random password of length 10, using only uppercase letters and digits.
+    single_clear:
+    - Can you generate a random password of length 10 with uppercase, lowercase, and digits, but no special characters?
+    - Generate a 12-character random string with all types of characters including special ones.
+    - Generate a random string of length 18 with all character types except lowercase.
+    - Create a random 10-character string with only lowercase letters.
+    - Generate a random string of length 10 with all character types.
+    - Generate a random string of length 10 with uppercase, lowercase, and digits.
+    - Generate a random string of length 15 with all character types included.
+    - Generate a 16-character password including uppercase, lowercase, digits, and special characters.
+    - Produce a 12-character password including special characters.
+    - I want a 8-character password with uppercase, digits, and special characters.
+    - Generate a random string of length 10 with only lowercase letters.
+    - Create a random string of length 30 that includes all character types except uppercase.
+    - Make a 20-character random string with all but special characters.
+    - Create a random password of length 10 with uppercase, lowercase, and digits.
+    - Create a random password of length 10, using only uppercase letters and digits.
+- name: search_restaurants_by_town
+  descriptions:
+    minimal: Search for restaurants within a specified town or...
+    short: Search for restaurants within a specified town or city using the Wyre Data API.
+    medium: Search for restaurants within a specified town or city using the Wyre Data API.
+    long: Search for restaurants within a specified town or city using the Wyre Data API.
+    verbose: Search for restaurants within a specified town or city using the Wyre Data API.
+  parameters:
+  - name: town
+    type: string
+    description: The name of the town or city to search for restaurants.
+    required: true
+    default: hambleton
+  tags:
+  - search
+  - restaurants
+  - by
+  test_prompts:
+    single:
+    - Search for restaurants in Preston.
+    single_clear:
+    - Search for restaurants in Preston.
+- name: get_product_detail
+  descriptions:
+    minimal: Retrieve the details of a product from the...
+    short: Retrieve the details of a product from the Taobao-Tmall API using a specified product ID and RapidAPI key.
+    medium: Retrieve the details of a product from the Taobao-Tmall API using a specified product ID and RapidAPI key.
+    long: Retrieve the details of a product from the Taobao-Tmall API using a specified product ID and RapidAPI key.
+    verbose: Retrieve the details of a product from the Taobao-Tmall API using a specified product ID and RapidAPI key.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the product whose details are being retrieved.
+    required: true
+    default: 616211697315
+  tags:
+  - get
+  - product
+  - detail
+  test_prompts:
+    single:
+    - What are the details of the product with ID 123456789 on Taobao-Tmall?
+    - Retrieve details for product with ID 987654321 on Tmall.
+    single_clear:
+    - What are the details of the product with ID 123456789 on Taobao-Tmall?
+    - Retrieve details for product with ID 987654321 on Tmall.
+- name: register_device_information
+  descriptions:
+    minimal: Registers a device by sending its information to...
+    short: Registers a device by sending its information to a specified endpoint.
+    medium: Registers a device by sending its information to a specified endpoint.
+    long: Registers a device by sending its information to a specified endpoint.
+    verbose: Registers a device by sending its information to a specified endpoint.
+  parameters:
+  - name: aid
+    type: integer
+    description: App identifier for the device.
+    required: true
+    default: '1180'
+  - name: version
+    type: string
+    description: Version code of the app. Defaults to '250304'.
+    required: false
+    default: '250304'
+  - name: os
+    type: string
+    description: Operating system version of the device. Defaults to '7.1.2'.
+    required: false
+    default: 7.1.2
+  tags:
+  - register
+  - device
+  - information
+  test_prompts:
+    single:
+    - Register device information for an app with ID 123456 on Android 9.0 and app version 320001.
+    - Could you register a device with aid 98765, app version '280307', and operating system '10.0.1'?
+    single_clear:
+    - Register device information for an app with ID 123456 on Android 9.0 and app version 320001.
+    - Could you register a device with aid 98765, app version '280307', and operating system '10.0.1'?
+- name: geocode_city
+  descriptions:
+    minimal: Retrieves the latitude and longitude coordinates...
+    short: Retrieves the latitude and longitude coordinates of a given city using the Maps.
+    medium: Retrieves the latitude and longitude coordinates of a given city using the Maps.co Geocoding API.
+    long: Retrieves the latitude and longitude coordinates of a given city using the Maps.co Geocoding API.
+    verbose: Retrieves the latitude and longitude coordinates of a given city using the Maps.co Geocoding API.
+  parameters:
+  - name: city
+    type: string
+    description: The name of the city.
+    required: true
+  tags:
+  - geocode
+  - city
+  test_prompts:
+    single:
+    - What are the coordinates of New York City?
+    - What are the geographical coordinates of Tokyo, Japan?
+    - What are the coordinates of New York City?
+    single_clear:
+    - What are the coordinates of New York City?
+    - What are the geographical coordinates of Tokyo, Japan?
+    - What are the coordinates of New York City?
+- name: constructorstandingsafterarace
+  descriptions:
+    minimal: Fetches the constructor standings after a...
+    short: Fetches the constructor standings after a specific race in a given Formula 1 season.
+    medium: Fetches the constructor standings after a specific race in a given Formula 1 season.
+    long: Fetches the constructor standings after a specific race in a given Formula 1 season.
+    verbose: Fetches the constructor standings after a specific race in a given Formula 1 season.
+  parameters:
+  - name: year
+    type: string
+    description: The year of the Formula 1 season.
+    required: true
+    default: year
+  - name: round
+    type: string
+    description: The specific race round in the season.
+    required: true
+    default: round
+  tags:
+  - constructorstandingsafterarace
+  test_prompts:
+    single:
+    - What were the constructor standings after the 5th race of the 2022 Formula 1 season?
+    - How did the constructor standings look after the 5th race in the 2021 Formula 1 season?
+    - Could you provide the constructor standings after the 5th round of the 2022 Formula 1 season?
+    single_clear:
+    - What were the constructor standings after the 5th race of the 2022 Formula 1 season?
+    - How did the constructor standings look after the 5th race in the 2021 Formula 1 season?
+    - Could you provide the constructor standings after the 5th round of the 2022 Formula 1 season?
+- name: all_strains_descending
+  descriptions:
+    minimal: Fetches a list of all weed strains ordered in a...
+    short: Fetches a list of all weed strains ordered in a specified descending order from the RapidAPI Weed Strain API.
+    medium: Fetches a list of all weed strains ordered in a specified descending order from the RapidAPI Weed Strain API.
+    long: Fetches a list of all weed strains ordered in a specified descending order from the RapidAPI Weed Strain API.
+    verbose: Fetches a list of all weed strains ordered in a specified descending order from the RapidAPI Weed Strain API.
+  parameters:
+  - name: ordering
+    type: string
+    description: The attribute by which to order the strains in descending order (e.g., 'name', 'thc', etc.).
+    required: true
+    default: -strain
+  tags:
+  - all
+  - strains
+  - descending
+  test_prompts:
+    single:
+    - I need a list of weed strains sorted by their names in descending order. Can you provide that?
+    - Please provide a list of all weed strains ordered by their CBD content in descending order.
+    single_clear:
+    - I need a list of weed strains sorted by their names in descending order. Can you provide that?
+    - Please provide a list of all weed strains ordered by their CBD content in descending order.
+- name: generate_uuid
+  descriptions:
+    minimal: Generates one or more UUID v4 strings with...
+    short: Generates one or more UUID v4 strings with optional formatting.
+    medium: Generates one or more UUID v4 strings with optional formatting.
+    long: Generates one or more UUID v4 strings with optional formatting.
+    verbose: Generates one or more UUID v4 strings with optional formatting.
+  parameters:
+  - name: timestamp_first
+    type: boolean
+    description: If set to True, the generated UUID will have the timestamp first.
+    required: false
+    default: 'false'
+  - name: remove_dash
+    type: boolean
+    description: If set to True, the generated UUIDs will not contain dashes.
+    required: false
+    default: 'true'
+  - name: count
+    type: string
+    description: The number of UUIDs to generate. Default is '5'.
+    required: false
+    default: '5'
+  tags:
+  - generate
+  - uuid
+  test_prompts:
+    single:
+    - Generate 10 UUIDs without dashes.
+    - Generate 10 UUIDs.
+    - Generate 5 UUIDs for a session ID generation in a web application.
+    single_clear:
+    - Generate 10 UUIDs without dashes.
+    - Generate 10 UUIDs.
+    - Generate 5 UUIDs for a session ID generation in a web application.
+- name: draw_cards
+  descriptions:
+    minimal: Shuffles a standard deck of 52 cards and draws a...
+    short: Shuffles a standard deck of 52 cards and draws a specified number of cards from the top.
+    medium: Shuffles a standard deck of 52 cards and draws a specified number of cards from the top.
+    long: Shuffles a standard deck of 52 cards and draws a specified number of cards from the top.
+    verbose: Shuffles a standard deck of 52 cards and draws a specified number of cards from the top.
+  parameters:
+  - name: num_draw
+    type: integer
+    description: The number of cards to be drawn. Defaults to 1.
+    required: false
+    default: 1
+  tags:
+  - draw
+  - cards
+  test_prompts:
+    single:
+    - Draw 5 cards from a shuffled deck.
+    - Draw 3 cards from a shuffled deck.
+    - Draw 5 random cards from a shuffled deck.
+    - Draw 3 random cards from a shuffled deck.
+    - I'm hosting a poker night, please draw 7 cards for the initial hand.
+    - I need to draw 1 card from a shuffled deck.
+    single_clear:
+    - Draw 5 cards from a shuffled deck.
+    - Draw 3 cards from a shuffled deck.
+    - Draw 5 random cards from a shuffled deck.
+    - Draw 3 random cards from a shuffled deck.
+    - I'm hosting a poker night, please draw 7 cards for the initial hand.
+    - I need to draw 1 card from a shuffled deck.
+- name: sentiment_analysis
+  descriptions:
+    minimal: Analyzes the sentiment of a given text using...
+    short: Analyzes the sentiment of a given text using Google's BERT sentiment analysis API, with optional language specification.
+    medium: Analyzes the sentiment of a given text using Google's BERT sentiment analysis API, with optional language specification.
+    long: Analyzes the sentiment of a given text using Google's BERT sentiment analysis API, with optional language specification.
+    verbose: Analyzes the sentiment of a given text using Google's BERT sentiment analysis API, with optional language specification.
+  parameters:
+  - name: text
+    type: string
+    description: The text to be analyzed for sentiment.
+    required: true
+    default: wah rumahnya bagus ya, tapi kok halamannya kotor sih?
+  - name: lang
+    type: string
+    description: The language of the text. This can improve accuracy if specified. Defaults to 'id'.
+    required: false
+    default: id
+  tags:
+  - sentiment
+  - analysis
+  test_prompts:
+    single:
+    - What is the sentiment of the review 'This place is amazing! The staff is rude though.' in Indonesian?
+    single_clear:
+    - What is the sentiment of the review 'This place is amazing! The staff is rude though.' in Indonesian?
+- name: yh_historical
+  descriptions:
+    minimal: Retrieves the historical data for a given stock...
+    short: Retrieves the historical data for a given stock ticker within specified date ranges.
+    medium: Retrieves the historical data for a given stock ticker within specified date ranges.
+    long: Retrieves the historical data for a given stock ticker within specified date ranges.
+    verbose: Retrieves the historical data for a given stock ticker within specified date ranges.
+  parameters:
+  - name: ticker
+    type: string
+    description: The ticker symbol of the stock.
+    required: true
+  - name: sdate
+    type: string
+    description: The start date for retrieving historical data in YYYY-MM-DD format.
+    required: true
+  - name: edate
+    type: string
+    description: The end date for retrieving historical data in YYYY-MM-DD format.
+    required: true
+  tags:
+  - yh
+  - historical
+  test_prompts:
+    single:
+    - Retrieve the historical data for Microsoft Corp. from January 1, 2022, to December 31, 2022.
+    single_clear:
+    - Retrieve the historical data for Microsoft Corp. from January 1, 2022, to December 31, 2022.
+- name: crime_categories
+  descriptions:
+    minimal: Fetches a list of valid crime categories for a...
+    short: Fetches a list of valid crime categories for a specified date from the Data Police UK API.
+    medium: Fetches a list of valid crime categories for a specified date from the Data Police UK API.
+    long: Fetches a list of valid crime categories for a specified date from the Data Police UK API.
+    verbose: Fetches a list of valid crime categories for a specified date from the Data Police UK API.
+  parameters:
+  - name: date
+    type: string
+    description: The date for which to fetch crime categories, formatted as 'YYYY-MM'.
+    required: true
+    default: 2013-06
+  tags:
+  - crime
+  - categories
+  test_prompts:
+    single:
+    - Could you fetch the crime categories for January 2024 from the Data Police UK API?
+    single_clear:
+    - Could you fetch the crime categories for January 2024 from the Data Police UK API?
+- name: schedule
+  descriptions:
+    minimal: Fetches the schedule information for a given...
+    short: Fetches the schedule information for a given station using the flixbus API.
+    medium: Fetches the schedule information for a given station using the flixbus API.
+    long: Fetches the schedule information for a given station using the flixbus API.
+    verbose: Fetches the schedule information for a given station using the flixbus API.
+  parameters:
+  - name: station_id
+    type: integer
+    description: The ID of the station for which to retrieve the schedule.
+    required: true
+    default: '66'
+  tags:
+  - schedule
+  test_prompts:
+    single:
+    - What's the Flixbus schedule for station 98765 on a holiday?
+    single_clear:
+    - What's the Flixbus schedule for station 98765 on a holiday?

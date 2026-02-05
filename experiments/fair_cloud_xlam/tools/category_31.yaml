@@ -1,0 +1,659 @@
+category: category_31
+tools:
+- name: primeira_liga_standings
+  descriptions:
+    minimal: Fetches the standings for the Primeira Liga for a...
+    short: Fetches the standings for the Primeira Liga for a specified season.
+    medium: Fetches the standings for the Primeira Liga for a specified season.
+    long: Fetches the standings for the Primeira Liga for a specified season.
+    verbose: Fetches the standings for the Primeira Liga for a specified season.
+  parameters:
+  - name: season
+    type: string
+    description: The season for which the standings are to be fetched, e.g., '2022'. If not provided, the current season is
+      assumed.
+    required: false
+  tags:
+  - primeira
+  - liga
+  - standings
+  test_prompts:
+    single:
+    - What are the standings for the Primeira Liga in the 2021 season?
+    single_clear:
+    - What are the standings for the Primeira Liga in the 2021 season?
+- name: raceresult
+  descriptions:
+    minimal: Fetches the result for a specific Formula 1 race...
+    short: Fetches the result for a specific Formula 1 race in a given season.
+    medium: Fetches the result for a specific Formula 1 race in a given season.
+    long: Fetches the result for a specific Formula 1 race in a given season.
+    verbose: Fetches the result for a specific Formula 1 race in a given season.
+  parameters:
+  - name: round
+    type: string
+    description: The round number or name of the race in the F1 season.
+    required: true
+    default: round
+  - name: year
+    type: string
+    description: The year of the F1 season.
+    required: true
+    default: year
+  tags:
+  - raceresult
+  test_prompts:
+    single:
+    - What was the result of the Formula 1 race in the year 2020, round 10?
+    single_clear:
+    - What was the result of the Formula 1 race in the year 2020, round 10?
+- name: prematchform
+  descriptions:
+    minimal: Fetch the pregame form for a specific handball...
+    short: Fetch the pregame form for a specific handball match using its ID.
+    medium: Fetch the pregame form for a specific handball match using its ID.
+    long: Fetch the pregame form for a specific handball match using its ID.
+    verbose: Fetch the pregame form for a specific handball match using its ID.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the handball match for which to retrieve the pre-match form.
+    required: true
+    default: 10485760
+  tags:
+  - prematchform
+  test_prompts:
+    single:
+    - Retrieve the pregame form details for handball match with ID 98765.
+    single_clear:
+    - Retrieve the pregame form details for handball match with ID 98765.
+- name: update_level
+  descriptions:
+    minimal: Updates the difficulty level of a specific riddle...
+    short: Updates the difficulty level of a specific riddle using the Riddle API.
+    medium: Updates the difficulty level of a specific riddle using the Riddle API.
+    long: Updates the difficulty level of a specific riddle using the Riddle API.
+    verbose: Updates the difficulty level of a specific riddle using the Riddle API.
+  parameters:
+  - name: is_id
+    type: string
+    description: The unique identifier of the riddle to be updated.
+    required: true
+    default: 63bdef027183b71946b64ee6
+  - name: level
+    type: string
+    description: The suggested difficulty level of the riddle. Can be "0" (Easy), "1" (Medium), or "2" (Hard). Defaults to
+      "1".
+    required: false
+    default: '1'
+  tags:
+  - update
+  - level
+  test_prompts:
+    single:
+    - Please help me set the difficulty of riddle 'T23456' to hard.
+    single_clear:
+    - Please help me set the difficulty of riddle 'T23456' to hard.
+- name: company_income_statement
+  descriptions:
+    minimal: Fetch the income statement of a public company...
+    short: Fetch the income statement of a public company for a given period and in a specified language.
+    medium: Fetch the income statement of a public company for a given period and in a specified language.
+    long: Fetch the income statement of a public company for a given period and in a specified language.
+    verbose: Fetch the income statement of a public company for a given period and in a specified language.
+  parameters:
+  - name: symbol
+    type: string
+    description: 'The stock symbol (ticker) of the company for which to fetch the income statement. Examples: ''MSFT:NASDAQ'',
+      ''MSFT'', ''AAPL''.'
+    required: true
+    default: AAPL:NASDAQ
+  - name: period
+    type: string
+    description: The period for which to retrieve the income statement. Options are 'QUARTERLY' or 'ANNUAL'.
+    required: true
+  - name: language
+    type: string
+    description: The language to use for the results, specified as a two-letter language code as per ISO 639-1. Default is
+      'en'.
+    required: false
+    default: en
+  tags:
+  - company
+  - income
+  - statement
+  test_prompts:
+    single:
+    - Fetch the annual income statement for Microsoft (MSFT) in English.
+    single_clear:
+    - Fetch the annual income statement for Microsoft (MSFT) in English.
+- name: nearby_arcgis
+  descriptions:
+    minimal: Returns nearby places of a specified type sorted...
+    short: Returns nearby places of a specified type sorted by distance from the origin coordinates in ascending order using
+      the ArcGIS API.
+    medium: Returns nearby places of a specified type sorted by distance from the origin coordinates in ascending order using
+      the ArcGIS API.
+    long: Returns nearby places of a specified type sorted by distance from the origin coordinates in ascending order using
+      the ArcGIS API.
+    verbose: Returns nearby places of a specified type sorted by distance from the origin coordinates in ascending order using
+      the ArcGIS API.
+  parameters:
+  - name: lng
+    type: integer
+    description: Longitude of the origin point.
+    required: true
+    default: '-123.0413988'
+  - name: lat
+    type: integer
+    description: Latitude of the origin point.
+    required: true
+    default: '49.2803703'
+  - name: radius
+    type: integer
+    description: Search radius in meters. Defaults to 500. Maximum is 50,000.
+    required: false
+    default: '500'
+  - name: type
+    type: string
+    description: Type of places to search for. Defaults to 'coffee shop'.
+    required: false
+    default: coffee shop
+  tags:
+  - nearby
+  - arcgis
+  test_prompts:
+    single:
+    - Locate all schools within 3500 meters of the Taj Mahal in Agra.
+    single_clear:
+    - Locate all schools within 3500 meters of the Taj Mahal in Agra.
+- name: zappos_product_detail_by_product_id
+  descriptions:
+    minimal: Fetches real-time product information from Zappos...
+    short: Fetches real-time product information from Zappos by product ID.
+    medium: Fetches real-time product information from Zappos by product ID.
+    long: Fetches real-time product information from Zappos by product ID.
+    verbose: Fetches real-time product information from Zappos by product ID.
+  parameters:
+  - name: product_id
+    type: integer
+    description: The ID of the product to be fetched.
+    required: true
+    default: '9098084'
+  tags:
+  - zappos
+  - product
+  - detail
+  test_prompts:
+    single:
+    - Obtain real-time details for a Zappos product with ID 987654321.
+    single_clear:
+    - Obtain real-time details for a Zappos product with ID 987654321.
+- name: tokenize
+  descriptions:
+    minimal: Tokenizes a given value by making a request to...
+    short: Tokenizes a given value by making a request to the Tokenizer API endpoint.
+    medium: Tokenizes a given value by making a request to the Tokenizer API endpoint. The value must adhere to specific character
+      restrictions and size limits.
+    long: Tokenizes a given value by making a request to the Tokenizer API endpoint. The value must adhere to specific character
+      restrictions and size limits.
+    verbose: Tokenizes a given value by making a request to the Tokenizer API endpoint. The value must adhere to specific
+      character restrictions and size limits.
+  parameters:
+  - name: value
+    type: string
+    description: 'The text to be tokenized. The value must be 1KB or smaller and must not include any of the following characters:
+      forward slash (/), backslash (\), number sign (#), question mark (?), or control characters ranging from U+0000 to U+001F
+      (including horizontal tab, linefeed, and carriage return), and from U+007F to U+009F.'
+    required: true
+    default: TextIWantToTokenize
+  tags:
+  - tokenize
+  test_prompts:
+    single:
+    - How can I tokenize the sentence 'Python is a powerful programming language.' without violating character restrictions?
+    single_clear:
+    - How can I tokenize the sentence 'Python is a powerful programming language.' without violating character restrictions?
+- name: bullish_engulfing
+  descriptions:
+    minimal: Fetches a list of stocks exhibiting the Bullish...
+    short: Fetches a list of stocks exhibiting the Bullish Engulfing signal pattern.
+    medium: Fetches a list of stocks exhibiting the Bullish Engulfing signal pattern.
+    long: Fetches a list of stocks exhibiting the Bullish Engulfing signal pattern.
+    verbose: Fetches a list of stocks exhibiting the Bullish Engulfing signal pattern.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number of results to retrieve. Defaults to 1.
+    required: false
+    default: '1'
+  tags:
+  - bullish
+  - engulfing
+  test_prompts:
+    single:
+    - List stocks exhibiting Bullish Engulfing pattern on page 2.
+    single_clear:
+    - List stocks exhibiting Bullish Engulfing pattern on page 2.
+- name: facebook_ad_copy
+  descriptions:
+    minimal: Generates a Facebook ad copy using AI based on...
+    short: Generates a Facebook ad copy using AI based on the provided description and name.
+    medium: Generates a Facebook ad copy using AI based on the provided description and name.
+    long: Generates a Facebook ad copy using AI based on the provided description and name.
+    verbose: Generates a Facebook ad copy using AI based on the provided description and name.
+  parameters:
+  - name: description
+    type: string
+    description: The description to be used for generating the ad copy.
+    required: true
+    default: Apple designs, manufactures and markets smartphones, personal computers, tablets, wearables and accessories,
+      and sells a variety of related services.
+  - name: name
+    type: string
+    description: The name to be used for generating the ad copy.
+    required: true
+    default: Apple
+  tags:
+  - facebook
+  - ad
+  - copy
+  test_prompts:
+    single:
+    - Generate a Facebook ad copy for a new eco-friendly water bottle named 'EcoBottle', focusing on its sustainability features.
+    single_clear:
+    - Generate a Facebook ad copy for a new eco-friendly water bottle named 'EcoBottle', focusing on its sustainability features.
+- name: get_geo_location_of_ip_address
+  descriptions:
+    minimal: Retrieve the geographical location and other...
+    short: Retrieve the geographical location and other details of a given IP address using the Toolbench RapidAPI.
+    medium: Retrieve the geographical location and other details of a given IP address using the Toolbench RapidAPI.
+    long: Retrieve the geographical location and other details of a given IP address using the Toolbench RapidAPI.
+    verbose: Retrieve the geographical location and other details of a given IP address using the Toolbench RapidAPI.
+  parameters:
+  - name: ip
+    type: string
+    description: The IPV4 address for which geographical information is to be retrieved.
+    required: true
+    default: 34.89.89.28
+  tags:
+  - get
+  - geo
+  - location
+  test_prompts:
+    single:
+    - Can you find the geographical location of IP address 8.8.8.8?
+    single_clear:
+    - Can you find the geographical location of IP address 8.8.8.8?
+- name: v1_recipe
+  descriptions:
+    minimal: Fetch a list of recipes for a given search query...
+    short: Fetch a list of recipes for a given search query using the Recipe by API Ninjas service.
+    medium: Fetch a list of recipes for a given search query using the Recipe by API Ninjas service.
+    long: Fetch a list of recipes for a given search query using the Recipe by API Ninjas service.
+    verbose: Fetch a list of recipes for a given search query using the Recipe by API Ninjas service.
+  parameters:
+  - name: query
+    type: string
+    description: The search query text to find matching recipes.
+    required: true
+    default: italian wedding soup
+  - name: offset
+    type: string
+    description: The number of results to offset in order to paginate through the results. Defaults to None.
+    required: false
+  tags:
+  - v1
+  - recipe
+  test_prompts:
+    single:
+    - I need a recipe for a vegan lasagna. Do you have any suggestions?
+    single_clear:
+    - I need a recipe for a vegan lasagna. Do you have any suggestions?
+- name: get_articles
+  descriptions:
+    minimal: Fetches articles from the climate news feed with...
+    short: Fetches articles from the climate news feed with given parameters for limit, excluded source, and specific source.
+    medium: Fetches articles from the climate news feed with given parameters for limit, excluded source, and specific source.
+    long: Fetches articles from the climate news feed with given parameters for limit, excluded source, and specific source.
+    verbose: Fetches articles from the climate news feed with given parameters for limit, excluded source, and specific source.
+  parameters:
+  - name: limit
+    type: integer
+    description: Number of articles to fetch. Default is 50.
+    required: false
+    default: '50'
+  - name: exclude
+    type: string
+    description: Source to exclude from the results. Default is 'The Guardian'.
+    required: false
+    default: The Guardian
+  - name: source
+    type: string
+    description: Source to fetch articles from. Default is 'Nasa Climate'.
+    required: false
+    default: Nasa Climate
+  tags:
+  - get
+  - articles
+  test_prompts:
+    single:
+    - Retrieve 100 articles from the 'Nasa Climate' source, excluding 'The Guardian'.
+    single_clear:
+    - Retrieve 100 articles from the 'Nasa Climate' source, excluding 'The Guardian'.
+- name: integrate
+  descriptions:
+    minimal: Calculate the area under a curve for a specified...
+    short: Calculate the area under a curve for a specified function between two x values.
+    medium: Calculate the area under a curve for a specified function between two x values.
+    long: Calculate the area under a curve for a specified function between two x values.
+    verbose: Calculate the area under a curve for a specified function between two x values.
+  parameters:
+  - name: function
+    type: string
+    description: The function to integrate, represented as a string. For example, 'x^3'
+    required: true
+    default: trapezoid
+  - name: start_x
+    type: integer
+    description: The starting x-value to integrate over.
+    required: true
+    default: trapezoid
+  - name: end_x
+    type: integer
+    description: The ending x-value to integrate over.
+    required: true
+  - name: method
+    type: string
+    description: The method of numerical integration to use. Choices are 'trapezoid' or 'simpson'.
+    required: true
+  tags:
+  - integrate
+  test_prompts:
+    single:
+    - Calculate the integral of the function f(x) = x^2 from 0 to 3 using the Simpson's method.
+    - Calculate the area under the curve of the function 'x^2' from x=1 to x=5 using the trapezoid method.
+    single_clear:
+    - Calculate the integral of the function f(x) = x^2 from 0 to 3 using the Simpson's method.
+    - Calculate the area under the curve of the function 'x^2' from x=1 to x=5 using the trapezoid method.
+- name: triage_virtual
+  descriptions:
+    minimal: Determines if a patient should be attended via...
+    short: Determines if a patient should be attended via virtual consultation or in-person consultation based on their ID.
+    medium: Determines if a patient should be attended via virtual consultation or in-person consultation based on their ID.
+    long: Determines if a patient should be attended via virtual consultation or in-person consultation based on their ID.
+    verbose: Determines if a patient should be attended via virtual consultation or in-person consultation based on their
+      ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The unique identifier of the patient.
+    required: true
+    default: me duele la cabeza
+  tags:
+  - triage
+  - virtual
+  test_prompts:
+    single:
+    - Should a patient with ID 'ABC123' be seen virtually or in-person?
+    single_clear:
+    - Should a patient with ID 'ABC123' be seen virtually or in-person?
+- name: v1_animals
+  descriptions:
+    minimal: Queries the API Ninjas Animals API endpoint to...
+    short: Queries the API Ninjas Animals API endpoint to return up to 10 results matching the input animal name.
+    medium: Queries the API Ninjas Animals API endpoint to return up to 10 results matching the input animal name.
+    long: Queries the API Ninjas Animals API endpoint to return up to 10 results matching the input animal name.
+    verbose: Queries the API Ninjas Animals API endpoint to return up to 10 results matching the input animal name.
+  parameters:
+  - name: name
+    type: string
+    description: The common name of the animal to search. This parameter supports partial matches (e.g., "fox" will match
+      "gray fox" and "red fox").
+    required: true
+    default: cheetah
+  tags:
+  - v1
+  - animals
+  test_prompts:
+    single:
+    - Find information about animals named 'fox'.
+    - List animals that partially match the name 'fox'.
+    single_clear:
+    - Find information about animals named 'fox'.
+    - List animals that partially match the name 'fox'.
+- name: ufc_fight_night_vettori_vs_cannonier_june_17_2023
+  descriptions:
+    minimal: Accesses information about the UFC Fight Night...
+    short: 'Accesses information about the UFC Fight Night: Vettori vs.'
+    medium: 'Accesses information about the UFC Fight Night: Vettori vs. Cannonier held on June 17, 2023, including details
+      like win-loss record, height, weight, reach, and age of the fighters. The function retrieves this data from the MMA
+      Stats API.'
+    long: 'Accesses information about the UFC Fight Night: Vettori vs. Cannonier held on June 17, 2023, including details
+      like win-loss record, height, weight, reach, and age of the fighters. The function retrieves this data from the MMA
+      Stats API.'
+    verbose: 'Accesses information about the UFC Fight Night: Vettori vs. Cannonier held on June 17, 2023, including details
+      like win-loss record, height, weight, reach, and age of the fighters. The function retrieves this data from the MMA
+      Stats API.'
+  parameters:
+  - name: offset
+    type: integer
+    description: The starting point for the range of data to fetch. Defaults to None.
+    required: false
+  - name: limit
+    type: integer
+    description: The maximum number of records to fetch. Defaults to None.
+    required: false
+  tags:
+  - ufc
+  - fight
+  - night
+  test_prompts:
+    single:
+    - 'Can you provide the win-loss records and ages of the fighters in the UFC Fight Night: Vettori vs. Cannonier on June
+      17, 2023?'
+    single_clear:
+    - 'Can you provide the win-loss records and ages of the fighters in the UFC Fight Night: Vettori vs. Cannonier on June
+      17, 2023?'
+- name: get_horoscope_multilingual
+  descriptions:
+    minimal: Fetches horoscope information in the specified...
+    short: Fetches horoscope information in the specified language for a given sign, period, and type.
+    medium: Fetches horoscope information in the specified language for a given sign, period, and type.
+    long: Fetches horoscope information in the specified language for a given sign, period, and type.
+    verbose: Fetches horoscope information in the specified language for a given sign, period, and type.
+  parameters:
+  - name: language
+    type: string
+    description: 'The language for the horoscope. Supported languages are:'
+    required: true
+  - name: period
+    type: string
+    description: The period for which the horoscope is requested (e.g., 'daily', 'weekly').
+    required: true
+  - name: sign
+    type: string
+    description: The astrological sign for which the horoscope is requested (e.g., 'aries', 'taurus').
+    required: true
+  - name: type
+    type: string
+    description: The type of horoscope information to be fetched, depending on the period. Use the **Get Types** method to
+      get available types for the selected period.
+    required: true
+    default: general
+  tags:
+  - get
+  - horoscope
+  - multilingual
+  test_prompts:
+    single:
+    - What's the weekly horoscope for a Libra in French?
+    single_clear:
+    - What's the weekly horoscope for a Libra in French?
+- name: qrcode
+  descriptions:
+    minimal: Generates a QR code from the provided text using...
+    short: Generates a QR code from the provided text using the QR Code API.
+    medium: Generates a QR code from the provided text using the QR Code API.
+    long: Generates a QR code from the provided text using the QR Code API.
+    verbose: Generates a QR code from the provided text using the QR Code API.
+  parameters:
+  - name: text
+    type: string
+    description: The input text to be converted into a QR code.
+    required: true
+    default: https://google.com
+  tags:
+  - qrcode
+  test_prompts:
+    single:
+    - Please generate a QR code for the email address 'contact@example.com'.
+    single_clear:
+    - Please generate a QR code for the email address 'contact@example.com'.
+- name: gen_image
+  descriptions:
+    minimal: Generates an image based on specified parameters...
+    short: Generates an image based on specified parameters by making a request to the Thai Lottery Result Image API.
+    medium: Generates an image based on specified parameters by making a request to the Thai Lottery Result Image API.
+    long: Generates an image based on specified parameters by making a request to the Thai Lottery Result Image API.
+    verbose: Generates an image based on specified parameters by making a request to the Thai Lottery Result Image API.
+  parameters:
+  - name: date
+    type: string
+    description: The date for which to generate the image. Defaults to '01062564'.
+    required: true
+    default: '01062564'
+  - name: bgimg
+    type: string
+    description: The background image to use. Optional.
+    required: true
+  - name: rmber
+    type: boolean
+    description: A flag indicating whether certain elements (like numbers) should be removed. Optional.
+    required: true
+    default: '1'
+  tags:
+  - gen
+  - image
+  test_prompts:
+    single:
+    - Could you generate an image for the Thai lottery results on April 10, 2023, without a background image and with the
+      numbers visible?
+    - Can you fetch the lottery result image for '01062564' with a custom background 'bg4.jpg' and no number removal?
+    single_clear:
+    - Could you generate an image for the Thai lottery results on April 10, 2023, without a background image and with the
+      numbers visible?
+    - Can you fetch the lottery result image for '01062564' with a custom background 'bg4.jpg' and no number removal?
+- name: super_lig_standings
+  descriptions:
+    minimal: Fetches the standings of the Super Lig for a...
+    short: Fetches the standings of the Super Lig for a specific season using the RapidAPI service.
+    medium: Fetches the standings of the Super Lig for a specific season using the RapidAPI service.
+    long: Fetches the standings of the Super Lig for a specific season using the RapidAPI service.
+    verbose: Fetches the standings of the Super Lig for a specific season using the RapidAPI service.
+  parameters:
+  - name: season
+    type: string
+    description: 'The season for which standings are required. Example: ''2022''. If not provided, the current season''s standings
+      will be fetched.'
+    required: false
+  tags:
+  - super
+  - lig
+  - standings
+  test_prompts:
+    single:
+    - Fetch the current standings of the Super Lig without specifying a season.
+    single_clear:
+    - Fetch the current standings of the Super Lig without specifying a season.
+- name: etsy
+  descriptions:
+    minimal: Checks if a given username is available on Etsy...
+    short: Checks if a given username is available on Etsy using the Toolbench RapidAPI service.
+    medium: Checks if a given username is available on Etsy using the Toolbench RapidAPI service.
+    long: Checks if a given username is available on Etsy using the Toolbench RapidAPI service.
+    verbose: Checks if a given username is available on Etsy using the Toolbench RapidAPI service.
+  parameters:
+  - name: username
+    type: string
+    description: The username to be checked for availability on Etsy.
+    required: true
+    default: username
+  tags:
+  - etsy
+  test_prompts:
+    single:
+    - Check if the username 'craftlover88' is available on Etsy.
+    single_clear:
+    - Check if the username 'craftlover88' is available on Etsy.
+- name: bestbuyproductdata
+  descriptions:
+    minimal: Fetches product data from Best Buy based on the...
+    short: Fetches product data from Best Buy based on the search keyword and page number.
+    medium: Fetches product data from Best Buy based on the search keyword and page number.
+    long: Fetches product data from Best Buy based on the search keyword and page number.
+    verbose: Fetches product data from Best Buy based on the search keyword and page number.
+  parameters:
+  - name: keyword
+    type: string
+    description: The search term to look for products, e.g., "iphone", "ps5", "sony tv".
+    required: true
+    default: iphone
+  - name: page
+    type: integer
+    description: The page number to retrieve, starting from 1.
+    required: true
+    default: '1'
+  tags:
+  - bestbuyproductdata
+  test_prompts:
+    single:
+    - Search for 'iphone' products on Best Buy and return the data for page 1.
+    single_clear:
+    - Search for 'iphone' products on Best Buy and return the data for page 1.
+- name: transactions
+  descriptions:
+    minimal: python
+    short: python
+    medium: python
+    long: python.
+    verbose: python.
+  parameters:
+  - name: zipcode
+    type: string
+    description: The zipcode for which the transaction data is to be retrieved.
+    required: true
+    default: '10019'
+  - name: page
+    type: string
+    description: The page number for pagination. Defaults to '1'.
+    required: false
+    default: '1'
+  tags:
+  - transactions
+  test_prompts:
+    single:
+    - Retrieve real estate transactions for zipcode '90210' from the first page.
+    single_clear:
+    - Retrieve real estate transactions for zipcode '90210' from the first page.
+- name: video_comments
+  descriptions:
+    minimal: Fetches a list of comments from a specified...
+    short: Fetches a list of comments from a specified YouTube video using the provided RapidAPI key.
+    medium: Fetches a list of comments from a specified YouTube video using the provided RapidAPI key.
+    long: Fetches a list of comments from a specified YouTube video using the provided RapidAPI key.
+    verbose: Fetches a list of comments from a specified YouTube video using the provided RapidAPI key.
+  parameters:
+  - name: video_id
+    type: string
+    description: The ID of the YouTube video for which to fetch comments.
+    required: true
+    default: ACdh-yzENXM
+  tags:
+  - video
+  - comments
+  test_prompts:
+    single:
+    - I need to get the comments from a YouTube video with ID 'dQw4w9WgXcQ'. Can you help with that?
+    single_clear:
+    - I need to get the comments from a YouTube video with ID 'dQw4w9WgXcQ'. Can you help with that?

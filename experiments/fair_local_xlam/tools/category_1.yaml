@@ -1,0 +1,884 @@
+category: category_1
+tools:
+- name: web_chain_details
+  descriptions:
+    minimal: python
+    short: python
+    medium: python
+    long: python.
+    verbose: python.
+  parameters:
+  - name: chain_slug
+    type: string
+    description: The slug identifier for the blockchain (e.g., 'ethereum' for Ethereum mainnet).
+    required: true
+    default: ethereum
+  tags:
+  - web
+  - chain
+  - details
+  test_prompts:
+    single:
+    - I need to understand the details of the Ethereum blockchain for my cryptocurrency project. Can you fetch the details
+      for 'ethereum'?
+    - What are the details for the Arbitrum network?
+    - Fetch information for the Celo blockchain.
+    single_clear:
+    - I need to understand the details of the Ethereum blockchain for my cryptocurrency project. Can you fetch the details
+      for 'ethereum'?
+    - What are the details for the Arbitrum network?
+    - Fetch information for the Celo blockchain.
+- name: t3ma
+  descriptions:
+    minimal: Fetches the Triple Exponential Moving Average...
+    short: Fetches the Triple Exponential Moving Average (T3MA) for a given financial instrument.
+    medium: Fetches the Triple Exponential Moving Average (T3MA) for a given financial instrument.
+    long: Fetches the Triple Exponential Moving Average (T3MA) for a given financial instrument.
+    verbose: Fetches the Triple Exponential Moving Average (T3MA) for a given financial instrument.
+  parameters:
+  - name: symbol
+    type: string
+    description: Instrument symbol, which can be any equity, index, ETF, forex, or cryptocurrency (e.g., 'AAPL', 'EUR/USD',
+      'ETH/BTC').
+    required: true
+    default: AAPL
+  - name: interval
+    type: string
+    description: Interval between two consecutive points in the time series. Supported intervals include '1min', '5min', '15min',
+      '30min', '45min', '1h', '2h', '4h', '1day', '1week', and '1month'.
+    required: true
+    default: 1min
+  - name: format
+    type: string
+    description: Format of the response data, either 'CSV' or 'JSON'. Default is 'json'.
+    required: false
+    default: json
+  - name: v_factor
+    type: integer
+    description: Volume factor used in the calculation of the T3MA.
+    required: false
+    default: 0.7
+  - name: series_type
+    type: string
+    description: Type of series to use in the calculation. Supported values are 'open', 'high', 'low', and 'close'. Default
+      is 'close'.
+    required: false
+    default: close
+  - name: outputsize
+    type: integer
+    description: Number of data points to return. Default is 30.
+    required: false
+    default: 30
+  - name: time_period
+    type: integer
+    description: Number of periods over which to calculate the T3MA. Default is 9.
+    required: false
+    default: 9
+  tags:
+  - t3ma
+  test_prompts:
+    single:
+    - What is the T3MA for 'ETH/BTC' using a 1h interval and a time period of 14?
+    - Calculate the T3MA for Bitcoin (BTC/USD) using a 1-hour interval and a volume factor of 2.
+    - Fetch the T3MA for 'AAPL' on a daily interval for the last 60 days using the 'close' series type and a volume factor
+      of 2.
+    - Fetch the Triple Exponential Moving Average (T3MA) for Apple Inc. (AAPL) using the closing prices over the last 30 days
+      with a 1-hour interval.
+    single_clear:
+    - What is the T3MA for 'ETH/BTC' using a 1h interval and a time period of 14?
+    - Calculate the T3MA for Bitcoin (BTC/USD) using a 1-hour interval and a volume factor of 2.
+    - Fetch the T3MA for 'AAPL' on a daily interval for the last 60 days using the 'close' series type and a volume factor
+      of 2.
+    - Fetch the Triple Exponential Moving Average (T3MA) for Apple Inc. (AAPL) using the closing prices over the last 30 days
+      with a 1-hour interval.
+- name: list_titles
+  descriptions:
+    minimal: Fetches a listing of titles that match specified...
+    short: Fetches a listing of titles that match specified parameters from the Watchmode API.
+    medium: Fetches a listing of titles that match specified parameters from the Watchmode API.
+    long: Fetches a listing of titles that match specified parameters from the Watchmode API.
+    verbose: Fetches a listing of titles that match specified parameters from the Watchmode API.
+  parameters:
+  - name: genres
+    type: string
+    description: Filter results to only include certain genre(s). Pass in a single genre ID or multiple comma-separated IDs.
+      Default is '4,9'.
+    required: true
+    default: 4,9
+  - name: limit
+    type: integer
+    description: Set how many titles to return per page. Default and maximum is 250.
+    required: true
+    default: '250'
+  - name: source_ids
+    type: string
+    description: 'Filter the results to titles available on specific sources by passing individual IDs or multiple comma-separated
+      IDs. Default is ''23,206''. Note: Only a single region can be set if this is populated.'
+    required: true
+    default: 23,206
+  - name: source_types
+    type: string
+    description: 'Filter results to only include titles available on specific types of sources (e.g., subscription, free).
+      Default is ''sub,free''. Note: Only a single region can be set if this is populated.'
+    required: true
+    default: sub,free
+  - name: types
+    type: string
+    description: 'Filter results to only include titles available on specific types of sources (e.g., subscription, free).
+      Default is ''sub,free''. Note: Only a single region can be set if this is populated.'
+    required: true
+    default: movie,tv_series
+  - name: regions
+    type: string
+    description: 'Filter results to only include sources active in specific regions. Currently supported regions: US, GB,
+      CA, AU. Default is ''US''. Note: Only a single region can be set if source_ids or source_types are populated.'
+    required: true
+    default: US
+  - name: sort_by
+    type: string
+    description: 'Sort order of results. Possible values include: relevance_desc, relevance_asc, popularity_desc, popularity_asc,
+      release_date_desc, release_date_asc, title_desc, title_asc. Default is ''relevance_desc''.'
+    required: true
+    default: relevance_desc
+  - name: page
+    type: integer
+    description: Set the page of results to return. Default is 1.
+    required: true
+    default: '1'
+  - name: network_ids
+    type: string
+    description: Filter results to titles that originally aired on specific TV networks by passing individual IDs or multiple
+      comma-separated IDs. Default is '1,8,12'.
+    required: true
+    default: 1,8,12
+  - name: release_date_start
+    type: integer
+    description: 'Filter results to only include titles released on or after a specific date. Format: YYYYMMDD. Default is
+      20010101.'
+    required: true
+    default: '20010101'
+  - name: release_date_end
+    type: integer
+    description: 'Filter results to only include titles released on or before a specific date. Format: YYYYMMDD. Default is
+      20201211.'
+    required: true
+    default: '20201211'
+  tags:
+  - list
+  - titles
+  test_prompts:
+    single:
+    - List titles originally aired on networks '1' and '8', released after 2010, sorted by release date in descending order.
+    - List all titles available on 'Netflix' and 'Hulu' from the 'Horror' genre released between 2000 and 2010.
+    single_clear:
+    - List titles originally aired on networks '1' and '8', released after 2010, sorted by release date in descending order.
+    - List all titles available on 'Netflix' and 'Hulu' from the 'Horror' genre released between 2000 and 2010.
+- name: stagecompetitorstandings
+  descriptions:
+    minimal: Retrieve the competitor standings for a specific...
+    short: Retrieve the competitor standings for a specific Motorsport stage using the given stage ID.
+    medium: Retrieve the competitor standings for a specific Motorsport stage using the given stage ID.
+    long: Retrieve the competitor standings for a specific Motorsport stage using the given stage ID.
+    verbose: Retrieve the competitor standings for a specific Motorsport stage using the given stage ID.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the stage for which to retrieve competitor's standings.
+    required: true
+    default: 203968
+  tags:
+  - stagecompetitorstandings
+  test_prompts:
+    single:
+    - Fetch the competitor standings for the recently concluded stage 98765.
+    single_clear:
+    - Fetch the competitor standings for the recently concluded stage 98765.
+- name: product_id
+  descriptions:
+    minimal: Fetches product details from the AliExpress API...
+    short: Fetches product details from the AliExpress API using the provided product ID and optional parameters.
+    medium: Fetches product details from the AliExpress API using the provided product ID and optional parameters.
+    long: Fetches product details from the AliExpress API using the provided product ID and optional parameters.
+    verbose: Fetches product details from the AliExpress API using the provided product ID and optional parameters.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the product to fetch details for.
+    required: true
+    default: '4000886597329'
+  - name: locale
+    type: string
+    description: The locale to be used for the request (e.g., 'en_US').
+    required: false
+  - name: currency
+    type: string
+    description: The currency for price conversion (e.g., 'USD').
+    required: false
+  - name: country
+    type: string
+    description: The country for regional adjustments (e.g., 'US').
+    required: false
+  tags:
+  - product
+  - id
+  test_prompts:
+    single:
+    - Fetch details for product 456789 with locale 'es_ES'.
+    - Fetch details for product 98765 in German and Euros, please.
+    - Can you fetch details for product ID 12345 in English and USD?
+    - Can you get the details for product 234567 in Italian and Euros?
+    - Can you find the details of the product with ID 123456 in the US market, using USD as the currency?
+    single_clear:
+    - Fetch details for product 456789 with locale 'es_ES'.
+    - Fetch details for product 98765 in German and Euros, please.
+    - Can you fetch details for product ID 12345 in English and USD?
+    - Can you get the details for product 234567 in Italian and Euros?
+    - Can you find the details of the product with ID 123456 in the US market, using USD as the currency?
+- name: availability
+  descriptions:
+    minimal: Checks if a given URL is archived and currently...
+    short: Checks if a given URL is archived and currently accessible in the Wayback Machine.
+    medium: Checks if a given URL is archived and currently accessible in the Wayback Machine.
+    long: Checks if a given URL is archived and currently accessible in the Wayback Machine.
+    verbose: Checks if a given URL is archived and currently accessible in the Wayback Machine.
+  parameters:
+  - name: url
+    type: string
+    description: The URL to check for availability in the Wayback Machine.
+    required: true
+    default: http://mashape.com
+  - name: timestamp
+    type: string
+    description: The timestamp to look up in Wayback. If not specified, the most recent available capture is returned. The
+      format of the timestamp is 1-14 digits (YYYYMMDDhhmmss). Defaults to '20090101'.
+    required: false
+    default: '20090101'
+  - name: callback
+    type: string
+    description: An optional callback to produce a JSONP response. Defaults to None.
+    required: false
+  tags:
+  - availability
+  test_prompts:
+    single:
+    - Is 'https://www.apple.com' available in the Wayback Machine on September 9, 2015?
+    single_clear:
+    - Is 'https://www.apple.com' available in the Wayback Machine on September 9, 2015?
+- name: matchschedules
+  descriptions:
+    minimal: Fetches the schedules of ice hockey matches for a...
+    short: Fetches the schedules of ice hockey matches for a specified date, including match timings, teams, and other relevant
+      information.
+    medium: Fetches the schedules of ice hockey matches for a specified date, including match timings, teams, and other relevant
+      information.
+    long: Fetches the schedules of ice hockey matches for a specified date, including match timings, teams, and other relevant
+      information.
+    verbose: Fetches the schedules of ice hockey matches for a specified date, including match timings, teams, and other relevant
+      information.
+  parameters:
+  - name: day
+    type: integer
+    description: The day of the month for which you want to retrieve the schedules (1-31).
+    required: true
+    default: 28
+  - name: year
+    type: integer
+    description: The year for which you want to retrieve the schedules (e.g., 2022).
+    required: true
+    default: 2022
+  - name: month
+    type: integer
+    description: The month for which you want to retrieve the schedules (1-12).
+    required: true
+    default: 11
+  tags:
+  - matchschedules
+  test_prompts:
+    single:
+    - I need the schedules of matches happening on February 28, 2024.
+    - What are the match schedules for ice hockey on January 15, 2023?
+    single_clear:
+    - I need the schedules of matches happening on February 28, 2024.
+    - What are the match schedules for ice hockey on January 15, 2023?
+- name: place_safeway_order
+  descriptions:
+    minimal: Order specified items from a Safeway location.
+    short: Order specified items from a Safeway location.
+    medium: Order specified items from a Safeway location.
+    long: Order specified items from a Safeway location.
+    verbose: Order specified items from a Safeway location.
+  parameters:
+  - name: location
+    type: string
+    description: The location of the Safeway store, e.g., 'Palo Alto, CA'.
+    required: true
+  - name: items
+    type: array
+    description: List of items to order.
+    required: true
+  - name: quantity
+    type: array
+    description: Quantity of each item in the order list.
+    required: true
+  tags:
+  - place
+  - safeway
+  - order
+  test_prompts:
+    single:
+    - I need to order 3 cartons of milk and 2 loaves of bread from the Safeway in Palo Alto, CA. Can you handle that?
+    - Place an order at the Safeway store in 'San Francisco, CA' for 3 apples, 2 loaves of bread, and 1 gallon of milk.
+    - I need to place an order at the Safeway in San Francisco for 2 loaves of bread, 3 cartons of milk, and 1 bag of apples.
+      How do I do this?
+    - Place an order at Safeway in Palo Alto, CA for 2 loaves of bread and 3 cartons of milk.
+    - Place an order at the Safeway in Seattle, WA for 4 boxes of cereal, 1 gallon of milk, and 5 cans of soup.
+    single_clear:
+    - I need to order 3 cartons of milk and 2 loaves of bread from the Safeway in Palo Alto, CA. Can you handle that?
+    - Place an order at the Safeway store in 'San Francisco, CA' for 3 apples, 2 loaves of bread, and 1 gallon of milk.
+    - I need to place an order at the Safeway in San Francisco for 2 loaves of bread, 3 cartons of milk, and 1 bag of apples.
+      How do I do this?
+    - Place an order at Safeway in Palo Alto, CA for 2 loaves of bread and 3 cartons of milk.
+    - Place an order at the Safeway in Seattle, WA for 4 boxes of cereal, 1 gallon of milk, and 5 cans of soup.
+- name: get_meta_data
+  descriptions:
+    minimal: Fetches meta data from the cryptocurrency markets...
+    short: Fetches meta data from the cryptocurrency markets API using provided locale information and optional parameters.
+    medium: Fetches meta data from the cryptocurrency markets API using provided locale information and optional parameters.
+    long: Fetches meta data from the cryptocurrency markets API using provided locale information and optional parameters.
+    verbose: Fetches meta data from the cryptocurrency markets API using provided locale information and optional parameters.
+  parameters:
+  - name: locale_info
+    type: string
+    description: The language code.
+    required: true
+    default: en_US
+  - name: lang_id
+    type: integer
+    description: The language ID, default is 1.
+    required: false
+    default: '1'
+  - name: time_utc_offset
+    type: integer
+    description: The UTC offset in seconds, default is 28800 (UTC+8).
+    required: false
+    default: '28800'
+  tags:
+  - get
+  - meta
+  - data
+  test_prompts:
+    single:
+    - Please get the meta data for cryptocurrency markets in French (France) with UTC+1 offset.
+    - Could you retrieve the meta data for cryptocurrency markets in Japanese (Japan) with UTC+9 offset?
+    single_clear:
+    - Please get the meta data for cryptocurrency markets in French (France) with UTC+1 offset.
+    - Could you retrieve the meta data for cryptocurrency markets in Japanese (Japan) with UTC+9 offset?
+- name: future_investment_value
+  descriptions:
+    minimal: Calculates the future value of an investment...
+    short: Calculates the future value of an investment based on the present value, annual interest rate, and number of years.
+    medium: Calculates the future value of an investment based on the present value, annual interest rate, and number of years.
+    long: Calculates the future value of an investment based on the present value, annual interest rate, and number of years.
+    verbose: Calculates the future value of an investment based on the present value, annual interest rate, and number of
+      years.
+  parameters:
+  - name: present_value
+    type: number
+    description: The present value of the investment.
+    required: true
+  - name: annual_interest_rate
+    type: number
+    description: The annual interest rate as a decimal (e.g., 0.05 for 5%).
+    required: true
+  - name: years
+    type: integer
+    description: The number of years the investment will grow.
+    required: true
+  tags:
+  - future
+  - investment
+  - value
+  test_prompts:
+    single:
+    - Future value of 2000 dollars at 2% for 8 years?
+    - What will be the future value of an investment of $1000 with an annual interest rate of 3% after 5 years?
+    - If I have $5000 and I want to know how much it will grow to in 10 years with an annual interest rate of 4%.
+    - Calculate the future value of $20,000 invested at 6% annual interest for 7 years.
+    - What is the future value of $15000 invested at 2.75% for 8 years?
+    - What will be the future value of an investment of $10,000 at an annual interest rate of 5% after 10 years?
+    - Calculate the future value of $5000 invested at 4% annual interest for 5 years.
+    - Calculate the future value of $20000 at 6% interest over 8 years.
+    single_clear:
+    - Future value of 2000 dollars at 2% for 8 years?
+    - What will be the future value of an investment of $1000 with an annual interest rate of 3% after 5 years?
+    - If I have $5000 and I want to know how much it will grow to in 10 years with an annual interest rate of 4%.
+    - Calculate the future value of $20,000 invested at 6% annual interest for 7 years.
+    - What is the future value of $15000 invested at 2.75% for 8 years?
+    - What will be the future value of an investment of $10,000 at an annual interest rate of 5% after 10 years?
+    - Calculate the future value of $5000 invested at 4% annual interest for 5 years.
+    - Calculate the future value of $20000 at 6% interest over 8 years.
+- name: get_all_bodies_positions
+  descriptions:
+    minimal: Fetches the positions of celestial bodies for a...
+    short: Fetches the positions of celestial bodies for a given location and date range using the Astronomy API.
+    medium: Fetches the positions of celestial bodies for a given location and date range using the Astronomy API.
+    long: Fetches the positions of celestial bodies for a given location and date range using the Astronomy API.
+    verbose: Fetches the positions of celestial bodies for a given location and date range using the Astronomy API.
+  parameters:
+  - name: latitude
+    type: integer
+    description: The latitude of the location for which to get the positions.
+    required: true
+    default: '33.775867'
+  - name: longitude
+    type: integer
+    description: The longitude of the location for which to get the positions.
+    required: true
+    default: '-84.39733'
+  - name: from_date
+    type: string
+    description: The start date for the observation period in the format 'YYYY-MM-DD'.
+    required: true
+    default: '2017-12-20'
+  - name: to_date
+    type: string
+    description: The end date for the observation period in the format 'YYYY-MM-DD'.
+    required: true
+    default: '2017-12-21'
+  - name: elevation
+    type: integer
+    description: The elevation of the location in meters. Defaults to 166.
+    required: false
+    default: '166'
+  - name: time
+    type: string
+    description: The specific time of day for the observation in the format 'HH:MM:SS'. Defaults to '12:00:00'.
+    required: false
+    default: '12:00:00'
+  tags:
+  - get
+  - all
+  - bodies
+  test_prompts:
+    single:
+    - For a star party in Cape Town on April 10th, 2023, at 10 PM, what celestial bodies will be in the sky?
+    single_clear:
+    - For a star party in Cape Town on April 10th, 2023, at 10 PM, what celestial bodies will be in the sky?
+- name: binary_addition
+  descriptions:
+    minimal: Adds two binary numbers and returns the result as...
+    short: Adds two binary numbers and returns the result as a binary string.
+    medium: Adds two binary numbers and returns the result as a binary string.
+    long: Adds two binary numbers and returns the result as a binary string.
+    verbose: Adds two binary numbers and returns the result as a binary string.
+  parameters:
+  - name: a
+    type: string
+    description: The first binary number.
+    required: true
+  - name: b
+    type: string
+    description: The second binary number.
+    required: true
+  tags:
+  - binary
+  - addition
+  test_prompts:
+    single:
+    - What is the binary sum of 10010 and 11101?
+    - What is the binary sum of 1010 and 1101?
+    - What is the binary addition of '1011' and '1101'?
+    - Calculate the binary sum of '1010101010' and '1101101101'.
+    - Compute the binary sum of 1111011 and 1001010.
+    - Add the binary numbers 1010 and 1101.
+    - Can you find the binary sum of '1111' and '10101'?
+    - What is the result of adding '101101' and '110110' in binary?
+    - Calculate the binary sum of 101101 and 111001.
+    single_clear:
+    - What is the binary sum of 10010 and 11101?
+    - What is the binary sum of 1010 and 1101?
+    - What is the binary addition of '1011' and '1101'?
+    - Calculate the binary sum of '1010101010' and '1101101101'.
+    - Compute the binary sum of 1111011 and 1001010.
+    - Add the binary numbers 1010 and 1101.
+    - Can you find the binary sum of '1111' and '10101'?
+    - What is the result of adding '101101' and '110110' in binary?
+    - Calculate the binary sum of 101101 and 111001.
+- name: get_product
+  descriptions:
+    minimal: Fetches product details from a RapidAPI endpoint...
+    short: Fetches product details from a RapidAPI endpoint using the provided product ID and RapidAPI key.
+    medium: Fetches product details from a RapidAPI endpoint using the provided product ID and RapidAPI key.
+    long: Fetches product details from a RapidAPI endpoint using the provided product ID and RapidAPI key.
+    verbose: Fetches product details from a RapidAPI endpoint using the provided product ID and RapidAPI key.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the product to retrieve information about.
+    required: true
+  tags:
+  - get
+  - product
+  test_prompts:
+    single:
+    - Fetch detailed information about a product with ID 12345.
+    - Get the product details for the item with ID 567890123 from the my-store API.
+    - Fetch details for product ID 987654321.
+    - Fetch information about the product with ID 200.
+    single_clear:
+    - Fetch detailed information about a product with ID 12345.
+    - Get the product details for the item with ID 567890123 from the my-store API.
+    - Fetch details for product ID 987654321.
+    - Fetch information about the product with ID 200.
+- name: recommend
+  descriptions:
+    minimal: Fetches a recommendation for a given experiment...
+    short: Fetches a recommendation for a given experiment ID using the Toolbench RapidAPI service.
+    medium: Fetches a recommendation for a given experiment ID using the Toolbench RapidAPI service.
+    long: Fetches a recommendation for a given experiment ID using the Toolbench RapidAPI service.
+    verbose: Fetches a recommendation for a given experiment ID using the Toolbench RapidAPI service.
+  parameters:
+  - name: experiment_id
+    type: integer
+    description: The ID of the experiment for which to fetch recommendations.
+    required: true
+    default: '12234'
+  tags:
+  - recommend
+  test_prompts:
+    single:
+    - Could you fetch recommendations for experiment 24680 in the technology sector to improve user experience?
+    - Can you recommend the best strategies for experiment 12345 in the field of marketing?
+    single_clear:
+    - Could you fetch recommendations for experiment 24680 in the technology sector to improve user experience?
+    - Can you recommend the best strategies for experiment 12345 in the field of marketing?
+- name: getrandommovie
+  descriptions:
+    minimal: Returns a list of random movies from a database...
+    short: Returns a list of random movies from a database by calling an external API.
+    medium: Returns a list of random movies from a database by calling an external API.
+    long: Returns a list of random movies from a database by calling an external API.
+    verbose: Returns a list of random movies from a database by calling an external API.
+  parameters:
+  - name: count
+    type: integer
+    description: The number of random movies to return. Defaults to 2.
+    required: false
+    default: '2'
+  tags:
+  - getrandommovie
+  test_prompts:
+    single:
+    - Fetch 3 random movies from the database.
+    single_clear:
+    - Fetch 3 random movies from the database.
+- name: vimeo
+  descriptions:
+    minimal: Checks if a given Vimeo username is available...
+    short: Checks if a given Vimeo username is available using the Toolbench RapidAPI service.
+    medium: Checks if a given Vimeo username is available using the Toolbench RapidAPI service.
+    long: Checks if a given Vimeo username is available using the Toolbench RapidAPI service.
+    verbose: Checks if a given Vimeo username is available using the Toolbench RapidAPI service.
+  parameters:
+  - name: username
+    type: string
+    description: The Vimeo username to check for availability.
+    required: true
+    default: username
+  tags:
+  - vimeo
+  test_prompts:
+    single:
+    - Check if the Vimeo username 'john_doe_artist' is available.
+    single_clear:
+    - Check if the Vimeo username 'john_doe_artist' is available.
+- name: is_leap_year
+  descriptions:
+    minimal: Checks if a year is a leap year.
+    short: Checks if a year is a leap year.
+    medium: Checks if a year is a leap year.
+    long: Checks if a year is a leap year.
+    verbose: Checks if a year is a leap year.
+  parameters:
+  - name: year
+    type: integer
+    description: The year to check.
+    required: true
+  tags:
+  - is
+  - leap
+  - year
+  test_prompts:
+    single:
+    - Is the year 2000 a leap year?
+    - Determine if 1900 was a leap year.
+    - Check the leap year status of 1800.
+    - Is the year 2000 a leap year?
+    - Determine if the year 2000 was a leap year.
+    - Is the year 2000 a leap year?
+    - A student is studying the concept of leap years and wants to confirm if the year 2000 was a leap year.
+    - Determine if the year 2400 is a leap year.
+    - Is the year 2000 a leap year?
+    - Is the year 1900 a leap year?
+    - Is the year 2024 a leap year?
+    - Is the year 2021 a leap year?
+    single_clear:
+    - Is the year 2000 a leap year?
+    - Determine if 1900 was a leap year.
+    - Check the leap year status of 1800.
+    - Is the year 2000 a leap year?
+    - Determine if the year 2000 was a leap year.
+    - Is the year 2000 a leap year?
+    - A student is studying the concept of leap years and wants to confirm if the year 2000 was a leap year.
+    - Determine if the year 2400 is a leap year.
+    - Is the year 2000 a leap year?
+    - Is the year 1900 a leap year?
+    - Is the year 2024 a leap year?
+    - Is the year 2021 a leap year?
+- name: project_investment_growth
+  descriptions:
+    minimal: Projects the growth of an investment over a...
+    short: Projects the growth of an investment over a specified number of years.
+    medium: Projects the growth of an investment over a specified number of years.
+    long: Projects the growth of an investment over a specified number of years.
+    verbose: Projects the growth of an investment over a specified number of years.
+  parameters:
+  - name: principal
+    type: number
+    description: The initial investment amount.
+    required: true
+    default: true
+  - name: annual_addition
+    type: number
+    description: The amount added to the investment annually.
+    required: true
+    default: true
+  - name: years
+    type: integer
+    description: The number of years to project the investment growth.
+    required: true
+  - name: return_rate
+    type: number
+    description: The annual return rate as a decimal (e.g., 0.07 for 7%).
+    required: true
+  - name: inflation
+    type: string
+    description: A list of annual inflation rates as decimals.
+    required: true
+  - name: inflation_adjusted
+    type: boolean
+    description: Whether to adjust the final value for inflation. Defaults to True.
+    required: false
+  tags:
+  - project
+  - investment
+  - growth
+  test_prompts:
+    single:
+    - Project the investment growth for an initial amount of $10000, with an annual addition of $1000, over 5 years at a 5%
+      return rate, with inflation rates of [2%, 2.5%, 3%, 3.5%, 4%].
+    - Calculate the inflation-adjusted value of an investment starting with $40,000, adding $4,000 annually, over 12 years
+      with a 4.5% return rate and a 1.5% annual inflation.
+    - Project the value of an investment with an initial $15,000, annual addition of $1,500, 7% return rate, and a 3% inflation
+      rate for the first 5 years and 4% for the next 5 years.
+    - Determine the investment value after 20 years starting with $15,000, adding $1,500 annually, with a return rate of 8%
+      and inflation rates ranging from 1% to 3%.
+    - What will be the investment value after 10 years starting with $10000, adding $1000 annually, with a 5% return rate,
+      and considering a list of inflation rates [0.02, 0.03, 0.02, 0.03, 0.02, 0.03, 0.02, 0.03, 0.02, 0.03]?
+    - Calculate the investment growth for an initial $10000 with annual additions of $2000 over 5 years, return rate of 6%,
+      and inflation rates [1.2%, 1.3%, 1.4%, 1.5%, 1.6%] without adjusting for inflation.
+    - Estimate the investment value after 8 years starting with $20,000, adding $3,000 annually, at a 6% return rate, with
+      no inflation adjustment.
+    - Estimate the investment value after 25 years starting with $30,000, adding $2,500 annually, at a 6.5% return rate, with
+      inflation rates varying from 1% to 3%.
+    - Project the investment growth for an initial $20000 with an annual addition of $5000 over 8 years at a 6% return rate,
+      considering inflation rates [0.02, 0.01, 0.02, 0.01, 0.02, 0.01, 0.02, 0.01] and adjusting for inflation.
+    single_clear:
+    - Project the investment growth for an initial amount of $10000, with an annual addition of $1000, over 5 years at a 5%
+      return rate, with inflation rates of [2%, 2.5%, 3%, 3.5%, 4%].
+    - Calculate the inflation-adjusted value of an investment starting with $40,000, adding $4,000 annually, over 12 years
+      with a 4.5% return rate and a 1.5% annual inflation.
+    - Project the value of an investment with an initial $15,000, annual addition of $1,500, 7% return rate, and a 3% inflation
+      rate for the first 5 years and 4% for the next 5 years.
+    - Determine the investment value after 20 years starting with $15,000, adding $1,500 annually, with a return rate of 8%
+      and inflation rates ranging from 1% to 3%.
+    - What will be the investment value after 10 years starting with $10000, adding $1000 annually, with a 5% return rate,
+      and considering a list of inflation rates [0.02, 0.03, 0.02, 0.03, 0.02, 0.03, 0.02, 0.03, 0.02, 0.03]?
+    - Calculate the investment growth for an initial $10000 with annual additions of $2000 over 5 years, return rate of 6%,
+      and inflation rates [1.2%, 1.3%, 1.4%, 1.5%, 1.6%] without adjusting for inflation.
+    - Estimate the investment value after 8 years starting with $20,000, adding $3,000 annually, at a 6% return rate, with
+      no inflation adjustment.
+    - Estimate the investment value after 25 years starting with $30,000, adding $2,500 annually, at a 6.5% return rate, with
+      inflation rates varying from 1% to 3%.
+    - Project the investment growth for an initial $20000 with an annual addition of $5000 over 8 years at a 6% return rate,
+      considering inflation rates [0.02, 0.01, 0.02, 0.01, 0.02, 0.01, 0.02, 0.01] and adjusting for inflation.
+- name: get_profile_series
+  descriptions:
+    minimal: Fetches time series snapshots of a profile from...
+    short: Fetches time series snapshots of a profile from the OutSystems Community API.
+    medium: Fetches time series snapshots of a profile from the OutSystems Community API.
+    long: Fetches time series snapshots of a profile from the OutSystems Community API.
+    verbose: Fetches time series snapshots of a profile from the OutSystems Community API.
+  parameters:
+  - name: profile_id
+    type: string
+    description: The unique identifier of the profile for which the time series snapshots are to be fetched.
+    required: true
+    default: yjjslxnjng
+  tags:
+  - get
+  - profile
+  - series
+  test_prompts:
+    single:
+    - Retrieve time series snapshots for profile ID '12345'.
+    - Fetch detailed series data for profile '987654321'.
+    single_clear:
+    - Retrieve time series snapshots for profile ID '12345'.
+    - Fetch detailed series data for profile '987654321'.
+- name: players_photo
+  descriptions:
+    minimal: Retrieves the photo of a soccer player given the...
+    short: Retrieves the photo of a soccer player given the player's ID using the Soccerway API.
+    medium: Retrieves the photo of a soccer player given the player's ID using the Soccerway API.
+    long: Retrieves the photo of a soccer player given the player's ID using the Soccerway API.
+    verbose: Retrieves the photo of a soccer player given the player's ID using the Soccerway API.
+  parameters:
+  - name: player_id
+    type: integer
+    description: The unique identifier of the soccer player.
+    required: true
+    default: '177208'
+  tags:
+  - players
+  - photo
+  test_prompts:
+    single:
+    - I need the photo of soccer player with ID 789.
+    single_clear:
+    - I need the photo of soccer player with ID 789.
+- name: categories_list
+  descriptions:
+    minimal: Fetches a list of categories and their recursive...
+    short: Fetches a list of categories and their recursive child categories from the Wayfair API.
+    medium: Fetches a list of categories and their recursive child categories from the Wayfair API.
+    long: Fetches a list of categories and their recursive child categories from the Wayfair API.
+    verbose: Fetches a list of categories and their recursive child categories from the Wayfair API.
+  parameters:
+  - name: caid
+    type: integer
+    description: The category ID for which to list categories. The default root category is 214970.
+    required: true
+    default: '214970'
+  tags:
+  - categories
+  - list
+  test_prompts:
+    single:
+    - Can you fetch the categories and their child categories for the root category ID 214970 from Wayfair?
+    - List all child categories of 'Kitchen & Dining' on Wayfair.
+    - What are the categories available under the main category with ID 214970 on Wayfair?
+    single_clear:
+    - Can you fetch the categories and their child categories for the root category ID 214970 from Wayfair?
+    - List all child categories of 'Kitchen & Dining' on Wayfair.
+    - What are the categories available under the main category with ID 214970 on Wayfair?
+- name: getgamelist
+  descriptions:
+    minimal: Fetches a list of games from the EvoSiss Game...
+    short: Fetches a list of games from the EvoSiss Game Database API, returning their IDs and series names in JSON format.
+    medium: Fetches a list of games from the EvoSiss Game Database API, returning their IDs and series names in JSON format.
+    long: Fetches a list of games from the EvoSiss Game Database API, returning their IDs and series names in JSON format.
+    verbose: Fetches a list of games from the EvoSiss Game Database API, returning their IDs and series names in JSON format.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number to retrieve from the game list.
+    required: true
+    default: '0'
+  tags:
+  - getgamelist
+  test_prompts:
+    single:
+    - Retrieve the first page of games from the EvoSiss Game Database.
+    single_clear:
+    - Retrieve the first page of games from the EvoSiss Game Database.
+- name: motivation_quote
+  descriptions:
+    minimal: Fetches a motivational quote from the Olato...
+    short: Fetches a motivational quote from the Olato Quotes API.
+    medium: Fetches a motivational quote from the Olato Quotes API.
+    long: Fetches a motivational quote from the Olato Quotes API.
+    verbose: Fetches a motivational quote from the Olato Quotes API.
+  parameters:
+  - name: quotes
+    type: string
+    description: Type of quotes to fetch. Default is 'random quotes'.
+    required: true
+    default: random quotes
+  tags:
+  - motivation
+  - quote
+  test_prompts:
+    single:
+    - Fetch a motivational quote about success.
+    - What is a motivational quote about perseverance?
+    - Retrieve a motivational quote specifically about success.
+    single_clear:
+    - Fetch a motivational quote about success.
+    - What is a motivational quote about perseverance?
+    - Retrieve a motivational quote specifically about success.
+- name: language_list
+  descriptions:
+    minimal: Fetches the list of valid languages for the given...
+    short: Fetches the list of valid languages for the given country using the Real Time News Data API.
+    medium: Fetches the list of valid languages for the given country using the Real Time News Data API.
+    long: Fetches the list of valid languages for the given country using the Real Time News Data API.
+    verbose: Fetches the list of valid languages for the given country using the Real Time News Data API.
+  parameters:
+  - name: country
+    type: string
+    description: The country code (ISO 3166-1 alpha-2) of the country to get languages for.
+    required: true
+    default: US
+  tags:
+  - language
+  - list
+  test_prompts:
+    single:
+    - List languages for Germany.
+    - List all valid languages for the United States.
+    single_clear:
+    - List languages for Germany.
+    - List all valid languages for the United States.
+- name: getlistbysecuritiescode
+  descriptions:
+    minimal: Fetches the securities report data for a...
+    short: Fetches the securities report data for a specified company using its securities code.
+    medium: Fetches the securities report data for a specified company using its securities code.
+    long: Fetches the securities report data for a specified company using its securities code.
+    verbose: Fetches the securities report data for a specified company using its securities code.
+  parameters:
+  - name: securities_code
+    type: integer
+    description: The securities code of the company whose report data is to be fetched.
+    required: true
+    default: '7203'
+  tags:
+  - getlistbysecuritiescode
+  test_prompts:
+    single:
+    - Could you provide the securities report for Rakuten?
+    - Could you fetch the securities report for the company with code 9984?
+    - Retrieve financial data for Sony Corporation.
+    - Get the securities report for SoftBank Group Corp.
+    - Get the latest securities report for Mitsubishi UFJ Financial Group, Inc.
+    - I'm looking for the securities report data of Panasonic, what code should I use?
+    - Fetch the latest securities report for SoftBank Group.
+    single_clear:
+    - Could you provide the securities report for Rakuten?
+    - Could you fetch the securities report for the company with code 9984?
+    - Retrieve financial data for Sony Corporation.
+    - Get the securities report for SoftBank Group Corp.
+    - Get the latest securities report for Mitsubishi UFJ Financial Group, Inc.
+    - I'm looking for the securities report data of Panasonic, what code should I use?
+    - Fetch the latest securities report for SoftBank Group.

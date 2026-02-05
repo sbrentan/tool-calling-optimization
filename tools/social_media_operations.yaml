@@ -1,0 +1,1236 @@
+category: social_media_operations
+description: Social media management operations
+tools:
+  - name: post_content
+    descriptions:
+      minimal: "Post content"
+      short: "Post content to social media"
+      medium: "Publish content to one or more social media platforms."
+      long: "Post content to social media platforms like Twitter, Facebook, LinkedIn, Instagram. Example: post_content(platforms='[\"twitter\", \"linkedin\"]', text='Exciting news!', media='[\"image.jpg\"]')."
+      verbose: "Publish content to social media platforms. Platforms: Twitter/X, Facebook, LinkedIn, Instagram, TikTok, YouTube. Content types: text, images, videos, carousels, stories. Features: scheduling, multi-platform, hashtags, mentions, location. Example: post_content(platforms='[\"twitter\", \"linkedin\"]', text='Excited to announce our new product launch! 🚀', media='[\"launch.jpg\"]', hashtags='[\"launch\", \"startup\"]', schedule='2024-01-15T10:00:00Z'). Note: Character limits and media specs vary by platform. Warning: Posting frequency may trigger spam detection."
+    parameters:
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: true
+      - name: text
+        type: string
+        description: "Post text content"
+        required: true
+      - name: media
+        type: string
+        description: "JSON array of media file paths"
+        required: false
+      - name: hashtags
+        type: string
+        description: "JSON array of hashtags"
+        required: false
+      - name: schedule
+        type: string
+        description: "Schedule time (ISO format)"
+        required: false
+      - name: link
+        type: string
+        description: "Link to include"
+        required: false
+    tags: ["social", "post", "publish", "content", "twitter"]
+    test_prompts:
+      single:
+        - "Post this to Twitter"
+        - "Share on LinkedIn"
+        - "Publish to social media"
+        - "Schedule a post for tomorrow"
+      single_clear:
+        - "I need to post content to social media. Post this to Twitter"
+        - "I need to post content to social media. Share on LinkedIn"
+        - "I need to post content to social media. Publish to social media"
+        - "I need to post content to social media. Schedule a post for tomorrow"
+
+  - name: get_analytics
+    descriptions:
+      minimal: "Get analytics"
+      short: "Get social media analytics"
+      medium: "Retrieve analytics and metrics for social media accounts or posts."
+      long: "Get social media analytics including followers, engagement, reach. Example: get_analytics(platform='twitter', account='@mycompany', period='30d')."
+      verbose: "Retrieve social media analytics and metrics. Metrics: followers, impressions, reach, engagement rate, clicks, shares, comments, mentions. Scopes: account-level, post-level, campaign. Example: get_analytics(platform='instagram', account='mybrand', period='30d', metrics='[\"followers\", \"engagement_rate\", \"reach\"]', compare_to='previous'). Note: Historical data availability varies by platform. Warning: API rate limits may affect data freshness."
+    parameters:
+      - name: platform
+        type: string
+        description: "Social media platform"
+        required: true
+        enum: ["twitter", "facebook", "instagram", "linkedin", "tiktok", "youtube"]
+      - name: account
+        type: string
+        description: "Account handle or ID"
+        required: true
+      - name: period
+        type: string
+        description: "Time period (e.g., '7d', '30d')"
+        required: false
+        default: "7d"
+      - name: metrics
+        type: string
+        description: "JSON array of specific metrics"
+        required: false
+      - name: compare_to
+        type: string
+        description: "Compare to previous period"
+        required: false
+    tags: ["social", "analytics", "metrics", "engagement", "followers"]
+    test_prompts:
+      single:
+        - "Get Twitter analytics"
+        - "Show Instagram engagement"
+        - "How many followers did we gain?"
+        - "Get social media metrics"
+      single_clear:
+        - "I need to get social media analytics. Get Twitter analytics"
+        - "I need to get social media analytics. Show Instagram engagement"
+        - "I need to get social media analytics. How many followers did we gain?"
+        - "I need to get social media analytics. Get social media metrics"
+
+  - name: schedule_posts
+    descriptions:
+      minimal: "Schedule posts"
+      short: "Schedule social media posts"
+      medium: "Schedule multiple posts for future publishing."
+      long: "Schedule a batch of posts for optimal times. Supports content calendar management. Example: schedule_posts(posts='[{\"text\": \"...\", \"time\": \"...\"}]', platform='twitter')."
+      verbose: "Schedule social media posts for future publishing. Features: bulk scheduling, optimal time suggestions, content calendar, recurring posts, timezone handling. Example: schedule_posts(platform='linkedin', posts='[{\"text\": \"Monday motivation...\", \"time\": \"2024-01-15T09:00:00Z\", \"media\": [\"quote.jpg\"]}, {\"text\": \"Product tip...\", \"time\": \"2024-01-17T14:00:00Z\"}]', timezone='America/New_York'). Note: Optimal times vary by audience and platform. Warning: Too many scheduled posts may overwhelm followers."
+    parameters:
+      - name: platform
+        type: string
+        description: "Target platform"
+        required: true
+      - name: posts
+        type: string
+        description: "JSON array of posts with times"
+        required: true
+      - name: timezone
+        type: string
+        description: "Timezone for scheduling"
+        required: false
+        default: "UTC"
+      - name: optimal_times
+        type: boolean
+        description: "Use AI-suggested optimal times"
+        required: false
+        default: false
+    tags: ["social", "schedule", "posts", "calendar", "queue"]
+    test_prompts:
+      single:
+        - "Schedule posts for the week"
+        - "Queue up social content"
+        - "Schedule at optimal times"
+        - "Plan the content calendar"
+      single_clear:
+        - "I need to schedule social media posts. Schedule posts for the week"
+        - "I need to schedule social media posts. Queue up social content"
+        - "I need to schedule social media posts. Schedule at optimal times"
+        - "I need to schedule social media posts. Plan the content calendar"
+
+  - name: reply_to_comment
+    descriptions:
+      minimal: "Reply to comment"
+      short: "Reply to a social media comment"
+      medium: "Reply to a comment or mention on social media."
+      long: "Reply to comments, mentions, or messages on social platforms. Example: reply_to_comment(platform='twitter', comment_id='123456', reply='Thanks for your feedback!')."
+      verbose: "Reply to comments, mentions, or DMs on social media. Types: post comments, mentions, direct messages, reviews. Features: templates, sentiment-based responses, bulk replies. Example: reply_to_comment(platform='instagram', comment_id='abc123', reply='Thank you so much! 🙏 We appreciate your support.', like_comment=true). Note: Quick response time improves engagement. Warning: Automated replies may seem impersonal; customize for context."
+    parameters:
+      - name: platform
+        type: string
+        description: "Social media platform"
+        required: true
+      - name: comment_id
+        type: string
+        description: "Comment/mention ID"
+        required: true
+      - name: reply
+        type: string
+        description: "Reply text"
+        required: true
+      - name: like_comment
+        type: boolean
+        description: "Also like the comment"
+        required: false
+        default: false
+    tags: ["social", "reply", "comment", "engage", "respond"]
+    test_prompts:
+      single:
+        - "Reply to this comment"
+        - "Respond to the mention"
+        - "Answer the Twitter reply"
+        - "Reply to feedback"
+      single_clear:
+        - "I need to reply to a social media comment. Reply to this comment"
+        - "I need to reply to a social media comment. Respond to the mention"
+        - "I need to reply to a social media comment. Answer the Twitter reply"
+        - "I need to reply to a social media comment. Reply to feedback"
+
+  - name: get_mentions
+    descriptions:
+      minimal: "Get mentions"
+      short: "Get social media mentions"
+      medium: "Retrieve mentions and tags of the account across platforms."
+      long: "Get mentions, tags, and brand references from social media. Example: get_mentions(account='@mycompany', platforms='[\"twitter\", \"instagram\"]', period='7d')."
+      verbose: "Monitor brand mentions across social media. Sources: @mentions, hashtags, keywords, tags. Filters: platform, sentiment, verified accounts, influence. Example: get_mentions(keywords='[\"mybrand\", \"my brand\"]', platforms='[\"twitter\", \"reddit\", \"instagram\"]', period='7d', sentiment='all', min_followers=1000). Note: Keyword monitoring may include irrelevant results. Warning: High-volume brands may need sampling."
+    parameters:
+      - name: account
+        type: string
+        description: "Account to monitor"
+        required: false
+      - name: keywords
+        type: string
+        description: "JSON array of keywords"
+        required: false
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: false
+      - name: period
+        type: string
+        description: "Time period"
+        required: false
+        default: "7d"
+      - name: sentiment
+        type: string
+        description: "Filter by sentiment"
+        required: false
+        enum: ["all", "positive", "negative", "neutral"]
+    tags: ["social", "mentions", "monitor", "brand", "listening"]
+    test_prompts:
+      single:
+        - "Get all mentions of our brand"
+        - "Show recent Twitter mentions"
+        - "Monitor brand keywords"
+        - "Find negative mentions"
+      single_clear:
+        - "I need to get social media mentions. Get all mentions of our brand"
+        - "I need to get social media mentions. Show recent Twitter mentions"
+        - "I need to get social media mentions. Monitor brand keywords"
+        - "I need to get social media mentions. Find negative mentions"
+
+  - name: manage_followers
+    descriptions:
+      minimal: "Manage followers"
+      short: "Manage follower interactions"
+      medium: "Follow, unfollow, or manage follower relationships."
+      long: "Manage follower relationships on social platforms. Follow, unfollow, block, or analyze followers. Example: manage_followers(platform='twitter', action='follow', user='@targetuser')."
+      verbose: "Manage social media follower relationships. Actions: 'follow', 'unfollow', 'block', 'mute', 'list' (get followers), 'analyze' (follower insights). Features: bulk actions, follower quality analysis, fake follower detection. Example: manage_followers(platform='twitter', action='analyze', metrics='[\"engagement_rate\", \"authenticity\", \"demographics\"]'). Note: Aggressive following/unfollowing may trigger platform limits. Warning: Buying followers violates most platform ToS."
+    parameters:
+      - name: platform
+        type: string
+        description: "Social media platform"
+        required: true
+      - name: action
+        type: string
+        description: "Action to perform"
+        required: true
+        enum: ["follow", "unfollow", "block", "mute", "list", "analyze"]
+      - name: user
+        type: string
+        description: "Target user handle"
+        required: false
+      - name: metrics
+        type: string
+        description: "Analysis metrics (for analyze)"
+        required: false
+    tags: ["social", "followers", "manage", "follow", "community"]
+    test_prompts:
+      single:
+        - "Follow this account"
+        - "Analyze our followers"
+        - "Block the spam account"
+        - "Get follower list"
+      single_clear:
+        - "I need to manage follower interactions. Follow this account"
+        - "I need to manage follower interactions. Analyze our followers"
+        - "I need to manage follower interactions. Block the spam account"
+        - "I need to manage follower interactions. Get follower list"
+
+  - name: create_campaign
+    descriptions:
+      minimal: "Create campaign"
+      short: "Create a social media campaign"
+      medium: "Create a coordinated social media campaign with multiple posts."
+      long: "Create a social media campaign with scheduled content, hashtags, and goals. Example: create_campaign(name='Product Launch', platforms='[\"twitter\", \"linkedin\"]', posts='[...]', start_date='2024-01-15')."
+      verbose: "Create coordinated social media campaigns. Components: campaign name, goals, content series, hashtags, influencers, paid promotion. Tracking: unique hashtag, UTM links, campaign metrics. Example: create_campaign(name='Spring Sale', platforms='[\"instagram\", \"facebook\"]', posts='[{\"text\": \"...\", \"schedule\": \"...\"}]', hashtag='#SpringSale2024', budget=500, goals='{\"reach\": 100000, \"conversions\": 500}'). Note: Campaign performance depends on content quality and timing. Warning: Paid campaigns require platform ad account setup."
+    parameters:
+      - name: name
+        type: string
+        description: "Campaign name"
+        required: true
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: true
+      - name: posts
+        type: string
+        description: "JSON array of campaign posts"
+        required: true
+      - name: hashtag
+        type: string
+        description: "Campaign hashtag"
+        required: false
+      - name: start_date
+        type: string
+        description: "Campaign start date"
+        required: true
+      - name: end_date
+        type: string
+        description: "Campaign end date"
+        required: false
+      - name: goals
+        type: string
+        description: "JSON campaign goals"
+        required: false
+    tags: ["social", "campaign", "marketing", "launch", "coordinated"]
+    test_prompts:
+      single:
+        - "Create a product launch campaign"
+        - "Set up a social media campaign"
+        - "Launch a marketing campaign"
+        - "Coordinate posts for the event"
+      single_clear:
+        - "I need to create a social media campaign. Create a product launch campaign"
+        - "I need to create a social media campaign. Set up a social media campaign"
+        - "I need to create a social media campaign. Launch a marketing campaign"
+        - "I need to create a social media campaign. Coordinate posts for the event"
+
+  - name: generate_content
+    descriptions:
+      minimal: "Generate content"
+      short: "Generate social media content"
+      medium: "Generate social media post content using AI."
+      long: "Generate social media content using AI. Creates text, hashtags, and content suggestions. Example: generate_content(topic='product launch', platform='twitter', tone='excited')."
+      verbose: "Generate social media content with AI assistance. Features: platform-optimized text, hashtag suggestions, emoji usage, call-to-action, content variations. Inputs: topic, tone, platform, length constraints. Example: generate_content(topic='new feature announcement', platform='linkedin', tone='professional', include_cta=true, variations=3). Note: AI content should be reviewed before posting. Warning: Over-reliance on AI may reduce authenticity."
+    parameters:
+      - name: topic
+        type: string
+        description: "Content topic or brief"
+        required: true
+      - name: platform
+        type: string
+        description: "Target platform"
+        required: true
+      - name: tone
+        type: string
+        description: "Content tone"
+        required: false
+        default: "professional"
+        enum: ["professional", "casual", "excited", "informative", "humorous"]
+      - name: include_hashtags
+        type: boolean
+        description: "Include hashtag suggestions"
+        required: false
+        default: true
+      - name: include_cta
+        type: boolean
+        description: "Include call-to-action"
+        required: false
+        default: false
+      - name: variations
+        type: integer
+        description: "Number of variations"
+        required: false
+        default: 1
+    tags: ["social", "content", "generate", "ai", "copywriting"]
+    test_prompts:
+      single:
+        - "Write a tweet about our new feature"
+        - "Generate LinkedIn post content"
+        - "Create social media copy"
+        - "Suggest post ideas for launch"
+      single_clear:
+        - "I need to generate social media content. Write a tweet about our new feature"
+        - "I need to generate social media content. Generate LinkedIn post content"
+        - "I need to generate social media content. Create social media copy"
+        - "I need to generate social media content. Suggest post ideas for launch"
+
+  - name: analyze_competitor
+    descriptions:
+      minimal: "Analyze competitor"
+      short: "Analyze competitor social media"
+      medium: "Analyze a competitor's social media presence and performance."
+      long: "Analyze competitor social media accounts for benchmarking. Track followers, engagement, content strategy. Example: analyze_competitor(competitor='@competitor', platforms='[\"twitter\", \"instagram\"]')."
+      verbose: "Competitive analysis for social media. Metrics: follower growth, engagement rate, posting frequency, content types, top posts, hashtags. Comparison: side-by-side metrics, share of voice, sentiment. Example: analyze_competitor(competitor='@competitor', platforms='[\"twitter\", \"linkedin\"]', period='90d', compare_to='@mycompany'). Note: Analysis limited to public data. Warning: Excessive monitoring may be considered surveillance."
+    parameters:
+      - name: competitor
+        type: string
+        description: "Competitor account handle"
+        required: true
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: true
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: false
+        default: "30d"
+      - name: compare_to
+        type: string
+        description: "Your account for comparison"
+        required: false
+      - name: metrics
+        type: string
+        description: "Specific metrics to analyze"
+        required: false
+    tags: ["social", "competitor", "analysis", "benchmark", "intelligence"]
+    test_prompts:
+      single:
+        - "Analyze competitor's Twitter"
+        - "Compare our engagement to competitors"
+        - "Benchmark against competitors"
+        - "Analyze their social strategy"
+      single_clear:
+        - "I need to analyze competitor social media. Analyze competitor's Twitter"
+        - "I need to analyze competitor social media. Compare our engagement to competitors"
+        - "I need to analyze competitor social media. Benchmark against competitors"
+        - "I need to analyze competitor social media. Analyze their social strategy"
+
+  - name: moderate_content
+    descriptions:
+      minimal: "Moderate content"
+      short: "Moderate social media content"
+      medium: "Moderate user-generated content and comments."
+      long: "Moderate comments and user content. Hide, delete, or flag inappropriate content. Example: moderate_content(platform='instagram', action='hide', comment_ids='[\"123\", \"456\"]')."
+      verbose: "Content moderation for social media. Actions: 'hide' (hide from public), 'delete' (remove), 'flag' (mark for review), 'approve' (publish pending), 'ban' (block user). Auto-moderation: keyword filters, sentiment detection, spam detection. Example: moderate_content(platform='facebook', action='auto', rules='{\"keywords\": [\"spam\", \"scam\"], \"sentiment\": \"toxic\", \"action\": \"hide\"}'). Note: Moderation decisions should be consistent and documented. Warning: Over-moderation may stifle legitimate discussion."
+    parameters:
+      - name: platform
+        type: string
+        description: "Social media platform"
+        required: true
+      - name: action
+        type: string
+        description: "Moderation action"
+        required: true
+        enum: ["hide", "delete", "flag", "approve", "ban", "auto"]
+      - name: comment_ids
+        type: string
+        description: "JSON array of comment IDs"
+        required: false
+      - name: user_id
+        type: string
+        description: "User to moderate"
+        required: false
+      - name: rules
+        type: string
+        description: "JSON auto-moderation rules"
+        required: false
+    tags: ["social", "moderate", "content", "comments", "spam"]
+    test_prompts:
+      single:
+        - "Delete these spam comments"
+        - "Hide the inappropriate comment"
+        - "Set up auto-moderation"
+        - "Ban the troll account"
+      single_clear:
+        - "I need to moderate social media content. Delete these spam comments"
+        - "I need to moderate social media content. Hide the inappropriate comment"
+        - "I need to moderate social media content. Set up auto-moderation"
+        - "I need to moderate social media content. Ban the troll account"
+  - name: create_social_campaign
+    descriptions:
+      minimal: "Create campaign"
+      short: "Create social media campaign"
+      medium: "Create a coordinated campaign across multiple social platforms."
+      long: "Create a multi-platform social media campaign. Schedule posts across platforms. Example: create_social_campaign(name='Product Launch', platforms='[\"twitter\", \"instagram\", \"linkedin\"]')."
+      verbose: "Create coordinated social media campaigns. Features: multi-platform scheduling, content variations per platform, campaign goals, tracking. Example: create_social_campaign(name='Holiday Sale 2024', platforms='[\"twitter\", \"instagram\", \"facebook\"]', posts='[{\"content\": \"Big sale!\", \"media\": \"sale.jpg\", \"schedule\": \"2024-12-20T10:00:00Z\"}]', budget=1000, goals='{\"impressions\": 100000, \"clicks\": 5000}'). Returns: campaign ID, scheduled post IDs. Note: Platform content limits vary. Warning: Campaign changes may not apply to already-published posts."
+    parameters:
+      - name: name
+        type: string
+        description: "Campaign name"
+        required: true
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: true
+      - name: posts
+        type: string
+        description: "JSON array of post content"
+        required: true
+      - name: start_date
+        type: string
+        description: "Campaign start (ISO 8601)"
+        required: false
+      - name: end_date
+        type: string
+        description: "Campaign end (ISO 8601)"
+        required: false
+      - name: budget
+        type: number
+        description: "Campaign budget"
+        required: false
+      - name: goals
+        type: string
+        description: "JSON campaign goals"
+        required: false
+    tags: ["social", "campaign", "marketing", "multi-platform", "coordinated"]
+    test_prompts:
+      single:
+        - "Create social media campaign"
+        - "Launch multi-platform campaign"
+        - "Set up product promotion"
+        - "Create coordinated posts"
+      single_clear:
+        - "I need to create a coordinated social campaign. Create social media campaign"
+        - "I need to create a coordinated social campaign. Launch multi-platform campaign"
+        - "I need to create a coordinated social campaign. Set up product promotion"
+        - "I need to create a coordinated social campaign. Create coordinated posts"
+
+  - name: analyze_sentiment
+    descriptions:
+      minimal: "Analyze sentiment"
+      short: "Analyze social sentiment"
+      medium: "Analyze sentiment of mentions and comments about a topic or brand."
+      long: "Analyze sentiment of social media mentions. Track positive, negative, and neutral sentiment. Example: analyze_sentiment(query='brand name', period='7d', platforms='[\"twitter\"]')."
+      verbose: "Social media sentiment analysis. Methods: keyword monitoring, brand mentions, hashtag tracking. Analysis: sentiment score, emotion detection, trend over time. Example: analyze_sentiment(query='@CompanyName OR #ProductName', platforms='[\"twitter\", \"instagram\"]', period='30d', granularity='1d', include_samples=true, sample_count=50). Returns: sentiment distribution, trend, sample posts. Note: Sarcasm and context may affect accuracy. Warning: Low sample sizes may not be representative."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query or brand"
+        required: true
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: true
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: false
+        default: "7d"
+      - name: granularity
+        type: string
+        description: "Time granularity"
+        required: false
+        default: "1d"
+      - name: include_samples
+        type: boolean
+        description: "Include sample posts"
+        required: false
+        default: true
+      - name: sample_count
+        type: integer
+        description: "Number of samples"
+        required: false
+        default: 20
+    tags: ["social", "sentiment", "analysis", "brand", "monitoring"]
+    test_prompts:
+      single:
+        - "Analyze brand sentiment"
+        - "Check social media mood"
+        - "Track sentiment trend"
+        - "Measure public opinion"
+      single_clear:
+        - "I need to analyze social sentiment. Analyze brand sentiment"
+        - "I need to analyze social sentiment. Check social media mood"
+        - "I need to analyze social sentiment. Track sentiment trend"
+        - "I need to analyze social sentiment. Measure public opinion"
+
+  - name: find_influencers
+    descriptions:
+      minimal: "Find influencers"
+      short: "Find relevant influencers"
+      medium: "Discover influencers in a specific niche or topic area."
+      long: "Find influencers for partnerships. Filter by niche, follower count, and engagement. Example: find_influencers(niche='fitness', min_followers=10000, platform='instagram')."
+      verbose: "Influencer discovery for marketing partnerships. Criteria: niche/topic, follower range, engagement rate, location, audience demographics. Example: find_influencers(platform='instagram', niche='sustainable fashion', min_followers=10000, max_followers=100000, min_engagement=3.0, location='US', audience_age='18-34'). Returns: influencer profiles, metrics, contact info. Note: Engagement rate is more important than follower count. Warning: Verify authenticity; fake followers are common."
+    parameters:
+      - name: platform
+        type: string
+        description: "Social platform"
+        required: true
+      - name: niche
+        type: string
+        description: "Topic or niche"
+        required: true
+      - name: min_followers
+        type: integer
+        description: "Minimum followers"
+        required: false
+        default: 1000
+      - name: max_followers
+        type: integer
+        description: "Maximum followers"
+        required: false
+      - name: min_engagement
+        type: number
+        description: "Minimum engagement rate (%)"
+        required: false
+        default: 1.0
+      - name: location
+        type: string
+        description: "Influencer location"
+        required: false
+      - name: limit
+        type: integer
+        description: "Results limit"
+        required: false
+        default: 20
+    tags: ["social", "influencer", "marketing", "discovery", "partnership"]
+    test_prompts:
+      single:
+        - "Find fitness influencers"
+        - "Search for micro-influencers"
+        - "Discover brand ambassadors"
+        - "Find influencers in niche"
+      single_clear:
+        - "I need to find relevant influencers. Find fitness influencers"
+        - "I need to find relevant influencers. Search for micro-influencers"
+        - "I need to find relevant influencers. Discover brand ambassadors"
+        - "I need to find relevant influencers. Find influencers in niche"
+
+  - name: manage_social_ads
+    descriptions:
+      minimal: "Manage ads"
+      short: "Manage social media ads"
+      medium: "Create and manage paid advertising campaigns on social platforms."
+      long: "Manage social media advertising. Create ads, set targeting, manage budgets. Example: manage_social_ads(platform='facebook', action='create', campaign='{\"name\": \"Summer Sale\"}')."
+      verbose: "Social media advertising management. Actions: create, update, pause, resume, delete, analyze. Targeting: demographics, interests, behaviors, custom audiences. Example: manage_social_ads(platform='facebook', action='create', campaign='{\"name\": \"App Install\", \"objective\": \"conversions\", \"budget_daily\": 50, \"targeting\": {\"age\": [\"18-35\"], \"interests\": [\"technology\"]}, \"creative\": {\"image\": \"ad.jpg\", \"headline\": \"Download Now\"}}'). Note: Ad approval may take time. Warning: Monitor ad spend to avoid budget overruns."
+    parameters:
+      - name: platform
+        type: string
+        description: "Ad platform"
+        required: true
+        enum: ["facebook", "instagram", "twitter", "linkedin", "tiktok"]
+      - name: action
+        type: string
+        description: "Ad action"
+        required: true
+        enum: ["create", "update", "pause", "resume", "delete", "analyze"]
+      - name: campaign_id
+        type: string
+        description: "Existing campaign ID"
+        required: false
+      - name: campaign
+        type: string
+        description: "JSON campaign configuration"
+        required: false
+      - name: budget
+        type: number
+        description: "Budget update"
+        required: false
+    tags: ["social", "ads", "advertising", "paid", "marketing"]
+    test_prompts:
+      single:
+        - "Create Facebook ad campaign"
+        - "Pause Instagram ads"
+        - "Update ad budget"
+        - "Analyze ad performance"
+      single_clear:
+        - "I need to manage social media ads. Create Facebook ad campaign"
+        - "I need to manage social media ads. Pause Instagram ads"
+        - "I need to manage social media ads. Update ad budget"
+        - "I need to manage social media ads. Analyze ad performance"
+
+  - name: track_hashtag
+    descriptions:
+      minimal: "Track hashtag"
+      short: "Track hashtag performance"
+      medium: "Monitor and track hashtag usage and performance over time."
+      long: "Track hashtag metrics across platforms. Monitor reach, usage, and trends. Example: track_hashtag(hashtag='BrandName', platforms='[\"twitter\", \"instagram\"]', period='30d')."
+      verbose: "Hashtag tracking and analytics. Metrics: post count, reach, impressions, top posts, related hashtags, sentiment. Example: track_hashtag(hashtag='YourCampaign', platforms='[\"twitter\", \"instagram\", \"tiktok\"]', period='7d', compare_to='#CompetitorHashtag', include_top_posts=true). Returns: usage stats, trend data, top contributors. Note: Cross-platform tracking may have delays. Warning: Same hashtag may have different meanings on different platforms."
+    parameters:
+      - name: hashtag
+        type: string
+        description: "Hashtag to track (without #)"
+        required: true
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: true
+      - name: period
+        type: string
+        description: "Tracking period"
+        required: false
+        default: "7d"
+      - name: compare_to
+        type: string
+        description: "Comparison hashtag"
+        required: false
+      - name: include_top_posts
+        type: boolean
+        description: "Include top posts"
+        required: false
+        default: true
+    tags: ["social", "hashtag", "tracking", "monitoring", "analytics"]
+    test_prompts:
+      single:
+        - "Track our campaign hashtag"
+        - "Monitor hashtag performance"
+        - "Analyze hashtag reach"
+        - "Compare hashtag usage"
+      single_clear:
+        - "I need to track hashtag performance. Track our campaign hashtag"
+        - "I need to track hashtag performance. Monitor hashtag performance"
+        - "I need to track hashtag performance. Analyze hashtag reach"
+        - "I need to track hashtag performance. Compare hashtag usage"
+
+  - name: generate_social_report
+    descriptions:
+      minimal: "Generate report"
+      short: "Generate social media report"
+      medium: "Generate comprehensive social media performance reports."
+      long: "Create social media analytics reports. Combine metrics from multiple platforms. Example: generate_social_report(platforms='[\"twitter\", \"instagram\"]', period='30d', format='pdf')."
+      verbose: "Comprehensive social media reporting. Sections: follower growth, engagement, reach, top content, audience demographics, competitor comparison. Example: generate_social_report(platforms='[\"twitter\", \"instagram\", \"linkedin\"]', period='monthly', format='pdf', sections='[\"overview\", \"engagement\", \"content\", \"audience\"]', compare_period='previous', branding='{\"logo\": \"logo.png\", \"colors\": [\"#1234AB\"]}'). Returns: report file or URL. Note: Report generation may take several minutes. Warning: Historical data availability varies by platform."
+    parameters:
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: true
+      - name: period
+        type: string
+        description: "Report period"
+        required: true
+      - name: format
+        type: string
+        description: "Report format"
+        required: false
+        default: "pdf"
+        enum: ["pdf", "csv", "html", "pptx"]
+      - name: sections
+        type: string
+        description: "JSON array of report sections"
+        required: false
+      - name: compare_period
+        type: string
+        description: "Comparison period"
+        required: false
+    tags: ["social", "report", "analytics", "export", "presentation"]
+    test_prompts:
+      single:
+        - "Generate monthly report"
+        - "Create social media summary"
+        - "Export analytics report"
+        - "Build performance report"
+      single_clear:
+        - "I need to generate a social media report. Generate monthly report"
+        - "I need to generate a social media report. Create social media summary"
+        - "I need to generate a social media report. Export analytics report"
+        - "I need to generate a social media report. Build performance report"
+
+  - name: manage_social_inbox
+    descriptions:
+      minimal: "Manage inbox"
+      short: "Manage social inbox"
+      medium: "Manage messages and comments across social platforms in one inbox."
+      long: "Unified social inbox management. View and respond to messages from all platforms. Example: manage_social_inbox(action='list', platforms='[\"twitter\", \"facebook\"]', status='unread')."
+      verbose: "Unified social media inbox for customer service. Actions: list, reply, assign, tag, archive, snooze. Features: filters, labels, team assignment, response templates. Example: manage_social_inbox(action='list', platforms='[\"twitter\", \"instagram\", \"facebook\"]', status='unread', sentiment='negative', period='24h'). Returns: message list with sender, content, platform. Note: Real-time sync depends on API limits. Warning: Response time affects customer satisfaction."
+    parameters:
+      - name: action
+        type: string
+        description: "Inbox action"
+        required: true
+        enum: ["list", "reply", "assign", "tag", "archive", "snooze"]
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: false
+      - name: status
+        type: string
+        description: "Message status filter"
+        required: false
+        enum: ["all", "unread", "unanswered", "pending"]
+      - name: message_id
+        type: string
+        description: "Specific message ID"
+        required: false
+      - name: response
+        type: string
+        description: "Reply content"
+        required: false
+      - name: assign_to
+        type: string
+        description: "Team member to assign"
+        required: false
+    tags: ["social", "inbox", "messages", "customer_service", "response"]
+    test_prompts:
+      single:
+        - "Show unread messages"
+        - "Reply to customer inquiry"
+        - "Assign message to team"
+        - "Archive resolved messages"
+      single_clear:
+        - "I need to manage the social inbox. Show unread messages"
+        - "I need to manage the social inbox. Reply to customer inquiry"
+        - "I need to manage the social inbox. Assign message to team"
+        - "I need to manage the social inbox. Archive resolved messages"
+
+  - name: schedule_content_calendar
+    descriptions:
+      minimal: "Schedule calendar"
+      short: "Manage content calendar"
+      medium: "Plan and schedule social media content in a calendar view."
+      long: "Manage social media content calendar. Plan, schedule, and organize posts. Example: schedule_content_calendar(action='add', date='2024-01-15', content='{\"text\": \"New post!\"}')."
+      verbose: "Social media content calendar management. Actions: view (see scheduled), add (schedule new), update (modify), delete (remove). Features: recurring posts, content pillars, team collaboration. Example: schedule_content_calendar(action='add', platforms='[\"twitter\", \"linkedin\"]', date='2024-01-20T14:00:00Z', content='{\"text\": \"Weekly tip!\", \"media\": \"tip.png\"}', recurring='weekly', tags='[\"tips\", \"education\"]'). Note: Calendar view helps maintain consistent posting. Warning: Timezone mismatches can cause unexpected publish times."
+    parameters:
+      - name: action
+        type: string
+        description: "Calendar action"
+        required: true
+        enum: ["view", "add", "update", "delete"]
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: false
+      - name: date
+        type: string
+        description: "Post date (ISO 8601)"
+        required: false
+      - name: date_range
+        type: string
+        description: "View date range"
+        required: false
+      - name: content
+        type: string
+        description: "JSON post content"
+        required: false
+      - name: recurring
+        type: string
+        description: "Recurring schedule"
+        required: false
+        enum: ["none", "daily", "weekly", "monthly"]
+    tags: ["social", "calendar", "schedule", "planning", "content"]
+    test_prompts:
+      single:
+        - "Show content calendar"
+        - "Schedule next week posts"
+        - "Plan monthly content"
+        - "Update scheduled post"
+      single_clear:
+        - "I need to manage the content calendar. Show content calendar"
+        - "I need to manage the content calendar. Schedule next week posts"
+        - "I need to manage the content calendar. Plan monthly content"
+        - "I need to manage the content calendar. Update scheduled post"
+
+  - name: create_social_ad
+    descriptions:
+      minimal: "Create ad"
+      short: "Create social media advertisement"
+      medium: "Create and configure a paid social media advertisement campaign."
+      long: "Create paid ads on social platforms with targeting options. Example: create_social_ad(platform='facebook', objective='conversions', budget=500, audience='{\"age\": \"25-45\"}')."
+      verbose: "Create paid social media advertising campaigns. Platforms: Facebook/Instagram Ads, Twitter Ads, LinkedIn Ads, TikTok Ads. Objectives: awareness, traffic, engagement, leads, conversions, app installs. Targeting: demographics, interests, behaviors, custom audiences, lookalikes. Example: create_social_ad(platform='facebook', objective='conversions', budget=1000, budget_type='daily', audience='{\"age_min\": 25, \"age_max\": 45, \"interests\": [\"technology\"], \"locations\": [\"US\"]}', creative='{\"headline\": \"Try Now\", \"image\": \"ad.jpg\"}', duration=14). Note: Ad approval may take up to 24 hours. Warning: Ensure compliance with platform advertising policies."
+    parameters:
+      - name: platform
+        type: string
+        description: "Advertising platform"
+        required: true
+        enum: ["facebook", "instagram", "twitter", "linkedin", "tiktok", "pinterest"]
+      - name: objective
+        type: string
+        description: "Campaign objective"
+        required: true
+        enum: ["awareness", "traffic", "engagement", "leads", "conversions", "app_installs", "video_views"]
+      - name: budget
+        type: number
+        description: "Campaign budget"
+        required: true
+      - name: budget_type
+        type: string
+        description: "Budget type"
+        required: false
+        default: "daily"
+        enum: ["daily", "lifetime"]
+      - name: audience
+        type: string
+        description: "JSON targeting parameters"
+        required: true
+      - name: creative
+        type: string
+        description: "JSON ad creative details"
+        required: true
+      - name: duration
+        type: integer
+        description: "Campaign duration in days"
+        required: false
+    tags: ["social", "advertising", "ad", "paid", "campaign"]
+    test_prompts:
+      single:
+        - "Create a Facebook ad"
+        - "Set up Instagram advertising"
+        - "Launch paid social campaign"
+        - "Create sponsored post"
+      single_clear:
+        - "I need to create a social media advertisement. Create a Facebook ad"
+        - "I need to create a social media advertisement. Set up Instagram advertising"
+        - "I need to create a social media advertisement. Launch paid social campaign"
+        - "I need to create a social media advertisement. Create sponsored post"
+
+  - name: analyze_competitor
+    descriptions:
+      minimal: "Analyze competitor"
+      short: "Analyze competitor social presence"
+      medium: "Analyze a competitor's social media presence and performance."
+      long: "Get insights on competitor social media accounts. Track their posts, engagement, and growth. Example: analyze_competitor(platform='twitter', competitor='@rivalcompany', metrics='[\"posts\", \"engagement\"]')."
+      verbose: "Competitive analysis for social media accounts. Metrics: follower growth, posting frequency, engagement rate, top posts, content themes, hashtags used, posting times. Features: trend analysis, content strategy insights, benchmark comparison. Example: analyze_competitor(platform='instagram', competitor='rival_brand', period='30d', metrics='[\"follower_growth\", \"engagement_rate\", \"top_posts\", \"hashtags\"]', compare_to_us=true). Note: Only public data is available. Warning: Frequent API calls may trigger rate limits."
+    parameters:
+      - name: platform
+        type: string
+        description: "Social media platform"
+        required: true
+        enum: ["twitter", "facebook", "instagram", "linkedin", "tiktok", "youtube"]
+      - name: competitor
+        type: string
+        description: "Competitor account handle"
+        required: true
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: false
+        default: "30d"
+      - name: metrics
+        type: string
+        description: "JSON array of metrics to analyze"
+        required: false
+      - name: compare_to_us
+        type: boolean
+        description: "Compare against our account"
+        required: false
+        default: false
+    tags: ["social", "competitor", "analysis", "benchmark", "insights"]
+    test_prompts:
+      single:
+        - "Analyze competitor's Twitter"
+        - "How is our competitor doing on Instagram?"
+        - "Compare our social presence to rivals"
+        - "Get competitor insights"
+      single_clear:
+        - "I need to analyze competitor social presence. Analyze competitor's Twitter"
+        - "I need to analyze competitor social presence. How is our competitor doing on Instagram?"
+        - "I need to analyze competitor social presence. Compare our social presence to rivals"
+        - "I need to analyze competitor social presence. Get competitor insights"
+
+  - name: create_poll
+    descriptions:
+      minimal: "Create poll"
+      short: "Create a social media poll"
+      medium: "Create an interactive poll on social media platforms."
+      long: "Create polls to engage audience and gather opinions. Example: create_poll(platform='twitter', question='Which feature should we build next?', options='[\"Feature A\", \"Feature B\"]')."
+      verbose: "Create interactive polls on social platforms. Platforms with polls: Twitter, Facebook, Instagram Stories, LinkedIn. Options: 2-4 choices (platform dependent), duration, results visibility. Example: create_poll(platform='twitter', question='What content do you want to see more of?', options='[\"Tutorials\", \"Industry News\", \"Behind the Scenes\", \"Product Updates\"]', duration=24, schedule='2024-01-15T12:00:00Z'). Note: Poll duration limits vary by platform. Warning: Polls cannot be edited after posting."
+    parameters:
+      - name: platform
+        type: string
+        description: "Social media platform"
+        required: true
+        enum: ["twitter", "facebook", "instagram", "linkedin"]
+      - name: question
+        type: string
+        description: "Poll question"
+        required: true
+      - name: options
+        type: string
+        description: "JSON array of poll options"
+        required: true
+      - name: duration
+        type: integer
+        description: "Poll duration in hours"
+        required: false
+        default: 24
+      - name: schedule
+        type: string
+        description: "Schedule time (ISO format)"
+        required: false
+    tags: ["social", "poll", "engagement", "interactive", "survey"]
+    test_prompts:
+      single:
+        - "Create a Twitter poll"
+        - "Set up a vote on Instagram"
+        - "Post a poll to LinkedIn"
+        - "Create engagement poll"
+      single_clear:
+        - "I need to create a social media poll. Create a Twitter poll"
+        - "I need to create a social media poll. Set up a vote on Instagram"
+        - "I need to create a social media poll. Post a poll to LinkedIn"
+        - "I need to create a social media poll. Create engagement poll"
+
+  - name: manage_followers
+    descriptions:
+      minimal: "Manage followers"
+      short: "Manage social media followers"
+      medium: "View and manage followers, following, and blocked accounts."
+      long: "Manage followers and following lists. Follow, unfollow, block, or export followers. Example: manage_followers(platform='twitter', action='list', filter='new')."
+      verbose: "Follower management operations. Actions: list (view followers), follow (new account), unfollow (remove), block (block user), mute (hide posts), export (download list). Filters: new, inactive, verified, mutual, non_mutual. Example: manage_followers(platform='twitter', action='list', filter='inactive', period='90d', export=true). Note: Mass actions may trigger platform restrictions. Warning: Aggressive follow/unfollow can result in account suspension."
+    parameters:
+      - name: platform
+        type: string
+        description: "Social media platform"
+        required: true
+        enum: ["twitter", "facebook", "instagram", "linkedin", "tiktok"]
+      - name: action
+        type: string
+        description: "Management action"
+        required: true
+        enum: ["list", "follow", "unfollow", "block", "mute", "export"]
+      - name: target_user
+        type: string
+        description: "Target user for follow/unfollow/block"
+        required: false
+      - name: filter
+        type: string
+        description: "Filter for listing"
+        required: false
+        enum: ["all", "new", "inactive", "verified", "mutual", "non_mutual"]
+      - name: period
+        type: string
+        description: "Time period for filters"
+        required: false
+      - name: export
+        type: boolean
+        description: "Export results to file"
+        required: false
+        default: false
+    tags: ["social", "followers", "following", "manage", "audience"]
+    test_prompts:
+      single:
+        - "Show my followers"
+        - "Export follower list"
+        - "Block a user"
+        - "Unfollow inactive accounts"
+      single_clear:
+        - "I need to manage social media followers. Show my followers"
+        - "I need to manage social media followers. Export follower list"
+        - "I need to manage social media followers. Block a user"
+        - "I need to manage social media followers. Unfollow inactive accounts"
+
+  - name: generate_report
+    descriptions:
+      minimal: "Generate report"
+      short: "Generate social media report"
+      medium: "Generate a comprehensive social media performance report."
+      long: "Create detailed reports with analytics, charts, and insights. Example: generate_report(platforms='[\"twitter\", \"instagram\"]', period='monthly', format='pdf')."
+      verbose: "Generate social media performance reports. Report types: overview, engagement, growth, content, campaign, competitor. Formats: PDF, Excel, PowerPoint, HTML. Sections: executive summary, metrics, charts, top posts, recommendations. Example: generate_report(platforms='[\"twitter\", \"instagram\", \"linkedin\"]', period='2024-01', type='monthly', format='pdf', include='[\"overview\", \"engagement\", \"top_posts\", \"recommendations\"]', send_to='team@company.com'). Note: Report generation may take a few minutes. Warning: Large date ranges increase report size significantly."
+    parameters:
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: true
+      - name: period
+        type: string
+        description: "Report period"
+        required: true
+      - name: type
+        type: string
+        description: "Report type"
+        required: false
+        default: "overview"
+        enum: ["overview", "engagement", "growth", "content", "campaign", "competitor"]
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "pdf"
+        enum: ["pdf", "excel", "pptx", "html"]
+      - name: include
+        type: string
+        description: "JSON array of sections to include"
+        required: false
+      - name: send_to
+        type: string
+        description: "Email to send report to"
+        required: false
+    tags: ["social", "report", "analytics", "insights", "export"]
+    test_prompts:
+      single:
+        - "Generate monthly social report"
+        - "Create performance report PDF"
+        - "Export analytics report"
+        - "Build quarterly social media report"
+      single_clear:
+        - "I need to generate a social media report. Generate monthly social report"
+        - "I need to generate a social media report. Create performance report PDF"
+        - "I need to generate a social media report. Export analytics report"
+        - "I need to generate a social media report. Build quarterly social media report"
+
+  - name: curate_content
+    descriptions:
+      minimal: "Curate content"
+      short: "Curate content for sharing"
+      medium: "Discover and curate relevant content to share with your audience."
+      long: "Find trending content to share. Curate from RSS, topics, or influencers. Example: curate_content(topics='[\"technology\", \"AI\"]', sources='[\"techcrunch\", \"twitter\"]')."
+      verbose: "Content curation and discovery for social sharing. Sources: RSS feeds, news sites, industry blogs, influencers, trending topics. Features: topic filtering, sentiment analysis, engagement prediction, scheduling. Example: curate_content(topics='[\"artificial intelligence\", \"machine learning\"]', sources='[\"rss\", \"twitter\", \"news\"]', limit=10, min_engagement=100, add_commentary=true, auto_schedule=true). Note: Always add original commentary to curated content. Warning: Verify content authenticity before sharing."
+    parameters:
+      - name: topics
+        type: string
+        description: "JSON array of topics"
+        required: true
+      - name: sources
+        type: string
+        description: "JSON array of content sources"
+        required: false
+      - name: limit
+        type: integer
+        description: "Number of items to curate"
+        required: false
+        default: 10
+      - name: min_engagement
+        type: integer
+        description: "Minimum engagement threshold"
+        required: false
+      - name: add_commentary
+        type: boolean
+        description: "Suggest commentary"
+        required: false
+        default: true
+      - name: auto_schedule
+        type: boolean
+        description: "Auto-schedule curated content"
+        required: false
+        default: false
+    tags: ["social", "curate", "content", "discovery", "sharing"]
+    test_prompts:
+      single:
+        - "Find content to share"
+        - "Curate industry news"
+        - "Discover trending articles"
+        - "Find shareable content"
+      single_clear:
+        - "I need to curate content for sharing. Find content to share"
+        - "I need to curate content for sharing. Curate industry news"
+        - "I need to curate content for sharing. Discover trending articles"
+        - "I need to curate content for sharing. Find shareable content"
+
+  - name: run_social_contest
+    descriptions:
+      minimal: "Run contest"
+      short: "Run social media contest"
+      medium: "Create and manage social media contests and giveaways."
+      long: "Run engagement contests with entry tracking and winner selection. Example: run_social_contest(platform='instagram', type='giveaway', prize='iPhone 15', end_date='2024-02-01')."
+      verbose: "Create and manage social media contests. Types: giveaway, photo contest, caption contest, hashtag challenge, referral. Entry methods: like, comment, follow, share, tag, hashtag. Features: entry tracking, random winner selection, rule generation, legal compliance. Example: run_social_contest(platform='instagram', type='giveaway', prize='$500 Gift Card', entry_requirements='[\"follow\", \"like\", \"tag_friend\"]', end_date='2024-02-01', num_winners=3, generate_rules=true). Note: Contest rules vary by jurisdiction. Warning: Ensure compliance with platform contest guidelines."
+    parameters:
+      - name: platform
+        type: string
+        description: "Contest platform"
+        required: true
+        enum: ["twitter", "facebook", "instagram", "tiktok"]
+      - name: type
+        type: string
+        description: "Contest type"
+        required: true
+        enum: ["giveaway", "photo_contest", "caption_contest", "hashtag_challenge", "referral"]
+      - name: prize
+        type: string
+        description: "Prize description"
+        required: true
+      - name: entry_requirements
+        type: string
+        description: "JSON array of entry requirements"
+        required: true
+      - name: end_date
+        type: string
+        description: "Contest end date"
+        required: true
+      - name: num_winners
+        type: integer
+        description: "Number of winners"
+        required: false
+        default: 1
+      - name: generate_rules
+        type: boolean
+        description: "Generate official rules"
+        required: false
+        default: true
+    tags: ["social", "contest", "giveaway", "engagement", "promotion"]
+    test_prompts:
+      single:
+        - "Create Instagram giveaway"
+        - "Run a contest on Twitter"
+        - "Set up hashtag challenge"
+        - "Start a photo contest"
+      single_clear:
+        - "I need to run a social media contest. Create Instagram giveaway"
+        - "I need to run a social media contest. Run a contest on Twitter"
+        - "I need to run a social media contest. Set up hashtag challenge"
+        - "I need to run a social media contest. Start a photo contest"
+
+  - name: track_brand_mentions
+    descriptions:
+      minimal: "Track mentions"
+      short: "Track brand mentions"
+      medium: "Monitor and track brand mentions across social media platforms."
+      long: "Track mentions of your brand, products, or keywords. Get alerts and sentiment. Example: track_brand_mentions(keywords='[\"MyBrand\", \"@MyBrand\"]', platforms='[\"twitter\", \"instagram\"]')."
+      verbose: "Brand mention monitoring and alerting. Features: keyword tracking, sentiment analysis, influencer detection, crisis alerting, engagement tracking. Alert types: all mentions, negative sentiment, high engagement, influencer mentions. Example: track_brand_mentions(keywords='[\"CompanyName\", \"ProductName\", \"#BrandHashtag\"]', platforms='[\"twitter\", \"instagram\", \"reddit\"]', sentiment=true, alert_on='[\"negative\", \"influencer\"]', email_alerts='team@company.com'). Note: Historical data may be limited. Warning: High-volume brands may generate many alerts."
+    parameters:
+      - name: keywords
+        type: string
+        description: "JSON array of keywords to track"
+        required: true
+      - name: platforms
+        type: string
+        description: "JSON array of platforms"
+        required: false
+      - name: sentiment
+        type: boolean
+        description: "Include sentiment analysis"
+        required: false
+        default: true
+      - name: alert_on
+        type: string
+        description: "JSON array of alert triggers"
+        required: false
+      - name: email_alerts
+        type: string
+        description: "Email for alerts"
+        required: false
+    tags: ["social", "mentions", "brand", "monitoring", "tracking"]
+    test_prompts:
+      single:
+        - "Track brand mentions"
+        - "Monitor social media for our name"
+        - "Set up mention alerts"
+        - "Find who's talking about us"
+      single_clear:
+        - "I need to track brand mentions. Track brand mentions"
+        - "I need to track brand mentions. Monitor social media for our name"
+        - "I need to track brand mentions. Set up mention alerts"
+        - "I need to track brand mentions. Find who's talking about us"
+
+  - name: manage_user_generated_content
+    descriptions:
+      minimal: "Manage UGC"
+      short: "Manage user-generated content"
+      medium: "Discover, curate, and manage user-generated content featuring your brand."
+      long: "Find and manage UGC from customers. Request permissions and reshare. Example: manage_user_generated_content(action='discover', hashtag='#MyBrandStyle', platform='instagram')."
+      verbose: "User-generated content management. Actions: discover (find UGC), request (ask permission), approve (add to library), share (repost). Discovery: by hashtag, mention, location, keyword. Features: rights management, content library, reposting with credit. Example: manage_user_generated_content(action='discover', platform='instagram', hashtag='#BrandFans', min_engagement=50, request_permission=true, template='ugc_request'). Note: Always obtain permission before reposting. Warning: UGC must comply with brand guidelines."
+    parameters:
+      - name: action
+        type: string
+        description: "UGC action"
+        required: true
+        enum: ["discover", "request", "approve", "share", "library"]
+      - name: platform
+        type: string
+        description: "Social platform"
+        required: true
+        enum: ["twitter", "instagram", "tiktok", "facebook"]
+      - name: hashtag
+        type: string
+        description: "Hashtag to search"
+        required: false
+      - name: mention
+        type: string
+        description: "Mention to search"
+        required: false
+      - name: min_engagement
+        type: integer
+        description: "Minimum engagement filter"
+        required: false
+      - name: request_permission
+        type: boolean
+        description: "Auto-request permission"
+        required: false
+        default: false
+      - name: content_id
+        type: string
+        description: "Content ID for approve/share"
+        required: false
+    tags: ["social", "ugc", "content", "user_generated", "curation"]
+    test_prompts:
+      single:
+        - "Find user-generated content"
+        - "Request permission to repost"
+        - "Share customer photos"
+        - "Browse UGC library"
+      single_clear:
+        - "I need to manage user-generated content. Find user-generated content"
+        - "I need to manage user-generated content. Request permission to repost"
+        - "I need to manage user-generated content. Share customer photos"
+        - "I need to manage user-generated content. Browse UGC library"

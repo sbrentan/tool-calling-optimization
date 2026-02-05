@@ -1,0 +1,674 @@
+category: category_35
+tools:
+- name: channel_channels
+  descriptions:
+    minimal: Fetches data from the YouTube channel's...
+    short: Fetches data from the YouTube channel's collections or subscriptions using the RapidAPI service.
+    medium: Fetches data from the YouTube channel's collections or subscriptions using the RapidAPI service.
+    long: Fetches data from the YouTube channel's collections or subscriptions using the RapidAPI service.
+    verbose: Fetches data from the YouTube channel's collections or subscriptions using the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: string
+    description: Channel ID to query. Default is 'UC-lHJZR3Gqxm24_Vd_AJ5Yw'.
+    required: true
+    default: UC-lHJZR3Gqxm24_Vd_AJ5Yw
+  - name: gl
+    type: string
+    description: Geolocation code to filter the results by region. Default is 'US'.
+    required: true
+    default: US
+  - name: cursor
+    type: string
+    description: Pagination token for results. Default is None.
+    required: false
+  - name: hl
+    type: string
+    description: Language code for the results. Default is 'en'.
+    required: true
+    default: en
+  - name: filter
+    type: string
+    description: Filter key for the type of collections. Options are 'all_collections', 'subscriptions', or a custom collection
+      token. Default is None.
+    required: false
+  tags:
+  - channel
+  - channels
+  test_prompts:
+    single:
+    - Retrieve the first page of subscriptions for the channel with ID 'UC-lHJZR3Gqxm24_Vd_AJ5Yw' in the UK region.
+    single_clear:
+    - Retrieve the first page of subscriptions for the channel with ID 'UC-lHJZR3Gqxm24_Vd_AJ5Yw' in the UK region.
+- name: genderify_v3
+  descriptions:
+    minimal: Predict and detect the gender (male or female)...
+    short: Predict and detect the gender (male or female) based on the given name or email address using the Genderify API.
+    medium: Predict and detect the gender (male or female) based on the given name or email address using the Genderify API.
+      Names are supported in over 160 countries.
+    long: Predict and detect the gender (male or female) based on the given name or email address using the Genderify API.
+      Names are supported in over 160 countries.
+    verbose: Predict and detect the gender (male or female) based on the given name or email address using the Genderify API.
+      Names are supported in over 160 countries.
+  parameters:
+  - name: text
+    type: string
+    description: The name or email address to analyze for gender prediction.
+    required: true
+    default: ayumihamasaki@gmail.com
+  tags:
+  - genderify
+  - v3
+  test_prompts:
+    single:
+    - What is the gender prediction for the name 'Alexa' using Genderify API?
+    single_clear:
+    - What is the gender prediction for the name 'Alexa' using Genderify API?
+- name: get_definitions
+  descriptions:
+    minimal: Fetch the definitions of a specified word using...
+    short: Fetch the definitions of a specified word using the Dicolink API.
+    medium: Fetch the definitions of a specified word using the Dicolink API.
+    long: Fetch the definitions of a specified word using the Dicolink API.
+    verbose: Fetch the definitions of a specified word using the Dicolink API.
+  parameters:
+  - name: mot
+    type: string
+    description: The word for which to fetch the definitions.
+    required: true
+    default: cheval
+  tags:
+  - get
+  - definitions
+  test_prompts:
+    single:
+    - What are the definitions of the word 'innovation'?
+    single_clear:
+    - What are the definitions of the word 'innovation'?
+- name: social_media_caption
+  descriptions:
+    minimal: Generates catchy captions for social media based...
+    short: Generates catchy captions for social media based on the provided name and description.
+    medium: Generates catchy captions for social media based on the provided name and description.
+    long: Generates catchy captions for social media based on the provided name and description.
+    verbose: Generates catchy captions for social media based on the provided name and description.
+  parameters:
+  - name: name
+    type: string
+    description: The name associated with the social media content.
+    required: true
+    default: Apple
+  - name: description
+    type: string
+    description: A brief description of the social media content.
+    required: true
+    default: Apple designs, manufactures and markets smartphones, personal computers, tablets, wearables and accessories,
+      and sells a variety of related services.
+  tags:
+  - social
+  - media
+  - caption
+  test_prompts:
+    single:
+    - Generate a social media caption for a post about a new book titled 'The Enigma Code' by author 'Alice Smith'. The book
+      is a thrilling mystery.
+    - Generate a social media caption for a fitness app named 'FitTrack' with a description of 'personalized workout plans
+      and nutrition advice'.
+    single_clear:
+    - Generate a social media caption for a post about a new book titled 'The Enigma Code' by author 'Alice Smith'. The book
+      is a thrilling mystery.
+    - Generate a social media caption for a fitness app named 'FitTrack' with a description of 'personalized workout plans
+      and nutrition advice'.
+- name: hotel_reviews
+  descriptions:
+    minimal: Fetches a list of hotel reviews based on the...
+    short: Fetches a list of hotel reviews based on the provided parameters using the Priceline API.
+    medium: Fetches a list of hotel reviews based on the provided parameters using the Priceline API.
+    long: Fetches a list of hotel reviews based on the provided parameters using the Priceline API.
+    verbose: Fetches a list of hotel reviews based on the provided parameters using the Priceline API.
+  parameters:
+  - name: hotel_id
+    type: string
+    description: The PPN Hotel ID identifying the desired property.
+    required: true
+    default: '700022612'
+  - name: languages
+    type: string
+    description: Comma-separated language codes to filter the reviews by language. Defaults to 'en,fr'.
+    required: false
+    default: en,fr
+  - name: order_by
+    type: string
+    description: Comma-separated sorting order metrics. Valid options include creation_date, average_rating, or verified_guest
+      followed by .asc or .desc.
+    required: false
+  - name: offset
+    type: integer
+    description: The number of reviews to skip before starting to return results. Used in conjunction with `limit`. Defaults
+      to None.
+    required: false
+  - name: limit
+    type: integer
+    description: Limits the number of reviews returned. Defaults to 100.
+    required: false
+    default: 100
+  - name: only_verified_guests
+    type: boolean
+    description: If set to True, only includes reviews from verified guests. Defaults to None.
+    required: false
+    default: false
+  tags:
+  - hotel
+  - reviews
+  test_prompts:
+    single:
+    - Fetch reviews for '98765' hotel in English, sorted by rating in ascending order, and limit to 75.
+    - Get reviews for hotel ID 54321, only from verified guests, in Spanish and English, with no offset and a limit of 100.
+    single_clear:
+    - Fetch reviews for '98765' hotel in English, sorted by rating in ascending order, and limit to 75.
+    - Get reviews for hotel ID 54321, only from verified guests, in Spanish and English, with no offset and a limit of 100.
+- name: spac_sec_filings
+  descriptions:
+    minimal: Fetches the latest SPAC SEC filings, optionally...
+    short: Fetches the latest SPAC SEC filings, optionally filtered by a given SPAC symbol.
+    medium: Fetches the latest SPAC SEC filings, optionally filtered by a given SPAC symbol.
+    long: Fetches the latest SPAC SEC filings, optionally filtered by a given SPAC symbol.
+    verbose: Fetches the latest SPAC SEC filings, optionally filtered by a given SPAC symbol.
+  parameters:
+  - name: symbol
+    type: string
+    description: The SPAC symbol to filter the SEC filings by. Defaults to 'ITAC'.
+    required: true
+    default: ITAC
+  tags:
+  - spac
+  - sec
+  - filings
+  test_prompts:
+    single:
+    - Retrieve the latest SEC filings for SPAC symbol 'PSPC'.
+    single_clear:
+    - Retrieve the latest SEC filings for SPAC symbol 'PSPC'.
+- name: random_post
+  descriptions:
+    minimal: Generates a list of fake posts by calling an...
+    short: Generates a list of fake posts by calling an external API.
+    medium: Generates a list of fake posts by calling an external API.
+    long: Generates a list of fake posts by calling an external API.
+    verbose: Generates a list of fake posts by calling an external API.
+  parameters:
+  - name: size
+    type: integer
+    description: The number of fake posts to generate. Defaults to 5.
+    required: false
+    default: '5'
+  tags:
+  - random
+  - post
+  test_prompts:
+    single:
+    - Generate 10 random posts using the fake data generator API.
+    - How many posts can be generated with a size of 20?
+    single_clear:
+    - Generate 10 random posts using the fake data generator API.
+    - How many posts can be generated with a size of 20?
+- name: sign
+  descriptions:
+    minimal: Fetch horoscope information for a given...
+    short: Fetch horoscope information for a given astrological sign using the Horoscope Astrology API.
+    medium: Fetch horoscope information for a given astrological sign using the Horoscope Astrology API.
+    long: Fetch horoscope information for a given astrological sign using the Horoscope Astrology API.
+    verbose: Fetch horoscope information for a given astrological sign using the Horoscope Astrology API.
+  parameters:
+  - name: s
+    type: string
+    description: The astrological sign to fetch information for. Valid options include 'aries', 'taurus', 'gemini', 'cancer',
+      'leo', 'virgo', 'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', and 'pisces'.
+    required: true
+    default: libra
+  tags:
+  - sign
+  test_prompts:
+    single:
+    - What are today's horoscope predictions for a person born under the sign of Virgo?
+    single_clear:
+    - What are today's horoscope predictions for a person born under the sign of Virgo?
+- name: single_contest
+  descriptions:
+    minimal: Fetch details of a single pageant contest by its...
+    short: Fetch details of a single pageant contest by its ID from the PageantDB API.
+    medium: Fetch details of a single pageant contest by its ID from the PageantDB API.
+    long: Fetch details of a single pageant contest by its ID from the PageantDB API.
+    verbose: Fetch details of a single pageant contest by its ID from the PageantDB API.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the pageant contest to fetch details for.
+    required: true
+    default: '35'
+  tags:
+  - single
+  - contest
+  test_prompts:
+    single:
+    - Could you fetch the details of the pageant contest with ID 12345?
+    single_clear:
+    - Could you fetch the details of the pageant contest with ID 12345?
+- name: brands_detail
+  descriptions:
+    minimal: Fetch detailed information about a brand using...
+    short: Fetch detailed information about a brand using the provided brand ID.
+    medium: Fetch detailed information about a brand using the provided brand ID.
+    long: Fetch detailed information about a brand using the provided brand ID.
+    verbose: Fetch detailed information about a brand using the provided brand ID.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the brand to fetch details for. This value should be obtained from the brands `id` field returned
+      in the `/search` endpoint or the `brandId` field returned in the `/products/list` or `/products/detail` endpoints.
+    required: true
+    default: '158155'
+  tags:
+  - brands
+  - detail
+  test_prompts:
+    single:
+    - Fetch detailed information about the brand with ID 12345.
+    single_clear:
+    - Fetch detailed information about the brand with ID 12345.
+- name: read_vault_by_name
+  descriptions:
+    minimal: Fetches vault details by the given vault name...
+    short: Fetches vault details by the given vault name using the Yardillo API.
+    medium: Fetches vault details by the given vault name using the Yardillo API.
+    long: Fetches vault details by the given vault name using the Yardillo API.
+    verbose: Fetches vault details by the given vault name using the Yardillo API.
+  parameters:
+  - name: name
+    type: string
+    description: The name of the vault to fetch details for.
+    required: true
+    default: Vault_ESBHI
+  tags:
+  - read
+  - vault
+  - by
+  test_prompts:
+    single:
+    - Retrieve all available information about the 'ConfidentialVault'.
+    single_clear:
+    - Retrieve all available information about the 'ConfidentialVault'.
+- name: latest_exchange_rates
+  descriptions:
+    minimal: Fetches the latest exchange rate data using the...
+    short: Fetches the latest exchange rate data using the provided parameters.
+    medium: Fetches the latest exchange rate data using the provided parameters.
+    long: Fetches the latest exchange rate data using the provided parameters.
+    verbose: Fetches the latest exchange rate data using the provided parameters.
+  parameters:
+  - name: resolution
+    type: string
+    description: The frequency of updates for the exchange rates. Possible values are '1m' for minute, '1h' for hourly, and
+      '1d' for daily updates.
+    required: false
+  - name: currencies
+    type: string
+    description: A comma-separated list of currency codes (e.g., 'USD,EUR,AUD,GBP') to get exchange rates for. If not provided,
+      rates for all available currencies are returned.
+    required: false
+  - name: base
+    type: string
+    description: The base currency for the exchange rates. Defaults to 'USD'.
+    required: false
+    default: USD
+  tags:
+  - latest
+  - exchange
+  - rates
+  test_prompts:
+    single:
+    - Fetch hourly exchange rates for CAD and AUD against the base currency of EUR.
+    single_clear:
+    - Fetch hourly exchange rates for CAD and AUD against the base currency of EUR.
+- name: feed_by_username
+  descriptions:
+    minimal: Fetches the current Instagram feed for a given...
+    short: Fetches the current Instagram feed for a given username.
+    medium: Fetches the current Instagram feed for a given username.
+    long: Fetches the current Instagram feed for a given username.
+    verbose: Fetches the current Instagram feed for a given username.
+  parameters:
+  - name: username
+    type: string
+    description: The Instagram username for which to fetch the feed.
+    required: true
+    default: therock
+  - name: raw
+    type: boolean
+    description: If set to True or '1', returns the raw, unprocessed data feed. Defaults to None.
+    required: false
+  tags:
+  - feed
+  - by
+  - username
+  test_prompts:
+    single:
+    - Fetch the Instagram feed for the username 'techcrunch' without raw data.
+    single_clear:
+    - Fetch the Instagram feed for the username 'techcrunch' without raw data.
+- name: get_vessel_photo
+  descriptions:
+    minimal: Fetch the image of a vessel using its ship ID...
+    short: Fetch the image of a vessel using its ship ID from the Vessel Data API.
+    medium: Fetch the image of a vessel using its ship ID from the Vessel Data API.
+    long: Fetch the image of a vessel using its ship ID from the Vessel Data API.
+    verbose: Fetch the image of a vessel using its ship ID from the Vessel Data API.
+  parameters:
+  - name: shipid
+    type: string
+    description: The ID of the ship for which to fetch the image.
+    required: true
+  tags:
+  - get
+  - vessel
+  - photo
+  test_prompts:
+    single:
+    - Get the photo of the vessel identified by ID 'MV98765'.
+    single_clear:
+    - Get the photo of the vessel identified by ID 'MV98765'.
+- name: regular_dice
+  descriptions:
+    minimal: Roll a specified number of regular dice using the...
+    short: Roll a specified number of regular dice using the RapidAPI Dice Roll Simulator.
+    medium: Roll a specified number of regular dice using the RapidAPI Dice Roll Simulator.
+    long: Roll a specified number of regular dice using the RapidAPI Dice Roll Simulator.
+    verbose: Roll a specified number of regular dice using the RapidAPI Dice Roll Simulator.
+  parameters:
+  - name: dice
+    type: integer
+    description: Number of dice to roll. Defaults to 3.
+    required: false
+    default: '3'
+  tags:
+  - regular
+  - dice
+  test_prompts:
+    single:
+    - Simulate rolling 5 regular dice.
+    single_clear:
+    - Simulate rolling 5 regular dice.
+- name: datum_conversion
+  descriptions:
+    minimal: Converts latitude and longitude from one geodetic...
+    short: Converts latitude and longitude from one geodetic system to another using the Navitime Geocoding API.
+    medium: Converts latitude and longitude from one geodetic system to another using the Navitime Geocoding API.
+    long: Converts latitude and longitude from one geodetic system to another using the Navitime Geocoding API.
+    verbose: Converts latitude and longitude from one geodetic system to another using the Navitime Geocoding API.
+  parameters:
+  - name: coord
+    type: string
+    description: Latitude and longitude before conversion. Supports millisecond and degree notation.
+    required: true
+    default: 35.624822,139.742121
+  - name: after_datum
+    type: string
+    description: The target geodetic system for conversion. Options are 'wgs84' for World Geodetic System (default) and 'tokyo'
+      for Old Japan Geodetic System.
+    required: true
+    default: wgs84
+  tags:
+  - datum
+  - conversion
+  test_prompts:
+    single:
+    - Convert the coordinates 35.6895° N, 139.6917° E from Tokyo datum to WGS84.
+    single_clear:
+    - Convert the coordinates 35.6895° N, 139.6917° E from Tokyo datum to WGS84.
+- name: get_1_3_add_working_hours
+  descriptions:
+    minimal: Adds a specified amount of working hours to a...
+    short: Adds a specified amount of working hours to a given start date and time for a specified country.
+    medium: Adds a specified amount of working hours to a given start date and time for a specified country.
+    long: Adds a specified amount of working hours to a given start date and time for a specified country.
+    verbose: Adds a specified amount of working hours to a given start date and time for a specified country.
+  parameters:
+  - name: start_date
+    type: string
+    description: The start date in the format 'YYYY-MM-DD'.
+    required: true
+    default: '2013-12-31'
+  - name: country_code
+    type: string
+    description: The ISO country code (2 letters) specifying the country.
+    required: true
+    default: US
+  - name: start_time
+    type: string
+    description: The start time in 24-hour format with leading zeros (e.g., '08:00').
+    required: true
+    default: 08:15
+  - name: increment_time
+    type: string
+    description: The amount of working time to add or remove from the start date and time in 'H:i' format (e.g., '1:00' for
+      one hour, '30:15' for thirty hours and fifteen minutes, or '-0:45' for a negative increment). Defaults to '1815'.
+    required: false
+    default: 1815
+  - name: configuration
+    type: string
+    description: The name of the preset configuration to be used (e.g., 'Federal holidays'). Defaults to 'Federal holidays'.
+    required: false
+    default: Federal holidays
+  - name: profile_id
+    type: string
+    description: Optional profile identifier. Defaults to None.
+    required: false
+  tags:
+  - get
+  - '1'
+  - '3'
+  test_prompts:
+    single:
+    - Calculate the new date and time after adding 20 hours of work to a start date of 2023-05-01 at 09:00 in the United States,
+      using the 'Federal holidays' configuration.
+    single_clear:
+    - Calculate the new date and time after adding 20 hours of work to a start date of 2023-05-01 at 09:00 in the United States,
+      using the 'Federal holidays' configuration.
+- name: pursuit
+  descriptions:
+    minimal: Performs a search for files using specified query...
+    short: Performs a search for files using specified query parameters on FilePursuit and returns the search results.
+    medium: Performs a search for files using specified query parameters on FilePursuit and returns the search results.
+    long: Performs a search for files using specified query parameters on FilePursuit and returns the search results.
+    verbose: Performs a search for files using specified query parameters on FilePursuit and returns the search results.
+  parameters:
+  - name: q
+    type: string
+    description: The search query.
+    required: true
+  - name: filetype
+    type: string
+    description: The file extension to filter results by. Only one file extension is accepted per query.
+    required: false
+  - name: type
+    type: string
+    description: The file extension to filter results by. Only one file extension is accepted per query.
+    required: false
+  - name: sort
+    type: string
+    description: The sorting order of the results. Accepted values are 'sizeasc', 'sizedesc', 'dateasc', 'datedesc', 'fileasc',
+      and 'filedesc'. By default, 'datedesc' is selected.
+    required: false
+  - name: start
+    type: integer
+    description: The starting count for pagination.
+    required: false
+  tags:
+  - pursuit
+  test_prompts:
+    single:
+    - I want to search for mobile apps related to fitness. Can you sort them by size in ascending order?
+    single_clear:
+    - I want to search for mobile apps related to fitness. Can you sort them by size in ascending order?
+- name: get_humidty
+  descriptions:
+    minimal: Fetches the humidity data for a specified city...
+    short: Fetches the humidity data for a specified city using the Toolbench RapidAPI.
+    medium: Fetches the humidity data for a specified city using the Toolbench RapidAPI.
+    long: Fetches the humidity data for a specified city using the Toolbench RapidAPI.
+    verbose: Fetches the humidity data for a specified city using the Toolbench RapidAPI.
+  parameters:
+  - name: city
+    type: string
+    description: The name of the city to get the humidity information for.
+    required: true
+    default: New York
+  tags:
+  - get
+  - humidty
+  test_prompts:
+    single:
+    - What is the humidity in Los Angeles at the moment?
+    single_clear:
+    - What is the humidity in Los Angeles at the moment?
+- name: text_to_image
+  descriptions:
+    minimal: Generate an image based on the input text using...
+    short: Generate an image based on the input text using the specified style through the Toolbench RapidAPI.
+    medium: Generate an image based on the input text using the specified style through the Toolbench RapidAPI.
+    long: Generate an image based on the input text using the specified style through the Toolbench RapidAPI.
+    verbose: Generate an image based on the input text using the specified style through the Toolbench RapidAPI.
+  parameters:
+  - name: text
+    type: string
+    description: The text to convert into an image.
+    required: true
+    default: Daring treasure hunter, map and compass, standing in desolate desert, adventurous, detailed, high detail, portrait
+  - name: style
+    type: string
+    description: The preset style for the image. Defaults to 'enhance'.
+    required: false
+    default: enhance
+  tags:
+  - text
+  - to
+  - image
+  test_prompts:
+    single:
+    - Generate an image with the text 'Futuristic cityscape' in the '3d-model' style.
+    single_clear:
+    - Generate an image with the text 'Futuristic cityscape' in the '3d-model' style.
+- name: autocomplete_zipcodes_lite
+  descriptions:
+    minimal: Fetches autocomplete suggestions for USA zip...
+    short: Fetches autocomplete suggestions for USA zip codes using the provided RapidAPI key.
+    medium: Fetches autocomplete suggestions for USA zip codes using the provided RapidAPI key.
+    long: Fetches autocomplete suggestions for USA zip codes using the provided RapidAPI key.
+    verbose: Fetches autocomplete suggestions for USA zip codes using the provided RapidAPI key.
+  parameters:
+  - name: zipcode
+    type: string
+    description: The zip code for which to fetch autocomplete suggestions.
+    required: true
+    default: '110'
+  tags:
+  - autocomplete
+  - zipcodes
+  - lite
+  test_prompts:
+    single:
+    - Get autocomplete suggestions for the partial zip code '94102'.
+    single_clear:
+    - Get autocomplete suggestions for the partial zip code '94102'.
+- name: history
+  descriptions:
+    minimal: Fetches the number of articles published daily...
+    short: Fetches the number of articles published daily during the last week and the corresponding news agencies that created
+      those articles, optionally filtering by specific terms.
+    medium: Fetches the number of articles published daily during the last week and the corresponding news agencies that created
+      those articles, optionally filtering by specific terms.
+    long: Fetches the number of articles published daily during the last week and the corresponding news agencies that created
+      those articles, optionally filtering by specific terms.
+    verbose: Fetches the number of articles published daily during the last week and the corresponding news agencies that
+      created those articles, optionally filtering by specific terms.
+  parameters:
+  - name: terms
+    type: string
+    description: Narrows down results to articles that contain the provided keywords. The terms should consist of one to three
+      words separated by a dash, e.g., `election-campaign`. Defaults to None.
+    required: false
+  tags:
+  - history
+  test_prompts:
+    single:
+    - Fetch the daily article count for the past week focusing on 'climate-policy'.
+    single_clear:
+    - Fetch the daily article count for the past week focusing on 'climate-policy'.
+- name: random_crypto
+  descriptions:
+    minimal: Generates a list of fake cryptocurrency assets...
+    short: Generates a list of fake cryptocurrency assets using the Random Crypto API.
+    medium: Generates a list of fake cryptocurrency assets using the Random Crypto API.
+    long: Generates a list of fake cryptocurrency assets using the Random Crypto API.
+    verbose: Generates a list of fake cryptocurrency assets using the Random Crypto API.
+  parameters:
+  - name: size
+    type: integer
+    description: Number of fake cryptocurrency assets to generate. Default is 5.
+    required: false
+    default: '5'
+  tags:
+  - random
+  - crypto
+  test_prompts:
+    single:
+    - As a financial analyst, I need to generate a list of 10 fake cryptocurrency assets for a market analysis report. Can
+      you help me with this?
+    single_clear:
+    - As a financial analyst, I need to generate a list of 10 fake cryptocurrency assets for a market analysis report. Can
+      you help me with this?
+- name: drug_info
+  descriptions:
+    minimal: Fetches information about a specified drug using...
+    short: Fetches information about a specified drug using the RapidAPI Drug Info and Price History API.
+    medium: Fetches information about a specified drug using the RapidAPI Drug Info and Price History API.
+    long: Fetches information about a specified drug using the RapidAPI Drug Info and Price History API.
+    verbose: Fetches information about a specified drug using the RapidAPI Drug Info and Price History API.
+  parameters:
+  - name: drug
+    type: string
+    description: The name of the drug to retrieve information for.
+    required: true
+    default: advil
+  tags:
+  - drug
+  - info
+  test_prompts:
+    single:
+    - Retrieve information about the drug 'Amoxicillin'.
+    single_clear:
+    - Retrieve information about the drug 'Amoxicillin'.
+- name: geocode
+  descriptions:
+    minimal: Fetches geographical coordinates (latitude...
+    short: Fetches geographical coordinates (latitude, longitude) and city name of a given address in Uganda using the Toolbench
+      RapidAPI.
+    medium: Fetches geographical coordinates (latitude, longitude) and city name of a given address in Uganda using the Toolbench
+      RapidAPI.
+    long: Fetches geographical coordinates (latitude, longitude) and city name of a given address in Uganda using the Toolbench
+      RapidAPI.
+    verbose: Fetches geographical coordinates (latitude, longitude) and city name of a given address in Uganda using the Toolbench
+      RapidAPI.
+  parameters:
+  - name: address
+    type: string
+    description: The address in Uganda to be geocoded.
+    required: true
+    default: Nansana
+  tags:
+  - geocode
+  test_prompts:
+    single:
+    - Geocode the address '20 Victoria Street, Kampala, Uganda'.
+    single_clear:
+    - Geocode the address '20 Victoria Street, Kampala, Uganda'.

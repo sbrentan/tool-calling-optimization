@@ -1,0 +1,1358 @@
+category: ai_ml_operations
+
+tools:
+  - name: generate_text
+    descriptions:
+      minimal: "Generate text"
+      short: "Generate text using an AI language model"
+      medium: "Generate text completion or response using a large language model with configurable parameters."
+      long: "Generate text using an AI language model. Provide a prompt and configure temperature, max tokens, and other parameters. Example: generate_text(prompt='Write a poem about the ocean', max_tokens=200)."
+      verbose: "Generate text using large language models like GPT, Claude, or open-source alternatives. Parameters: prompt, system message, temperature (creativity), max_tokens (length), top_p/top_k (sampling), stop sequences, presence/frequency penalty. Example: generate_text(prompt='Explain quantum computing', model='gpt-4', temperature=0.7, max_tokens=500, system_message='You are a helpful science teacher') returns educational explanation. Note: Higher temperature = more creative/random. Warning: Generated content should be reviewed; may contain inaccuracies."
+    parameters:
+      - name: prompt
+        type: string
+        description: "The input prompt"
+        required: true
+      - name: model
+        type: string
+        description: "Model to use"
+        required: false
+        default: "gpt-4"
+      - name: temperature
+        type: number
+        description: "Randomness (0-2)"
+        required: false
+        default: 0.7
+      - name: max_tokens
+        type: integer
+        description: "Maximum tokens to generate"
+        required: false
+        default: 256
+      - name: system_message
+        type: string
+        description: "System/context message"
+        required: false
+      - name: stop_sequences
+        type: array
+        description: "Sequences that stop generation"
+        required: false
+    tags: ["ai", "llm", "generate", "text", "gpt", "completion"]
+    test_prompts:
+      single:
+        - "Generate a product description"
+        - "Write a short story about robots"
+        - "Complete this sentence with AI"
+        - "Generate marketing copy for the product"
+      single_clear:
+        - "I need to generate text using an AI language model. Generate a product description"
+        - "I need to generate text using an AI language model. Write a short story about robots"
+        - "I need to generate text using an AI language model. Complete this sentence with AI"
+        - "I need to generate text using an AI language model. Generate marketing copy for the product"
+
+  - name: classify_text
+    descriptions:
+      minimal: "Classify text"
+      short: "Classify text into categories"
+      medium: "Classify text into predefined categories using a machine learning model."
+      long: "Classify text into one or more categories. Use predefined labels or zero-shot classification. Returns categories with confidence scores. Example: classify_text(text='Great product!', labels=['positive', 'negative', 'neutral'])."
+      verbose: "Classify text into categories using ML models. Modes: 'multi_class' (single best label), 'multi_label' (multiple applicable labels), 'zero_shot' (classify without training). Returns labels with confidence scores. Example: classify_text(text='The service was okay but the food was amazing', labels=['food_quality', 'service', 'ambiance', 'value'], mode='multi_label', threshold=0.5) returns {'food_quality': 0.92, 'service': 0.65}. Note: Zero-shot works without custom training but may be less accurate. Warning: Confidence scores are model-dependent; calibrate thresholds accordingly."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to classify"
+        required: true
+      - name: labels
+        type: array
+        description: "Possible categories"
+        required: true
+      - name: mode
+        type: string
+        description: "Classification mode"
+        required: false
+        default: "multi_class"
+        enum: ["multi_class", "multi_label", "zero_shot"]
+      - name: threshold
+        type: number
+        description: "Confidence threshold"
+        required: false
+        default: 0.5
+      - name: model
+        type: string
+        description: "Model to use"
+        required: false
+    tags: ["ai", "classify", "nlp", "categorize", "label"]
+    test_prompts:
+      single:
+        - "Classify this review as positive or negative"
+        - "Categorize the support ticket"
+        - "What topic is this article about?"
+        - "Classify the customer feedback"
+      single_clear:
+        - "Please classify text into categories. Classify this review as positive or negative"
+        - "Please classify text into categories. Categorize the support ticket"
+        - "Please classify text into categories. What topic is this article about?"
+        - "Please classify text into categories. Classify the customer feedback"
+
+  - name: generate_embeddings
+    descriptions:
+      minimal: "Generate embeddings"
+      short: "Generate vector embeddings for text"
+      medium: "Convert text into numerical vector embeddings for similarity search and clustering."
+      long: "Generate vector embeddings that represent text meaning. Use for similarity search, clustering, or ML features. Example: generate_embeddings(text='Machine learning is fascinating', model='text-embedding-ada-002')."
+      verbose: "Generate dense vector embeddings representing the semantic meaning of text. Embeddings enable: similarity search, clustering, recommendations, and ML feature extraction. Models vary in dimension size and capabilities. Example: generate_embeddings(texts=['AI is transforming business', 'Machine learning applications'], model='text-embedding-3-large', normalize=true, encoding_format='float') returns [[0.012, -0.034, ...], [...]]. Note: Longer texts may be truncated; use chunking for documents. Warning: Different models produce incompatible embeddings; use same model for comparisons."
+    parameters:
+      - name: text
+        type: string
+        description: "Single text to embed"
+        required: false
+      - name: texts
+        type: array
+        description: "Multiple texts to embed"
+        required: false
+      - name: model
+        type: string
+        description: "Embedding model"
+        required: false
+        default: "text-embedding-ada-002"
+      - name: normalize
+        type: boolean
+        description: "Normalize vectors"
+        required: false
+        default: true
+      - name: encoding_format
+        type: string
+        description: "Output format"
+        required: false
+        default: "float"
+        enum: ["float", "base64"]
+    tags: ["ai", "embeddings", "vector", "semantic", "nlp"]
+    test_prompts:
+      single:
+        - "Generate embeddings for the document"
+        - "Get vector representation of this text"
+        - "Create embeddings for similarity search"
+        - "Embed these sentences"
+      single_clear:
+        - "I need to create text embeddings for similarity search. Generate embeddings for the document"
+        - "I need to create text embeddings for similarity search. Get vector representation of this text"
+        - "I need to create text embeddings for similarity search. Create embeddings for similarity search"
+        - "I need to create text embeddings for similarity search. Embed these sentences"
+
+  - name: semantic_search
+    descriptions:
+      minimal: "Semantic search"
+      short: "Search by meaning using AI"
+      medium: "Search for relevant documents or text by semantic meaning rather than exact keyword match."
+      long: "Search for semantically similar content using embeddings. Returns results ranked by relevance. Example: semantic_search(query='renewable energy solutions', collection='documents', top_k=10)."
+      verbose: "Search for content by meaning using vector embeddings. Unlike keyword search, semantic search understands intent and context. Searches a pre-indexed collection of embedded documents. Returns ranked results with similarity scores. Example: semantic_search(query='How to reduce carbon emissions', collection='knowledge_base', top_k=5, threshold=0.7, filters='{\"category\": \"environment\"}', include_metadata=true). Note: Collection must be pre-indexed with embeddings. Warning: Very short queries may have lower precision."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query"
+        required: true
+      - name: collection
+        type: string
+        description: "Collection to search"
+        required: true
+      - name: top_k
+        type: integer
+        description: "Number of results"
+        required: false
+        default: 10
+      - name: threshold
+        type: number
+        description: "Minimum similarity score"
+        required: false
+      - name: filters
+        type: string
+        description: "Metadata filters (JSON)"
+        required: false
+      - name: include_metadata
+        type: boolean
+        description: "Include document metadata"
+        required: false
+        default: true
+    tags: ["ai", "search", "semantic", "vector", "similarity"]
+    test_prompts:
+      single:
+        - "Find documents about climate change"
+        - "Search for similar articles"
+        - "Find relevant FAQs for this question"
+        - "Semantic search the knowledge base"
+      single_clear:
+        - "I need to search by meaning using AI. Find documents about climate change"
+        - "I need to search by meaning using AI. Search for similar articles"
+        - "I need to search by meaning using AI. Find relevant FAQs for this question"
+        - "I need to search by meaning using AI. Semantic search the knowledge base"
+
+  - name: generate_image
+    descriptions:
+      minimal: "Generate image"
+      short: "Generate an image from text description"
+      medium: "Generate an image from a text prompt using AI image generation models like DALL-E or Stable Diffusion."
+      long: "Create images from text descriptions. Configure size, style, and quality. Example: generate_image(prompt='A sunset over mountains, oil painting style', size='1024x1024')."
+      verbose: "Generate images from text prompts using AI models (DALL-E 3, Stable Diffusion, Midjourney). Options: size, quality, style (vivid/natural), negative prompts (what to avoid), seed (reproducibility). Example: generate_image(prompt='Professional headshot of a business executive, studio lighting, neutral background', model='dall-e-3', size='1024x1024', quality='hd', style='natural', n=1). Note: Generated images are unique but not always perfect. Warning: Ensure compliance with usage policies; avoid generating copyrighted or inappropriate content."
+    parameters:
+      - name: prompt
+        type: string
+        description: "Image description"
+        required: true
+      - name: model
+        type: string
+        description: "Generation model"
+        required: false
+        default: "dall-e-3"
+      - name: size
+        type: string
+        description: "Image dimensions"
+        required: false
+        default: "1024x1024"
+        enum: ["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"]
+      - name: quality
+        type: string
+        description: "Image quality"
+        required: false
+        default: "standard"
+        enum: ["standard", "hd"]
+      - name: style
+        type: string
+        description: "Image style"
+        required: false
+        enum: ["vivid", "natural"]
+      - name: n
+        type: integer
+        description: "Number of images"
+        required: false
+        default: 1
+    tags: ["ai", "image", "generate", "dall-e", "creative"]
+    test_prompts:
+      single:
+        - "Generate an image of a futuristic city"
+        - "Create a logo for a coffee shop"
+        - "Generate product mockup images"
+        - "Make an illustration of a robot"
+      single_clear:
+        - "I need to generate an image from a text description. Generate an image of a futuristic city"
+        - "I need to generate an image from a text description. Create a logo for a coffee shop"
+        - "I need to generate an image from a text description. Generate product mockup images"
+        - "I need to generate an image from a text description. Make an illustration of a robot"
+
+  - name: transcribe_audio
+    descriptions:
+      minimal: "Transcribe audio"
+      short: "Convert audio to text"
+      medium: "Transcribe spoken audio to text using AI speech recognition models."
+      long: "Convert audio files to text transcription. Supports multiple languages and speaker diarization. Example: transcribe_audio(file='meeting.mp3', language='en')."
+      verbose: "Transcribe audio to text using AI speech recognition (Whisper, Google Speech, AWS Transcribe). Features: automatic language detection, timestamps, speaker identification, punctuation, word-level confidence. Example: transcribe_audio(file='interview.wav', language='en', timestamps='word', speaker_labels=true, vocabulary=['AI', 'GPT', 'LLM']) returns detailed transcription with speakers and timing. Note: Accuracy depends on audio quality and accents. Warning: Long files may take significant processing time."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to audio file"
+        required: true
+      - name: language
+        type: string
+        description: "Language code or 'auto'"
+        required: false
+        default: "auto"
+      - name: timestamps
+        type: string
+        description: "Timestamp granularity"
+        required: false
+        enum: ["none", "segment", "word"]
+      - name: speaker_labels
+        type: boolean
+        description: "Identify different speakers"
+        required: false
+        default: false
+      - name: vocabulary
+        type: array
+        description: "Custom vocabulary/terms"
+        required: false
+      - name: model
+        type: string
+        description: "Transcription model"
+        required: false
+    tags: ["ai", "audio", "transcribe", "speech", "stt"]
+    test_prompts:
+      single:
+        - "Transcribe this audio recording"
+        - "Convert the podcast to text"
+        - "Get the transcript of the meeting"
+        - "Speech to text for this file"
+      single_clear:
+        - "I need to convert audio to text using speech recognition. Transcribe this audio recording"
+        - "I need to convert audio to text using speech recognition. Convert the podcast to text"
+        - "I need to convert audio to text using speech recognition. Get the transcript of the meeting"
+        - "I need to convert audio to text using speech recognition. Speech to text for this file"
+
+  - name: text_to_speech
+    descriptions:
+      minimal: "Text to speech"
+      short: "Convert text to spoken audio"
+      medium: "Convert written text to natural-sounding speech audio using AI voice synthesis."
+      long: "Convert text to audio speech. Choose from various voices and adjust speed. Example: text_to_speech(text='Hello and welcome to our podcast', voice='nova', output_file='intro.mp3')."
+      verbose: "Convert text to natural-sounding speech using AI voice synthesis. Options: multiple voice personas, languages, speaking speed, pitch, output format. Example: text_to_speech(text='Welcome to our AI assistant', voice='alloy', speed=1.0, output_format='mp3', model='tts-1-hd', output_file='welcome.mp3'). Note: HD model produces higher quality but costs more. Warning: Very long texts may have pauses; consider chunking."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to convert"
+        required: true
+      - name: voice
+        type: string
+        description: "Voice persona"
+        required: false
+        default: "alloy"
+        enum: ["alloy", "echo", "fable", "onyx", "nova", "shimmer"]
+      - name: speed
+        type: number
+        description: "Speaking speed (0.25-4.0)"
+        required: false
+        default: 1.0
+      - name: output_format
+        type: string
+        description: "Audio format"
+        required: false
+        default: "mp3"
+        enum: ["mp3", "wav", "flac", "opus"]
+      - name: model
+        type: string
+        description: "TTS model"
+        required: false
+        default: "tts-1"
+        enum: ["tts-1", "tts-1-hd"]
+      - name: output_file
+        type: string
+        description: "Output file path"
+        required: false
+    tags: ["ai", "tts", "speech", "voice", "audio"]
+    test_prompts:
+      single:
+        - "Read this text aloud"
+        - "Generate audio from the script"
+        - "Convert the article to speech"
+        - "Create voiceover for the video"
+      single_clear:
+        - "I need to convert text to spoken audio. Read this text aloud"
+        - "I need to convert text to spoken audio. Generate audio from the script"
+        - "I need to convert text to spoken audio. Convert the article to speech"
+        - "I need to convert text to spoken audio. Create voiceover for the video"
+
+  - name: analyze_image
+    descriptions:
+      minimal: "Analyze image"
+      short: "Analyze image content with AI"
+      medium: "Analyze an image using AI vision to describe content, detect objects, or extract text."
+      long: "Analyze image content using AI vision models. Describe scenes, identify objects, read text (OCR), detect faces. Example: analyze_image(image='photo.jpg', tasks=['describe', 'objects'])."
+      verbose: "Analyze image content using AI vision models (GPT-4 Vision, Google Vision, AWS Rekognition). Tasks: 'describe' (caption/summary), 'objects' (object detection with bounding boxes), 'text' (OCR), 'faces' (face detection), 'labels' (content labels), 'colors' (dominant colors), 'safe_search' (content moderation). Example: analyze_image(image='product.jpg', tasks=['describe', 'objects', 'text'], model='gpt-4-vision', detail='high') returns detailed analysis. Note: Processing time varies by image size and tasks. Warning: Face detection results should be used responsibly."
+    parameters:
+      - name: image
+        type: string
+        description: "Image path or URL"
+        required: true
+      - name: tasks
+        type: array
+        description: "Analysis tasks to perform"
+        required: false
+        default: ["describe"]
+      - name: model
+        type: string
+        description: "Vision model"
+        required: false
+      - name: detail
+        type: string
+        description: "Analysis detail level"
+        required: false
+        default: "auto"
+        enum: ["low", "high", "auto"]
+      - name: max_tokens
+        type: integer
+        description: "Max tokens for description"
+        required: false
+        default: 300
+    tags: ["ai", "vision", "image", "analyze", "ocr"]
+    test_prompts:
+      single:
+        - "What's in this image?"
+        - "Describe the photo"
+        - "Extract text from the image"
+        - "Detect objects in the picture"
+      single_clear:
+        - "I need to analyze image content with AI vision. What's in this image?"
+        - "I need to analyze image content with AI vision. Describe the photo"
+        - "I need to analyze image content with AI vision. Extract text from the image"
+        - "I need to analyze image content with AI vision. Detect objects in the picture"
+
+  - name: moderate_content
+    descriptions:
+      minimal: "Moderate content"
+      short: "Check content for policy violations"
+      medium: "Check text or image content for violations of content policies using AI moderation."
+      long: "Moderate content for policy violations. Checks for harassment, hate speech, violence, adult content, etc. Example: moderate_content(text='user comment here', categories=['harassment', 'hate'])."
+      verbose: "Check content against safety policies using AI moderation models. Categories: 'hate' (hate speech), 'harassment', 'self_harm', 'sexual', 'violence', 'spam', 'misinformation'. Returns category scores and flagged status. Example: moderate_content(text='user generated content', categories=['hate', 'harassment', 'violence', 'sexual'], threshold=0.5, return_scores=true) returns {\"flagged\": false, \"scores\": {\"hate\": 0.001, ...}}. Note: Thresholds should be tuned for use case. Warning: No moderation system is perfect; human review may still be needed."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to moderate"
+        required: false
+      - name: image
+        type: string
+        description: "Image path to moderate"
+        required: false
+      - name: categories
+        type: array
+        description: "Categories to check"
+        required: false
+      - name: threshold
+        type: number
+        description: "Flagging threshold"
+        required: false
+        default: 0.5
+      - name: return_scores
+        type: boolean
+        description: "Return category scores"
+        required: false
+        default: true
+    tags: ["ai", "moderation", "safety", "content", "filter"]
+    test_prompts:
+      single:
+        - "Check if this comment is appropriate"
+        - "Moderate the user's post"
+        - "Is this content safe?"
+        - "Flag inappropriate content"
+      single_clear:
+        - "I need to check content for policy violations. Check if this comment is appropriate"
+        - "I need to check content for policy violations. Moderate the user's post"
+        - "I need to check content for policy violations. Is this content safe?"
+        - "I need to check content for policy violations. Flag inappropriate content"
+
+  - name: train_model
+    descriptions:
+      minimal: "Train model"
+      short: "Train a custom ML model"
+      medium: "Train or fine-tune a machine learning model on custom data for specific tasks."
+      long: "Train a custom ML model on your data. Supports classification, regression, and fine-tuning. Example: train_model(data='training_data.csv', task='classification', target='label')."
+      verbose: "Train or fine-tune machine learning models on custom data. Tasks: 'classification' (predict categories), 'regression' (predict numbers), 'fine_tune' (adapt pre-trained LLM). Options: model selection, hyperparameters, validation split, early stopping. Example: train_model(data='reviews.jsonl', task='fine_tune', base_model='gpt-3.5-turbo', epochs=3, validation_split=0.1, suffix='review-classifier'). Note: Training time depends on data size and model complexity. Warning: Ensure training data is clean and representative; biased data produces biased models."
+    parameters:
+      - name: data
+        type: string
+        description: "Path to training data"
+        required: true
+      - name: task
+        type: string
+        description: "Training task type"
+        required: true
+        enum: ["classification", "regression", "fine_tune", "embedding"]
+      - name: target
+        type: string
+        description: "Target column name"
+        required: false
+      - name: base_model
+        type: string
+        description: "Base model for fine-tuning"
+        required: false
+      - name: epochs
+        type: integer
+        description: "Training epochs"
+        required: false
+        default: 3
+      - name: validation_split
+        type: number
+        description: "Validation data fraction"
+        required: false
+        default: 0.2
+      - name: hyperparameters
+        type: string
+        description: "Custom hyperparameters (JSON)"
+        required: false
+    tags: ["ai", "ml", "train", "model", "fine-tune"]
+    test_prompts:
+      single:
+        - "Train a model on my data"
+        - "Fine-tune GPT on our FAQs"
+        - "Create a custom classifier"
+        - "Train a sentiment model"
+      single_clear:
+        - "I need to train a custom ML model. Train a model on my data"
+        - "I need to train a custom ML model. Fine-tune GPT on our FAQs"
+        - "I need to train a custom ML model. Create a custom classifier"
+        - "I need to train a custom ML model. Train a sentiment model"
+  - name: detect_anomaly
+    descriptions:
+      minimal: "Detect anomalies"
+      short: "Detect anomalies in data"
+      medium: "Use ML to detect anomalies and outliers in time series or tabular data."
+      long: "Detect anomalies in data using machine learning. Works with time series or multivariate data. Example: detect_anomaly(data='metrics.csv', columns='[\"cpu\", \"memory\"]', sensitivity=0.95)."
+      verbose: "ML-powered anomaly detection for monitoring and data quality. Methods: isolation forest, autoencoder, statistical, prophet (time series). Example: detect_anomaly(data='server_metrics.csv', columns='[\"cpu_usage\", \"memory_usage\", \"request_latency\"]', method='isolation_forest', sensitivity=0.95, window='1h', return_scores=true). Returns: anomaly flags, scores, timestamps. Note: Tune sensitivity to balance false positives/negatives. Warning: Train on normal data periods for best results."
+    parameters:
+      - name: data
+        type: string
+        description: "Data source path or connection"
+        required: true
+      - name: columns
+        type: string
+        description: "JSON array of columns to analyze"
+        required: true
+      - name: method
+        type: string
+        description: "Detection method"
+        required: false
+        default: "isolation_forest"
+        enum: ["isolation_forest", "autoencoder", "statistical", "prophet"]
+      - name: sensitivity
+        type: number
+        description: "Detection sensitivity (0-1)"
+        required: false
+        default: 0.95
+      - name: window
+        type: string
+        description: "Time window for analysis"
+        required: false
+      - name: return_scores
+        type: boolean
+        description: "Return anomaly scores"
+        required: false
+        default: true
+    tags: ["ai", "ml", "anomaly", "detection", "monitoring"]
+    test_prompts:
+      single:
+        - "Find anomalies in server metrics"
+        - "Detect unusual patterns"
+        - "Check for outliers in data"
+        - "Identify anomalous behavior"
+      single_clear:
+        - "I need to detect anomalies in data using ML. Find anomalies in server metrics"
+        - "I need to detect anomalies in data using ML. Detect unusual patterns"
+        - "I need to detect anomalies in data using ML. Check for outliers in data"
+        - "I need to detect anomalies in data using ML. Identify anomalous behavior"
+
+  - name: predict_time_series
+    descriptions:
+      minimal: "Forecast data"
+      short: "Predict time series values"
+      medium: "Forecast future values using time series prediction models."
+      long: "Predict future values in time series data. Supports multiple forecasting models. Example: predict_time_series(data='sales.csv', target='revenue', horizon=30)."
+      verbose: "Time series forecasting using statistical and ML models. Models: ARIMA, Prophet, LSTM, XGBoost. Features: seasonality detection, trend analysis, confidence intervals, external regressors. Example: predict_time_series(data='sales_history.csv', target='daily_sales', horizon=30, model='prophet', seasonality='[\"weekly\", \"yearly\"]', confidence=0.95). Returns: predictions, confidence intervals, feature importance. Note: More historical data improves accuracy. Warning: Predictions degrade for longer horizons."
+    parameters:
+      - name: data
+        type: string
+        description: "Historical data path"
+        required: true
+      - name: target
+        type: string
+        description: "Target column to predict"
+        required: true
+      - name: horizon
+        type: integer
+        description: "Prediction horizon (periods)"
+        required: true
+      - name: model
+        type: string
+        description: "Forecasting model"
+        required: false
+        default: "prophet"
+        enum: ["arima", "prophet", "lstm", "xgboost"]
+      - name: seasonality
+        type: string
+        description: "JSON array of seasonality types"
+        required: false
+      - name: confidence
+        type: number
+        description: "Confidence interval level"
+        required: false
+        default: 0.95
+    tags: ["ai", "ml", "forecasting", "prediction", "time_series"]
+    test_prompts:
+      single:
+        - "Forecast next month sales"
+        - "Predict future demand"
+        - "Forecast website traffic"
+        - "Predict stock levels"
+      single_clear:
+        - "I need to predict time series values. Forecast next month sales"
+        - "I need to predict time series values. Predict future demand"
+        - "I need to predict time series values. Forecast website traffic"
+        - "I need to predict time series values. Predict stock levels"
+
+  - name: cluster_data
+    descriptions:
+      minimal: "Cluster data"
+      short: "Cluster data into groups"
+      medium: "Group similar data points together using clustering algorithms."
+      long: "Cluster data into groups based on similarity. Supports various algorithms. Example: cluster_data(data='customers.csv', features='[\"age\", \"spend\"]', n_clusters=5)."
+      verbose: "Unsupervised clustering to discover data patterns. Algorithms: K-means, DBSCAN, hierarchical, GMM. Features: automatic k selection, silhouette scoring, cluster profiling. Example: cluster_data(data='customer_data.csv', features='[\"age\", \"total_purchases\", \"avg_order_value\", \"days_since_last_order\"]', algorithm='kmeans', n_clusters='auto', max_clusters=10). Returns: cluster assignments, centroids, quality metrics, profiles. Note: Normalize features for distance-based methods. Warning: High-dimensional data may need dimensionality reduction first."
+    parameters:
+      - name: data
+        type: string
+        description: "Data source path"
+        required: true
+      - name: features
+        type: string
+        description: "JSON array of feature columns"
+        required: true
+      - name: algorithm
+        type: string
+        description: "Clustering algorithm"
+        required: false
+        default: "kmeans"
+        enum: ["kmeans", "dbscan", "hierarchical", "gmm"]
+      - name: n_clusters
+        type: string
+        description: "Number of clusters or 'auto'"
+        required: false
+        default: "auto"
+      - name: max_clusters
+        type: integer
+        description: "Max clusters for auto selection"
+        required: false
+        default: 10
+    tags: ["ai", "ml", "clustering", "segmentation", "unsupervised"]
+    test_prompts:
+      single:
+        - "Segment customers into groups"
+        - "Cluster similar products"
+        - "Find data patterns"
+        - "Group users by behavior"
+      single_clear:
+        - "I need to cluster data into groups. Segment customers into groups"
+        - "I need to cluster data into groups. Cluster similar products"
+        - "I need to cluster data into groups. Find data patterns"
+        - "I need to cluster data into groups. Group users by behavior"
+
+  - name: extract_features
+    descriptions:
+      minimal: "Extract features"
+      short: "Extract ML features from data"
+      medium: "Automatically extract and engineer features for machine learning."
+      long: "Extract and engineer features from raw data. Creates ML-ready feature sets. Example: extract_features(data='orders.csv', target='churn', methods='[\"aggregations\", \"interactions\"]')."
+      verbose: "Automated feature engineering for ML pipelines. Methods: aggregations (sum, mean, count), interactions (multiply, divide), time-based (recency, frequency), text (TF-IDF, embeddings), categorical (one-hot, target encoding). Example: extract_features(data='user_activity.csv', target='converted', methods='[\"aggregations\", \"time_based\", \"interactions\"]', time_column='timestamp', entity_column='user_id'). Returns: feature matrix, feature importance, correlation analysis. Note: Feature engineering often improves model performance more than algorithm tuning."
+    parameters:
+      - name: data
+        type: string
+        description: "Data source path"
+        required: true
+      - name: target
+        type: string
+        description: "Target column for supervised features"
+        required: false
+      - name: methods
+        type: string
+        description: "JSON array of feature methods"
+        required: true
+      - name: time_column
+        type: string
+        description: "Timestamp column"
+        required: false
+      - name: entity_column
+        type: string
+        description: "Entity/group column"
+        required: false
+      - name: max_features
+        type: integer
+        description: "Maximum features to generate"
+        required: false
+        default: 100
+    tags: ["ai", "ml", "features", "engineering", "preprocessing"]
+    test_prompts:
+      single:
+        - "Extract features from user data"
+        - "Engineer ML features"
+        - "Create feature matrix"
+        - "Generate predictive features"
+      single_clear:
+        - "I need to extract ML features from data. Extract features from user data"
+        - "I need to extract ML features from data. Engineer ML features"
+        - "I need to extract ML features from data. Create feature matrix"
+        - "I need to extract ML features from data. Generate predictive features"
+
+  - name: explain_prediction
+    descriptions:
+      minimal: "Explain prediction"
+      short: "Explain model prediction"
+      medium: "Get human-readable explanations for model predictions."
+      long: "Generate explanations for ML model predictions. Shows feature contributions. Example: explain_prediction(model='churn_model', input='{\"age\": 25, \"tenure\": 12}')."
+      verbose: "Explainable AI for model interpretability. Methods: SHAP (Shapley values), LIME (local explanations), feature importance, attention weights. Example: explain_prediction(model='customer_churn_v2', input='{\"age\": 35, \"monthly_charges\": 85.50, \"tenure_months\": 6, \"contract\": \"month-to-month\"}', method='shap', include_visualization=true). Returns: feature contributions, explanation text, visualization. Note: Essential for regulated industries requiring explainability. Warning: Some methods are computationally expensive."
+    parameters:
+      - name: model
+        type: string
+        description: "Model ID or path"
+        required: true
+      - name: input
+        type: string
+        description: "JSON input data"
+        required: true
+      - name: method
+        type: string
+        description: "Explanation method"
+        required: false
+        default: "shap"
+        enum: ["shap", "lime", "feature_importance", "attention"]
+      - name: include_visualization
+        type: boolean
+        description: "Include visual explanation"
+        required: false
+        default: false
+      - name: top_features
+        type: integer
+        description: "Number of top features to show"
+        required: false
+        default: 10
+    tags: ["ai", "ml", "explainability", "xai", "interpretability"]
+    test_prompts:
+      single:
+        - "Explain why this was predicted"
+        - "What drove this prediction?"
+        - "Show feature contributions"
+        - "Interpret model decision"
+      single_clear:
+        - "I need to explain a model prediction. Explain why this was predicted"
+        - "I need to explain a model prediction. What drove this prediction?"
+        - "I need to explain a model prediction. Show feature contributions"
+        - "I need to explain a model prediction. Interpret model decision"
+
+  - name: evaluate_model
+    descriptions:
+      minimal: "Evaluate model"
+      short: "Evaluate model performance"
+      medium: "Compute comprehensive metrics to evaluate ML model performance."
+      long: "Evaluate model performance with various metrics. Compare against baselines. Example: evaluate_model(model='sentiment_v2', test_data='test.csv', metrics='[\"accuracy\", \"f1\"]')."
+      verbose: "Comprehensive model evaluation and benchmarking. Metrics: classification (accuracy, precision, recall, F1, AUC-ROC), regression (MAE, RMSE, R²), ranking (NDCG, MAP). Features: confusion matrix, error analysis, slice evaluation, A/B comparison. Example: evaluate_model(model='product_recommender', test_data='holdout.csv', metrics='[\"ndcg@10\", \"map\", \"coverage\"]', slices='[{\"column\": \"user_segment\", \"values\": [\"new\", \"returning\"]}]'). Returns: metric scores, visualizations, error examples. Note: Evaluate on representative test data. Warning: Good metrics don't guarantee real-world performance."
+    parameters:
+      - name: model
+        type: string
+        description: "Model ID or path"
+        required: true
+      - name: test_data
+        type: string
+        description: "Test data path"
+        required: true
+      - name: metrics
+        type: string
+        description: "JSON array of metrics"
+        required: true
+      - name: slices
+        type: string
+        description: "JSON slice definitions for segment analysis"
+        required: false
+      - name: baseline_model
+        type: string
+        description: "Baseline model to compare"
+        required: false
+    tags: ["ai", "ml", "evaluation", "metrics", "testing"]
+    test_prompts:
+      single:
+        - "Evaluate model accuracy"
+        - "Check model performance"
+        - "Compare model versions"
+        - "Run model benchmarks"
+      single_clear:
+        - "I need to evaluate model performance. Evaluate model accuracy"
+        - "I need to evaluate model performance. Check model performance"
+        - "I need to evaluate model performance. Compare model versions"
+        - "I need to evaluate model performance. Run model benchmarks"
+
+  - name: deploy_model
+    descriptions:
+      minimal: "Deploy model"
+      short: "Deploy ML model to production"
+      medium: "Deploy a trained model for real-time or batch predictions."
+      long: "Deploy ML model to production environment. Supports various deployment targets. Example: deploy_model(model='classifier_v3', target='kubernetes', replicas=3)."
+      verbose: "Deploy models to production serving infrastructure. Targets: REST API, serverless, Kubernetes, edge. Features: auto-scaling, A/B testing, canary deployment, model versioning. Example: deploy_model(model='fraud_detector_v2', target='kubernetes', replicas=3, min_replicas=1, max_replicas=10, cpu_limit='2', memory_limit='4Gi', canary_percent=10). Returns: endpoint URL, deployment status, health checks. Note: Monitor model performance in production. Warning: Ensure model artifacts and dependencies are properly packaged."
+    parameters:
+      - name: model
+        type: string
+        description: "Model ID or path"
+        required: true
+      - name: target
+        type: string
+        description: "Deployment target"
+        required: true
+        enum: ["api", "serverless", "kubernetes", "edge"]
+      - name: replicas
+        type: integer
+        description: "Number of replicas"
+        required: false
+        default: 1
+      - name: min_replicas
+        type: integer
+        description: "Minimum replicas for autoscaling"
+        required: false
+      - name: max_replicas
+        type: integer
+        description: "Maximum replicas for autoscaling"
+        required: false
+      - name: canary_percent
+        type: integer
+        description: "Canary traffic percentage"
+        required: false
+    tags: ["ai", "ml", "deployment", "production", "serving"]
+    test_prompts:
+      single:
+        - "Deploy model to production"
+        - "Create model endpoint"
+        - "Serve model via API"
+        - "Deploy with auto-scaling"
+      single_clear:
+        - "I need to deploy an ML model to production. Deploy model to production"
+        - "I need to deploy an ML model to production. Create model endpoint"
+        - "I need to deploy an ML model to production. Serve model via API"
+        - "I need to deploy an ML model to production. Deploy with auto-scaling"
+
+  - name: run_ab_test
+    descriptions:
+      minimal: "Run A/B test"
+      short: "Run ML model A/B test"
+      medium: "Run A/B tests to compare model performance in production."
+      long: "A/B test between model versions to measure real-world performance. Example: run_ab_test(control='model_v1', treatment='model_v2', traffic_split=50, metric='conversion')."
+      verbose: "Production A/B testing for model comparison. Features: traffic splitting, statistical significance, multi-armed bandit, guardrail metrics. Example: run_ab_test(control='recommender_v1', treatment='recommender_v2', traffic_split=50, primary_metric='click_rate', guardrails='[{\"metric\": \"latency_p99\", \"threshold\": 100}]', min_sample_size=10000, confidence=0.95). Returns: test status, current results, significance. Note: Run until statistical significance. Warning: Monitor guardrail metrics to prevent degradation."
+    parameters:
+      - name: control
+        type: string
+        description: "Control model ID"
+        required: true
+      - name: treatment
+        type: string
+        description: "Treatment model ID"
+        required: true
+      - name: traffic_split
+        type: integer
+        description: "Treatment traffic percentage"
+        required: false
+        default: 50
+      - name: primary_metric
+        type: string
+        description: "Primary success metric"
+        required: true
+      - name: guardrails
+        type: string
+        description: "JSON guardrail metrics"
+        required: false
+      - name: min_sample_size
+        type: integer
+        description: "Minimum samples per variant"
+        required: false
+        default: 1000
+      - name: confidence
+        type: number
+        description: "Required confidence level"
+        required: false
+        default: 0.95
+    tags: ["ai", "ml", "ab_test", "experimentation", "comparison"]
+    test_prompts:
+      single:
+        - "A/B test model versions"
+        - "Compare models in production"
+        - "Run model experiment"
+        - "Test new model against baseline"
+      single_clear:
+        - "I need to run an A/B test for ML models. A/B test model versions"
+        - "I need to run an A/B test for ML models. Compare models in production"
+        - "I need to run an A/B test for ML models. Run model experiment"
+        - "I need to run an A/B test for ML models. Test new model against baseline"
+
+  - name: detect_data_drift
+    descriptions:
+      minimal: "Detect drift"
+      short: "Detect data drift"
+      medium: "Monitor for data drift that may degrade model performance."
+      long: "Detect distribution shifts between training and production data. Example: detect_data_drift(reference='training.csv', current='production_data.csv', features='[\"age\", \"income\"]')."
+      verbose: "Monitor data drift to maintain model quality. Drift types: feature drift (input distribution), concept drift (target relationship), prediction drift. Methods: KS test, PSI, chi-squared, embedding distance. Example: detect_data_drift(reference='training_data.parquet', current='last_week_production.parquet', features='[\"user_age\", \"device_type\", \"session_length\"]', methods='[\"ks\", \"psi\"]', threshold=0.1). Returns: drift scores, alerts, visualizations. Note: Regular drift monitoring prevents silent model degradation. Warning: Significant drift may require model retraining."
+    parameters:
+      - name: reference
+        type: string
+        description: "Reference/training data path"
+        required: true
+      - name: current
+        type: string
+        description: "Current/production data path"
+        required: true
+      - name: features
+        type: string
+        description: "JSON array of features to monitor"
+        required: true
+      - name: methods
+        type: string
+        description: "JSON array of drift detection methods"
+        required: false
+        default: "[\"psi\", \"ks\"]"
+      - name: threshold
+        type: number
+        description: "Alert threshold"
+        required: false
+        default: 0.1
+    tags: ["ai", "ml", "drift", "monitoring", "data_quality"]
+    test_prompts:
+      single:
+        - "Check for data drift"
+        - "Monitor model input distribution"
+        - "Detect feature drift"
+        - "Compare training vs production data"
+      single_clear:
+        - "I need to detect data drift in production. Check for data drift"
+        - "I need to detect data drift in production. Monitor model input distribution"
+        - "I need to detect data drift in production. Detect feature drift"
+        - "I need to detect data drift in production. Compare training vs production data"
+
+  - name: create_feature_store
+    descriptions:
+      minimal: "Create feature store"
+      short: "Create ML feature store"
+      medium: "Create a feature store to manage ML features across teams."
+      long: "Create feature store for feature management. Example: create_feature_store(name='user-features', online=true, offline=true)."
+      verbose: "Create centralized feature store for ML features. Features: online (low-latency) and offline (batch) serving, versioning, lineage tracking. Example: create_feature_store(name='customer-features', description='Customer behavior features', online_enabled=true, offline_enabled=true, storage_type='s3', encryption_key='alias/feature-store', tags='{\"team\": \"ml\", \"domain\": \"customer\"}'). Note: Plan storage for feature volume. Warning: Feature consistency between online/offline is critical."
+    parameters:
+      - name: name
+        type: string
+        description: "Feature store name"
+        required: true
+      - name: description
+        type: string
+        description: "Store description"
+        required: false
+      - name: online_enabled
+        type: boolean
+        description: "Enable online store"
+        required: false
+        default: true
+      - name: offline_enabled
+        type: boolean
+        description: "Enable offline store"
+        required: false
+        default: true
+      - name: storage_type
+        type: string
+        description: "Offline storage type"
+        required: false
+        default: "s3"
+        enum: ["s3", "gcs", "redshift", "bigquery"]
+      - name: encryption_key
+        type: string
+        description: "Encryption key"
+        required: false
+      - name: tags
+        type: string
+        description: "Tags (JSON)"
+        required: false
+    tags: ["ai", "ml", "feature-store", "create", "features"]
+    test_prompts:
+      single:
+        - "Create feature store"
+        - "Set up ML features"
+        - "Initialize feature store"
+        - "Create feature repository"
+      single_clear:
+        - "I need to create an ML feature store. Create feature store"
+        - "I need to create an ML feature store. Set up ML features"
+        - "I need to create an ML feature store. Initialize feature store"
+        - "I need to create an ML feature store. Create feature repository"
+
+  - name: ingest_features
+    descriptions:
+      minimal: "Ingest features"
+      short: "Ingest features to store"
+      medium: "Ingest feature data into the feature store."
+      long: "Load features into store. Example: ingest_features(feature_group='user-behavior', data='s3://bucket/features.parquet')."
+      verbose: "Ingest feature data for model training and serving. Modes: batch (large datasets), streaming (real-time). Example: ingest_features(feature_group='customer-signals', data_source='s3://data/customer-features/', event_time_column='event_timestamp', record_identifier='customer_id', mode='batch', target_stores='[\"online\", \"offline\"]'). Note: Event time is critical for point-in-time correctness. Warning: Large ingestions may take time; monitor progress."
+    parameters:
+      - name: feature_group
+        type: string
+        description: "Feature group name"
+        required: true
+      - name: data_source
+        type: string
+        description: "Data source path"
+        required: true
+      - name: event_time_column
+        type: string
+        description: "Event timestamp column"
+        required: true
+      - name: record_identifier
+        type: string
+        description: "Record ID column"
+        required: true
+      - name: mode
+        type: string
+        description: "Ingestion mode"
+        required: false
+        default: "batch"
+        enum: ["batch", "streaming"]
+      - name: target_stores
+        type: string
+        description: "Target stores (JSON array)"
+        required: false
+        default: "[\"online\", \"offline\"]"
+    tags: ["ai", "ml", "feature-store", "ingest", "data"]
+    test_prompts:
+      single:
+        - "Ingest features"
+        - "Load features to store"
+        - "Update feature data"
+        - "Push features to store"
+      single_clear:
+        - "I need to ingest features into the store. Ingest features"
+        - "I need to ingest features into the store. Load features to store"
+        - "I need to ingest features into the store. Update feature data"
+        - "I need to ingest features into the store. Push features to store"
+
+  - name: get_features
+    descriptions:
+      minimal: "Get features"
+      short: "Retrieve features"
+      medium: "Retrieve features from the feature store for inference or training."
+      long: "Fetch features from store. Example: get_features(feature_group='user-behavior', entity_ids='[\"user_123\"]')."
+      verbose: "Retrieve features for inference or training. Online: real-time low-latency. Offline: point-in-time for training. Example: get_features(feature_group='customer-signals', entity_ids='[\"cust_001\", \"cust_002\"]', features='[\"lifetime_value\", \"churn_risk\", \"last_purchase_days\"]', mode='online'). For training: get_features(..., mode='offline', as_of='2024-01-01T00:00:00Z'). Note: Online store has fresher data. Warning: Missing features return null; handle gracefully."
+    parameters:
+      - name: feature_group
+        type: string
+        description: "Feature group name"
+        required: true
+      - name: entity_ids
+        type: string
+        description: "Entity IDs (JSON array)"
+        required: true
+      - name: features
+        type: string
+        description: "Features to retrieve (JSON array)"
+        required: false
+      - name: mode
+        type: string
+        description: "Retrieval mode"
+        required: false
+        default: "online"
+        enum: ["online", "offline"]
+      - name: as_of
+        type: string
+        description: "Point-in-time (offline mode)"
+        required: false
+    tags: ["ai", "ml", "feature-store", "retrieve", "inference"]
+    test_prompts:
+      single:
+        - "Get features for user"
+        - "Retrieve feature values"
+        - "Fetch features for inference"
+        - "Get training features"
+      single_clear:
+        - "I need to retrieve features from the feature store. Get features for user"
+        - "I need to retrieve features from the feature store. Retrieve feature values"
+        - "I need to retrieve features from the feature store. Fetch features for inference"
+        - "I need to retrieve features from the feature store. Get training features"
+
+  - name: explain_prediction
+    descriptions:
+      minimal: "Explain prediction"
+      short: "Explain model prediction"
+      medium: "Generate explanations for model predictions."
+      long: "Interpret model decisions. Example: explain_prediction(model='loan-approval', input='{\"income\": 50000}', method='shap')."
+      verbose: "Generate prediction explanations for interpretability. Methods: SHAP (Shapley values), LIME (local surrogates), integrated gradients, attention. Example: explain_prediction(model_id='credit-risk-v2', input='{\"income\": 75000, \"credit_score\": 720, \"debt_ratio\": 0.3}', method='shap', num_samples=1000, include_visualization=true). Returns: feature contributions, importance scores. Note: Explanations are approximations. Warning: Complex models may have slow explanation generation."
+    parameters:
+      - name: model_id
+        type: string
+        description: "Model ID"
+        required: true
+      - name: input
+        type: string
+        description: "Input data (JSON)"
+        required: true
+      - name: method
+        type: string
+        description: "Explanation method"
+        required: false
+        default: "shap"
+        enum: ["shap", "lime", "integrated_gradients", "attention"]
+      - name: num_samples
+        type: integer
+        description: "Samples for approximation"
+        required: false
+        default: 100
+      - name: include_visualization
+        type: boolean
+        description: "Include visualization"
+        required: false
+        default: false
+    tags: ["ai", "ml", "explainability", "interpretability", "shap"]
+    test_prompts:
+      single:
+        - "Explain model prediction"
+        - "Why did model predict this"
+        - "Get feature importance"
+        - "Interpret model decision"
+      single_clear:
+        - "I need to explain a model prediction. Explain model prediction"
+        - "I need to explain a model prediction. Why did model predict this"
+        - "I need to explain a model prediction. Get feature importance"
+        - "I need to explain a model prediction. Interpret model decision"
+
+  - name: create_pipeline
+    descriptions:
+      minimal: "Create pipeline"
+      short: "Create ML pipeline"
+      medium: "Create an ML pipeline for automated workflows."
+      long: "Build ML workflow pipeline. Example: create_pipeline(name='training-pipeline', steps='[{\"name\": \"preprocess\", \"type\": \"processing\"}]')."
+      verbose: "Create automated ML pipelines. Steps: data processing, training, evaluation, deployment. Features: caching, parallelism, conditional execution. Example: create_pipeline(name='model-retraining', steps='[{\"name\": \"preprocess\", \"script\": \"preprocess.py\", \"instance_type\": \"ml.c5.xlarge\"}, {\"name\": \"train\", \"script\": \"train.py\", \"instance_type\": \"ml.p3.2xlarge\"}, {\"name\": \"evaluate\", \"script\": \"evaluate.py\"}, {\"name\": \"deploy\", \"condition\": \"metrics.accuracy > 0.9\"}]', schedule='0 2 * * 0'). Note: Test pipelines before scheduling. Warning: Long pipelines increase debugging complexity."
+    parameters:
+      - name: name
+        type: string
+        description: "Pipeline name"
+        required: true
+      - name: steps
+        type: string
+        description: "Pipeline steps (JSON array)"
+        required: true
+      - name: schedule
+        type: string
+        description: "Cron schedule"
+        required: false
+      - name: parameters
+        type: string
+        description: "Pipeline parameters (JSON)"
+        required: false
+      - name: role
+        type: string
+        description: "Execution role"
+        required: false
+    tags: ["ai", "ml", "pipeline", "automation", "workflow"]
+    test_prompts:
+      single:
+        - "Create ML pipeline"
+        - "Build training pipeline"
+        - "Set up automated workflow"
+        - "Create retraining pipeline"
+      single_clear:
+        - "I need to create an ML pipeline. Create ML pipeline"
+        - "I need to create an ML pipeline. Build training pipeline"
+        - "I need to create an ML pipeline. Set up automated workflow"
+        - "I need to create an ML pipeline. Create retraining pipeline"
+
+  - name: run_pipeline
+    descriptions:
+      minimal: "Run pipeline"
+      short: "Execute ML pipeline"
+      medium: "Execute an ML pipeline with specified parameters."
+      long: "Start pipeline execution. Example: run_pipeline(name='training-pipeline', parameters='{\"dataset\": \"v2\"}')."
+      verbose: "Execute ML pipeline run. Override default parameters, track execution. Example: run_pipeline(pipeline_name='model-retraining', parameters='{\"dataset_version\": \"2024-01\", \"model_type\": \"xgboost\", \"hyperparameters\": {\"max_depth\": 10}}', execution_name='jan-2024-retrain', wait=false). Returns execution ID for tracking. Note: Use execution_name for identification. Warning: Concurrent runs may compete for resources."
+    parameters:
+      - name: pipeline_name
+        type: string
+        description: "Pipeline name"
+        required: true
+      - name: parameters
+        type: string
+        description: "Override parameters (JSON)"
+        required: false
+      - name: execution_name
+        type: string
+        description: "Execution name"
+        required: false
+      - name: wait
+        type: boolean
+        description: "Wait for completion"
+        required: false
+        default: false
+    tags: ["ai", "ml", "pipeline", "execute", "run"]
+    test_prompts:
+      single:
+        - "Run ML pipeline"
+        - "Execute training pipeline"
+        - "Start pipeline run"
+        - "Trigger retraining"
+      single_clear:
+        - "I need to execute an ML pipeline. Run ML pipeline"
+        - "I need to execute an ML pipeline. Execute training pipeline"
+        - "I need to execute an ML pipeline. Start pipeline run"
+        - "I need to execute an ML pipeline. Trigger retraining"
+
+  - name: create_labeling_job
+    descriptions:
+      minimal: "Create labeling job"
+      short: "Create data labeling job"
+      medium: "Create a labeling job for training data annotation."
+      long: "Set up data labeling. Example: create_labeling_job(name='image-classification', data='s3://bucket/images/', label_type='image_classification')."
+      verbose: "Create data labeling job for ML training data. Types: image classification, object detection, text classification, NER, semantic segmentation. Options: manual labeling, auto-labeling, active learning. Example: create_labeling_job(name='product-images-v2', data_source='s3://training-data/products/', label_type='object_detection', labels='[\"product\", \"price_tag\", \"barcode\"]', instructions='Label all visible products with bounding boxes', workforce='mturk', auto_labeling=true, auto_labeling_threshold=0.95). Note: Clear instructions improve label quality. Warning: Review labeled samples for quality."
+    parameters:
+      - name: name
+        type: string
+        description: "Job name"
+        required: true
+      - name: data_source
+        type: string
+        description: "Data source path"
+        required: true
+      - name: label_type
+        type: string
+        description: "Labeling task type"
+        required: true
+        enum: ["image_classification", "object_detection", "text_classification", "ner", "semantic_segmentation"]
+      - name: labels
+        type: string
+        description: "Label categories (JSON array)"
+        required: true
+      - name: instructions
+        type: string
+        description: "Labeling instructions"
+        required: false
+      - name: workforce
+        type: string
+        description: "Workforce type"
+        required: false
+        default: "internal"
+        enum: ["internal", "mturk", "vendor"]
+      - name: auto_labeling
+        type: boolean
+        description: "Enable auto-labeling"
+        required: false
+        default: false
+    tags: ["ai", "ml", "labeling", "annotation", "training-data"]
+    test_prompts:
+      single:
+        - "Create labeling job"
+        - "Set up data annotation"
+        - "Label training data"
+        - "Start image labeling"
+      single_clear:
+        - "I need to create a data labeling job. Create labeling job"
+        - "I need to create a data labeling job. Set up data annotation"
+        - "I need to create a data labeling job. Label training data"
+        - "I need to create a data labeling job. Start image labeling"
+
+  - name: tune_hyperparameters
+    descriptions:
+      minimal: "Tune hyperparameters"
+      short: "Tune model hyperparameters"
+      medium: "Automatically tune model hyperparameters for optimal performance."
+      long: "Hyperparameter optimization. Example: tune_hyperparameters(script='train.py', parameters='{\"learning_rate\": [0.001, 0.1]}')."
+      verbose: "Automated hyperparameter tuning for ML models. Strategies: random search, grid search, Bayesian optimization. Example: tune_hyperparameters(training_script='train.py', hyperparameter_ranges='{\"learning_rate\": {\"type\": \"continuous\", \"min\": 0.0001, \"max\": 0.1, \"scaling\": \"log\"}, \"batch_size\": {\"type\": \"categorical\", \"values\": [32, 64, 128]}}', objective_metric='validation_accuracy', objective_type='maximize', max_jobs=50, max_parallel=5, strategy='bayesian'). Note: More jobs improve results but cost more. Warning: Early stopping can save resources."
+    parameters:
+      - name: training_script
+        type: string
+        description: "Training script path"
+        required: true
+      - name: hyperparameter_ranges
+        type: string
+        description: "Parameter ranges (JSON)"
+        required: true
+      - name: objective_metric
+        type: string
+        description: "Metric to optimize"
+        required: true
+      - name: objective_type
+        type: string
+        description: "Minimize or maximize"
+        required: true
+        enum: ["minimize", "maximize"]
+      - name: max_jobs
+        type: integer
+        description: "Maximum tuning jobs"
+        required: false
+        default: 20
+      - name: max_parallel
+        type: integer
+        description: "Maximum parallel jobs"
+        required: false
+        default: 3
+      - name: strategy
+        type: string
+        description: "Search strategy"
+        required: false
+        default: "bayesian"
+        enum: ["random", "grid", "bayesian"]
+    tags: ["ai", "ml", "hyperparameter", "tuning", "optimization"]
+    test_prompts:
+      single:
+        - "Tune hyperparameters"
+        - "Optimize model parameters"
+        - "Find best hyperparameters"
+        - "Run hyperparameter search"
+      single_clear:
+        - "I need to tune model hyperparameters. Tune hyperparameters"
+        - "I need to tune model hyperparameters. Optimize model parameters"
+        - "I need to tune model hyperparameters. Find best hyperparameters"
+        - "I need to tune model hyperparameters. Run hyperparameter search"
+
+  - name: compare_models
+    descriptions:
+      minimal: "Compare models"
+      short: "Compare ML models"
+      medium: "Compare multiple models on evaluation metrics."
+      long: "Compare model performance. Example: compare_models(models='[\"model_v1\", \"model_v2\"]', dataset='test.csv')."
+      verbose: "Comprehensive model comparison. Metrics: accuracy, precision, recall, F1, AUC, latency, model size. Visualizations: confusion matrices, ROC curves, PR curves. Example: compare_models(model_ids='[\"xgboost-v1\", \"lightgbm-v1\", \"neural-v2\"]', test_dataset='s3://data/test.parquet', metrics='[\"accuracy\", \"f1\", \"auc_roc\", \"inference_latency\"]', slices='[{\"column\": \"user_segment\", \"values\": [\"new\", \"returning\"]}]'). Returns: comparison table, visualizations. Note: Compare on held-out test data. Warning: Consider all metrics, not just accuracy."
+    parameters:
+      - name: model_ids
+        type: string
+        description: "Model IDs (JSON array)"
+        required: true
+      - name: test_dataset
+        type: string
+        description: "Test dataset path"
+        required: true
+      - name: metrics
+        type: string
+        description: "Metrics to compare (JSON array)"
+        required: false
+        default: "[\"accuracy\", \"f1\", \"auc_roc\"]"
+      - name: slices
+        type: string
+        description: "Data slices for analysis (JSON)"
+        required: false
+      - name: include_visualizations
+        type: boolean
+        description: "Include visualization"
+        required: false
+        default: true
+    tags: ["ai", "ml", "compare", "evaluation", "metrics"]
+    test_prompts:
+      single:
+        - "Compare models"
+        - "Which model is better"
+        - "Model comparison report"
+        - "Evaluate multiple models"
+      single_clear:
+        - "I need to compare ML models. Compare models"
+        - "I need to compare ML models. Which model is better"
+        - "I need to compare ML models. Model comparison report"
+        - "I need to compare ML models. Evaluate multiple models"
+
+  - name: monitor_model
+    descriptions:
+      minimal: "Monitor model"
+      short: "Monitor deployed model"
+      medium: "Set up monitoring for a deployed model."
+      long: "Monitor production model. Example: monitor_model(endpoint='prod-model', metrics='[\"latency\", \"accuracy\"]')."
+      verbose: "Comprehensive model monitoring in production. Metrics: prediction latency, throughput, error rate, feature drift, prediction drift. Alerts: anomaly detection, threshold violations. Example: monitor_model(endpoint_name='recommendation-prod', metrics='[\"latency_p99\", \"request_count\", \"error_rate\"]', drift_detection=true, drift_baseline='training_data.parquet', alert_rules='[{\"metric\": \"latency_p99\", \"threshold\": 100, \"action\": \"alert\"}]', sampling_rate=0.1). Note: Balance sampling rate with monitoring accuracy. Warning: Drift detection requires representative baseline."
+    parameters:
+      - name: endpoint_name
+        type: string
+        description: "Model endpoint name"
+        required: true
+      - name: metrics
+        type: string
+        description: "Metrics to monitor (JSON array)"
+        required: true
+      - name: drift_detection
+        type: boolean
+        description: "Enable drift detection"
+        required: false
+        default: false
+      - name: drift_baseline
+        type: string
+        description: "Drift baseline data path"
+        required: false
+      - name: alert_rules
+        type: string
+        description: "Alert rules (JSON array)"
+        required: false
+      - name: sampling_rate
+        type: number
+        description: "Request sampling rate"
+        required: false
+        default: 0.1
+    tags: ["ai", "ml", "monitoring", "production", "observability"]
+    test_prompts:
+      single:
+        - "Monitor deployed model"
+        - "Set up model monitoring"
+        - "Track model performance"
+        - "Watch model metrics"
+      single_clear:
+        - "I need to monitor a deployed model. Monitor deployed model"
+        - "I need to monitor a deployed model. Set up model monitoring"
+        - "I need to monitor a deployed model. Track model performance"
+        - "I need to monitor a deployed model. Watch model metrics"

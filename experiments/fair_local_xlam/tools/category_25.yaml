@@ -1,0 +1,754 @@
+category: category_25
+tools:
+- name: get_litecoin_block_hash
+  descriptions:
+    minimal: Fetches the hash of a Litecoin block by its index...
+    short: Fetches the hash of a Litecoin block by its index using the RapidAPI service.
+    medium: Fetches the hash of a Litecoin block by its index using the RapidAPI service.
+    long: Fetches the hash of a Litecoin block by its index using the RapidAPI service.
+    verbose: Fetches the hash of a Litecoin block by its index using the RapidAPI service.
+  parameters:
+  - name: i
+    type: integer
+    description: The index of the Litecoin block.
+    required: true
+    default: '23'
+  tags:
+  - get
+  - litecoin
+  - block
+  test_prompts:
+    single:
+    - Retrieve the hash of Litecoin block 700.
+    - Fetch the hash for Litecoin block 800.
+    single_clear:
+    - Retrieve the hash of Litecoin block 700.
+    - Fetch the hash for Litecoin block 800.
+- name: item_by_id
+  descriptions:
+    minimal: Fetch an item from the Hacker News API by its...
+    short: Fetch an item from the Hacker News API by its unique ID.
+    medium: Fetch an item from the Hacker News API by its unique ID.
+    long: Fetch an item from the Hacker News API by its unique ID.
+    verbose: Fetch an item from the Hacker News API by its unique ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The unique identifier of the item to retrieve.
+    required: true
+    default: '10000'
+  tags:
+  - item
+  - by
+  - id
+  test_prompts:
+    single:
+    - Retrieve the details of the Hacker News item with ID '31337'.
+    single_clear:
+    - Retrieve the details of the Hacker News item with ID '31337'.
+- name: trim_view
+  descriptions:
+    minimal: Fetches and returns all data associated with a...
+    short: Fetches and returns all data associated with a specific vehicle trim using the RapidAPI service.
+    medium: Fetches and returns all data associated with a specific vehicle trim using the RapidAPI service.
+    long: Fetches and returns all data associated with a specific vehicle trim using the RapidAPI service.
+    verbose: Fetches and returns all data associated with a specific vehicle trim using the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the vehicle trim to retrieve.
+    required: true
+  tags:
+  - trim
+  - view
+  test_prompts:
+    single:
+    - What are the details of the vehicle trim with ID 12345?
+    single_clear:
+    - What are the details of the vehicle trim with ID 12345?
+- name: extract_entities
+  descriptions:
+    minimal: Extracts named entities from the provided text...
+    short: Extracts named entities from the provided text using the specified model and RapidAPI key.
+    medium: Extracts named entities from the provided text using the specified model and RapidAPI key.
+    long: Extracts named entities from the provided text using the specified model and RapidAPI key.
+    verbose: Extracts named entities from the provided text using the specified model and RapidAPI key.
+  parameters:
+  - name: text
+    type: string
+    description: The text from which to extract named entities.
+    required: true
+    default: U.S. stocks rallied Thursday, with the Dow Jones Industrial Average up 2.9% in a tempestuous first half of the
+      year.
+  - name: model
+    type: string
+    description: The model to use for named entity recognition. Defaults to None.
+    required: false
+  tags:
+  - extract
+  - entities
+  test_prompts:
+    single:
+    - 'Extract entities from the legal document snippet: ''The contract was signed by John Doe on January 1, 2020.'''
+    single_clear:
+    - 'Extract entities from the legal document snippet: ''The contract was signed by John Doe on January 1, 2020.'''
+- name: take_image_screenshot
+  descriptions:
+    minimal: Takes a screenshot of a specified website using...
+    short: Takes a screenshot of a specified website using given dimensions.
+    medium: Takes a screenshot of a specified website using given dimensions.
+    long: Takes a screenshot of a specified website using given dimensions.
+    verbose: Takes a screenshot of a specified website using given dimensions.
+  parameters:
+  - name: width
+    type: integer
+    description: The width of the screenshot in pixels. Defaults to 1024.
+    required: false
+    default: '1024'
+  - name: url
+    type: string
+    description: The URL of the website to be captured. Defaults to 'https://google.com'.
+    required: false
+    default: https://google.com
+  - name: height
+    type: integer
+    description: The height of the screenshot in pixels. Defaults to 780.
+    required: false
+    default: '780'
+  tags:
+  - take
+  - image
+  - screenshot
+  test_prompts:
+    single:
+    - Capture a screenshot of the New York Times homepage at a resolution of 1920x1080.
+    single_clear:
+    - Capture a screenshot of the New York Times homepage at a resolution of 1920x1080.
+- name: categorytournaments
+  descriptions:
+    minimal: Fetches the list of all basketball leagues...
+    short: Fetches the list of all basketball leagues belonging to a specific category using the category ID.
+    medium: Fetches the list of all basketball leagues belonging to a specific category using the category ID.
+    long: Fetches the list of all basketball leagues belonging to a specific category using the category ID.
+    verbose: Fetches the list of all basketball leagues belonging to a specific category using the category ID.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The category ID for which you want to retrieve all leagues.
+    required: true
+    default: 264
+  tags:
+  - categorytournaments
+  test_prompts:
+    single:
+    - What are the basketball leagues under the category with ID 100?
+    single_clear:
+    - What are the basketball leagues under the category with ID 100?
+- name: full_info_with_url
+  descriptions:
+    minimal: Fetches detailed information about a TikTok...
+    short: Fetches detailed information about a TikTok video, including author info, video statistics, and metadata, using
+      the provided URL.
+    medium: Fetches detailed information about a TikTok video, including author info, video statistics, and metadata, using
+      the provided URL.
+    long: Fetches detailed information about a TikTok video, including author info, video statistics, and metadata, using
+      the provided URL.
+    verbose: Fetches detailed information about a TikTok video, including author info, video statistics, and metadata, using
+      the provided URL.
+  parameters:
+  - name: url
+    type: string
+    description: The URL of the TikTok video to fetch information for.
+    required: true
+    default: https://www.tiktok.com/@mehdi_amri_10/video/7060576901613587718
+  tags:
+  - full
+  - info
+  - with
+  test_prompts:
+    single:
+    - Retrieve detailed information about a TikTok video from the URL 'https://www.tiktok.com/@user/video123'.
+    single_clear:
+    - Retrieve detailed information about a TikTok video from the URL 'https://www.tiktok.com/@user/video123'.
+- name: v1_city
+  descriptions:
+    minimal: Fetches city data from the API Ninjas City API...
+    short: Fetches city data from the API Ninjas City API endpoint with various filtering criteria.
+    medium: Fetches city data from the API Ninjas City API endpoint with various filtering criteria.
+    long: Fetches city data from the API Ninjas City API endpoint with various filtering criteria.
+    verbose: Fetches city data from the API Ninjas City API endpoint with various filtering criteria.
+  parameters:
+  - name: max_lat
+    type: integer
+    description: Maximum latitude coordinate.
+    required: false
+  - name: min_population
+    type: integer
+    description: Minimum city population.
+    required: false
+  - name: min_lon
+    type: integer
+    description: Minimum longitude coordinate.
+    required: false
+  - name: country
+    type: string
+    description: Country filter. Must be an ISO-3166 alpha-2 code (default is 'US').
+    required: false
+    default: US
+  - name: max_population
+    type: integer
+    description: Maximum city population.
+    required: false
+  - name: min_lat
+    type: integer
+    description: Minimum latitude coordinate.
+    required: false
+  - name: name
+    type: string
+    description: Name of the city to search for (default is 'New York').
+    required: false
+    default: New York
+  - name: max_lon
+    type: integer
+    description: Maximum longitude coordinate.
+    required: false
+  - name: limit
+    type: integer
+    description: Number of results to return. Must be between 1 and 30 (default is 1).
+    required: false
+    default: '1'
+  tags:
+  - v1
+  - city
+  test_prompts:
+    single:
+    - List cities in the US with a maximum latitude of 40 degrees and a minimum population of 500,000.
+    single_clear:
+    - List cities in the US with a maximum latitude of 40 degrees and a minimum population of 500,000.
+- name: v1_exercises
+  descriptions:
+    minimal: Fetch up to 10 exercises from the API Ninjas...
+    short: Fetch up to 10 exercises from the API Ninjas Exercises API that satisfy the given search parameters.
+    medium: Fetch up to 10 exercises from the API Ninjas Exercises API that satisfy the given search parameters.
+    long: Fetch up to 10 exercises from the API Ninjas Exercises API that satisfy the given search parameters.
+    verbose: Fetch up to 10 exercises from the API Ninjas Exercises API that satisfy the given search parameters.
+  parameters:
+  - name: offset
+    type: integer
+    description: Number of results to offset for pagination. Default is 0.
+    required: false
+  - name: muscle
+    type: string
+    description: 'Muscle group targeted by the exercise. Possible values include: ''abdominals'', ''abductors'', ''adductors'',
+      ''biceps'', ''calves'', ''chest'', ''forearms'', ''glutes'', ''hamstrings'', ''lats'', ''lower_back'', ''middle_back'',
+      ''neck'', ''quadriceps'', ''traps'', ''triceps''. Default is ''biceps''.'
+    required: false
+    default: biceps
+  - name: type
+    type: string
+    description: 'Exercise type. Possible values include: ''cardio'', ''olympic_weightlifting'', ''plyometrics'', ''powerlifting'',
+      ''strength'', ''stretching'', ''strongman''.'
+    required: false
+  - name: difficulty
+    type: string
+    description: 'Difficulty level of the exercise. Possible values include: ''beginner'', ''intermediate'', ''expert''.'
+    required: false
+  - name: name
+    type: string
+    description: Name of the exercise. This value can be partial (e.g., 'press' will match 'Dumbbell Bench Press').
+    required: false
+  tags:
+  - v1
+  - exercises
+  test_prompts:
+    single:
+    - Can you fetch 10 exercises for beginners that target the chest muscle?
+    - Find exercises named 'press' for the triceps muscle.
+    - List all cardio exercises that are of any difficulty and do not specify a muscle group.
+    single_clear:
+    - Can you fetch 10 exercises for beginners that target the chest muscle?
+    - Find exercises named 'press' for the triceps muscle.
+    - List all cardio exercises that are of any difficulty and do not specify a muscle group.
+- name: get_joke_of_the_day_by_category
+  descriptions:
+    minimal: Fetches the joke of the day from a specified...
+    short: Fetches the joke of the day from a specified category using the World of Jokes API.
+    medium: Fetches the joke of the day from a specified category using the World of Jokes API.
+    long: Fetches the joke of the day from a specified category using the World of Jokes API.
+    verbose: Fetches the joke of the day from a specified category using the World of Jokes API.
+  parameters:
+  - name: category
+    type: string
+    description: The category of joke to be fetched.
+    required: true
+    default: Money
+  tags:
+  - get
+  - joke
+  - of
+  test_prompts:
+    single:
+    - Fetch today's joke from the 'holiday' category.
+    single_clear:
+    - Fetch today's joke from the 'holiday' category.
+- name: spac_price_targets
+  descriptions:
+    minimal: Fetches the latest SPAC (Special Purpose...
+    short: Fetches the latest SPAC (Special Purpose Acquisition Company) price targets from analysts, filtered by a specific
+      SPAC symbol.
+    medium: Fetches the latest SPAC (Special Purpose Acquisition Company) price targets from analysts, filtered by a specific
+      SPAC symbol.
+    long: Fetches the latest SPAC (Special Purpose Acquisition Company) price targets from analysts, filtered by a specific
+      SPAC symbol.
+    verbose: Fetches the latest SPAC (Special Purpose Acquisition Company) price targets from analysts, filtered by a specific
+      SPAC symbol.
+  parameters:
+  - name: symbol
+    type: string
+    description: The SPAC symbol to filter the price targets by. Defaults to 'SOFI'.
+    required: true
+    default: SOFI
+  tags:
+  - spac
+  - price
+  - targets
+  test_prompts:
+    single:
+    - What are the latest SPAC price targets for Virgin Galactic (SPCE)?
+    single_clear:
+    - What are the latest SPAC price targets for Virgin Galactic (SPCE)?
+- name: getuservideos
+  descriptions:
+    minimal: Fetch a list of the most recent user-generated...
+    short: Fetch a list of the most recent user-generated videos that have been publicly shared to YouTube.
+    medium: Fetch a list of the most recent user-generated videos that have been publicly shared to YouTube.
+    long: Fetch a list of the most recent user-generated videos that have been publicly shared to YouTube.
+    verbose: Fetch a list of the most recent user-generated videos that have been publicly shared to YouTube.
+  parameters:
+  - name: num
+    type: integer
+    description: Number of shared user-generated videos to include in the response. Default is 10.
+    required: false
+    default: '10'
+  - name: since
+    type: string
+    description: Optionally truncate result set if this ISO 8601 combined UTC date and time is reached.
+    required: false
+  - name: force
+    type: boolean
+    description: Optionally bypass cache to retrieve the most up-to-date data.
+    required: false
+  - name: callback
+    type: string
+    description: Wrap the response object in a function call of your choosing.
+    required: false
+  tags:
+  - getuservideos
+  test_prompts:
+    single:
+    - Retrieve the latest 10 user-generated videos shared after '2023-01-01T00:00:00Z'.
+    - Fetch the 10 most recent videos uploaded since the start of this year, ensuring the data is fresh by bypassing the cache.
+    single_clear:
+    - Retrieve the latest 10 user-generated videos shared after '2023-01-01T00:00:00Z'.
+    - Fetch the 10 most recent videos uploaded since the start of this year, ensuring the data is fresh by bypassing the cache.
+- name: venue_search
+  descriptions:
+    minimal: Searches for venues based on latitude, longitude...
+    short: Searches for venues based on latitude, longitude, and optional radius using the Wiman API.
+    medium: Searches for venues based on latitude, longitude, and optional radius using the Wiman API.
+    long: Searches for venues based on latitude, longitude, and optional radius using the Wiman API.
+    verbose: Searches for venues based on latitude, longitude, and optional radius using the Wiman API.
+  parameters:
+  - name: latitude
+    type: string
+    description: The latitude of the location to search.
+    required: true
+    default: '44.484994'
+  - name: longitude
+    type: string
+    description: The longitude of the location to search.
+    required: true
+    default: '11.327333'
+  - name: radius
+    type: integer
+    description: The search radius in kilometers. Defaults to 1.
+    required: false
+    default: '1'
+  tags:
+  - venue
+  - search
+  test_prompts:
+    single:
+    - I need to locate Wi-Fi spots near Times Square in New York, can you help?
+    single_clear:
+    - I need to locate Wi-Fi spots near Times Square in New York, can you help?
+- name: review_filters_list
+  descriptions:
+    minimal: Fetch supported options metadata for filtering...
+    short: Fetch supported options metadata for filtering hotel reviews.
+    medium: Fetch supported options metadata for filtering hotel reviews.
+    long: Fetch supported options metadata for filtering hotel reviews.
+    verbose: Fetch supported options metadata for filtering hotel reviews.
+  parameters:
+  - name: hotel_id
+    type: integer
+    description: The unique identifier of the hotel from the properties list API.
+    required: true
+    default: '1790664'
+  - name: languagecode
+    type: string
+    description: The language code for the response. Default is 'en-us'.
+    required: false
+    default: en-us
+  - name: filter_language
+    type: string
+    description: Comma-separated values of languages for filtering reviews. Default is 'en,nl'.
+    required: false
+    default: en,nl
+  - name: filter_customer_type
+    type: string
+    description: Comma-separated values of customer types to filter by. Default is 'couple,family_with_children'.
+    required: false
+    default: couple,family_with_children
+  - name: user_sort
+    type: string
+    description: Sorting preference for results. Default is 'sort_most_relevant'.
+    required: false
+    default: sort_most_relevant
+  tags:
+  - review
+  - filters
+  - list
+  test_prompts:
+    single:
+    - Retrieve metadata for filtering reviews of a hotel with ID 12345, using English and Dutch languages, filtering by 'couple'
+      and 'family_with_children' customer types, and sorting by 'sort_most_relevant'.
+    - Retrieve review filter metadata for a hotel with ID 67890, sorting by most relevant reviews in English.
+    - Retrieve metadata for filtering reviews of hotel with ID 12345, using English and Dutch languages, and filter by customer
+      types 'couple' and 'family_with_children'.
+    single_clear:
+    - Retrieve metadata for filtering reviews of a hotel with ID 12345, using English and Dutch languages, filtering by 'couple'
+      and 'family_with_children' customer types, and sorting by 'sort_most_relevant'.
+    - Retrieve review filter metadata for a hotel with ID 67890, sorting by most relevant reviews in English.
+    - Retrieve metadata for filtering reviews of hotel with ID 12345, using English and Dutch languages, and filter by customer
+      types 'couple' and 'family_with_children'.
+- name: webcams_list_limit_limit_offset
+  descriptions:
+    minimal: Fetches a list of webcams with optional...
+    short: Fetches a list of webcams with optional parameters for result slicing and localization.
+    medium: Fetches a list of webcams with optional parameters for result slicing and localization.
+    long: Fetches a list of webcams with optional parameters for result slicing and localization.
+    verbose: Fetches a list of webcams with optional parameters for result slicing and localization.
+  parameters:
+  - name: limit
+    type: integer
+    description: Maximum number of webcams in the result list. The maximum allowable value is 50.
+    required: true
+  - name: offset
+    type: integer
+    description: Offset for the first item in the result list. Defaults to 0.
+    required: false
+    default: '0'
+  - name: lang
+    type: string
+    description: Language to localize the results. Defaults to 'en'.
+    required: false
+    default: en
+  - name: show
+    type: string
+    description: Content fields to be listed in the response. Defaults to 'webcams:image,location'.
+    required: false
+    default: webcams:image,location
+  tags:
+  - webcams
+  - list
+  - limit
+  test_prompts:
+    single:
+    - List 20 webcams starting from the 11th entry in French.
+    single_clear:
+    - List 20 webcams starting from the 11th entry in French.
+- name: url_analysis
+  descriptions:
+    minimal: Analyzes the given URL using the Toolbench...
+    short: Analyzes the given URL using the Toolbench RapidAPI service.
+    medium: Analyzes the given URL using the Toolbench RapidAPI service.
+    long: Analyzes the given URL using the Toolbench RapidAPI service.
+    verbose: Analyzes the given URL using the Toolbench RapidAPI service.
+  parameters:
+  - name: url
+    type: string
+    description: The URL to be analyzed.
+    required: true
+    default: cleverbikes.myshopify.com
+  tags:
+  - url
+  - analysis
+  test_prompts:
+    single:
+    - Analyze the URL 'https://www.example.com' for potential issues.
+    single_clear:
+    - Analyze the URL 'https://www.example.com' for potential issues.
+- name: is_sum_of_cubes
+  descriptions:
+    minimal: Checks if a number is the sum of the cubes of its...
+    short: Checks if a number is the sum of the cubes of its digits.
+    medium: Checks if a number is the sum of the cubes of its digits.
+    long: Checks if a number is the sum of the cubes of its digits.
+    verbose: Checks if a number is the sum of the cubes of its digits.
+  parameters:
+  - name: num
+    type: integer
+    description: The number to check.
+    required: true
+  tags:
+  - is
+  - sum
+  - of
+  test_prompts:
+    single:
+    - Is 153 a sum of the cubes of its digits?
+    - Is the number 371 a sum of the cubes of its digits?
+    - Check if 1634 is a sum of the cubes of its digits.
+    - Is 153 a number that is the sum of the cubes of its digits?
+    single_clear:
+    - Is 153 a sum of the cubes of its digits?
+    - Is the number 371 a sum of the cubes of its digits?
+    - Check if 1634 is a sum of the cubes of its digits.
+    - Is 153 a number that is the sum of the cubes of its digits?
+- name: metadata
+  descriptions:
+    minimal: Fetches the metadata information for...
+    short: Fetches the metadata information for cryptocurrency markets from the specified API.
+    medium: Fetches the metadata information for cryptocurrency markets from the specified API.
+    long: Fetches the metadata information for cryptocurrency markets from the specified API.
+    verbose: Fetches the metadata information for cryptocurrency markets from the specified API.
+  parameters:
+  - name: asset_type
+    type: string
+    description: The type of the asset, e.g., 'spot' or 'futures'. Default is 'spot'.
+    required: true
+    default: spot
+  - name: market_venue
+    type: string
+    description: The trading venue where the asset is listed, e.g., 'BINANCE'. Default is 'BINANCE'.
+    required: true
+    default: BINANCE
+  - name: symbol
+    type: string
+    description: The symbol of the cryptocurrency, e.g., 'BTC'. Default is 'BTC'.
+    required: true
+    default: BTC
+  - name: base
+    type: string
+    description: The base currency for trading, e.g., 'USDT'. Default is 'USDT'.
+    required: true
+    default: USDT
+  - name: data_type
+    type: string
+    description: The type of data to fetch, e.g., 'metrics'. Default is 'metrics'.
+    required: true
+    default: metrics
+  tags:
+  - metadata
+  test_prompts:
+    single:
+    - What are the metrics for Bitcoin traded against USDT on Binance?
+    single_clear:
+    - What are the metrics for Bitcoin traded against USDT on Binance?
+- name: top_headlines
+  descriptions:
+    minimal: Fetch the latest news headlines or top stories...
+    short: Fetch the latest news headlines or top stories for a specified country.
+    medium: Fetch the latest news headlines or top stories for a specified country.
+    long: Fetch the latest news headlines or top stories for a specified country.
+    verbose: Fetch the latest news headlines or top stories for a specified country.
+  parameters:
+  - name: country
+    type: string
+    description: The 2-letter country code for which to get the headlines. Defaults to 'US'. Refer to [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+      for available codes.
+    required: false
+    default: US
+  - name: lang
+    type: string
+    description: The language code for the results, specified as a 2-letter language code. Defaults to 'en'. Refer to [ISO
+      639-1 alpha-2](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) for available codes.
+    required: false
+    default: en
+  tags:
+  - top
+  - headlines
+  test_prompts:
+    single:
+    - Get the latest news headlines in English for the United Kingdom.
+    - Retrieve the top sports headlines in English from the US.
+    single_clear:
+    - Get the latest news headlines in English for the United Kingdom.
+    - Retrieve the top sports headlines in English from the US.
+- name: shows_id
+  descriptions:
+    minimal: Fetch metadata associated with the specified show...
+    short: Fetch metadata associated with the specified show from the given platform.
+    medium: Fetch metadata associated with the specified show from the given platform.
+    long: Fetch metadata associated with the specified show from the given platform.
+    verbose: Fetch metadata associated with the specified show from the given platform.
+  parameters:
+  - name: platform
+    type: string
+    description: Source platform for the show. Possible values are 'ios', 'android', 'androidtv', 'web'.
+    required: true
+    default: web
+  - name: is_id
+    type: string
+    description: The ID of the show. Can also be a TMDB ID.
+    required: true
+    default: '82856'
+  - name: region
+    type: string
+    description: Region to retrieve the sources' deep link from. Default is 'US'. Possible values are 'US', 'FR'.
+    required: false
+    default: US
+  tags:
+  - shows
+  - id
+  test_prompts:
+    single:
+    - What is the ID of the show 'Breaking Bad' on the AndroidTV platform in France?
+    single_clear:
+    - What is the ID of the show 'Breaking Bad' on the AndroidTV platform in France?
+- name: gettrendinglenses
+  descriptions:
+    minimal: Fetches the trending lenses from Snapchat using...
+    short: Fetches the trending lenses from Snapchat using the RapidAPI service.
+    medium: Fetches the trending lenses from Snapchat using the RapidAPI service.
+    long: Fetches the trending lenses from Snapchat using the RapidAPI service.
+    verbose: Fetches the trending lenses from Snapchat using the RapidAPI service.
+  parameters:
+  - name: cursor
+    type: string
+    description: A cursor for pagination. Defaults to None.
+    required: false
+  tags:
+  - gettrendinglenses
+  test_prompts:
+    single:
+    - Fetch trending lenses from Snapchat without pagination.
+    - Can you fetch the latest trending lenses on Snapchat?
+    single_clear:
+    - Fetch trending lenses from Snapchat without pagination.
+    - Can you fetch the latest trending lenses on Snapchat?
+- name: quote
+  descriptions:
+    minimal: Retrieve the latest quote for the specified...
+    short: Retrieve the latest quote for the specified financial instrument.
+    medium: Retrieve the latest quote for the specified financial instrument.
+    long: Retrieve the latest quote for the specified financial instrument.
+    verbose: Retrieve the latest quote for the specified financial instrument.
+  parameters:
+  - name: symbol
+    type: string
+    description: The symbol of the financial instrument (e.g., 'AAPL', 'EUR/USD', 'ETH/BTC').
+    required: true
+    default: AMZN
+  - name: interval
+    type: string
+    description: Time interval between data points. Supported values are `1min`, `5min`, `15min`, `30min`, `45min`, `1h`,
+      `2h`, `4h`, `1day`, `1week`, `1month`.
+    required: true
+    default: 1day
+  - name: outputsize
+    type: integer
+    description: The number of data points to retrieve. Defaults to 30.
+    required: false
+    default: 30
+  - name: format
+    type: string
+    description: The format of the response. Can be 'csv' or 'json'. Defaults to 'json'.
+    required: false
+    default: json
+  tags:
+  - quote
+  test_prompts:
+    single:
+    - I need the latest 45-minute interval quote for Bitcoin (BTC/USD).
+    - Latest quote for Ethereum (ETH/USD) over a 1-hour interval.
+    single_clear:
+    - I need the latest 45-minute interval quote for Bitcoin (BTC/USD).
+    - Latest quote for Ethereum (ETH/USD) over a 1-hour interval.
+- name: tsv4
+  descriptions:
+    minimal: Retrieves the entry list of a specified subset...
+    short: Retrieves the entry list of a specified subset from a dataset using the odem API.
+    medium: Retrieves the entry list of a specified subset from a dataset using the odem API.
+    long: Retrieves the entry list of a specified subset from a dataset using the odem API.
+    verbose: Retrieves the entry list of a specified subset from a dataset using the odem API.
+  parameters:
+  - name: subset
+    type: string
+    description: The identifier of the data subset to retrieve.
+    required: true
+    default: activome
+  - name: dataset
+    type: string
+    description: The identifier of the dataset to query.
+    required: true
+    default: frim1
+  - name: format
+    type: string
+    description: The output format for the response. Defaults to 'tsv'.
+    required: false
+    default: tsv
+  tags:
+  - tsv4
+  test_prompts:
+    single:
+    - Retrieve the entry list for the 'inventory' subset from the 'ecommerce_data' dataset in tsv format.
+    - Retrieve the entry list for the 'patients' subset of the 'medical_records' dataset in tsv format.
+    single_clear:
+    - Retrieve the entry list for the 'inventory' subset from the 'ecommerce_data' dataset in tsv format.
+    - Retrieve the entry list for the 'patients' subset of the 'medical_records' dataset in tsv format.
+- name: searchzodiacbysign
+  descriptions:
+    minimal: Fetches information about a zodiac sign from the...
+    short: Fetches information about a zodiac sign from the Zodiac API.
+    medium: Fetches information about a zodiac sign from the Zodiac API.
+    long: Fetches information about a zodiac sign from the Zodiac API.
+    verbose: Fetches information about a zodiac sign from the Zodiac API.
+  parameters:
+  - name: sign
+    type: string
+    description: The zodiac sign to search for. Ensure the first letter is capitalized.
+    required: true
+    default: Gemini
+  tags:
+  - searchzodiacbysign
+  test_prompts:
+    single:
+    - Can you provide information about the zodiac sign 'Capricorn'?
+    single_clear:
+    - Can you provide information about the zodiac sign 'Capricorn'?
+- name: stock_recommendation_trend
+  descriptions:
+    minimal: Fetches stock recommendation trends using the...
+    short: Fetches stock recommendation trends using the Yahoo Finance API.
+    medium: Fetches stock recommendation trends using the Yahoo Finance API.
+    long: Fetches stock recommendation trends using the Yahoo Finance API.
+    verbose: Fetches stock recommendation trends using the Yahoo Finance API.
+  parameters:
+  - name: symbol
+    type: string
+    description: The stock symbol for which to fetch recommendation trends.
+    required: true
+    default: AAPL
+  tags:
+  - stock
+  - recommendation
+  - trend
+  test_prompts:
+    single:
+    - What are the current recommendations for Tesla Inc. (TSLA) stock?
+    - What are the stock recommendation trends for Google's parent company Alphabet Inc. (GOOGL) as of today?
+    single_clear:
+    - What are the current recommendations for Tesla Inc. (TSLA) stock?
+    - What are the stock recommendation trends for Google's parent company Alphabet Inc. (GOOGL) as of today?

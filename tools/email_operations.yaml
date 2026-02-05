@@ -1,0 +1,1241 @@
+category: email_operations
+description: Email sending and management operations
+tools:
+  - name: send_email
+    descriptions:
+      minimal: "Send email"
+      short: "Send an email"
+      medium: "Send an email to one or more recipients."
+      long: "Send email with subject, body, and attachments. Example: send_email(to='user@example.com', subject='Hello', body='Message content')."
+      verbose: "Send emails through SMTP or API provider. Features: HTML/text body, attachments, CC/BCC, reply-to, scheduling. Example: send_email(to='[\"user1@example.com\", \"user2@example.com\"]', subject='Monthly Report', body_html='<h1>Report</h1>...', attachments='[\"report.pdf\"]', cc='manager@example.com', track_opens=true). Note: Use templates for consistent branding. Warning: Validate addresses to avoid bounces."
+    parameters:
+      - name: to
+        type: string
+        description: "Recipient(s) - email or JSON array"
+        required: true
+      - name: subject
+        type: string
+        description: "Email subject"
+        required: true
+      - name: body
+        type: string
+        description: "Plain text body"
+        required: false
+      - name: body_html
+        type: string
+        description: "HTML body"
+        required: false
+      - name: from
+        type: string
+        description: "Sender email"
+        required: false
+      - name: cc
+        type: string
+        description: "CC recipients"
+        required: false
+      - name: bcc
+        type: string
+        description: "BCC recipients"
+        required: false
+      - name: attachments
+        type: string
+        description: "JSON array of file paths"
+        required: false
+      - name: reply_to
+        type: string
+        description: "Reply-to address"
+        required: false
+    tags: ["email", "send", "message", "smtp", "notification"]
+    test_prompts:
+      single:
+        - "Send an email"
+        - "Email the report"
+        - "Send notification email"
+        - "Mail the user"
+      single_clear:
+        - "I need to compose and send an email message to recipients with a subject and body. Send an email"
+        - "I need to compose and send an email message to recipients with a subject and body. Email the report"
+        - "I need to compose and send an email message to recipients with a subject and body. Send notification email"
+        - "I need to compose and send an email message to recipients with a subject and body. Mail the user"
+
+  - name: send_template_email
+    descriptions:
+      minimal: "Template email"
+      short: "Send templated email"
+      medium: "Send an email using a predefined template."
+      long: "Send email using template with variable substitution. Example: send_template_email(template='welcome', to='user@example.com', variables='{\"name\": \"John\"}')."
+      verbose: "Send templated emails with dynamic content. Features: template ID, variable substitution, localization, A/B testing. Example: send_template_email(template='order_confirmation', to='customer@example.com', variables='{\"order_id\": \"12345\", \"items\": [...], \"total\": 99.99}', locale='en-US'). Note: Templates should be tested before use. Warning: Missing variables may cause rendering errors."
+    parameters:
+      - name: template
+        type: string
+        description: "Template ID or name"
+        required: true
+      - name: to
+        type: string
+        description: "Recipient(s)"
+        required: true
+      - name: variables
+        type: string
+        description: "Template variables (JSON)"
+        required: true
+      - name: locale
+        type: string
+        description: "Locale for i18n"
+        required: false
+        default: "en-US"
+      - name: from
+        type: string
+        description: "Sender email"
+        required: false
+    tags: ["email", "template", "send", "marketing", "transactional"]
+    test_prompts:
+      single:
+        - "Send welcome email"
+        - "Use order confirmation template"
+        - "Send templated email"
+        - "Email using template"
+      single_clear:
+        - "Please send an email using a predefined template with personalization variables. Send welcome email"
+        - "Please send an email using a predefined template with personalization variables. Use order confirmation template"
+        - "Please send an email using a predefined template with personalization variables. Send templated email"
+        - "Please send an email using a predefined template with personalization variables. Email using template"
+
+  - name: create_email_template
+    descriptions:
+      minimal: "Create template"
+      short: "Create email template"
+      medium: "Create a reusable email template."
+      long: "Create email template with HTML and variables. Example: create_email_template(name='welcome', subject='Welcome {{name}}!', body_html='<h1>Hello {{name}}</h1>')."
+      verbose: "Create reusable email templates. Features: variable placeholders ({{var}}), conditional blocks, loops, partials. Example: create_email_template(name='invoice', subject='Invoice #{{invoice_id}}', body_html='<h1>Invoice</h1>{{#items}}<p>{{name}}: ${{price}}</p>{{/items}}<p>Total: ${{total}}</p>', category='transactional'). Note: Use semantic variable names. Warning: Test rendering with sample data."
+    parameters:
+      - name: name
+        type: string
+        description: "Template name/ID"
+        required: true
+      - name: subject
+        type: string
+        description: "Email subject template"
+        required: true
+      - name: body_html
+        type: string
+        description: "HTML body template"
+        required: true
+      - name: body_text
+        type: string
+        description: "Plain text body template"
+        required: false
+      - name: category
+        type: string
+        description: "Template category"
+        required: false
+        default: "transactional"
+        enum: ["transactional", "marketing", "notification"]
+    tags: ["email", "template", "create", "design", "html"]
+    test_prompts:
+      single:
+        - "Create email template"
+        - "Design welcome email"
+        - "Set up email template"
+        - "Create invoice template"
+      single_clear:
+        - "I need to create a new reusable email template for future messages. Create email template"
+        - "I need to create a new reusable email template for future messages. Design welcome email"
+        - "I need to create a new reusable email template for future messages. Set up email template"
+        - "I need to create a new reusable email template for future messages. Create invoice template"
+
+  - name: get_email_status
+    descriptions:
+      minimal: "Email status"
+      short: "Get email delivery status"
+      medium: "Check the delivery status of a sent email."
+      long: "Get email delivery status. Track if delivered, opened, or clicked. Example: get_email_status(message_id='msg-123')."
+      verbose: "Email delivery and engagement tracking. Statuses: queued, sent, delivered, bounced, opened, clicked, unsubscribed. Example: get_email_status(message_id='msg-abc123', include_events=true). Returns: {\"status\": \"delivered\", \"delivered_at\": \"...\", \"opened\": true, \"opens\": 2, \"clicks\": [...]}. Note: Tracking requires pixel/link tracking enabled. Warning: Opens may not track if images blocked."
+    parameters:
+      - name: message_id
+        type: string
+        description: "Email message ID"
+        required: true
+      - name: include_events
+        type: boolean
+        description: "Include all events"
+        required: false
+        default: false
+    tags: ["email", "status", "track", "delivery", "opens"]
+    test_prompts:
+      single:
+        - "Check email status"
+        - "Was the email delivered?"
+        - "Track email opens"
+        - "Get delivery status"
+      single_clear:
+        - "Please check the delivery status and tracking information for a sent email. Check email status"
+        - "Please check the delivery status and tracking information for a sent email. Was the email delivered?"
+        - "Please check the delivery status and tracking information for a sent email. Track email opens"
+        - "Please check the delivery status and tracking information for a sent email. Get delivery status"
+
+  - name: manage_mailing_list
+    descriptions:
+      minimal: "Mailing list"
+      short: "Manage mailing list"
+      medium: "Add, remove, or manage mailing list subscribers."
+      long: "Manage mailing list subscribers. Add, remove, or update subscription status. Example: manage_mailing_list(list='newsletter', action='add', email='user@example.com')."
+      verbose: "Mailing list subscriber management. Actions: 'add' (subscribe), 'remove' (unsubscribe), 'update' (change status/data), 'list' (get subscribers). Example: manage_mailing_list(list='product-updates', action='add', email='user@example.com', data='{\"name\": \"John\", \"preferences\": [\"weekly\"]}', double_optin=true). Note: Respect unsubscribe requests. Warning: Adding without consent violates anti-spam laws."
+    parameters:
+      - name: list
+        type: string
+        description: "Mailing list ID/name"
+        required: true
+      - name: action
+        type: string
+        description: "List action"
+        required: true
+        enum: ["add", "remove", "update", "list"]
+      - name: email
+        type: string
+        description: "Subscriber email"
+        required: false
+      - name: data
+        type: string
+        description: "Subscriber data (JSON)"
+        required: false
+      - name: double_optin
+        type: boolean
+        description: "Send confirmation email"
+        required: false
+        default: false
+    tags: ["email", "list", "subscribe", "newsletter", "manage"]
+    test_prompts:
+      single:
+        - "Add to mailing list"
+        - "Unsubscribe from newsletter"
+        - "Update subscriber"
+        - "List subscribers"
+      single_clear:
+        - "I need to add, remove, or update subscribers in a mailing list. Add to mailing list"
+        - "I need to add, remove, or update subscribers in a mailing list. Unsubscribe from newsletter"
+        - "I need to add, remove, or update subscribers in a mailing list. Update subscriber"
+        - "I need to add, remove, or update subscribers in a mailing list. List subscribers"
+
+  - name: send_bulk_email
+    descriptions:
+      minimal: "Bulk email"
+      short: "Send bulk emails"
+      medium: "Send emails to a large list of recipients."
+      long: "Send bulk emails to mailing list or recipient list. Supports personalization. Example: send_bulk_email(list='newsletter', template='monthly_update', schedule='2024-01-15T09:00:00Z')."
+      verbose: "Bulk email sending for campaigns. Features: mailing list or CSV recipients, template with personalization, scheduling, throttling. Example: send_bulk_email(list='active_users', template='feature_announcement', variables_default='{\"product\": \"MyApp\"}', schedule='2024-01-15T09:00:00Z', throttle=100). Note: Bulk emails should include unsubscribe link. Warning: Poor list hygiene causes deliverability issues."
+    parameters:
+      - name: list
+        type: string
+        description: "Mailing list ID"
+        required: false
+      - name: recipients
+        type: string
+        description: "JSON array of recipients"
+        required: false
+      - name: template
+        type: string
+        description: "Email template ID"
+        required: true
+      - name: variables_default
+        type: string
+        description: "Default template variables"
+        required: false
+      - name: schedule
+        type: string
+        description: "Send time (ISO format)"
+        required: false
+      - name: throttle
+        type: integer
+        description: "Emails per minute"
+        required: false
+    tags: ["email", "bulk", "campaign", "mass", "send"]
+    test_prompts:
+      single:
+        - "Send bulk email"
+        - "Email the newsletter"
+        - "Send campaign email"
+        - "Mass email announcement"
+      single_clear:
+        - "Please send the same email message to multiple recipients at once. Send bulk email"
+        - "Please send the same email message to multiple recipients at once. Email the newsletter"
+        - "Please send the same email message to multiple recipients at once. Send campaign email"
+        - "Please send the same email message to multiple recipients at once. Mass email announcement"
+
+  - name: validate_email
+    descriptions:
+      minimal: "Validate email"
+      short: "Validate email address"
+      medium: "Validate email address format and deliverability."
+      long: "Validate email address. Check syntax, domain, and deliverability. Example: validate_email(email='user@example.com', check_mx=true)."
+      verbose: "Email address validation. Checks: syntax, domain existence, MX records, disposable domain detection, role-based detection. Example: validate_email(email='user@example.com', check_mx=true, check_smtp=true, detect_disposable=true). Returns: {\"valid\": true, \"mx_valid\": true, \"disposable\": false, \"role_based\": false}. Note: SMTP verification may be slow. Warning: Some valid emails may fail SMTP check."
+    parameters:
+      - name: email
+        type: string
+        description: "Email address to validate"
+        required: true
+      - name: check_mx
+        type: boolean
+        description: "Check MX records"
+        required: false
+        default: true
+      - name: check_smtp
+        type: boolean
+        description: "Verify via SMTP"
+        required: false
+        default: false
+      - name: detect_disposable
+        type: boolean
+        description: "Detect disposable emails"
+        required: false
+        default: true
+    tags: ["email", "validate", "verify", "check", "deliverability"]
+    test_prompts:
+      single:
+        - "Validate email address"
+        - "Is this email valid?"
+        - "Check email deliverability"
+        - "Verify the email"
+      single_clear:
+        - "I need to validate whether an email address is properly formatted and deliverable. Validate email address"
+        - "I need to validate whether an email address is properly formatted and deliverable. Is this email valid?"
+        - "I need to validate whether an email address is properly formatted and deliverable. Check email deliverability"
+        - "I need to validate whether an email address is properly formatted and deliverable. Verify the email"
+
+  - name: get_email_analytics
+    descriptions:
+      minimal: "Email analytics"
+      short: "Get email analytics"
+      medium: "Get analytics for email campaigns and sends."
+      long: "Get email analytics. Delivery rates, opens, clicks, and bounces. Example: get_email_analytics(campaign='newsletter-jan', period='30d')."
+      verbose: "Email campaign analytics and metrics. Metrics: sent, delivered, bounced, opened, clicked, unsubscribed, spam complaints. Aggregations: by campaign, template, time period. Example: get_email_analytics(campaign='product-launch', period='7d', group_by='day', include_links=true). Note: Allow 24-48 hours for complete data. Warning: Open tracking requires HTML emails with images."
+    parameters:
+      - name: campaign
+        type: string
+        description: "Campaign ID"
+        required: false
+      - name: template
+        type: string
+        description: "Template ID"
+        required: false
+      - name: period
+        type: string
+        description: "Time period"
+        required: false
+        default: "30d"
+      - name: group_by
+        type: string
+        description: "Grouping interval"
+        required: false
+        enum: ["hour", "day", "week", "month"]
+      - name: include_links
+        type: boolean
+        description: "Include link click stats"
+        required: false
+        default: false
+    tags: ["email", "analytics", "metrics", "stats", "campaign"]
+    test_prompts:
+      single:
+        - "Get email analytics"
+        - "Show campaign stats"
+        - "Email open rates"
+        - "Campaign performance"
+      single_clear:
+        - "Please get email campaign analytics including open rates, click rates, and bounces. Get email analytics"
+        - "Please get email campaign analytics including open rates, click rates, and bounces. Show campaign stats"
+        - "Please get email campaign analytics including open rates, click rates, and bounces. Email open rates"
+        - "Please get email campaign analytics including open rates, click rates, and bounces. Campaign performance"
+
+  - name: configure_email_domain
+    descriptions:
+      minimal: "Configure domain"
+      short: "Configure email domain"
+      medium: "Configure domain for email sending authentication."
+      long: "Configure email domain with DNS records for authentication. Set up SPF, DKIM, DMARC. Example: configure_email_domain(domain='example.com', action='setup')."
+      verbose: "Email domain authentication setup. Records: SPF (sender policy), DKIM (signing), DMARC (policy). Actions: 'setup' (get records), 'verify' (check DNS), 'status'. Example: configure_email_domain(domain='example.com', action='verify'). Returns DNS records to add and verification status. Note: DNS propagation takes 24-48 hours. Warning: Incorrect configuration may cause deliverability issues."
+    parameters:
+      - name: domain
+        type: string
+        description: "Email domain"
+        required: true
+      - name: action
+        type: string
+        description: "Configuration action"
+        required: true
+        enum: ["setup", "verify", "status"]
+    tags: ["email", "domain", "spf", "dkim", "dmarc"]
+    test_prompts:
+      single:
+        - "Configure email domain"
+        - "Set up DKIM"
+        - "Verify email domain"
+        - "Check domain authentication"
+      single_clear:
+        - "I need to configure domain authentication settings for email sending with SPF, DKIM, and DMARC. Configure email domain"
+        - "I need to configure domain authentication settings for email sending with SPF, DKIM, and DMARC. Set up DKIM"
+        - "I need to configure domain authentication settings for email sending with SPF, DKIM, and DMARC. Verify email domain"
+        - "I need to configure domain authentication settings for email sending with SPF, DKIM, and DMARC. Check domain authentication"
+
+  - name: handle_bounce
+    descriptions:
+      minimal: "Handle bounce"
+      short: "Handle email bounce"
+      medium: "Process and handle email bounces and complaints."
+      long: "Handle email bounces and spam complaints. Update subscriber status. Example: handle_bounce(action='process', type='hard')."
+      verbose: "Email bounce and complaint handling. Types: 'hard' (permanent), 'soft' (temporary), 'complaint' (spam). Actions: 'process' (auto-handle), 'list' (view bounces), 'retry' (resend soft bounces). Example: handle_bounce(action='list', type='hard', period='7d', suppress=true). Note: Remove hard bounces promptly. Warning: Ignoring bounces damages sender reputation."
+    parameters:
+      - name: action
+        type: string
+        description: "Bounce action"
+        required: true
+        enum: ["process", "list", "retry", "suppress"]
+      - name: type
+        type: string
+        description: "Bounce type"
+        required: false
+        enum: ["hard", "soft", "complaint", "all"]
+      - name: period
+        type: string
+        description: "Time period"
+        required: false
+        default: "7d"
+      - name: suppress
+        type: boolean
+        description: "Add to suppression list"
+        required: false
+        default: true
+    tags: ["email", "bounce", "complaint", "deliverability", "suppress"]
+    test_prompts:
+      single:
+        - "Handle email bounces"
+        - "Process hard bounces"
+        - "List bounced emails"
+        - "Manage suppression list"
+      single_clear:
+        - "I need to process and handle email bounces and spam complaints to maintain list hygiene. Handle email bounces"
+        - "I need to process and handle email bounces and spam complaints to maintain list hygiene. Process hard bounces"
+        - "I need to process and handle email bounces and spam complaints to maintain list hygiene. List bounced emails"
+        - "I need to process and handle email bounces and spam complaints to maintain list hygiene. Manage suppression list"
+  - name: create_email_campaign
+    descriptions:
+      minimal: "Create campaign"
+      short: "Create email campaign"
+      medium: "Create a new email marketing campaign with scheduling and segmentation."
+      long: "Create an email marketing campaign. Set recipients, schedule, and tracking. Example: create_email_campaign(name='Holiday Sale', subject='50% Off!', list='subscribers')."
+      verbose: "Create email campaigns for marketing automation. Features: A/B testing, scheduling, segmentation, personalization. Example: create_email_campaign(name='Q4 Newsletter', subject='Your Monthly Update, {first_name}!', list='active_subscribers', template='newsletter_v2', send_time='2024-01-15T09:00:00Z', ab_test='{\"subject_lines\": [\"Option A\", \"Option B\"], \"percentage\": 20}'). Returns: campaign ID, preview link. Note: Warm up new sending domains gradually. Warning: Comply with anti-spam regulations (CAN-SPAM, GDPR)."
+    parameters:
+      - name: name
+        type: string
+        description: "Campaign name"
+        required: true
+      - name: subject
+        type: string
+        description: "Email subject line"
+        required: true
+      - name: list
+        type: string
+        description: "Recipient list ID"
+        required: true
+      - name: template
+        type: string
+        description: "Email template ID"
+        required: true
+      - name: send_time
+        type: string
+        description: "Scheduled send time (ISO 8601)"
+        required: false
+      - name: ab_test
+        type: string
+        description: "JSON A/B test configuration"
+        required: false
+      - name: segment
+        type: string
+        description: "Segment filter"
+        required: false
+    tags: ["email", "campaign", "marketing", "automation", "bulk"]
+    test_prompts:
+      single:
+        - "Create email campaign"
+        - "Set up marketing email"
+        - "Schedule newsletter send"
+        - "Create promotional campaign"
+      single_clear:
+        - "I need to create a new email marketing campaign with scheduling and segmentation. Create email campaign"
+        - "I need to create a new email marketing campaign with scheduling and segmentation. Set up marketing email"
+        - "I need to create a new email marketing campaign with scheduling and segmentation. Schedule newsletter send"
+        - "I need to create a new email marketing campaign with scheduling and segmentation. Create promotional campaign"
+
+  - name: manage_email_list
+    descriptions:
+      minimal: "Manage list"
+      short: "Manage email list"
+      medium: "Create, update, or manage email subscriber lists."
+      long: "Manage email lists. Add/remove subscribers, update preferences, handle segments. Example: manage_email_list(action='add', list='newsletter', email='user@example.com')."
+      verbose: "Email list management operations. Actions: create (new list), add (subscribers), remove (unsubscribe), update (preferences), merge (combine lists), clean (remove invalids). Example: manage_email_list(action='add', list='product_updates', emails='[\"user1@example.com\", \"user2@example.com\"]', properties='{\"source\": \"website\", \"consent_date\": \"2024-01-01\"}', double_optin=true). Note: Always track consent for compliance. Warning: Purchased lists harm deliverability."
+    parameters:
+      - name: action
+        type: string
+        description: "List action"
+        required: true
+        enum: ["create", "add", "remove", "update", "merge", "clean"]
+      - name: list
+        type: string
+        description: "List ID or name"
+        required: true
+      - name: email
+        type: string
+        description: "Single email address"
+        required: false
+      - name: emails
+        type: string
+        description: "JSON array of emails"
+        required: false
+      - name: properties
+        type: string
+        description: "JSON subscriber properties"
+        required: false
+      - name: double_optin
+        type: boolean
+        description: "Require double opt-in"
+        required: false
+        default: false
+    tags: ["email", "list", "subscribers", "management", "marketing"]
+    test_prompts:
+      single:
+        - "Add subscriber to list"
+        - "Remove from mailing list"
+        - "Create new email list"
+        - "Clean invalid emails"
+      single_clear:
+        - "I need to create, update, or manage email subscriber lists. Add subscriber to list"
+        - "I need to create, update, or manage email subscriber lists. Remove from mailing list"
+        - "I need to create, update, or manage email subscriber lists. Create new email list"
+        - "I need to create, update, or manage email subscriber lists. Clean invalid emails"
+
+  - name: analyze_email_metrics
+    descriptions:
+      minimal: "Analyze metrics"
+      short: "Analyze email metrics"
+      medium: "Get analytics and performance metrics for email campaigns."
+      long: "Analyze email campaign performance. Track opens, clicks, conversions. Example: analyze_email_metrics(campaign='holiday_sale', metrics='[\"open_rate\", \"click_rate\"]')."
+      verbose: "Comprehensive email analytics and reporting. Metrics: delivery rate, open rate, click rate, unsubscribes, spam complaints, revenue attribution. Example: analyze_email_metrics(campaign='welcome_series', metrics='[\"open_rate\", \"click_rate\", \"conversion_rate\"]', breakdown_by='device', compare_to='previous_campaign', period='30d'). Returns: metric values, trends, benchmarks. Note: Open tracking requires pixel loading. Warning: Apple Mail privacy may affect open rate accuracy."
+    parameters:
+      - name: campaign
+        type: string
+        description: "Campaign ID or 'all'"
+        required: true
+      - name: metrics
+        type: string
+        description: "JSON array of metrics"
+        required: true
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: false
+        default: "30d"
+      - name: breakdown_by
+        type: string
+        description: "Dimension to segment by"
+        required: false
+        enum: ["device", "location", "link", "time"]
+      - name: compare_to
+        type: string
+        description: "Campaign to compare against"
+        required: false
+    tags: ["email", "analytics", "metrics", "reporting", "performance"]
+    test_prompts:
+      single:
+        - "Show email campaign metrics"
+        - "Analyze open rates"
+        - "Get click performance"
+        - "Report on email results"
+      single_clear:
+        - "I need to get analytics and performance metrics for email campaigns. Show email campaign metrics"
+        - "I need to get analytics and performance metrics for email campaigns. Analyze open rates"
+        - "I need to get analytics and performance metrics for email campaigns. Get click performance"
+        - "I need to get analytics and performance metrics for email campaigns. Report on email results"
+
+  - name: setup_email_automation
+    descriptions:
+      minimal: "Setup automation"
+      short: "Setup email automation"
+      medium: "Create automated email workflows triggered by events or schedules."
+      long: "Create email automation workflows. Trigger on signup, purchase, or custom events. Example: setup_email_automation(name='welcome_series', trigger='signup', emails='[{\"delay\": 0, \"template\": \"welcome\"}]')."
+      verbose: "Build automated email sequences and workflows. Triggers: event (signup, purchase, action), schedule, date-based (birthday, anniversary). Example: setup_email_automation(name='Onboarding Flow', trigger='signup', emails='[{\"delay\": \"0d\", \"template\": \"welcome\"}, {\"delay\": \"3d\", \"template\": \"getting_started\"}, {\"delay\": \"7d\", \"template\": \"feature_highlight\"}]', exit_conditions='[\"unsubscribe\", \"converted\"]'). Note: Test automations with internal addresses first. Warning: Monitor automation performance to avoid spam issues."
+    parameters:
+      - name: name
+        type: string
+        description: "Automation name"
+        required: true
+      - name: trigger
+        type: string
+        description: "Trigger event"
+        required: true
+      - name: trigger_conditions
+        type: string
+        description: "JSON trigger conditions"
+        required: false
+      - name: emails
+        type: string
+        description: "JSON array of email sequence"
+        required: true
+      - name: exit_conditions
+        type: string
+        description: "JSON exit conditions"
+        required: false
+      - name: active
+        type: boolean
+        description: "Activate immediately"
+        required: false
+        default: false
+    tags: ["email", "automation", "workflow", "drip", "sequence"]
+    test_prompts:
+      single:
+        - "Create welcome email series"
+        - "Set up drip campaign"
+        - "Automate onboarding emails"
+        - "Create email workflow"
+      single_clear:
+        - "I need to create automated email workflows triggered by events or schedules. Create welcome email series"
+        - "I need to create automated email workflows triggered by events or schedules. Set up drip campaign"
+        - "I need to create automated email workflows triggered by events or schedules. Automate onboarding emails"
+        - "I need to create automated email workflows triggered by events or schedules. Create email workflow"
+
+  - name: verify_email_address
+    descriptions:
+      minimal: "Verify email"
+      short: "Verify email address"
+      medium: "Verify email address validity and deliverability."
+      long: "Verify an email address before sending. Check syntax, domain, and mailbox. Example: verify_email_address(email='user@example.com', deep_check=true)."
+      verbose: "Email verification to improve deliverability. Checks: syntax validation, domain existence, MX records, catch-all detection, disposable email detection, SMTP verification. Example: verify_email_address(email='user@example.com', deep_check=true, check_disposable=true, timeout=10). Returns: valid (boolean), risk level, reason. Note: SMTP checks may rate limit. Warning: Deep verification may slow bulk operations."
+    parameters:
+      - name: email
+        type: string
+        description: "Email to verify"
+        required: true
+      - name: deep_check
+        type: boolean
+        description: "Perform SMTP verification"
+        required: false
+        default: true
+      - name: check_disposable
+        type: boolean
+        description: "Check for disposable email"
+        required: false
+        default: true
+      - name: timeout
+        type: integer
+        description: "Verification timeout (seconds)"
+        required: false
+        default: 10
+    tags: ["email", "verify", "validation", "deliverability", "hygiene"]
+    test_prompts:
+      single:
+        - "Verify this email address"
+        - "Check if email is valid"
+        - "Validate email before sending"
+        - "Is this email deliverable"
+      single_clear:
+        - "I need to verify an email address validity and deliverability before sending. Verify this email address"
+        - "I need to verify an email address validity and deliverability before sending. Check if email is valid"
+        - "I need to verify an email address validity and deliverability before sending. Validate email before sending"
+        - "I need to verify an email address validity and deliverability before sending. Is this email deliverable"
+
+  - name: configure_email_domain
+    descriptions:
+      minimal: "Configure domain"
+      short: "Configure email domain"
+      medium: "Set up and configure a domain for email sending."
+      long: "Configure a custom domain for sending emails. Set up SPF, DKIM, and DMARC. Example: configure_email_domain(domain='mail.company.com', action='setup')."
+      verbose: "Set up custom sending domains for better deliverability. Configuration: SPF records, DKIM signing, DMARC policy, return-path, custom tracking domain. Example: configure_email_domain(domain='mail.company.com', action='setup', dkim_key_length=2048, return_path='bounce.company.com'). Returns: DNS records to add, verification status. Note: DNS propagation takes up to 48 hours. Warning: Incorrect SPF/DKIM can cause emails to be rejected."
+    parameters:
+      - name: domain
+        type: string
+        description: "Domain to configure"
+        required: true
+      - name: action
+        type: string
+        description: "Configuration action"
+        required: true
+        enum: ["setup", "verify", "status", "remove"]
+      - name: dkim_key_length
+        type: integer
+        description: "DKIM key length"
+        required: false
+        default: 2048
+      - name: return_path
+        type: string
+        description: "Custom return-path domain"
+        required: false
+    tags: ["email", "domain", "dns", "dkim", "spf", "deliverability"]
+    test_prompts:
+      single:
+        - "Set up sending domain"
+        - "Configure DKIM for email"
+        - "Verify email domain"
+        - "Get DNS records for domain"
+      single_clear:
+        - "I need to set up and configure a domain for email sending with DNS records. Set up sending domain"
+        - "I need to set up and configure a domain for email sending with DNS records. Configure DKIM for email"
+        - "I need to set up and configure a domain for email sending with DNS records. Verify email domain"
+        - "I need to set up and configure a domain for email sending with DNS records. Get DNS records for domain"
+
+  - name: manage_email_template_variables
+    descriptions:
+      minimal: "Manage variables"
+      short: "Manage template variables"
+      medium: "Define and manage dynamic variables for email templates."
+      long: "Manage template variables for personalization. Set defaults and validation. Example: manage_email_template_variables(action='define', name='first_name', default='Customer')."
+      verbose: "Define variables for email template personalization. Actions: define (create), list, update, test. Variable types: text, number, date, URL, conditional. Example: manage_email_template_variables(action='define', name='product_recommendations', type='array', default='[]', max_items=5, description='Personalized product list'). Note: Always set fallback defaults. Warning: Test variables with edge cases (empty, long strings)."
+    parameters:
+      - name: action
+        type: string
+        description: "Variable action"
+        required: true
+        enum: ["define", "list", "update", "delete", "test"]
+      - name: name
+        type: string
+        description: "Variable name"
+        required: false
+      - name: type
+        type: string
+        description: "Variable type"
+        required: false
+        enum: ["text", "number", "date", "url", "array", "boolean"]
+      - name: default
+        type: string
+        description: "Default value"
+        required: false
+      - name: description
+        type: string
+        description: "Variable description"
+        required: false
+    tags: ["email", "template", "variables", "personalization", "dynamic"]
+    test_prompts:
+      single:
+        - "Define template variable"
+        - "Set default for variable"
+        - "List template variables"
+        - "Test personalization"
+      single_clear:
+        - "I need to define and manage dynamic variables for email template personalization. Define template variable"
+        - "I need to define and manage dynamic variables for email template personalization. Set default for variable"
+        - "I need to define and manage dynamic variables for email template personalization. List template variables"
+        - "I need to define and manage dynamic variables for email template personalization. Test personalization"
+
+  - name: schedule_email_digest
+    descriptions:
+      minimal: "Schedule digest"
+      short: "Schedule email digest"
+      medium: "Create and schedule automated email digests from content feeds."
+      long: "Schedule automated digest emails that aggregate content. Pull from RSS or APIs. Example: schedule_email_digest(name='weekly_blog', source='rss://blog.company.com', schedule='weekly')."
+      verbose: "Automated digest emails from content sources. Sources: RSS feeds, APIs, database queries. Scheduling: daily, weekly, monthly. Example: schedule_email_digest(name='Weekly Tech News', sources='[{\"type\": \"rss\", \"url\": \"blog.company.com/feed\"}, {\"type\": \"api\", \"endpoint\": \"/articles\"}]', template='digest_template', schedule='0 9 * * MON', list='tech_enthusiasts', max_items=10). Note: Test digest content before activation. Warning: Ensure source content is fresh and relevant."
+    parameters:
+      - name: name
+        type: string
+        description: "Digest name"
+        required: true
+      - name: sources
+        type: string
+        description: "JSON array of content sources"
+        required: true
+      - name: template
+        type: string
+        description: "Email template ID"
+        required: true
+      - name: schedule
+        type: string
+        description: "Cron schedule"
+        required: true
+      - name: list
+        type: string
+        description: "Recipient list ID"
+        required: true
+      - name: max_items
+        type: integer
+        description: "Max items to include"
+        required: false
+        default: 10
+    tags: ["email", "digest", "automation", "newsletter", "rss"]
+    test_prompts:
+      single:
+        - "Create weekly digest"
+        - "Schedule newsletter from blog"
+        - "Set up content digest"
+        - "Automate RSS to email"
+      single_clear:
+        - "I need to create and schedule automated email digests from content feeds. Create weekly digest"
+        - "I need to create and schedule automated email digests from content feeds. Schedule newsletter from blog"
+        - "I need to create and schedule automated email digests from content feeds. Set up content digest"
+        - "I need to create and schedule automated email digests from content feeds. Automate RSS to email"
+
+  - name: test_email_deliverability
+    descriptions:
+      minimal: "Test deliverability"
+      short: "Test email deliverability"
+      medium: "Test email deliverability across major email providers."
+      long: "Test email deliverability and inbox placement. Check against spam filters. Example: test_email_deliverability(from='marketing@company.com', template='promo')."
+      verbose: "Comprehensive deliverability testing. Tests: inbox placement (Gmail, Outlook, Yahoo), spam filter analysis, authentication (SPF, DKIM, DMARC), content analysis. Example: test_email_deliverability(from='newsletter@company.com', template='monthly_update', test_providers='[\"gmail\", \"outlook\", \"yahoo\", \"protonmail\"]', include_authentication=true). Returns: inbox rate, spam score, issues found, recommendations. Note: Run tests before major campaigns. Warning: Real deliverability may vary from tests."
+    parameters:
+      - name: from
+        type: string
+        description: "Sender email address"
+        required: true
+      - name: template
+        type: string
+        description: "Template to test"
+        required: true
+      - name: test_providers
+        type: string
+        description: "JSON array of providers to test"
+        required: false
+      - name: include_authentication
+        type: boolean
+        description: "Include auth checks"
+        required: false
+        default: true
+      - name: content_analysis
+        type: boolean
+        description: "Analyze content for spam triggers"
+        required: false
+        default: true
+    tags: ["email", "deliverability", "test", "spam", "inbox"]
+    test_prompts:
+      single:
+        - "Test email deliverability"
+        - "Check spam score"
+        - "Verify inbox placement"
+        - "Analyze email for spam triggers"
+      single_clear:
+        - "I need to test email deliverability across major email providers. Test email deliverability"
+        - "I need to test email deliverability across major email providers. Check spam score"
+        - "I need to test email deliverability across major email providers. Verify inbox placement"
+        - "I need to test email deliverability across major email providers. Analyze email for spam triggers"
+
+  - name: archive_email
+    descriptions:
+      minimal: "Archive email"
+      short: "Archive an email message"
+      medium: "Move an email message to the archive folder."
+      long: "Archive email to remove from inbox while preserving. Example: archive_email(message_id='msg-123', folder='archive')."
+      verbose: "Archive emails for long-term storage. Features: custom archive folders, batch archiving, retention policies, search in archives. Example: archive_email(message_id='msg-abc123', folder='archive/2024', add_label='processed', compress=true). Note: Archived emails remain searchable. Warning: Large archives may slow down search."
+    parameters:
+      - name: message_id
+        type: string
+        description: "Email message ID to archive"
+        required: true
+      - name: folder
+        type: string
+        description: "Archive folder path"
+        required: false
+        default: "archive"
+      - name: add_label
+        type: string
+        description: "Label to add before archiving"
+        required: false
+      - name: compress
+        type: boolean
+        description: "Compress archived email"
+        required: false
+        default: false
+    tags: ["email", "archive", "storage", "organize", "folder"]
+    test_prompts:
+      single:
+        - "Archive this email"
+        - "Move email to archive"
+        - "Archive old messages"
+        - "Store email in archive folder"
+      single_clear:
+        - "I need to move an email message to the archive folder for long-term storage. Archive this email"
+        - "I need to move an email message to the archive folder for long-term storage. Move email to archive"
+        - "I need to move an email message to the archive folder for long-term storage. Archive old messages"
+        - "I need to move an email message to the archive folder for long-term storage. Store email in archive folder"
+
+  - name: restore_archived_email
+    descriptions:
+      minimal: "Restore email"
+      short: "Restore archived email"
+      medium: "Restore an archived email back to the inbox."
+      long: "Restore email from archive to inbox or specified folder. Example: restore_archived_email(message_id='msg-123', destination='inbox')."
+      verbose: "Restore archived emails to active folders. Features: restore to any folder, preserve labels, batch restore, restore with filters. Example: restore_archived_email(message_id='msg-abc123', destination='inbox', mark_unread=true, preserve_labels=true). Note: Original metadata is preserved. Warning: Check for duplicates before restoring."
+    parameters:
+      - name: message_id
+        type: string
+        description: "Archived email message ID"
+        required: true
+      - name: destination
+        type: string
+        description: "Destination folder"
+        required: false
+        default: "inbox"
+      - name: mark_unread
+        type: boolean
+        description: "Mark as unread after restore"
+        required: false
+        default: false
+      - name: preserve_labels
+        type: boolean
+        description: "Keep original labels"
+        required: false
+        default: true
+    tags: ["email", "restore", "archive", "recover", "inbox"]
+    test_prompts:
+      single:
+        - "Restore archived email"
+        - "Bring back archived message"
+        - "Recover email from archive"
+        - "Unarchive this email"
+      single_clear:
+        - "I need to restore an archived email back to the inbox or another folder. Restore archived email"
+        - "I need to restore an archived email back to the inbox or another folder. Bring back archived message"
+        - "I need to restore an archived email back to the inbox or another folder. Recover email from archive"
+        - "I need to restore an archived email back to the inbox or another folder. Unarchive this email"
+
+  - name: create_email_signature
+    descriptions:
+      minimal: "Create signature"
+      short: "Create email signature"
+      medium: "Create a reusable email signature for outgoing messages."
+      long: "Create HTML email signature with contact info. Example: create_email_signature(name='Work', html='<p>John Doe<br>CEO</p>')."
+      verbose: "Create professional email signatures. Features: HTML formatting, images, social links, multiple signatures, conditional content. Example: create_email_signature(name='Professional', html='<table><tr><td><img src=\"logo.png\"></td><td><b>{{name}}</b><br>{{title}}<br>{{phone}}</td></tr></table>', variables='{\"name\": \"John Doe\", \"title\": \"CEO\", \"phone\": \"+1-555-0123\"}', default=true). Note: Keep signatures mobile-friendly. Warning: Avoid large images."
+    parameters:
+      - name: name
+        type: string
+        description: "Signature name/identifier"
+        required: true
+      - name: html
+        type: string
+        description: "HTML signature content"
+        required: true
+      - name: plain_text
+        type: string
+        description: "Plain text version"
+        required: false
+      - name: variables
+        type: string
+        description: "Variable values (JSON)"
+        required: false
+      - name: default
+        type: boolean
+        description: "Set as default signature"
+        required: false
+        default: false
+    tags: ["email", "signature", "create", "format", "branding"]
+    test_prompts:
+      single:
+        - "Create email signature"
+        - "Set up my signature"
+        - "Design email footer"
+        - "Add signature block"
+      single_clear:
+        - "I need to create a reusable email signature for outgoing messages. Create email signature"
+        - "I need to create a reusable email signature for outgoing messages. Set up my signature"
+        - "I need to create a reusable email signature for outgoing messages. Design email footer"
+        - "I need to create a reusable email signature for outgoing messages. Add signature block"
+
+  - name: get_email_headers
+    descriptions:
+      minimal: "Get headers"
+      short: "Get email headers"
+      medium: "Retrieve the full headers of an email message."
+      long: "Get complete email headers for analysis. Example: get_email_headers(message_id='msg-123', parse=true)."
+      verbose: "Retrieve and parse email headers. Information: routing path, authentication results, spam scores, timestamps, custom headers. Example: get_email_headers(message_id='msg-abc123', parse=true, include_routing=true). Returns: {\"from\": \"...\", \"received\": [...], \"spf\": \"pass\", \"dkim\": \"pass\", \"x-headers\": {...}}. Note: Useful for troubleshooting delivery. Warning: Headers may contain sensitive routing info."
+    parameters:
+      - name: message_id
+        type: string
+        description: "Email message ID"
+        required: true
+      - name: parse
+        type: boolean
+        description: "Parse headers into structured data"
+        required: false
+        default: true
+      - name: include_routing
+        type: boolean
+        description: "Include routing information"
+        required: false
+        default: false
+    tags: ["email", "headers", "metadata", "analysis", "debug"]
+    test_prompts:
+      single:
+        - "Get email headers"
+        - "Show message headers"
+        - "Retrieve email metadata"
+        - "Analyze email routing"
+      single_clear:
+        - "I need to retrieve the full headers of an email message for analysis. Get email headers"
+        - "I need to retrieve the full headers of an email message for analysis. Show message headers"
+        - "I need to retrieve the full headers of an email message for analysis. Retrieve email metadata"
+        - "I need to retrieve the full headers of an email message for analysis. Analyze email routing"
+
+  - name: set_email_auto_reply
+    descriptions:
+      minimal: "Set auto-reply"
+      short: "Set email auto-reply"
+      medium: "Configure automatic email replies for vacation or absence."
+      long: "Set up auto-reply messages. Example: set_email_auto_reply(enabled=true, message='I am out of office until Monday.')."
+      verbose: "Configure automatic out-of-office replies. Features: start/end dates, different messages for internal/external, exclude certain senders. Example: set_email_auto_reply(enabled=true, message='I am on vacation until Jan 5th. For urgent matters contact backup@company.com', start_date='2024-12-24', end_date='2025-01-05', internal_message='On PTO, reach me on Slack for emergencies', exclude_domains='[\"noreply.com\"]'). Note: Auto-replies typically send once per sender. Warning: Disable promptly to avoid confusion."
+    parameters:
+      - name: enabled
+        type: boolean
+        description: "Enable or disable auto-reply"
+        required: true
+      - name: message
+        type: string
+        description: "Auto-reply message"
+        required: false
+      - name: start_date
+        type: string
+        description: "Start date (ISO 8601)"
+        required: false
+      - name: end_date
+        type: string
+        description: "End date (ISO 8601)"
+        required: false
+      - name: internal_message
+        type: string
+        description: "Message for internal senders"
+        required: false
+      - name: exclude_domains
+        type: string
+        description: "JSON array of domains to exclude"
+        required: false
+    tags: ["email", "auto-reply", "vacation", "out-of-office", "automation"]
+    test_prompts:
+      single:
+        - "Set vacation auto-reply"
+        - "Enable out of office message"
+        - "Configure auto-responder"
+        - "Set up automatic reply"
+      single_clear:
+        - "I need to configure automatic email replies for vacation or absence. Set vacation auto-reply"
+        - "I need to configure automatic email replies for vacation or absence. Enable out of office message"
+        - "I need to configure automatic email replies for vacation or absence. Configure auto-responder"
+        - "I need to configure automatic email replies for vacation or absence. Set up automatic reply"
+
+  - name: export_emails
+    descriptions:
+      minimal: "Export emails"
+      short: "Export emails to file"
+      medium: "Export emails to various file formats for backup or migration."
+      long: "Export emails to EML, MBOX, or PST format. Example: export_emails(folder='inbox', format='mbox', output_path='/backup/inbox.mbox')."
+      verbose: "Bulk email export for backup or migration. Formats: EML (single messages), MBOX (Unix mailbox), PST (Outlook), PDF (readable). Example: export_emails(folder='inbox', format='mbox', output_path='/backup/inbox.mbox', date_from='2024-01-01', date_to='2024-12-31', include_attachments=true, compress=true). Note: Large exports may take time. Warning: PST format requires Windows."
+    parameters:
+      - name: folder
+        type: string
+        description: "Email folder to export"
+        required: true
+      - name: format
+        type: string
+        description: "Export format"
+        required: true
+        enum: ["eml", "mbox", "pst", "pdf"]
+      - name: output_path
+        type: string
+        description: "Output file path"
+        required: true
+      - name: date_from
+        type: string
+        description: "Start date filter (ISO 8601)"
+        required: false
+      - name: date_to
+        type: string
+        description: "End date filter (ISO 8601)"
+        required: false
+      - name: include_attachments
+        type: boolean
+        description: "Include attachments"
+        required: false
+        default: true
+      - name: compress
+        type: boolean
+        description: "Compress output file"
+        required: false
+        default: false
+    tags: ["email", "export", "backup", "migration", "archive"]
+    test_prompts:
+      single:
+        - "Export my emails"
+        - "Backup email folder"
+        - "Download emails as mbox"
+        - "Export inbox to file"
+      single_clear:
+        - "I need to export emails to various file formats for backup or migration. Export my emails"
+        - "I need to export emails to various file formats for backup or migration. Backup email folder"
+        - "I need to export emails to various file formats for backup or migration. Download emails as mbox"
+        - "I need to export emails to various file formats for backup or migration. Export inbox to file"
+
+  - name: import_emails
+    descriptions:
+      minimal: "Import emails"
+      short: "Import emails from file"
+      medium: "Import emails from EML, MBOX, or PST files."
+      long: "Import emails from backup or migration files. Example: import_emails(source_path='/backup/inbox.mbox', format='mbox', destination='inbox')."
+      verbose: "Bulk email import from backup files. Formats: EML (single messages), MBOX (Unix mailbox), PST (Outlook). Example: import_emails(source_path='/migration/old_mail.pst', format='pst', destination='imported', preserve_folders=true, skip_duplicates=true, apply_labels='[\"imported\", \"2024\"]'). Note: Large imports are processed in batches. Warning: Check for duplicates before importing."
+    parameters:
+      - name: source_path
+        type: string
+        description: "Source file path"
+        required: true
+      - name: format
+        type: string
+        description: "Import format"
+        required: true
+        enum: ["eml", "mbox", "pst"]
+      - name: destination
+        type: string
+        description: "Destination folder"
+        required: false
+        default: "inbox"
+      - name: preserve_folders
+        type: boolean
+        description: "Preserve original folder structure"
+        required: false
+        default: true
+      - name: skip_duplicates
+        type: boolean
+        description: "Skip duplicate messages"
+        required: false
+        default: true
+      - name: apply_labels
+        type: string
+        description: "JSON array of labels to apply"
+        required: false
+    tags: ["email", "import", "migration", "restore", "backup"]
+    test_prompts:
+      single:
+        - "Import emails from file"
+        - "Restore email backup"
+        - "Import mbox file"
+        - "Migrate emails from PST"
+      single_clear:
+        - "I need to import emails from EML, MBOX, or PST files for migration. Import emails from file"
+        - "I need to import emails from EML, MBOX, or PST files for migration. Restore email backup"
+        - "I need to import emails from EML, MBOX, or PST files for migration. Import mbox file"
+        - "I need to import emails from EML, MBOX, or PST files for migration. Migrate emails from PST"
+
+  - name: snooze_email
+    descriptions:
+      minimal: "Snooze email"
+      short: "Snooze an email"
+      medium: "Snooze an email to reappear at a specified time."
+      long: "Snooze email to hide temporarily and resurface later. Example: snooze_email(message_id='msg-123', until='2024-12-25T09:00:00Z')."
+      verbose: "Temporarily hide emails until a specified time. Features: custom snooze times, recurring snooze, location-based snooze. Example: snooze_email(message_id='msg-abc123', until='2024-12-25T09:00:00Z', mark_important=true, move_to_top=true). Common presets: 'tomorrow_morning', 'next_week', 'this_weekend'. Note: Snoozed emails reappear as unread. Warning: Don't forget about snoozed items."
+    parameters:
+      - name: message_id
+        type: string
+        description: "Email message ID"
+        required: true
+      - name: until
+        type: string
+        description: "Snooze until datetime (ISO 8601) or preset"
+        required: true
+      - name: mark_important
+        type: boolean
+        description: "Mark as important when resurfacing"
+        required: false
+        default: false
+      - name: move_to_top
+        type: boolean
+        description: "Move to top of inbox when resurfacing"
+        required: false
+        default: true
+    tags: ["email", "snooze", "remind", "schedule", "inbox"]
+    test_prompts:
+      single:
+        - "Snooze this email"
+        - "Remind me about this email tomorrow"
+        - "Hide email until Monday"
+        - "Snooze message for later"
+      single_clear:
+        - "I need to snooze an email to reappear at a specified time later. Snooze this email"
+        - "I need to snooze an email to reappear at a specified time later. Remind me about this email tomorrow"
+        - "I need to snooze an email to reappear at a specified time later. Hide email until Monday"
+        - "I need to snooze an email to reappear at a specified time later. Snooze message for later"
+
+  - name: get_email_attachments
+    descriptions:
+      minimal: "Get attachments"
+      short: "Get email attachments"
+      medium: "Download or list attachments from an email message."
+      long: "Get attachments from email. Example: get_email_attachments(message_id='msg-123', download=true, output_dir='/downloads')."
+      verbose: "Extract and download email attachments. Features: list only, selective download, virus scanning, format conversion. Example: get_email_attachments(message_id='msg-abc123', download=true, output_dir='/downloads/attachments', filter_types='[\"pdf\", \"docx\"]', scan_for_viruses=true, max_size_mb=25). Returns: [{\"name\": \"report.pdf\", \"size\": 1024000, \"type\": \"application/pdf\", \"path\": \"/downloads/report.pdf\"}]. Note: Large attachments may take time to download. Warning: Scan attachments for security."
+    parameters:
+      - name: message_id
+        type: string
+        description: "Email message ID"
+        required: true
+      - name: download
+        type: boolean
+        description: "Download attachments or just list"
+        required: false
+        default: false
+      - name: output_dir
+        type: string
+        description: "Directory to save attachments"
+        required: false
+      - name: filter_types
+        type: string
+        description: "JSON array of file types to include"
+        required: false
+      - name: scan_for_viruses
+        type: boolean
+        description: "Scan attachments for viruses"
+        required: false
+        default: true
+    tags: ["email", "attachments", "download", "extract", "files"]
+    test_prompts:
+      single:
+        - "Get email attachments"
+        - "Download attachments from email"
+        - "Extract files from message"
+        - "List email attachments"
+      single_clear:
+        - "I need to download or list attachments from an email message. Get email attachments"
+        - "I need to download or list attachments from an email message. Download attachments from email"
+        - "I need to download or list attachments from an email message. Extract files from message"
+        - "I need to download or list attachments from an email message. List email attachments"
+
+  - name: verify_email_address
+    descriptions:
+      minimal: "Verify email"
+      short: "Verify email address"
+      medium: "Verify if an email address is valid and deliverable."
+      long: "Verify email address validity and deliverability. Example: verify_email_address(email='user@example.com', check_mx=true)."
+      verbose: "Comprehensive email address verification. Checks: syntax validation, MX record lookup, SMTP verification, disposable email detection, role-based detection. Example: verify_email_address(email='user@example.com', check_mx=true, check_smtp=true, detect_disposable=true). Returns: {\"valid\": true, \"deliverable\": true, \"mx_found\": true, \"is_disposable\": false, \"is_role_based\": false, \"suggestion\": null}. Note: SMTP check may not work with all providers. Warning: High-volume verification may trigger rate limits."
+    parameters:
+      - name: email
+        type: string
+        description: "Email address to verify"
+        required: true
+      - name: check_mx
+        type: boolean
+        description: "Check MX records"
+        required: false
+        default: true
+      - name: check_smtp
+        type: boolean
+        description: "Verify via SMTP"
+        required: false
+        default: false
+      - name: detect_disposable
+        type: boolean
+        description: "Detect disposable emails"
+        required: false
+        default: true
+      - name: detect_role_based
+        type: boolean
+        description: "Detect role-based addresses"
+        required: false
+        default: true
+    tags: ["email", "verify", "validate", "check", "deliverability"]
+    test_prompts:
+      single:
+        - "Verify email address"
+        - "Check if email is valid"
+        - "Validate this email"
+        - "Is this email deliverable"
+      single_clear:
+        - "I need to verify if an email address is valid and deliverable. Verify email address"
+        - "I need to verify if an email address is valid and deliverable. Check if email is valid"
+        - "I need to verify if an email address is valid and deliverable. Validate this email"
+        - "I need to verify if an email address is valid and deliverable. Is this email deliverable"

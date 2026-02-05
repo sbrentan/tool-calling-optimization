@@ -1,0 +1,880 @@
+category: category_4
+tools:
+- name: calculate_angle
+  descriptions:
+    minimal: Calculates the angle between the hour and minute...
+    short: Calculates the angle between the hour and minute hands of a clock.
+    medium: Calculates the angle between the hour and minute hands of a clock.
+    long: Calculates the angle between the hour and minute hands of a clock.
+    verbose: Calculates the angle between the hour and minute hands of a clock.
+  parameters:
+  - name: hour
+    type: integer
+    description: The hour value (1-12).
+    required: true
+  - name: minute
+    type: integer
+    description: The minute value (0-59).
+    required: true
+  tags:
+  - calculate
+  - angle
+  test_prompts:
+    single:
+    - Find the angle between the hour and minute hands at 9:45.
+    - Find the angle between the hands of a clock at 5:35 PM.
+    - What is the angle between the hands of a clock at 3:15?
+    - What is the angle between the hour and minute hands at 3:15?
+    - Find the angle at 2:30 on a clock.
+    - Determine the angle between the hour and minute hands at 3:15 PM.
+    - Calculate the angle between the hour and minute hands of a clock at 3:15.
+    single_clear:
+    - Find the angle between the hour and minute hands at 9:45.
+    - Find the angle between the hands of a clock at 5:35 PM.
+    - What is the angle between the hands of a clock at 3:15?
+    - What is the angle between the hour and minute hands at 3:15?
+    - Find the angle at 2:30 on a clock.
+    - Determine the angle between the hour and minute hands at 3:15 PM.
+    - Calculate the angle between the hour and minute hands of a clock at 3:15.
+- name: search_patent
+  descriptions:
+    minimal: Searches for patents using a keyword and data...
+    short: Searches for patents using a keyword and data source, and returns a list of patents.
+    medium: Searches for patents using a keyword and data source, and returns a list of patents.
+    long: Searches for patents using a keyword and data source, and returns a list of patents.
+    verbose: Searches for patents using a keyword and data source, and returns a list of patents.
+  parameters:
+  - name: q
+    type: string
+    description: Keyword used for searching patents.
+    required: true
+    default: kettle
+  - name: ds
+    type: string
+    description: Data source to search for patents.
+    required: true
+    default: all
+  tags:
+  - search
+  - patent
+  test_prompts:
+    single:
+    - Can you search for patents related to 'renewable energy' in the 'USPTO' data source?
+    - Search for patents related to 'renewable energy' in the USPTO database.
+    - Search for patents about 'artificial intelligence' in the EPO database.
+    single_clear:
+    - Can you search for patents related to 'renewable energy' in the 'USPTO' data source?
+    - Search for patents related to 'renewable energy' in the USPTO database.
+    - Search for patents about 'artificial intelligence' in the EPO database.
+- name: ufc_fight_night_kara_france_vs_albazi_june_03_2023
+  descriptions:
+    minimal: 'Fetch details of UFC Fight Night: Kara-France vs...'
+    short: 'Fetch details of UFC Fight Night: Kara-France vs.'
+    medium: 'Fetch details of UFC Fight Night: Kara-France vs. Albazi on June 03, 2023.'
+    long: 'Fetch details of UFC Fight Night: Kara-France vs. Albazi on June 03, 2023.'
+    verbose: 'Fetch details of UFC Fight Night: Kara-France vs. Albazi on June 03, 2023.'
+  parameters:
+  - name: offset
+    type: integer
+    description: The starting point of records to return. Defaults to None.
+    required: false
+  - name: limit
+    type: integer
+    description: The number of records to return. Defaults to None.
+    required: false
+  tags:
+  - ufc
+  - fight
+  - night
+  test_prompts:
+    single:
+    - 'Get detailed stats for all fighters in the UFC Fight Night: Kara-France vs. Albazi on June 03, 2023, starting from
+      the 10th record and fetching 5 records.'
+    single_clear:
+    - 'Get detailed stats for all fighters in the UFC Fight Night: Kara-France vs. Albazi on June 03, 2023, starting from
+      the 10th record and fetching 5 records.'
+- name: text_sentiment_analysis
+  descriptions:
+    minimal: Analyzes the sentiment of the provided text using...
+    short: Analyzes the sentiment of the provided text using the Text Sentiment Analysis API.
+    medium: Analyzes the sentiment of the provided text using the Text Sentiment Analysis API.
+    long: Analyzes the sentiment of the provided text using the Text Sentiment Analysis API.
+    verbose: Analyzes the sentiment of the provided text using the Text Sentiment Analysis API.
+  parameters:
+  - name: text
+    type: string
+    description: The text to be analyzed for sentiment.
+    required: true
+    default: have a good day
+  tags:
+  - text
+  - sentiment
+  - analysis
+  test_prompts:
+    single:
+    - 'What is the sentiment of the review: ''The service was terrible, I will never go back.'''
+    - 'Analyze the sentiment of the following movie review: ''The cinematography was breathtaking, but the plot was confusing.'''
+    - 'Analyze the sentiment of the news headline: ''Economic growth exceeds expectations.'''
+    - 'What is the sentiment of the customer feedback: ''The delivery was fast, but the product was damaged.'''
+    - 'Analyze the sentiment of the following review: ''The service was terrible, I would not recommend it.'''
+    single_clear:
+    - 'What is the sentiment of the review: ''The service was terrible, I will never go back.'''
+    - 'Analyze the sentiment of the following movie review: ''The cinematography was breathtaking, but the plot was confusing.'''
+    - 'Analyze the sentiment of the news headline: ''Economic growth exceeds expectations.'''
+    - 'What is the sentiment of the customer feedback: ''The delivery was fast, but the product was damaged.'''
+    - 'Analyze the sentiment of the following review: ''The service was terrible, I would not recommend it.'''
+- name: getdownloadurl
+  descriptions:
+    minimal: Generates an mp3 download URL using a...
+    short: Generates an mp3 download URL using a Text-to-Speech (TTS) engine for the provided text and voice.
+    medium: Generates an mp3 download URL using a Text-to-Speech (TTS) engine for the provided text and voice.
+    long: Generates an mp3 download URL using a Text-to-Speech (TTS) engine for the provided text and voice.
+    verbose: Generates an mp3 download URL using a Text-to-Speech (TTS) engine for the provided text and voice.
+  parameters:
+  - name: text
+    type: string
+    description: The text to be converted to speech.
+    required: true
+    default: Are you alright?
+  - name: voice_name
+    type: string
+    description: The voice and language for the speech synthesis. Default is 'en-US-AriaNeural'.
+    required: false
+    default: en-US-AriaNeural
+  tags:
+  - getdownloadurl
+  test_prompts:
+    single:
+    - Create a download URL for the text 'Bonjour, monde!' using the voice 'fr-FR-DenverNeural'.
+    single_clear:
+    - Create a download URL for the text 'Bonjour, monde!' using the voice 'fr-FR-DenverNeural'.
+- name: market_aggressive_small_caps
+  descriptions:
+    minimal: Fetch data for aggressive small cap stocks with...
+    short: Fetch data for aggressive small cap stocks with earnings growth rates greater than 25% using the mboum-finance
+      API.
+    medium: Fetch data for aggressive small cap stocks with earnings growth rates greater than 25% using the mboum-finance
+      API.
+    long: Fetch data for aggressive small cap stocks with earnings growth rates greater than 25% using the mboum-finance API.
+    verbose: Fetch data for aggressive small cap stocks with earnings growth rates greater than 25% using the mboum-finance
+      API.
+  parameters:
+  - name: start
+    type: integer
+    description: The starting index for fetching the data. Defaults to 0.
+    required: false
+    default: '0'
+  tags:
+  - market
+  - aggressive
+  - small
+  test_prompts:
+    single:
+    - Fetch aggressive small cap stocks starting from index 5.
+    single_clear:
+    - Fetch aggressive small cap stocks starting from index 5.
+- name: listpornstars
+  descriptions:
+    minimal: Fetch a list of pornstars based on various...
+    short: Fetch a list of pornstars based on various filtering criteria.
+    medium: Fetch a list of pornstars based on various filtering criteria.
+    long: Fetch a list of pornstars based on various filtering criteria.
+    verbose: Fetch a list of pornstars based on various filtering criteria.
+  parameters:
+  - name: max_rank
+    type: string
+    description: Maximum rank of the pornstar.
+    required: false
+  - name: min_rank
+    type: string
+    description: Minimum rank of the pornstar.
+    required: false
+  - name: max_waist
+    type: string
+    description: Maximum waist measurement of the pornstar.
+    required: false
+  - name: max_cup_size
+    type: string
+    description: Maximum cup size of the pornstar.
+    required: false
+  - name: min_cup_size
+    type: string
+    description: Minimum cup size of the pornstar.
+    required: false
+  - name: min_weight
+    type: string
+    description: Minimum weight of the pornstar.
+    required: false
+  - name: max_weight
+    type: string
+    description: Maximum weight of the pornstar.
+    required: false
+  - name: max_age
+    type: string
+    description: Maximum age of the pornstar.
+    required: false
+  - name: ethnicity
+    type: string
+    description: Ethnicity of the pornstar.
+    required: false
+  - name: min_age
+    type: string
+    description: Minimum age of the pornstar.
+    required: false
+  - name: nationality
+    type: string
+    description: Nationality of the pornstar.
+    required: false
+  - name: tattoos
+    type: string
+    description: Tattoo status of the pornstar.
+    required: false
+  - name: eyes
+    type: string
+    description: Eye color of the pornstar.
+    required: false
+  - name: hair
+    type: string
+    description: Hair color of the pornstar.
+    required: false
+  - name: page
+    type: integer
+    description: Page number for paginated results.
+    required: false
+  - name: min_waist
+    type: string
+    description: Minimum waist measurement of the pornstar.
+    required: false
+  - name: name
+    type: string
+    description: Name of the pornstar.
+    required: false
+  - name: date_of_birth
+    type: string
+    description: Date of birth of the pornstar.
+    required: false
+  tags:
+  - listpornstars
+  test_prompts:
+    single:
+    - List pornstars with a cup size of D or larger and a waist size below 65 cm.
+    - Find pornstars who are of Asian ethnicity and have brown eyes.
+    single_clear:
+    - List pornstars with a cup size of D or larger and a waist size below 65 cm.
+    - Find pornstars who are of Asian ethnicity and have brown eyes.
+- name: mean_confidence_interval
+  descriptions:
+    minimal: Calculates the confidence interval for a sample...
+    short: Calculates the confidence interval for a sample mean.
+    medium: Calculates the confidence interval for a sample mean.
+    long: Calculates the confidence interval for a sample mean.
+    verbose: Calculates the confidence interval for a sample mean.
+  parameters:
+  - name: std_dev
+    type: number
+    description: The standard deviation of the sample.
+    required: true
+    default: 0.95
+  - name: sample_size
+    type: integer
+    description: The size of the sample.
+    required: true
+    default: 0.95
+  - name: mean
+    type: number
+    description: The mean of the sample.
+    required: true
+  - name: confidence
+    type: number
+    description: The desired confidence level. Default is 0.95.
+    required: false
+  tags:
+  - mean
+  - confidence
+  - interval
+  test_prompts:
+    single:
+    - I have a dataset with a mean of 50, a standard deviation of 2, and a sample size of 500. What are the lower and upper
+      bounds of the 90% confidence interval?
+    - What is the 95% confidence interval for a sample mean of 50 with a standard deviation of 10 and a sample size of 100?
+    - Given a sample of 50 items with a mean of 100 and a standard deviation of 15, what is the 99% confidence interval for
+      the population mean?
+    - Can you calculate the 95% confidence interval for a sample mean with a standard deviation of 5, a sample size of 100,
+      and a mean of 20?
+    - What is the confidence interval for a sample mean of 75 with a standard deviation of 5 and a sample size of 200 at a
+      99% confidence level?
+    - Calculate the 95% confidence interval for a sample of 30 with a mean of 45 and a standard deviation of 3.
+    - Find the 95% confidence interval for a mean of 50 from a sample of 10 items with a standard deviation of 1.
+    - Calculate the confidence interval for a sample with a mean of 50, standard deviation of 10, and sample size of 100 at
+      a 95% confidence level.
+    single_clear:
+    - I have a dataset with a mean of 50, a standard deviation of 2, and a sample size of 500. What are the lower and upper
+      bounds of the 90% confidence interval?
+    - What is the 95% confidence interval for a sample mean of 50 with a standard deviation of 10 and a sample size of 100?
+    - Given a sample of 50 items with a mean of 100 and a standard deviation of 15, what is the 99% confidence interval for
+      the population mean?
+    - Can you calculate the 95% confidence interval for a sample mean with a standard deviation of 5, a sample size of 100,
+      and a mean of 20?
+    - What is the confidence interval for a sample mean of 75 with a standard deviation of 5 and a sample size of 200 at a
+      99% confidence level?
+    - Calculate the 95% confidence interval for a sample of 30 with a mean of 45 and a standard deviation of 3.
+    - Find the 95% confidence interval for a mean of 50 from a sample of 10 items with a standard deviation of 1.
+    - Calculate the confidence interval for a sample with a mean of 50, standard deviation of 10, and sample size of 100 at
+      a 95% confidence level.
+- name: order_by_descending
+  descriptions:
+    minimal: Fetches a list of resources from the Cat Breed...
+    short: Fetches a list of resources from the Cat Breed Database API sorted in descending order based on the provided ordering
+      parameter.
+    medium: Fetches a list of resources from the Cat Breed Database API sorted in descending order based on the provided ordering
+      parameter.
+    long: Fetches a list of resources from the Cat Breed Database API sorted in descending order based on the provided ordering
+      parameter.
+    verbose: Fetches a list of resources from the Cat Breed Database API sorted in descending order based on the provided
+      ordering parameter.
+  parameters:
+  - name: ordering
+    type: string
+    description: The criterion by which to sort the list in descending order.
+    required: true
+    default: -breedName
+  tags:
+  - order
+  - by
+  - descending
+  test_prompts:
+    single:
+    - List the cat breeds with the most affectionate temperaments, ordered from most to least affectionate.
+    single_clear:
+    - List the cat breeds with the most affectionate temperaments, ordered from most to least affectionate.
+- name: vin_decoder
+  descriptions:
+    minimal: Decodes a given VIN (Vehicle Identification...
+    short: Decodes a given VIN (Vehicle Identification Number) for a vehicle manufactured in Europe to retrieve information
+      such as car model, maker, year, engine, and other relevant details.
+    medium: Decodes a given VIN (Vehicle Identification Number) for a vehicle manufactured in Europe to retrieve information
+      such as car model, maker, year, engine, and other relevant details.
+    long: Decodes a given VIN (Vehicle Identification Number) for a vehicle manufactured in Europe to retrieve information
+      such as car model, maker, year, engine, and other relevant details.
+    verbose: Decodes a given VIN (Vehicle Identification Number) for a vehicle manufactured in Europe to retrieve information
+      such as car model, maker, year, engine, and other relevant details.
+  parameters:
+  - name: vin
+    type: string
+    description: The VIN number to be decoded.
+    required: true
+    default: VF3CA5FU8DW062146
+  tags:
+  - vin
+  - decoder
+  test_prompts:
+    single:
+    - Can you decode the VIN 1HGCM82633A102761 for a European car and find out its model and manufacturing year?
+    - Determine the model and engine specifications for a vehicle with VIN '1G11C5SL9DF123456'.
+    - Retrieve the manufacturing year and maker of a vehicle with VIN 'XYZ123456789012345'.
+    - What are the details of a 2008 Porsche Cayenne with VIN WP1ZZZ92Z8LA123456?
+    single_clear:
+    - Can you decode the VIN 1HGCM82633A102761 for a European car and find out its model and manufacturing year?
+    - Determine the model and engine specifications for a vehicle with VIN '1G11C5SL9DF123456'.
+    - Retrieve the manufacturing year and maker of a vehicle with VIN 'XYZ123456789012345'.
+    - What are the details of a 2008 Porsche Cayenne with VIN WP1ZZZ92Z8LA123456?
+- name: is_valid_email
+  descriptions:
+    minimal: Checks if an email address is valid.
+    short: Checks if an email address is valid.
+    medium: Checks if an email address is valid.
+    long: Checks if an email address is valid.
+    verbose: Checks if an email address is valid.
+  parameters:
+  - name: email
+    type: string
+    description: The email address to validate.
+    required: true
+  tags:
+  - is
+  - valid
+  - email
+  test_prompts:
+    single:
+    - Verify if the email 'invalid.email@.com' is valid.
+    - Check if admin@domain is valid.
+    - Is the email 'john.doe@example.com' valid?
+    - Is 'no_at_symbol.com' considered a valid email address?
+    - Check if the email 'info@company.co' is valid.
+    - Is a.long.email+with.plus@domain.co.uk valid?
+    single_clear:
+    - Verify if the email 'invalid.email@.com' is valid.
+    - Check if admin@domain is valid.
+    - Is the email 'john.doe@example.com' valid?
+    - Is 'no_at_symbol.com' considered a valid email address?
+    - Check if the email 'info@company.co' is valid.
+    - Is a.long.email+with.plus@domain.co.uk valid?
+- name: emailfinder
+  descriptions:
+    minimal: Finds the most likely email address based on the...
+    short: Finds the most likely email address based on the provided domain name, first name, and last name using the Tomba
+      RapidAPI.
+    medium: Finds the most likely email address based on the provided domain name, first name, and last name using the Tomba
+      RapidAPI.
+    long: Finds the most likely email address based on the provided domain name, first name, and last name using the Tomba
+      RapidAPI.
+    verbose: Finds the most likely email address based on the provided domain name, first name, and last name using the Tomba
+      RapidAPI.
+  parameters:
+  - name: domain
+    type: string
+    description: The domain name to search for the email address (e.g., "stripe.com").
+    required: true
+    default: stripe.com
+  - name: first_name
+    type: string
+    description: The first name of the person.
+    required: true
+    default: Moskoz
+  - name: last_name
+    type: string
+    description: The last name of the person.
+    required: true
+    default: Dustin
+  tags:
+  - emailfinder
+  test_prompts:
+    single:
+    - What is the email address of Emily Davis who is employed by Apple?
+    single_clear:
+    - What is the email address of Emily Davis who is employed by Apple?
+- name: searchdomain
+  descriptions:
+    minimal: Fetches webpage data from the...
+    short: Fetches webpage data from the "pages-hosted-on-domain" API based on the provided filters and parameters.
+    medium: Fetches webpage data from the "pages-hosted-on-domain" API based on the provided filters and parameters.
+    long: Fetches webpage data from the "pages-hosted-on-domain" API based on the provided filters and parameters.
+    verbose: Fetches webpage data from the "pages-hosted-on-domain" API based on the provided filters and parameters.
+  parameters:
+  - name: matchtype
+    type: string
+    description: The type of match to be used. Default is 'prefix'.
+    required: true
+    default: prefix
+  - name: collapse
+    type: string
+    description: The field to be collapsed. Default is 'urlkey'.
+    required: true
+    default: urlkey
+  - name: url
+    type: string
+    description: The URL to search for. Default is 'httpsimage.com'.
+    required: true
+    default: httpsimage.com
+  - name: fl
+    type: string
+    description: The fields to include in the response. Default is 'timestamp:4,original,urlkey'.
+    required: true
+    default: timestamp:4,original,urlkey
+  - name: limit
+    type: integer
+    description: The maximum number of results to return. Default is 100000.
+    required: true
+    default: '100000'
+  - name: filter
+    type: string
+    description: The filter to apply to the results. Default is 'statuscode:200'.
+    required: true
+    default: statuscode:200
+  tags:
+  - searchdomain
+  test_prompts:
+    single:
+    - Search for pages hosted on 'wikipedia.org' and get details including timestamp and original URL.
+    single_clear:
+    - Search for pages hosted on 'wikipedia.org' and get details including timestamp and original URL.
+- name: mass_messages
+  descriptions:
+    minimal: Retrieves the last 100 mass messages from the...
+    short: Retrieves the last 100 mass messages from the OnlyFans API.
+    medium: Retrieves the last 100 mass messages from the OnlyFans API.
+    long: Retrieves the last 100 mass messages from the OnlyFans API.
+    verbose: Retrieves the last 100 mass messages from the OnlyFans API.
+  parameters:
+  - name: timezone
+    type: string
+    description: The timezone to use for the messages.
+    required: true
+    default: America/Los_Angeles
+  - name: useragent
+    type: string
+    description: The user agent string identifying the client's browser.
+    required: true
+  - name: auth_id
+    type: string
+    description: Authentication ID used for accessing the API.
+    required: true
+    default: '729369'
+  - name: signstart
+    type: string
+    description: Start time for the signed request.
+    required: true
+  - name: signend
+    type: string
+    description: End time for the signed request.
+    required: true
+  - name: sess
+    type: string
+    description: Session identifier.
+    required: true
+  - name: xbc
+    type: string
+    description: Another session-related identifier.
+    required: true
+  - name: apptoken
+    type: string
+    description: Application token for API access.
+    required: true
+  tags:
+  - mass
+  - messages
+  test_prompts:
+    single:
+    - Fetch the last 100 mass messages from OnlyFans in the 'America/New_York' timezone using a generic user agent and specific
+      authentication details.
+    single_clear:
+    - Fetch the last 100 mass messages from OnlyFans in the 'America/New_York' timezone using a generic user agent and specific
+      authentication details.
+- name: whois
+  descriptions:
+    minimal: Fetch the WhoIS lookup data for a given domain...
+    short: Fetch the WhoIS lookup data for a given domain using the specified Toolbench RapidAPI key.
+    medium: Fetch the WhoIS lookup data for a given domain using the specified Toolbench RapidAPI key.
+    long: Fetch the WhoIS lookup data for a given domain using the specified Toolbench RapidAPI key.
+    verbose: Fetch the WhoIS lookup data for a given domain using the specified Toolbench RapidAPI key.
+  parameters:
+  - name: domain
+    type: string
+    description: The domain name for which to retrieve the WhoIS data.
+    required: true
+    default: peekdomain.com
+  tags:
+  - whois
+  test_prompts:
+    single:
+    - What are the WhoIS details for amazon.com?
+    - Can you provide the WHOIS details for wikipedia.org?
+    - Retrieve the WHOIS information for apple.com.
+    - I need the WHOIS record for amazon.co.uk.
+    - What is the WHOIS information for google.com?
+    - Retrieve WhoIS information for the domain 'example.com'.
+    - Get WHOIS data for 'amazon.com'
+    - Provide the WHOIS record for facebook.com.
+    - Fetch WHOIS details for 'wikipedia.org'
+    - Get WHOIS details for the domain 'wikipedia.org'.
+    - What are the WHOIS details for microsoft.com?
+    single_clear:
+    - What are the WhoIS details for amazon.com?
+    - Can you provide the WHOIS details for wikipedia.org?
+    - Retrieve the WHOIS information for apple.com.
+    - I need the WHOIS record for amazon.co.uk.
+    - What is the WHOIS information for google.com?
+    - Retrieve WhoIS information for the domain 'example.com'.
+    - Get WHOIS data for 'amazon.com'
+    - Provide the WHOIS record for facebook.com.
+    - Fetch WHOIS details for 'wikipedia.org'
+    - Get WHOIS details for the domain 'wikipedia.org'.
+    - What are the WHOIS details for microsoft.com?
+- name: prime_factorization
+  descriptions:
+    minimal: Computes the prime factorization of a positive...
+    short: Computes the prime factorization of a positive integer.
+    medium: Computes the prime factorization of a positive integer.
+    long: Computes the prime factorization of a positive integer.
+    verbose: Computes the prime factorization of a positive integer.
+  parameters:
+  - name: number
+    type: integer
+    description: The positive integer to factorize.
+    required: true
+  tags:
+  - prime
+  - factorization
+  test_prompts:
+    single:
+    - What are the prime factors of 180?
+    - Compute the prime factors of 81.
+    - Perform prime factorization of the number 144.
+    single_clear:
+    - What are the prime factors of 180?
+    - Compute the prime factors of 81.
+    - Perform prime factorization of the number 144.
+- name: time_series
+  descriptions:
+    minimal: Fetch the daily historical rates for a given base...
+    short: Fetch the daily historical rates for a given base and target currency or metal between specified start and end
+      dates from the TimeSeries API.
+    medium: Fetch the daily historical rates for a given base and target currency or metal between specified start and end
+      dates from the TimeSeries API. The function is limited to a maximum range of 365 days and can query only one symbol
+      per request.
+    long: Fetch the daily historical rates for a given base and target currency or metal between specified start and end dates
+      from the TimeSeries API. The function is limited to a maximum range of 365 days and can query only one symbol per request.
+    verbose: Fetch the daily historical rates for a given base and target currency or metal between specified start and end
+      dates from the TimeSeries API. The function is limited to a maximum range of 365 days and can query only one symbol
+      per request.
+  parameters:
+  - name: base
+    type: string
+    description: The three-letter currency code or metal code of the base currency.
+    required: true
+    default: USD
+  - name: symbols
+    type: string
+    description: The three-letter currency code or metal code of the target currency.
+    required: true
+    default: XAU
+  - name: end_date
+    type: string
+    description: The end date of the timeframe in 'YYYY-MM-DD' format.
+    required: true
+    default: '2023-01-10'
+  - name: start_date
+    type: string
+    description: The start date of the timeframe in 'YYYY-MM-DD' format.
+    required: true
+    default: '2022-12-20'
+  tags:
+  - time
+  - series
+  test_prompts:
+    single:
+    - I need the historical exchange rates for the EUR to USD from March 1, 2023, to March 15, 2023.
+    - Fetch the 5min interval data for the EUR/USD currency pair for the last 45 data points.
+    single_clear:
+    - I need the historical exchange rates for the EUR to USD from March 1, 2023, to March 15, 2023.
+    - Fetch the 5min interval data for the EUR/USD currency pair for the last 45 data points.
+- name: get_realtime_rates
+  descriptions:
+    minimal: Gets the real-time price of a specified...
+    short: Gets the real-time price of a specified cryptocurrency coin using RapidAPI.
+    medium: Gets the real-time price of a specified cryptocurrency coin using RapidAPI.
+    long: Gets the real-time price of a specified cryptocurrency coin using RapidAPI.
+    verbose: Gets the real-time price of a specified cryptocurrency coin using RapidAPI.
+  parameters:
+  - name: symbol
+    type: string
+    description: The symbol of the cryptocurrency coin (e.g., 'BTC' for Bitcoin).
+    required: true
+    default: BTC
+  tags:
+  - get
+  - realtime
+  - rates
+  test_prompts:
+    single:
+    - What's the current price of BNB?
+    single_clear:
+    - What's the current price of BNB?
+- name: calculate_electric_field
+  descriptions:
+    minimal: Calculate the electric field produced by a charge...
+    short: Calculate the electric field produced by a charge at a certain distance.
+    medium: Calculate the electric field produced by a charge at a certain distance.
+    long: Calculate the electric field produced by a charge at a certain distance.
+    verbose: Calculate the electric field produced by a charge at a certain distance.
+  parameters:
+  - name: charge
+    type: integer
+    description: Charge in coulombs producing the electric field.
+    required: true
+    default: 8.854e-12
+  - name: distance
+    type: integer
+    description: Distance from the charge in meters where the field is being measured.
+    required: true
+    default: 8.854e-12
+  - name: permitivity
+    type: number
+    description: Permitivity of the space where field is being calculated, default is 8.854e-12.
+    required: true
+  tags:
+  - calculate
+  - electric
+  - field
+  test_prompts:
+    single:
+    - Calculate the electric field produced by a charge of 1 Coulomb at a distance of 1 meter.
+    - Calculate the electric field at 10 meters from a charge of 2 Coulombs.
+    - What is the electric field at a distance of 1 meter from a charge of 10 coulombs?
+    - Calculate the electric field produced by a charge of 10 coulombs at a distance of 1 meter.
+    - Calculate the electric field produced by a charge of 1 Coulomb at a distance of 1 meter.
+    - Determine the electric field at 2 meters from a charge of 3 Coulombs.
+    - Compute the electric field from a charge of 2 Coulombs at a distance of 2 meters.
+    single_clear:
+    - Calculate the electric field produced by a charge of 1 Coulomb at a distance of 1 meter.
+    - Calculate the electric field at 10 meters from a charge of 2 Coulombs.
+    - What is the electric field at a distance of 1 meter from a charge of 10 coulombs?
+    - Calculate the electric field produced by a charge of 10 coulombs at a distance of 1 meter.
+    - Calculate the electric field produced by a charge of 1 Coulomb at a distance of 1 meter.
+    - Determine the electric field at 2 meters from a charge of 3 Coulombs.
+    - Compute the electric field from a charge of 2 Coulombs at a distance of 2 meters.
+- name: getuserbyname
+  descriptions:
+    minimal: Fetches user details by username from the...
+    short: Fetches user details by username from the specified API endpoint using the provided RapidAPI key.
+    medium: Fetches user details by username from the specified API endpoint using the provided RapidAPI key.
+    long: Fetches user details by username from the specified API endpoint using the provided RapidAPI key.
+    verbose: Fetches user details by username from the specified API endpoint using the provided RapidAPI key.
+  parameters:
+  - name: username
+    type: string
+    description: The username of the user to fetch details for.
+    required: true
+  tags:
+  - getuserbyname
+  test_prompts:
+    single:
+    - Retrieve details for the user with the username 'TechGuru123'.
+    - Fetch the user details for the username 'alicewonder' from the public API. This information is needed for a background
+      check, but only for authorized personnel.
+    - I need the details of user 'user1'.
+    - Find details for the user named 'FitnessFanatic77'.
+    - Retrieve user information for the username 'john_doe'
+    - Fetch user details for the username 'tech_guru'.
+    single_clear:
+    - Retrieve details for the user with the username 'TechGuru123'.
+    - Fetch the user details for the username 'alicewonder' from the public API. This information is needed for a background
+      check, but only for authorized personnel.
+    - I need the details of user 'user1'.
+    - Find details for the user named 'FitnessFanatic77'.
+    - Retrieve user information for the username 'john_doe'
+    - Fetch user details for the username 'tech_guru'.
+- name: by_source_new
+  descriptions:
+    minimal: Fetch the most recent 50 news items from a...
+    short: Fetch the most recent 50 news items from a specific source using the Moka News API.
+    medium: Fetch the most recent 50 news items from a specific source using the Moka News API.
+    long: Fetch the most recent 50 news items from a specific source using the Moka News API.
+    verbose: Fetch the most recent 50 news items from a specific source using the Moka News API.
+  parameters:
+  - name: source
+    type: string
+    description: The news source from which to retrieve the news items, taken from the available sources list.
+    required: true
+    default: cnn
+  tags:
+  - by
+  - source
+  - new
+  test_prompts:
+    single:
+    - Fetch the most recent news from 'The New York Times' source.
+    single_clear:
+    - Fetch the most recent news from 'The New York Times' source.
+- name: all_keto_recipes_by_category
+  descriptions:
+    minimal: Fetches all keto recipes by category ID from the...
+    short: Fetches all keto recipes by category ID from the Keto Diet API.
+    medium: Fetches all keto recipes by category ID from the Keto Diet API.
+    long: Fetches all keto recipes by category ID from the Keto Diet API.
+    verbose: Fetches all keto recipes by category ID from the Keto Diet API.
+  parameters:
+  - name: category
+    type: integer
+    description: The ID of the recipe category to fetch.
+    required: true
+    default: '2'
+  tags:
+  - all
+  - keto
+  - recipes
+  test_prompts:
+    single:
+    - I need recipes for keto breakfast items.
+    single_clear:
+    - I need recipes for keto breakfast items.
+- name: get_genres
+  descriptions:
+    minimal: Fetch a list of radio station genres using the...
+    short: Fetch a list of radio station genres using the provided keyword and RapidAPI key.
+    medium: Fetch a list of radio station genres using the provided keyword and RapidAPI key.
+    long: Fetch a list of radio station genres using the provided keyword and RapidAPI key.
+    verbose: Fetch a list of radio station genres using the provided keyword and RapidAPI key.
+  parameters:
+  - name: keyword
+    type: string
+    description: The keyword to filter genres. Defaults to 'music'.
+    required: true
+    default: music
+  tags:
+  - get
+  - genres
+  test_prompts:
+    single:
+    - Can you find any radio station genres that include the term 'classical'?
+    - What are the top 10 radio station genres related to 'rock'?
+    - What are the popular genres in radio stations for 'electronic' music?
+    single_clear:
+    - Can you find any radio station genres that include the term 'classical'?
+    - What are the top 10 radio station genres related to 'rock'?
+    - What are the popular genres in radio stations for 'electronic' music?
+- name: exchange_range
+  descriptions:
+    minimal: Retrieves the minimum and maximum payment amounts...
+    short: Retrieves the minimum and maximum payment amounts required to make an exchange for a specified pair of assets.
+    medium: Retrieves the minimum and maximum payment amounts required to make an exchange for a specified pair of assets.
+    long: Retrieves the minimum and maximum payment amounts required to make an exchange for a specified pair of assets.
+    verbose: Retrieves the minimum and maximum payment amounts required to make an exchange for a specified pair of assets.
+  parameters:
+  - name: from_to
+    type: string
+    description: Underscore separated pair of asset tickers (e.g., 'btc_usd').
+    required: true
+    default: btc_eth
+  - name: api_key
+    type: string
+    description: Your specific API key for the service. Defaults to 'your_api_key'.
+    required: false
+    default: your_api_key
+  tags:
+  - exchange
+  - range
+  test_prompts:
+    single:
+    - What are the limits for exchanging DAI to JPY?
+    single_clear:
+    - What are the limits for exchanging DAI to JPY?
+- name: companies_id_events
+  descriptions:
+    minimal: Fetch the latest events for a specific company...
+    short: Fetch the latest events for a specific company identified by `is_id`.
+    medium: Fetch the latest events for a specific company identified by `is_id`.
+    long: Fetch the latest events for a specific company identified by `is_id`.
+    verbose: Fetch the latest events for a specific company identified by `is_id`.
+  parameters:
+  - name: is_id
+    type: string
+    description: The unique identifier of the company.
+    required: true
+    default: DEVFCLQFW054
+  - name: category
+    type: string
+    description: The category of events to filter by (default is 'MANAGEMENT_AND_TEAM,FINANCES_AND_CAPITAL,NEWS_AND_EVENTS').
+    required: false
+    default: MANAGEMENT_AND_TEAM,FINANCES_AND_CAPITAL,NEWS_AND_EVENTS
+  - name: since
+    type: string
+    description: The start date for fetching events in YYYY-MM-DD format (default is '2017-01-01').
+    required: false
+    default: '2017-01-01'
+  - name: size
+    type: integer
+    description: The number of events to retrieve (default is 100).
+    required: false
+    default: '100'
+  tags:
+  - companies
+  - id
+  - events
+  test_prompts:
+    single:
+    - Fetch the latest management and team events for the company with ID '123456789' since January 2020.
+    - What are the financial updates for the company '135792468' since the start of 2022?
+    single_clear:
+    - Fetch the latest management and team events for the company with ID '123456789' since January 2020.
+    - What are the financial updates for the company '135792468' since the start of 2022?

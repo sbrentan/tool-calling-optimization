@@ -1,0 +1,733 @@
+category: category_18
+tools:
+- name: gethospitalsbyname
+  descriptions:
+    minimal: Fetches a list of U.S. hospitals that match the...
+    short: Fetches a list of U.
+    medium: Fetches a list of U.S. hospitals that match the given name using the RapidAPI service.
+    long: Fetches a list of U.S. hospitals that match the given name using the RapidAPI service.
+    verbose: Fetches a list of U.S. hospitals that match the given name using the RapidAPI service.
+  parameters:
+  - name: name
+    type: string
+    description: The name or partial name of the hospital to search for.
+    required: true
+    default: presbyterian
+  tags:
+  - gethospitalsbyname
+  test_prompts:
+    single:
+    - Locate hospitals named 'Regional' in the U.S.
+    single_clear:
+    - Locate hospitals named 'Regional' in the U.S.
+- name: top_news
+  descriptions:
+    minimal: Fetch the top latest news articles from CoinDesk.
+    short: Fetch the top latest news articles from CoinDesk.
+    medium: Fetch the top latest news articles from CoinDesk.
+    long: Fetch the top latest news articles from CoinDesk.
+    verbose: Fetch the top latest news articles from CoinDesk.
+  parameters:
+  - name: num
+    type: integer
+    description: The number of news articles to fetch. By default, it is set to 5.
+    required: false
+    default: '5'
+  tags:
+  - top
+  - news
+  test_prompts:
+    single:
+    - Can you fetch the top 3 latest news articles from CoinDesk?
+    - I need to get the top 10 news articles from CoinDesk today.
+    single_clear:
+    - Can you fetch the top 3 latest news articles from CoinDesk?
+    - I need to get the top 10 news articles from CoinDesk today.
+- name: air_quality_forecasts
+  descriptions:
+    minimal: Fetches hourly air quality forecast for a...
+    short: Fetches hourly air quality forecast for a specified city.
+    medium: Fetches hourly air quality forecast for a specified city.
+    long: Fetches hourly air quality forecast for a specified city.
+    verbose: Fetches hourly air quality forecast for a specified city.
+  parameters:
+  - name: country
+    type: string
+    description: The country where the city is located.
+    required: true
+    default: netherlands
+  - name: city
+    type: string
+    description: The city for which the air quality forecast is required.
+    required: true
+    default: amsterdam
+  - name: lat
+    type: string
+    description: Latitude of the city. Defaults to '52.377956'.
+    required: false
+    default: '52.377956'
+  - name: lon
+    type: string
+    description: Longitude of the city. Defaults to '4.897070'.
+    required: false
+    default: '4.897070'
+  tags:
+  - air
+  - quality
+  - forecasts
+  test_prompts:
+    single:
+    - I need the air quality forecast for Sydney, Australia, specifically for the area with latitude -33.865143 and longitude
+      151.209900.
+    - Can you provide the air quality forecast for Tokyo, Japan, using its specific latitude and longitude?
+    single_clear:
+    - I need the air quality forecast for Sydney, Australia, specifically for the area with latitude -33.865143 and longitude
+      151.209900.
+    - Can you provide the air quality forecast for Tokyo, Japan, using its specific latitude and longitude?
+- name: investment_profit
+  descriptions:
+    minimal: Calculates the profit from an investment based on...
+    short: Calculates the profit from an investment based on the initial amount, annual return rate, and time.
+    medium: Calculates the profit from an investment based on the initial amount, annual return rate, and time.
+    long: Calculates the profit from an investment based on the initial amount, annual return rate, and time.
+    verbose: Calculates the profit from an investment based on the initial amount, annual return rate, and time.
+  parameters:
+  - name: amount
+    type: number
+    description: The initial investment amount.
+    required: true
+  - name: rate
+    type: number
+    description: The annual return rate expressed as a decimal.
+    required: true
+  - name: years
+    type: integer
+    description: The number of years the investment is held.
+    required: true
+  tags:
+  - investment
+  - profit
+  test_prompts:
+    single:
+    - Calculate the profit from an investment of $1000 at a 5% annual return rate over 10 years.
+    - What would be the profit from investing $10,000 at an annual return rate of 6% for 5 years?
+    - What is the profit from investing $2000 at a 4% annual rate for 7 years?
+    - How much profit can I expect from an investment of $5000 at an annual return rate of 4% over 3 years?
+    - Calculate the profit from an investment of $5000 at a 5% annual return rate over 10 years.
+    - Calculate the profit from an investment of $2500 at a 4.5% annual rate over 7 years.
+    single_clear:
+    - Calculate the profit from an investment of $1000 at a 5% annual return rate over 10 years.
+    - What would be the profit from investing $10,000 at an annual return rate of 6% for 5 years?
+    - What is the profit from investing $2000 at a 4% annual rate for 7 years?
+    - How much profit can I expect from an investment of $5000 at an annual return rate of 4% over 3 years?
+    - Calculate the profit from an investment of $5000 at a 5% annual return rate over 10 years.
+    - Calculate the profit from an investment of $2500 at a 4.5% annual rate over 7 years.
+- name: products_search
+  descriptions:
+    minimal: Search for products by a specified keyword and...
+    short: Search for products by a specified keyword and optional filters, with support for pagination and sorting.
+    medium: Search for products by a specified keyword and optional filters, with support for pagination and sorting.
+    long: Search for products by a specified keyword and optional filters, with support for pagination and sorting.
+    verbose: Search for products by a specified keyword and optional filters, with support for pagination and sorting.
+  parameters:
+  - name: keyword
+    type: string
+    description: The term or phrase to search for related products.
+    required: true
+    default: light shaded room
+  - name: filters
+    type: string
+    description: Filters to apply to the product search results. Multiple filters can be specified using the format `key~value`.
+      For example, 'colorList~White&masterClID~180'.
+    required: false
+  - name: curpage
+    type: integer
+    description: The current page number for paginated results. Default is 1.
+    required: false
+    default: '1'
+  - name: itemsperpage
+    type: integer
+    description: The number of items to display per page. Default is 48.
+    required: false
+    default: '48'
+  - name: sortby
+    type: integer
+    description: The field by which to sort the results. Default is 0.
+    required: false
+    default: '0'
+  tags:
+  - products
+  - search
+  test_prompts:
+    single:
+    - List all 'outdoor furniture' on the first page with 50 items per page, sorted by customer reviews.
+    - List all 'LED lights' that are energy-efficient and display the first 48 results, sorted by popularity.
+    - Search for 'summer dresses' with a maximum price of $50, sorted by top ratings, in the US.
+    single_clear:
+    - List all 'outdoor furniture' on the first page with 50 items per page, sorted by customer reviews.
+    - List all 'LED lights' that are energy-efficient and display the first 48 results, sorted by popularity.
+    - Search for 'summer dresses' with a maximum price of $50, sorted by top ratings, in the US.
+- name: getlatestbyedinetcode
+  descriptions:
+    minimal: Fetch the latest securities report data for a...
+    short: Fetch the latest securities report data for a company specified by its EDINET code using the RapidAPI service.
+    medium: Fetch the latest securities report data for a company specified by its EDINET code using the RapidAPI service.
+    long: Fetch the latest securities report data for a company specified by its EDINET code using the RapidAPI service.
+    verbose: Fetch the latest securities report data for a company specified by its EDINET code using the RapidAPI service.
+  parameters:
+  - name: edinet_code
+    type: string
+    description: The EDINET code of the company to fetch data for.
+    required: true
+    default: E02142
+  tags:
+  - getlatestbyedinetcode
+  test_prompts:
+    single:
+    - Fetch the latest securities report for Toyota Motor Corporation using its EDINET code.
+    single_clear:
+    - Fetch the latest securities report for Toyota Motor Corporation using its EDINET code.
+- name: repost
+  descriptions:
+    minimal: Reposts an article to the Telegraph platform...
+    short: Reposts an article to the Telegraph platform using the Telegraph API.
+    medium: Reposts an article to the Telegraph platform using the Telegraph API.
+    long: Reposts an article to the Telegraph platform using the Telegraph API.
+    verbose: Reposts an article to the Telegraph platform using the Telegraph API.
+  parameters:
+  - name: article_url
+    type: string
+    description: URL of the article or blog post to be reposted.
+    required: true
+  - name: title
+    type: string
+    description: Title of the Telegraph post. Defaults to None.
+    required: false
+  - name: author_url
+    type: string
+    description: URL of the author. Defaults to None.
+    required: false
+  - name: author_name
+    type: string
+    description: Name of the author. Defaults to None.
+    required: false
+  tags:
+  - repost
+  test_prompts:
+    single:
+    - Repost the article from 'https://example.com/article4' titled 'Tech Innovations 2023' and author details from 'https://example.com/author2'
+      named 'Alex Johnson'.
+    single_clear:
+    - Repost the article from 'https://example.com/article4' titled 'Tech Innovations 2023' and author details from 'https://example.com/author2'
+      named 'Alex Johnson'.
+- name: details
+  descriptions:
+    minimal: Gets the details and general information of a...
+    short: Gets the details and general information of a creator using their `creator_id`.
+    medium: Gets the details and general information of a creator using their `creator_id`.
+    long: Gets the details and general information of a creator using their `creator_id`.
+    verbose: Gets the details and general information of a creator using their `creator_id`.
+  parameters:
+  - name: creator_id
+    type: integer
+    description: The unique identifier of the creator. This can be obtained using the `/search` endpoint.
+    required: true
+    default: '2416483'
+  tags:
+  - details
+  test_prompts:
+    single:
+    - I need to know more about the creator with ID 28460. Can you fetch their general details?
+    - Please get the details for the creator with ID 97531. I want to know their general information.
+    - Could you provide information on the creator identified by the ID 54321? I'm particularly interested in their background.
+    - I need details about the creator whose ID is 67890. What can you tell me about them?
+    single_clear:
+    - I need to know more about the creator with ID 28460. Can you fetch their general details?
+    - Please get the details for the creator with ID 97531. I want to know their general information.
+    - Could you provide information on the creator identified by the ID 54321? I'm particularly interested in their background.
+    - I need details about the creator whose ID is 67890. What can you tell me about them?
+- name: getpastevents
+  descriptions:
+    minimal: Fetches past election events from the specified...
+    short: Fetches past election events from the specified page.
+    medium: Fetches past election events from the specified page.
+    long: Fetches past election events from the specified page.
+    verbose: Fetches past election events from the specified page.
+  parameters:
+  - name: page
+    type: string
+    description: The page number to fetch past election events from.
+    required: true
+  tags:
+  - getpastevents
+  test_prompts:
+    single:
+    - Retrieve past election events from the first page.
+    single_clear:
+    - Retrieve past election events from the first page.
+- name: independent_albums
+  descriptions:
+    minimal: Retrieves the Independent Albums chart for a...
+    short: Retrieves the Independent Albums chart for a specified week from the Billboard API.
+    medium: Retrieves the Independent Albums chart for a specified week from the Billboard API.
+    long: Retrieves the Independent Albums chart for a specified week from the Billboard API.
+    verbose: Retrieves the Independent Albums chart for a specified week from the Billboard API.
+  parameters:
+  - name: week
+    type: string
+    description: The week for which to retrieve the chart, in the format 'YYYY-MM-DD'. If not provided, defaults to the previous
+      week. If the provided date is not a Saturday, it will default to the preceding Saturday of that week.
+    required: false
+    default: '2022-10-08'
+  tags:
+  - independent
+  - albums
+  test_prompts:
+    single:
+    - Can you fetch the Independent Albums chart for the week starting October 8, 2022?
+    - Retrieve the Independent Albums chart for the week starting July 20, 2023.
+    - What was the top independent album on September 1, 2023?
+    - Can you provide the Independent Albums chart for the week starting October 8, 2022?
+    single_clear:
+    - Can you fetch the Independent Albums chart for the week starting October 8, 2022?
+    - Retrieve the Independent Albums chart for the week starting July 20, 2023.
+    - What was the top independent album on September 1, 2023?
+    - Can you provide the Independent Albums chart for the week starting October 8, 2022?
+- name: product_offers
+  descriptions:
+    minimal: Fetches a list of offers for a specific product...
+    short: Fetches a list of offers for a specific product on Amazon based on the given ASIN.
+    medium: Fetches a list of offers for a specific product on Amazon based on the given ASIN.
+    long: Fetches a list of offers for a specific product on Amazon based on the given ASIN.
+    verbose: Fetches a list of offers for a specific product on Amazon based on the given ASIN.
+  parameters:
+  - name: asin
+    type: string
+    description: Product ASIN to get offers for. Supports batching up to 10 ASINs in a single request, separated by a comma
+      (e.g., 'B08PPDJWC8,B07ZPKBL9V,B08BHXG144').
+    required: true
+    default: B07ZPKBL9V
+  - name: delivery
+    type: string
+    description: '[EXPERIMENTAL] Find products with specific delivery options, specified as a comma-delimited list. Valid
+      values: ''PRIME_ELIGIBLE'', ''FREE_DELIVERY''. Default is None.'
+    required: false
+  - name: limit
+    type: integer
+    description: Maximum number of offers to return. Default is 100.
+    required: false
+    default: '100'
+  - name: product_condition
+    type: string
+    description: 'Filter products by condition, specified as a comma-delimited list. Valid values: ''NEW'', ''USED_LIKE_NEW'',
+      ''USED_VERY_GOOD'', ''USED_GOOD'', ''USED_ACCEPTABLE''. Default is None.'
+    required: false
+  - name: country
+    type: string
+    description: 'Sets the marketplace country, language, and currency. Allowed values: ''US'', ''AU'', ''BR'', ''CA'', ''CN'',
+      ''FR'', ''DE'', ''IN'', ''IT'', ''MX'', ''NL'', ''SG'', ''ES'', ''TR'', ''AE'', ''GB'', ''JP''. Default is ''US''.'
+    required: false
+    default: US
+  tags:
+  - product
+  - offers
+  test_prompts:
+    single:
+    - I need offers for the product with ASIN B0944JY67P, but only those that are new and from the UK marketplace.
+    - Fetch the offers for Amazon products with ASINs 'B08PPDJWC8' and 'B08BHXG144' that are in very good used condition and
+      available for free delivery.
+    - Retrieve offers for ASIN B08BHXG144 with a limit of 50 offers in the US.
+    - Get me offers for the Samsung Galaxy S21 with ASIN B08N5Z36Y9, but only from sellers in Canada.
+    single_clear:
+    - I need offers for the product with ASIN B0944JY67P, but only those that are new and from the UK marketplace.
+    - Fetch the offers for Amazon products with ASINs 'B08PPDJWC8' and 'B08BHXG144' that are in very good used condition and
+      available for free delivery.
+    - Retrieve offers for ASIN B08BHXG144 with a limit of 50 offers in the US.
+    - Get me offers for the Samsung Galaxy S21 with ASIN B08N5Z36Y9, but only from sellers in Canada.
+- name: flame
+  descriptions:
+    minimal: Calculates the FLAMES relationship compatibility...
+    short: Calculates the FLAMES relationship compatibility score for two given names using the Flames Love Calculator API.
+    medium: Calculates the FLAMES relationship compatibility score for two given names using the Flames Love Calculator API.
+    long: Calculates the FLAMES relationship compatibility score for two given names using the Flames Love Calculator API.
+    verbose: Calculates the FLAMES relationship compatibility score for two given names using the Flames Love Calculator API.
+  parameters:
+  - name: sname
+    type: string
+    description: The second name to be used in the compatibility calculation.
+    required: true
+    default: Shefali
+  - name: fname
+    type: string
+    description: The first name to be used in the compatibility calculation.
+    required: true
+    default: Rahul
+  tags:
+  - flame
+  test_prompts:
+    single:
+    - Determine the FLAMES compatibility between 'Alex' and 'Samantha'.
+    single_clear:
+    - Determine the FLAMES compatibility between 'Alex' and 'Samantha'.
+- name: searchjobs
+  descriptions:
+    minimal: Fetches a list of job postings from the Indeed...
+    short: Fetches a list of job postings from the Indeed API for Sweden.
+    medium: Fetches a list of job postings from the Indeed API for Sweden.
+    long: Fetches a list of job postings from the Indeed API for Sweden.
+    verbose: Fetches a list of job postings from the Indeed API for Sweden.
+  parameters:
+  - name: location
+    type: string
+    description: The city or state within Sweden to search for jobs.
+    required: true
+    default: Stockholm
+  - name: offset
+    type: integer
+    description: The starting point for pagination; must be increased by 10 to retrieve subsequent pages.
+    required: true
+    default: '0'
+  - name: keyword
+    type: string
+    description: The search keyword (e.g., job title or skill).
+    required: true
+    default: python
+  tags:
+  - searchjobs
+  test_prompts:
+    single:
+    - I need to find marketing jobs in Gothenburg from the 20th result onwards.
+    - Find jobs in Turku that mention 'Project Management' in the description.
+    - What are the job opportunities for a software engineer in Stockholm, Sweden?
+    - What are the job opportunities for a software engineer in Stockholm, Sweden?
+    - Search for jobs in Oulu that are related to 'IT Support'.
+    single_clear:
+    - I need to find marketing jobs in Gothenburg from the 20th result onwards.
+    - Find jobs in Turku that mention 'Project Management' in the description.
+    - What are the job opportunities for a software engineer in Stockholm, Sweden?
+    - What are the job opportunities for a software engineer in Stockholm, Sweden?
+    - Search for jobs in Oulu that are related to 'IT Support'.
+- name: dribbble
+  descriptions:
+    minimal: Checks the availability of a given username on...
+    short: Checks the availability of a given username on Dribbble using the RapidAPI service.
+    medium: Checks the availability of a given username on Dribbble using the RapidAPI service.
+    long: Checks the availability of a given username on Dribbble using the RapidAPI service.
+    verbose: Checks the availability of a given username on Dribbble using the RapidAPI service.
+  parameters:
+  - name: username
+    type: string
+    description: The username to check for availability on Dribbble.
+    required: true
+    default: username
+  tags:
+  - dribbble
+  test_prompts:
+    single:
+    - Is 'PixelPerfect' a free username on Dribbble?
+    single_clear:
+    - Is 'PixelPerfect' a free username on Dribbble?
+- name: pluses_and_minuses_of_the_car
+  descriptions:
+    minimal: Fetches the list of pluses and minuses for a...
+    short: Fetches the list of pluses and minuses for a specific car model using the ToolBench RapidAPI.
+    medium: Fetches the list of pluses and minuses for a specific car model using the ToolBench RapidAPI.
+    long: Fetches the list of pluses and minuses for a specific car model using the ToolBench RapidAPI.
+    verbose: Fetches the list of pluses and minuses for a specific car model using the ToolBench RapidAPI.
+  parameters:
+  - name: year
+    type: string
+    description: The year of manufacture of the car.
+    required: true
+    default: '2012'
+  - name: make
+    type: string
+    description: The make (manufacturer) of the car.
+    required: true
+    default: bmw
+  - name: model
+    type: string
+    description: The model of the car.
+    required: true
+    default: 5 series
+  tags:
+  - pluses
+  - and
+  - minuses
+  test_prompts:
+    single:
+    - List the pros and cons of the 2020 Toyota Camry.
+    - List the pluses and minuses of the 2015 Toyota Corolla.
+    single_clear:
+    - List the pros and cons of the 2020 Toyota Camry.
+    - List the pluses and minuses of the 2015 Toyota Corolla.
+- name: get_cities_in_a_country
+  descriptions:
+    minimal: Fetches a list of cities in a specified country...
+    short: Fetches a list of cities in a specified country filtered by population range, with options for pagination.
+    medium: Fetches a list of cities in a specified country filtered by population range, with options for pagination.
+    long: Fetches a list of cities in a specified country filtered by population range, with options for pagination.
+    verbose: Fetches a list of cities in a specified country filtered by population range, with options for pagination.
+  parameters:
+  - name: country_iso2
+    type: string
+    description: The ISO 3166-1 alpha-2 code of the country.
+    required: true
+  - name: page_size
+    type: integer
+    description: The number of cities to return per page. Default is 20.
+    required: false
+    default: 20
+  - name: population_min
+    type: integer
+    description: The minimum population of the cities to include. Default is 0.
+    required: false
+    default: 0
+  - name: next_token
+    type: string
+    description: Token for pagination to fetch the next set of cities. Default is None.
+    required: false
+  - name: population_max
+    type: integer
+    description: The maximum population of the cities to include. Default is 100,000,000.
+    required: false
+    default: 100000000
+  tags:
+  - get
+  - cities
+  - in
+  test_prompts:
+    single:
+    - Find cities in Germany with populations less than 200,000.
+    single_clear:
+    - Find cities in Germany with populations less than 200,000.
+- name: get_style_json
+  descriptions:
+    minimal: Retrieves the style JSON for the specified map...
+    short: Retrieves the style JSON for the specified map style.
+    medium: Retrieves the style JSON for the specified map style.
+    long: Retrieves the style JSON for the specified map style.
+    verbose: Retrieves the style JSON for the specified map style.
+  parameters:
+  - name: style
+    type: string
+    description: The style identifier to retrieve the corresponding style JSON.
+    required: true
+    default: osm-bright
+  tags:
+  - get
+  - style
+  - json
+  test_prompts:
+    single:
+    - What is the style JSON for the 'osm-bright' map style?
+    - Retrieve the style JSON for the 'osm-bright' map style.
+    single_clear:
+    - What is the style JSON for the 'osm-bright' map style?
+    - Retrieve the style JSON for the 'osm-bright' map style.
+- name: user_by_id
+  descriptions:
+    minimal: Retrieves user information from the Hacker News...
+    short: Retrieves user information from the Hacker News API given a user ID.
+    medium: Retrieves user information from the Hacker News API given a user ID.
+    long: Retrieves user information from the Hacker News API given a user ID.
+    verbose: Retrieves user information from the Hacker News API given a user ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: Case-sensitive user ID.
+    required: true
+    default: wing328hk
+  tags:
+  - user
+  - by
+  - id
+  test_prompts:
+    single:
+    - Provide the user details for Hacker News user with ID 'jl'
+    single_clear:
+    - Provide the user details for Hacker News user with ID 'jl'
+- name: get_dna_sequence
+  descriptions:
+    minimal: Retrieves the DNA sequence for a given sequence...
+    short: Retrieves the DNA sequence for a given sequence ID from the NCBI Nucleotide database.
+    medium: Retrieves the DNA sequence for a given sequence ID from the NCBI Nucleotide database.
+    long: Retrieves the DNA sequence for a given sequence ID from the NCBI Nucleotide database.
+    verbose: Retrieves the DNA sequence for a given sequence ID from the NCBI Nucleotide database.
+  parameters:
+  - name: sequence_id
+    type: string
+    description: The unique identifier for the DNA sequence.
+    required: true
+    default: fasta
+  - name: file_format
+    type: string
+    description: 'The format of the returned sequence. Allowed values: "fasta" (default) or "gb".'
+    required: false
+  - name: upstream_bases
+    type: integer
+    description: The number of bases upstream of the sequence to include. Defaults to 0.
+    required: false
+    default: fasta
+  tags:
+  - get
+  - dna
+  - sequence
+  test_prompts:
+    single:
+    - Retrieve the DNA sequence for the sequence ID 'NC_045512.2' in FASTA format without any upstream bases.
+    - Can you retrieve the DNA sequence for ID 'NM_001363246.1' in FASTA format and also include 100 upstream bases?
+    - Retrieve the DNA sequence for 'XM_005262824' in GenBank format, no upstream bases.
+    single_clear:
+    - Retrieve the DNA sequence for the sequence ID 'NC_045512.2' in FASTA format without any upstream bases.
+    - Can you retrieve the DNA sequence for ID 'NM_001363246.1' in FASTA format and also include 100 upstream bases?
+    - Retrieve the DNA sequence for 'XM_005262824' in GenBank format, no upstream bases.
+- name: hotel_photos
+  descriptions:
+    minimal: Fetches a list of photos for given hotels based...
+    short: Fetches a list of photos for given hotels based on their IDs from the RapidAPI Priceline provider.
+    medium: Fetches a list of photos for given hotels based on their IDs from the RapidAPI Priceline provider.
+    long: Fetches a list of photos for given hotels based on their IDs from the RapidAPI Priceline provider.
+    verbose: Fetches a list of photos for given hotels based on their IDs from the RapidAPI Priceline provider.
+  parameters:
+  - name: hotel_ids
+    type: string
+    description: Comma-separated string of PPN hotel IDs (Semi Opaque Only).
+    required: true
+    default: 700000000,700000001,700000002,700000003
+  - name: image_size
+    type: string
+    description: The size of the images to be returned. Valid options are 'small' (60px), 'medium' (300 to 312px), or 'large'
+      (500 to 800px). Defaults to 'medium'.
+    required: false
+    default: medium
+  tags:
+  - hotel
+  - photos
+  test_prompts:
+    single:
+    - Fetch medium-sized photos for hotels with IDs 67890, 12345, and 54321.
+    - Fetch photos for hotels with IDs 12345, 67890 in large size.
+    single_clear:
+    - Fetch medium-sized photos for hotels with IDs 67890, 12345, and 54321.
+    - Fetch photos for hotels with IDs 12345, 67890 in large size.
+- name: circle_area
+  descriptions:
+    minimal: Computes the area of a circle given its radius.
+    short: Computes the area of a circle given its radius.
+    medium: Computes the area of a circle given its radius.
+    long: Computes the area of a circle given its radius.
+    verbose: Computes the area of a circle given its radius.
+  parameters:
+  - name: radius
+    type: number
+    description: The radius of the circle.
+    required: true
+  tags:
+  - circle
+  - area
+  test_prompts:
+    single:
+    - What is the area of a circle with a radius of 7.5 units?
+    - Compute the area of a circle with a radius of 7.5 units.
+    single_clear:
+    - What is the area of a circle with a radius of 7.5 units?
+    - Compute the area of a circle with a radius of 7.5 units.
+- name: channel
+  descriptions:
+    minimal: Fetches videos from a YouTube channel using the...
+    short: Fetches videos from a YouTube channel using the provided parameters.
+    medium: Fetches videos from a YouTube channel using the provided parameters.
+    long: Fetches videos from a YouTube channel using the provided parameters.
+    verbose: Fetches videos from a YouTube channel using the provided parameters.
+  parameters:
+  - name: next
+    type: string
+    description: Pagination (continuation) parameter to get the next set of channel videos. Defaults to a specific continuation
+      token.
+    required: false
+    default: 4qmFsgKFARIYVUNpVEdLQTlXMEcwVEw4SG03VWZfdTlBGjpFZ1oyYVdSbGIzTVlBeUFBTUFFNEFlb0RGa05uUVZORFoycHdNazVFTkRWT2VVcHNhMmR2VFdjJTNEmgIsYnJvd3NlLWZlZWRVQ2lUR0tBOVcwRzBUTDhIbTdVZl91OUF2aWRlb3MxMDI%3D
+  - name: filter
+    type: string
+    description: 'Filter for live streams. Available options are:'
+    required: false
+  - name: is_id
+    type: string
+    description: Channel ID. Defaults to 'UCiTGKA9W0G0TL8Hm7Uf_u9A'.
+    required: false
+    default: UCiTGKA9W0G0TL8Hm7Uf_u9A
+  - name: sort
+    type: string
+    description: 'Sort parameter. Available options are:'
+    required: false
+    default: n
+  tags:
+  - channel
+  test_prompts:
+    single:
+    - I need to see the oldest videos from the channel 'UCiTGKA9W0G0TL8Hm7Uf_u9A'. Can you get those for me?
+    single_clear:
+    - I need to see the oldest videos from the channel 'UCiTGKA9W0G0TL8Hm7Uf_u9A'. Can you get those for me?
+- name: fight
+  descriptions:
+    minimal: Fetches details of a single fight by its ID using...
+    short: Fetches details of a single fight by its ID using the Spectation Sports Events API.
+    medium: Fetches details of a single fight by its ID using the Spectation Sports Events API.
+    long: Fetches details of a single fight by its ID using the Spectation Sports Events API.
+    verbose: Fetches details of a single fight by its ID using the Spectation Sports Events API.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the fight to fetch details for.
+    required: true
+    default: '728'
+  tags:
+  - fight
+  test_prompts:
+    single:
+    - Can you provide the details of the fight with ID 12345 from the Spectation Sports Events API?
+    - Details of fight 87654 please.
+    single_clear:
+    - Can you provide the details of the fight with ID 12345 from the Spectation Sports Events API?
+    - Details of fight 87654 please.
+- name: rip
+  descriptions:
+    minimal: Extracts links and information from a given URL...
+    short: Extracts links and information from a given URL using the Toolbench RapidAPI service.
+    medium: Extracts links and information from a given URL using the Toolbench RapidAPI service.
+    long: Extracts links and information from a given URL using the Toolbench RapidAPI service.
+    verbose: Extracts links and information from a given URL using the Toolbench RapidAPI service.
+  parameters:
+  - name: target
+    type: string
+    description: The URL from which to extract links and information.
+    required: true
+    default: https://www.nytimes.com
+  tags:
+  - rip
+  test_prompts:
+    single:
+    - Extract information from the URL 'https://www.example.com/article123'
+    single_clear:
+    - Extract information from the URL 'https://www.example.com/article123'
+- name: search_b
+  descriptions:
+    minimal: Performs a search query using the SEO API on a...
+    short: Performs a search query using the SEO API on a secondary search engine.
+    medium: Performs a search query using the SEO API on a secondary search engine.
+    long: Performs a search query using the SEO API on a secondary search engine.
+    verbose: Performs a search query using the SEO API on a secondary search engine.
+  parameters:
+  - name: query
+    type: string
+    description: The search query string.
+    required: true
+    default: q=coffee+shop
+  tags:
+  - search
+  - b
+  test_prompts:
+    single:
+    - Search for 'top vacation spots in Europe' on a secondary search engine.
+    single_clear:
+    - Search for 'top vacation spots in Europe' on a secondary search engine.

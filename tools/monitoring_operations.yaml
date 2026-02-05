@@ -1,0 +1,471 @@
+category: monitoring_operations
+description: "System monitoring, alerting, and observability operations"
+
+tools:
+  - name: create_metric
+    descriptions:
+      minimal: "Create metric"
+      short: "Create custom metric"
+      medium: "Create a custom metric for monitoring and alerting."
+      long: "Define a custom metric with labels and aggregation. Example: create_metric(name='api_latency', type='histogram', labels='[\"endpoint\", \"method\"]')."
+      verbose: "Create custom monitoring metrics. Metric types: counter (cumulative), gauge (point-in-time), histogram (distribution), summary (quantiles). Example: create_metric(name='order_processing_time', type='histogram', description='Time to process orders', labels='[\"region\", \"priority\"]', buckets='[0.1, 0.5, 1, 5, 10]', unit='seconds'). Note: Use consistent naming conventions. Warning: High cardinality labels impact performance."
+    parameters:
+      - name: name
+        type: string
+        description: "Metric name"
+        required: true
+      - name: type
+        type: string
+        description: "Metric type"
+        required: true
+        enum: ["counter", "gauge", "histogram", "summary"]
+      - name: description
+        type: string
+        description: "Metric description"
+        required: false
+      - name: labels
+        type: string
+        description: "JSON array of label names"
+        required: false
+      - name: unit
+        type: string
+        description: "Unit of measurement"
+        required: false
+      - name: buckets
+        type: string
+        description: "Histogram buckets (JSON array)"
+        required: false
+    tags: ["monitoring", "metric", "create", "observability", "telemetry"]
+    test_prompts:
+      single:
+        - "Create custom metric"
+        - "Define new metric"
+        - "Add monitoring metric"
+        - "Create latency histogram"
+      single_clear:
+        - "I need to create a monitoring metric. Create custom metric"
+        - "I need to create a monitoring metric. Define new metric"
+        - "I need to create a monitoring metric. Add monitoring metric"
+        - "I need to create a monitoring metric. Create latency histogram"
+
+  - name: record_metric
+    descriptions:
+      minimal: "Record metric"
+      short: "Record metric value"
+      medium: "Record a value for a metric with optional labels."
+      long: "Record metric data point. Example: record_metric(name='api_requests', value=1, labels='{\"endpoint\": \"/users\"}')."
+      verbose: "Record values to monitoring metrics. For counters: increment by value. For gauges: set current value. For histograms/summaries: observe value. Example: record_metric(name='http_requests_total', value=1, labels='{\"method\": \"GET\", \"status\": 200}', timestamp='2024-01-15T10:30:00Z'). Note: Counter values must be positive. Warning: Missing labels will create new time series."
+    parameters:
+      - name: name
+        type: string
+        description: "Metric name"
+        required: true
+      - name: value
+        type: number
+        description: "Metric value"
+        required: true
+      - name: labels
+        type: string
+        description: "Label values (JSON object)"
+        required: false
+      - name: timestamp
+        type: string
+        description: "Timestamp (ISO 8601)"
+        required: false
+    tags: ["monitoring", "metric", "record", "data", "telemetry"]
+    test_prompts:
+      single:
+        - "Record metric value"
+        - "Log metric data"
+        - "Increment counter"
+        - "Set gauge value"
+      single_clear:
+        - "I want to record metric data. Record metric value"
+        - "I want to record metric data. Log metric data"
+        - "I want to record metric data. Increment counter"
+        - "I want to record metric data. Set gauge value"
+
+  - name: create_alert_rule
+    descriptions:
+      minimal: "Create alert"
+      short: "Create alert rule"
+      medium: "Create an alerting rule based on metric conditions."
+      long: "Define alert rule with threshold. Example: create_alert_rule(name='HighCPU', condition='cpu_usage > 90', duration='5m', severity='critical')."
+      verbose: "Create alerting rules with conditions and actions. Condition operators: >, <, >=, <=, ==, !=. Aggregations: avg, sum, min, max, count. Example: create_alert_rule(name='HighErrorRate', condition='rate(http_errors_total[5m]) / rate(http_requests_total[5m]) > 0.05', duration='10m', severity='critical', labels='{\"team\": \"platform\"}', annotations='{\"summary\": \"Error rate above 5%\"}', notify='[\"slack-ops\", \"pagerduty\"]'). Note: Test rules before production. Warning: Avoid alert fatigue with proper thresholds."
+    parameters:
+      - name: name
+        type: string
+        description: "Alert rule name"
+        required: true
+      - name: condition
+        type: string
+        description: "Alert condition expression"
+        required: true
+      - name: duration
+        type: string
+        description: "Duration before firing (e.g., '5m')"
+        required: true
+      - name: severity
+        type: string
+        description: "Alert severity"
+        required: true
+        enum: ["info", "warning", "critical"]
+      - name: labels
+        type: string
+        description: "Additional labels (JSON)"
+        required: false
+      - name: annotations
+        type: string
+        description: "Alert annotations (JSON)"
+        required: false
+      - name: notify
+        type: string
+        description: "Notification channels (JSON array)"
+        required: false
+    tags: ["monitoring", "alert", "rule", "threshold", "notification"]
+    test_prompts:
+      single:
+        - "Create alert rule"
+        - "Set up CPU alert"
+        - "Alert when error rate high"
+        - "Create threshold alert"
+      single_clear:
+        - "I need to create an alert rule. Create alert rule"
+        - "I need to create an alert rule. Set up CPU alert"
+        - "I need to create an alert rule. Alert when error rate high"
+        - "I need to create an alert rule. Create threshold alert"
+
+  - name: query_metrics
+    descriptions:
+      minimal: "Query metrics"
+      short: "Query metric data"
+      medium: "Query metric data with time range and aggregation."
+      long: "Query metrics with filters. Example: query_metrics(query='http_requests_total', start='-1h', step='1m')."
+      verbose: "Query time series metrics with PromQL-style syntax. Features: range selection, aggregation, filtering, mathematical operations. Example: query_metrics(query='sum(rate(http_requests_total{status=~\"5..\"}[5m])) by (service)', start='-24h', end='now', step='5m', format='json'). Returns time series data for visualization or analysis. Note: Large queries may be slow. Warning: Complex queries impact monitoring system performance."
+    parameters:
+      - name: query
+        type: string
+        description: "Metric query expression"
+        required: true
+      - name: start
+        type: string
+        description: "Start time (relative or absolute)"
+        required: true
+      - name: end
+        type: string
+        description: "End time"
+        required: false
+        default: "now"
+      - name: step
+        type: string
+        description: "Query step/resolution"
+        required: false
+        default: "1m"
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "json"
+        enum: ["json", "csv", "prometheus"]
+    tags: ["monitoring", "query", "metrics", "timeseries", "data"]
+    test_prompts:
+      single:
+        - "Query metrics"
+        - "Get CPU usage data"
+        - "Fetch request rate"
+        - "Query error metrics"
+      single_clear:
+        - "Please query the metrics. Query metrics"
+        - "Please query the metrics. Get CPU usage data"
+        - "Please query the metrics. Fetch request rate"
+        - "Please query the metrics. Query error metrics"
+
+  - name: create_dashboard
+    descriptions:
+      minimal: "Create dashboard"
+      short: "Create monitoring dashboard"
+      medium: "Create a dashboard with panels and visualizations."
+      long: "Build monitoring dashboard. Example: create_dashboard(name='API Overview', panels='[{\"title\": \"Requests\", \"query\": \"rate(http_requests[5m])\"}]')."
+      verbose: "Create comprehensive monitoring dashboards. Panel types: graph, stat, gauge, table, heatmap, logs. Features: variables, time range controls, annotations. Example: create_dashboard(name='Service Health', description='Main service dashboard', panels='[{\"title\": \"Request Rate\", \"type\": \"graph\", \"query\": \"rate(http_requests_total[5m])\"}, {\"title\": \"Error Rate\", \"type\": \"stat\", \"query\": \"sum(rate(http_errors_total[5m]))\"}]', variables='[{\"name\": \"service\", \"query\": \"label_values(service)\"}]', refresh='30s'). Note: Dashboard JSON can be exported. Warning: Too many panels affects load time."
+    parameters:
+      - name: name
+        type: string
+        description: "Dashboard name"
+        required: true
+      - name: description
+        type: string
+        description: "Dashboard description"
+        required: false
+      - name: panels
+        type: string
+        description: "Dashboard panels (JSON array)"
+        required: true
+      - name: variables
+        type: string
+        description: "Dashboard variables (JSON array)"
+        required: false
+      - name: refresh
+        type: string
+        description: "Auto-refresh interval"
+        required: false
+        default: "1m"
+      - name: folder
+        type: string
+        description: "Dashboard folder"
+        required: false
+    tags: ["monitoring", "dashboard", "visualization", "panels", "create"]
+    test_prompts:
+      single:
+        - "Create monitoring dashboard"
+        - "Build metrics dashboard"
+        - "Set up service dashboard"
+        - "Create visualization panel"
+      single_clear:
+        - "I want to create a monitoring dashboard. Create monitoring dashboard"
+        - "I want to create a monitoring dashboard. Build metrics dashboard"
+        - "I want to create a monitoring dashboard. Set up service dashboard"
+        - "I want to create a monitoring dashboard. Create visualization panel"
+
+  - name: get_alert_status
+    descriptions:
+      minimal: "Alert status"
+      short: "Get alert status"
+      medium: "Get current status of alerts and firing conditions."
+      long: "Check alert states. Example: get_alert_status(filter='severity=critical')."
+      verbose: "Retrieve current alert status and history. States: inactive, pending, firing, resolved. Filters: severity, labels, time range. Example: get_alert_status(filter='severity=critical', state='firing', labels='{\"team\": \"platform\"}', include_history=true, limit=100). Returns: alert name, state, started_at, labels, annotations, values. Note: History retention depends on configuration. Warning: Large result sets may be truncated."
+    parameters:
+      - name: filter
+        type: string
+        description: "Filter expression"
+        required: false
+      - name: state
+        type: string
+        description: "Alert state filter"
+        required: false
+        enum: ["inactive", "pending", "firing", "resolved", "all"]
+      - name: labels
+        type: string
+        description: "Filter by labels (JSON)"
+        required: false
+      - name: include_history
+        type: boolean
+        description: "Include alert history"
+        required: false
+        default: false
+      - name: limit
+        type: integer
+        description: "Maximum results"
+        required: false
+        default: 50
+    tags: ["monitoring", "alert", "status", "check", "firing"]
+    test_prompts:
+      single:
+        - "Get alert status"
+        - "Check firing alerts"
+        - "List active alerts"
+        - "Show critical alerts"
+      single_clear:
+        - "Please check the alert status. Get alert status"
+        - "Please check the alert status. Check firing alerts"
+        - "Please check the alert status. List active alerts"
+        - "Please check the alert status. Show critical alerts"
+
+  - name: silence_alert
+    descriptions:
+      minimal: "Silence alert"
+      short: "Silence alert notifications"
+      medium: "Create a silence to suppress alert notifications."
+      long: "Silence alerts temporarily. Example: silence_alert(matchers='alertname=HighCPU', duration='2h', reason='Maintenance')."
+      verbose: "Suppress alert notifications during maintenance or known issues. Matcher types: exact match, regex match. Example: silence_alert(matchers='[{\"name\": \"alertname\", \"value\": \"HighCPU\", \"isRegex\": false}, {\"name\": \"instance\", \"value\": \"prod-.*\", \"isRegex\": true}]', duration='4h', reason='Planned maintenance window', created_by='ops-team'). Note: Silences don't prevent alerts from firing. Warning: Set appropriate duration to avoid missing real issues."
+    parameters:
+      - name: matchers
+        type: string
+        description: "Alert matchers (JSON array)"
+        required: true
+      - name: duration
+        type: string
+        description: "Silence duration"
+        required: true
+      - name: reason
+        type: string
+        description: "Silence reason"
+        required: true
+      - name: created_by
+        type: string
+        description: "Creator identifier"
+        required: false
+      - name: start_time
+        type: string
+        description: "Start time (default: now)"
+        required: false
+    tags: ["monitoring", "alert", "silence", "suppress", "maintenance"]
+    test_prompts:
+      single:
+        - "Silence alert"
+        - "Suppress notifications"
+        - "Mute alerts for maintenance"
+        - "Stop alert for 2 hours"
+      single_clear:
+        - "I need to silence an alert. Silence alert"
+        - "I need to silence an alert. Suppress notifications"
+        - "I need to silence an alert. Mute alerts for maintenance"
+        - "I need to silence an alert. Stop alert for 2 hours"
+
+  - name: create_uptime_check
+    descriptions:
+      minimal: "Uptime check"
+      short: "Create uptime check"
+      medium: "Create an uptime check to monitor service availability."
+      long: "Monitor endpoint availability. Example: create_uptime_check(name='API Health', url='https://api.example.com/health', interval='1m')."
+      verbose: "Uptime monitoring with health checks. Check types: HTTP, HTTPS, TCP, ICMP, DNS. Features: multiple regions, SSL validation, content matching. Example: create_uptime_check(name='Production API', url='https://api.example.com/health', method='GET', interval='1m', timeout='10s', regions='[\"us-east\", \"eu-west\", \"ap-south\"]', expected_status=200, content_match='\"status\":\"healthy\"', headers='{\"Authorization\": \"Bearer token\"}', alert_on_failure=true). Note: Use multiple regions for accuracy. Warning: Frequent checks may be rate-limited."
+    parameters:
+      - name: name
+        type: string
+        description: "Check name"
+        required: true
+      - name: url
+        type: string
+        description: "URL to check"
+        required: true
+      - name: method
+        type: string
+        description: "HTTP method"
+        required: false
+        default: "GET"
+        enum: ["GET", "POST", "HEAD"]
+      - name: interval
+        type: string
+        description: "Check interval"
+        required: true
+      - name: timeout
+        type: string
+        description: "Request timeout"
+        required: false
+        default: "10s"
+      - name: regions
+        type: string
+        description: "Check regions (JSON array)"
+        required: false
+      - name: expected_status
+        type: integer
+        description: "Expected HTTP status"
+        required: false
+        default: 200
+      - name: content_match
+        type: string
+        description: "Expected content (regex)"
+        required: false
+      - name: alert_on_failure
+        type: boolean
+        description: "Alert on failure"
+        required: false
+        default: true
+    tags: ["monitoring", "uptime", "health", "availability", "check"]
+    test_prompts:
+      single:
+        - "Create uptime check"
+        - "Monitor website uptime"
+        - "Set up health check"
+        - "Check API availability"
+      single_clear:
+        - "I want to set up an uptime check. Create uptime check"
+        - "I want to set up an uptime check. Monitor website uptime"
+        - "I want to set up an uptime check. Set up health check"
+        - "I want to set up an uptime check. Check API availability"
+
+  - name: create_trace
+    descriptions:
+      minimal: "Create trace"
+      short: "Create distributed trace"
+      medium: "Create a distributed trace for request tracking."
+      long: "Start distributed trace. Example: create_trace(operation='ProcessOrder', service='order-service', trace_id='abc123')."
+      verbose: "Distributed tracing for request flow. OpenTelemetry compatible. Span attributes: service name, operation, tags, baggage. Example: create_trace(operation='HTTP GET /users', service='api-gateway', trace_id='auto', attributes='{\"http.method\": \"GET\", \"http.url\": \"/users\", \"user.id\": \"12345\"}', sampling_rate=0.1). Returns trace_id and span_id for propagation. Note: Propagate context headers between services. Warning: High sampling rates increase storage costs."
+    parameters:
+      - name: operation
+        type: string
+        description: "Operation/span name"
+        required: true
+      - name: service
+        type: string
+        description: "Service name"
+        required: true
+      - name: trace_id
+        type: string
+        description: "Trace ID (or 'auto')"
+        required: false
+        default: "auto"
+      - name: parent_span_id
+        type: string
+        description: "Parent span ID"
+        required: false
+      - name: attributes
+        type: string
+        description: "Span attributes (JSON)"
+        required: false
+      - name: sampling_rate
+        type: number
+        description: "Sampling rate (0-1)"
+        required: false
+        default: 1.0
+    tags: ["monitoring", "trace", "distributed", "span", "observability"]
+    test_prompts:
+      single:
+        - "Create trace"
+        - "Start distributed trace"
+        - "Track request flow"
+        - "Create span"
+      single_clear:
+        - "I need to create a distributed trace. Create trace"
+        - "I need to create a distributed trace. Start distributed trace"
+        - "I need to create a distributed trace. Track request flow"
+        - "I need to create a distributed trace. Create span"
+
+  - name: analyze_anomalies
+    descriptions:
+      minimal: "Detect anomalies"
+      short: "Analyze metric anomalies"
+      medium: "Detect anomalies in metric data using ML algorithms."
+      long: "Find metric anomalies. Example: analyze_anomalies(metric='cpu_usage', period='24h', sensitivity='medium')."
+      verbose: "ML-based anomaly detection for metrics. Algorithms: statistical (z-score, MAD), ML (isolation forest, DBSCAN), seasonal (STL decomposition). Example: analyze_anomalies(metric='api_latency_p99', period='7d', sensitivity='medium', algorithm='isolation_forest', baseline_period='30d', min_duration='5m'). Returns: anomaly periods, severity scores, potential causes. Note: Requires historical baseline. Warning: Too sensitive settings cause false positives."
+    parameters:
+      - name: metric
+        type: string
+        description: "Metric name or query"
+        required: true
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: true
+      - name: sensitivity
+        type: string
+        description: "Detection sensitivity"
+        required: false
+        default: "medium"
+        enum: ["low", "medium", "high"]
+      - name: algorithm
+        type: string
+        description: "Detection algorithm"
+        required: false
+        default: "auto"
+        enum: ["auto", "zscore", "mad", "isolation_forest", "seasonal"]
+      - name: baseline_period
+        type: string
+        description: "Baseline learning period"
+        required: false
+      - name: min_duration
+        type: string
+        description: "Minimum anomaly duration"
+        required: false
+        default: "1m"
+    tags: ["monitoring", "anomaly", "detection", "ml", "analysis"]
+    test_prompts:
+      single:
+        - "Detect anomalies"
+        - "Find unusual patterns"
+        - "Analyze metric anomalies"
+        - "Check for spikes"
+      single_clear:
+        - "Please analyze for anomalies. Detect anomalies"
+        - "Please analyze for anomalies. Find unusual patterns"
+        - "Please analyze for anomalies. Analyze metric anomalies"
+        - "Please analyze for anomalies. Check for spikes"

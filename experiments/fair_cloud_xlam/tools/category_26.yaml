@@ -1,0 +1,721 @@
+category: category_26
+tools:
+- name: generate
+  descriptions:
+    minimal: Generate a rewritten version of a given article...
+    short: Generate a rewritten version of a given article using the Article Rewriter Pro API.
+    medium: Generate a rewritten version of a given article using the Article Rewriter Pro API.
+    long: Generate a rewritten version of a given article using the Article Rewriter Pro API.
+    verbose: Generate a rewritten version of a given article using the Article Rewriter Pro API.
+  parameters:
+  - name: lang
+    type: string
+    description: Language code of the article to be rewritten.
+    required: true
+    default: en
+  - name: article
+    type: string
+    description: The article text to be rewritten.
+    required: true
+    default: Dedicated servers or bare metal servers are a server in itself with no server resources sharing with  other hosting
+      account users. These servers offer a higher power and flexibility, but usually comes at a  premium cost. In such cases,
+      you must have to research well about the dedicated hosting service providers.
+  tags:
+  - generate
+  test_prompts:
+    single:
+    - 'Rewrite this article in English to make it more concise: ''The quick brown fox jumps over the lazy dog.'''
+    - What are the best hashtags for 'cooking' on TikTok?
+    single_clear:
+    - 'Rewrite this article in English to make it more concise: ''The quick brown fox jumps over the lazy dog.'''
+    - What are the best hashtags for 'cooking' on TikTok?
+- name: skill_child
+  descriptions:
+    minimal: Fetches child skill data from an external API...
+    short: Fetches child skill data from an external API using provided identifiers.
+    medium: Fetches child skill data from an external API using provided identifiers.
+    long: Fetches child skill data from an external API using provided identifiers.
+    verbose: Fetches child skill data from an external API using provided identifiers.
+  parameters:
+  - name: is_id
+    type: string
+    description: The unique identifier for the desired child skill data. Defaults to 'files/198956'.
+    required: false
+    default: files/198956
+  tags:
+  - skill
+  - child
+  test_prompts:
+    single:
+    - Retrieve child skill information for 'files/198957'.
+    single_clear:
+    - Retrieve child skill information for 'files/198957'.
+- name: top_property_managers
+  descriptions:
+    minimal: Fetches and returns information about the largest...
+    short: Fetches and returns information about the largest property managers for a given location from the AirDNA API.
+    medium: Fetches and returns information about the largest property managers for a given location from the AirDNA API.
+    long: Fetches and returns information about the largest property managers for a given location from the AirDNA API.
+    verbose: Fetches and returns information about the largest property managers for a given location from the AirDNA API.
+  parameters:
+  - name: location
+    type: string
+    description: The location to query for the top property managers.
+    required: true
+    default: santa monica
+  tags:
+  - top
+  - property
+  - managers
+  test_prompts:
+    single:
+    - What are the top property managers in Los Angeles?
+    single_clear:
+    - What are the top property managers in Los Angeles?
+- name: user_followers_list
+  descriptions:
+    minimal: Fetches the list of followers for a TikTok user...
+    short: Fetches the list of followers for a TikTok user using the provided API parameters.
+    medium: Fetches the list of followers for a TikTok user using the provided API parameters.
+    long: Fetches the list of followers for a TikTok user using the provided API parameters.
+    verbose: Fetches the list of followers for a TikTok user using the provided API parameters.
+  parameters:
+  - name: fresh
+    type: integer
+    description: If set to 1, forces the API to return fresh data instead of cached data. Defaults to 0.
+    required: false
+    default: '0'
+  - name: sec_uid
+    type: string
+    description: A secure user ID that can be obtained from the User Information endpoint. Using `sec_uid` makes the request
+      faster than using `username`.
+    required: false
+  - name: max_cursor
+    type: string
+    description: Pagination cursor for fetching the next batch of followers.
+    required: false
+  - name: limit
+    type: string
+    description: Number of follower records to return. The default is 100, and the maximum is 100.
+    required: false
+  - name: username
+    type: string
+    description: TikTok username, such as 'amazon'. Using `sec_uid` instead of `username` will result in a faster request.
+      Defaults to 'tiktok'.
+    required: false
+    default: tiktok
+  tags:
+  - user
+  - followers
+  - list
+  test_prompts:
+    single:
+    - Fetch the followers list of the TikTok user 'amazon' with fresh data.
+    single_clear:
+    - Fetch the followers list of the TikTok user 'amazon' with fresh data.
+- name: bodyfat_imperial
+  descriptions:
+    minimal: Calculates the body fat percentage based on the...
+    short: Calculates the body fat percentage based on the provided height, gender, weight, and age using imperial units.
+    medium: Calculates the body fat percentage based on the provided height, gender, weight, and age using imperial units.
+    long: Calculates the body fat percentage based on the provided height, gender, weight, and age using imperial units.
+    verbose: Calculates the body fat percentage based on the provided height, gender, weight, and age using imperial units.
+  parameters:
+  - name: height
+    type: integer
+    description: The height of the person in inches.
+    required: true
+    default: '77'
+  - name: gender
+    type: string
+    description: The gender of the person. Must be either 'male' or 'female'.
+    required: true
+    default: male
+  - name: weight
+    type: integer
+    description: The weight of the person in pounds.
+    required: true
+    default: '180'
+  - name: age
+    type: integer
+    description: The age of the person in years.
+    required: true
+    default: '26'
+  tags:
+  - bodyfat
+  - imperial
+  test_prompts:
+    single:
+    - Determine the body fat percentage for a 45-year-old female who is 65 inches tall and weighs 140 pounds.
+    single_clear:
+    - Determine the body fat percentage for a 45-year-old female who is 65 inches tall and weighs 140 pounds.
+- name: get_zip_code_detail
+  descriptions:
+    minimal: Retrieve detailed profile and demographic data...
+    short: Retrieve detailed profile and demographic data for a provided ZIP code.
+    medium: Retrieve detailed profile and demographic data for a provided ZIP code.
+    long: Retrieve detailed profile and demographic data for a provided ZIP code.
+    verbose: Retrieve detailed profile and demographic data for a provided ZIP code.
+  parameters:
+  - name: zip
+    type: string
+    description: The ZIP code for which to retrieve detailed information.
+    required: true
+    default: '10001'
+  tags:
+  - get
+  - zip
+  - code
+  test_prompts:
+    single:
+    - Retrieve detailed profile and demographic data for ZIP code 90210.
+    single_clear:
+    - Retrieve detailed profile and demographic data for ZIP code 90210.
+- name: products_list
+  descriptions:
+    minimal: Fetches a list of products from the H&M API with...
+    short: Fetches a list of products from the H&M API with options to sort, filter, and search for products by various criteria.
+    medium: Fetches a list of products from the H&M API with options to sort, filter, and search for products by various criteria.
+    long: Fetches a list of products from the H&M API with options to sort, filter, and search for products by various criteria.
+    verbose: Fetches a list of products from the H&M API with options to sort, filter, and search for products by various
+      criteria.
+  parameters:
+  - name: lang
+    type: string
+    description: Language code obtained from the /regions/list endpoint.
+    required: true
+    default: en
+  - name: currentpage
+    type: integer
+    description: Page index to fetch data from, starting at 0.
+    required: true
+    default: '0'
+  - name: country
+    type: string
+    description: Country code obtained from the /regions/list endpoint.
+    required: true
+    default: us
+  - name: pagesize
+    type: integer
+    description: Number of records to return per page.
+    required: true
+    default: '30'
+  - name: qualities
+    type: string
+    description: Filter by qualities; pass multiple times for multiple qualities.
+    required: false
+  - name: fits
+    type: string
+    description: Filter by fits; pass multiple times for multiple fits.
+    required: false
+  - name: categories
+    type: string
+    description: Tag codes obtained from the /categories/list endpoint; pass multiple times for multiple categories. Defaults
+      to 'men_all'.
+    required: false
+    default: men_all
+  - name: sortby
+    type: string
+    description: Sort parameter, one of 'ascPrice', 'descPrice', 'stock', 'newProduct'. Defaults to 'stock'.
+    required: false
+  - name: collection
+    type: string
+    description: Filter by collections; pass multiple times for multiple collections.
+    required: false
+  - name: sizes
+    type: string
+    description: Filter by sizes; pass multiple times for multiple sizes.
+    required: false
+  - name: colorwithnames
+    type: string
+    description: Filter by colors; pass multiple times for multiple color names.
+    required: false
+  - name: contexts
+    type: string
+    description: Filter by contexts; pass multiple times for multiple contexts.
+    required: false
+  - name: functions
+    type: string
+    description: Filter by functions; pass multiple times for multiple functions.
+    required: false
+  - name: concepts
+    type: string
+    description: Filter by concepts; pass multiple times for multiple concepts. Defaults to 'H&M MAN'.
+    required: false
+    default: H&M MAN
+  - name: descriptivelengths
+    type: string
+    description: Filter by descriptive lengths; pass multiple times for multiple lengths.
+    required: false
+  tags:
+  - products
+  - list
+  test_prompts:
+    single:
+    - Provide a list of women's jackets from H&M in the US, including only those with the 'Water Repellent' quality, for the
+      first page.
+    - I need to get the new arrivals in the 'men's shoes' category, sorted by new arrivals, with a minimum price of $30 and
+      a maximum price of $100. Additionally, filter the results to only show products that are available in the 'US' and are
+      in 'USD' currency. Please return 20 items per page.
+    - List the top-rated items in the 'Sports' category with prices under $100.
+    single_clear:
+    - Provide a list of women's jackets from H&M in the US, including only those with the 'Water Repellent' quality, for the
+      first page.
+    - I need to get the new arrivals in the 'men's shoes' category, sorted by new arrivals, with a minimum price of $30 and
+      a maximum price of $100. Additionally, filter the results to only show products that are available in the 'US' and are
+      in 'USD' currency. Please return 20 items per page.
+    - List the top-rated items in the 'Sports' category with prices under $100.
+- name: rsi_oversold
+  descriptions:
+    minimal: Fetches a list of stocks that have an RSI...
+    short: Fetches a list of stocks that have an RSI oversold signal from the specified API endpoint.
+    medium: Fetches a list of stocks that have an RSI oversold signal from the specified API endpoint.
+    long: Fetches a list of stocks that have an RSI oversold signal from the specified API endpoint.
+    verbose: Fetches a list of stocks that have an RSI oversold signal from the specified API endpoint.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number for pagination. Defaults to 1.
+    required: false
+    default: '1'
+  tags:
+  - rsi
+  - oversold
+  test_prompts:
+    single:
+    - Can you find the RSI oversold stocks on page 2?
+    single_clear:
+    - Can you find the RSI oversold stocks on page 2?
+- name: oldsort
+  descriptions:
+    minimal: Fetches and sorts data from the oldsort endpoint...
+    short: Fetches and sorts data from the oldsort endpoint using the given RapidAPI host and key.
+    medium: Fetches and sorts data from the oldsort endpoint using the given RapidAPI host and key.
+    long: Fetches and sorts data from the oldsort endpoint using the given RapidAPI host and key.
+    verbose: Fetches and sorts data from the oldsort endpoint using the given RapidAPI host and key.
+  parameters:
+  - name: host
+    type: string
+    description: The host to be used in the request header. Defaults to 'www.mozzartbet.com.co'.
+    required: true
+    default: www.mozzartbet.com.co
+  - name: referer
+    type: string
+    description: The referer to be used in the request header. Defaults to 'https://www.mozzartbet.com.co/es'.
+    required: true
+    default: https://www.mozzartbet.com.co/es
+  tags:
+  - oldsort
+  test_prompts:
+    single:
+    - Fetch and sort data from the oldsort endpoint for the default host and referer.
+    - Sort and retrieve data from the oldsort endpoint with default host and referer.
+    single_clear:
+    - Fetch and sort data from the oldsort endpoint for the default host and referer.
+    - Sort and retrieve data from the oldsort endpoint with default host and referer.
+- name: get_the_timezones
+  descriptions:
+    minimal: Fetches the list of timezones from the specified...
+    short: Fetches the list of timezones from the specified RapidAPI service.
+    medium: Fetches the list of timezones from the specified RapidAPI service.
+    long: Fetches the list of timezones from the specified RapidAPI service.
+    verbose: Fetches the list of timezones from the specified RapidAPI service.
+  parameters:
+  - name: page
+    type: string
+    description: The page number of the results to retrieve. Defaults to '1'.
+    required: false
+    default: '1'
+  - name: name
+    type: string
+    description: The name filter to apply to the timezones. Defaults to None.
+    required: false
+  tags:
+  - get
+  - the
+  - timezones
+  test_prompts:
+    single:
+    - Request timezone data for the second page without any name filter.
+    single_clear:
+    - Request timezone data for the second page without any name filter.
+- name: district_detail_and_coordinates_of_specific_division
+  descriptions:
+    minimal: Fetches detailed information about the districts...
+    short: Fetches detailed information about the districts, coordinates, and upazilas of a specific division from the BDAPI.
+    medium: Fetches detailed information about the districts, coordinates, and upazilas of a specific division from the BDAPI.
+    long: Fetches detailed information about the districts, coordinates, and upazilas of a specific division from the BDAPI.
+    verbose: Fetches detailed information about the districts, coordinates, and upazilas of a specific division from the BDAPI.
+  parameters:
+  - name: division_name
+    type: string
+    description: The name of the division for which to fetch details.
+    required: true
+  tags:
+  - district
+  - detail
+  - and
+  test_prompts:
+    single:
+    - Could you find out the coordinates and district names for the Sylhet division?
+    - What are the details of the districts in the Chittagong division of Bangladesh?
+    - Retrieve the districts and coordinates of Dhaka division in Bangladesh.
+    single_clear:
+    - Could you find out the coordinates and district names for the Sylhet division?
+    - What are the details of the districts in the Chittagong division of Bangladesh?
+    - Retrieve the districts and coordinates of Dhaka division in Bangladesh.
+- name: form
+  descriptions:
+    minimal: Retrieve the pregame team form data for a given...
+    short: Retrieve the pregame team form data for a given event using the SofaSport API.
+    medium: Retrieve the pregame team form data for a given event using the SofaSport API.
+    long: Retrieve the pregame team form data for a given event using the SofaSport API.
+    verbose: Retrieve the pregame team form data for a given event using the SofaSport API.
+  parameters:
+  - name: event_id
+    type: integer
+    description: The ID of the event for which to retrieve the team form.
+    required: true
+    default: '10236820'
+  tags:
+  - form
+  test_prompts:
+    single:
+    - Retrieve the form data for event ID 54321.
+    single_clear:
+    - Retrieve the form data for event ID 54321.
+- name: phone_number
+  descriptions:
+    minimal: Validates a given phone number using the Phone...
+    short: Validates a given phone number using the Phone and Email Validator API from RapidAPI.
+    medium: Validates a given phone number using the Phone and Email Validator API from RapidAPI.
+    long: Validates a given phone number using the Phone and Email Validator API from RapidAPI.
+    verbose: Validates a given phone number using the Phone and Email Validator API from RapidAPI.
+  parameters:
+  - name: phone
+    type: string
+    description: The phone number to be validated in E164 format (e.g., '19542567890' for USA).
+    required: true
+    default: 12345678900 for US
+  tags:
+  - phone
+  - number
+  test_prompts:
+    single:
+    - Can you validate the phone number +447911123456?
+    single_clear:
+    - Can you validate the phone number +447911123456?
+- name: note_duration
+  descriptions:
+    minimal: Calculates the duration between two musical notes...
+    short: Calculates the duration between two musical notes based on their frequencies and the tempo.
+    medium: Calculates the duration between two musical notes based on their frequencies and the tempo.
+    long: Calculates the duration between two musical notes based on their frequencies and the tempo.
+    verbose: Calculates the duration between two musical notes based on their frequencies and the tempo.
+  parameters:
+  - name: freq1
+    type: integer
+    description: The frequency of the first note in Hz.
+    required: true
+    default: 120
+  - name: freq2
+    type: integer
+    description: The frequency of the second note in Hz.
+    required: true
+    default: 120
+  - name: bpm
+    type: integer
+    description: The tempo of the music in beats per minute. Defaults to 120.
+    required: false
+  tags:
+  - note
+  - duration
+  test_prompts:
+    single:
+    - What is the duration between a note at 440 Hz and another at 880 Hz if the tempo is 120 BPM?
+    - Calculate the duration between a note at 440 Hz and another at 880 Hz with a tempo of 140 BPM.
+    - What is the duration in seconds between a middle C (261.63 Hz) and a G (392 Hz) played at a tempo of 140 BPM?
+    single_clear:
+    - What is the duration between a note at 440 Hz and another at 880 Hz if the tempo is 120 BPM?
+    - Calculate the duration between a note at 440 Hz and another at 880 Hz with a tempo of 140 BPM.
+    - What is the duration in seconds between a middle C (261.63 Hz) and a G (392 Hz) played at a tempo of 140 BPM?
+- name: zipcode_by_city
+  descriptions:
+    minimal: Retrieves the zip code(s) of a given city using...
+    short: Retrieves the zip code(s) of a given city using the GeoSource API.
+    medium: Retrieves the zip code(s) of a given city using the GeoSource API.
+    long: Retrieves the zip code(s) of a given city using the GeoSource API.
+    verbose: Retrieves the zip code(s) of a given city using the GeoSource API.
+  parameters:
+  - name: city
+    type: string
+    description: The name of the city for which to retrieve zip code(s). The city must be in the supported countries list
+      (44 countries).
+    required: true
+    default: Brussels
+  tags:
+  - zipcode
+  - by
+  - city
+  test_prompts:
+    single:
+    - What are the zip codes for San Francisco?
+    single_clear:
+    - What are the zip codes for San Francisco?
+- name: is_valid_ip_address
+  descriptions:
+    minimal: Checks if a string is a valid IP address (IPv4).
+    short: Checks if a string is a valid IP address (IPv4).
+    medium: Checks if a string is a valid IP address (IPv4).
+    long: Checks if a string is a valid IP address (IPv4).
+    verbose: Checks if a string is a valid IP address (IPv4).
+  parameters:
+  - name: ip
+    type: string
+    description: The string to check.
+    required: true
+  tags:
+  - is
+  - valid
+  - ip
+  test_prompts:
+    single:
+    - Check if 192.168.1.1 is a valid IP address.
+    - Check if the IP address 256.1.1.1 is valid.
+    - Is '192.168.1.1' a valid IP address?
+    - Check if '192.168.1.1' is a valid IP address.
+    single_clear:
+    - Check if 192.168.1.1 is a valid IP address.
+    - Check if the IP address 256.1.1.1 is valid.
+    - Is '192.168.1.1' a valid IP address?
+    - Check if '192.168.1.1' is a valid IP address.
+- name: get_case_by_id
+  descriptions:
+    minimal: Fetch the case payload from the Yardillo API...
+    short: Fetch the case payload from the Yardillo API using the given case ID.
+    medium: Fetch the case payload from the Yardillo API using the given case ID.
+    long: Fetch the case payload from the Yardillo API using the given case ID.
+    verbose: Fetch the case payload from the Yardillo API using the given case ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the case to fetch.
+    required: true
+    default: 611c0765e9308692195b8538
+  tags:
+  - get
+  - case
+  - by
+  test_prompts:
+    single:
+    - Fetch case information from Yardillo using case ID '67890'.
+    single_clear:
+    - Fetch case information from Yardillo using case ID '67890'.
+- name: video_info
+  descriptions:
+    minimal: Fetches video information from YouTube using the...
+    short: Fetches video information from YouTube using the provided video ID.
+    medium: Fetches video information from YouTube using the provided video ID.
+    long: Fetches video information from YouTube using the provided video ID.
+    verbose: Fetches video information from YouTube using the provided video ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the YouTube video for which the information is to be fetched.
+    required: true
+    default: dQw4w9WgXcQ
+  tags:
+  - video
+  - info
+  test_prompts:
+    single:
+    - Get information about the YouTube video with ID 'JNboT5u59xE'.
+    single_clear:
+    - Get information about the YouTube video with ID 'JNboT5u59xE'.
+- name: tickerdata
+  descriptions:
+    minimal: Fetches historical ticker data for a given period...
+    short: Fetches historical ticker data for a given period and date range from the RapidAPI service.
+    medium: Fetches historical ticker data for a given period and date range from the RapidAPI service.
+    long: Fetches historical ticker data for a given period and date range from the RapidAPI service.
+    verbose: Fetches historical ticker data for a given period and date range from the RapidAPI service.
+  parameters:
+  - name: period
+    type: string
+    description: The period for which to fetch the ticker data (e.g., 'daily', 'weekly').
+    required: true
+    default: 1h
+  - name: startdate
+    type: string
+    description: The start date for the data in YYYY-MM-DD format.
+    required: true
+    default: 2010-04-12T14:30
+  - name: tickername
+    type: string
+    description: The name of the ticker for which to fetch data.
+    required: true
+    default: gold
+  - name: enddate
+    type: string
+    description: The end date for the data in YYYY-MM-DD format.
+    required: true
+    default: 2010-04-20T12:30
+  tags:
+  - tickerdata
+  test_prompts:
+    single:
+    - Fetch weekly stock data for 'GOOG' from July 1, 2021, to September 30, 2021.
+    single_clear:
+    - Fetch weekly stock data for 'GOOG' from July 1, 2021, to September 30, 2021.
+- name: exact_url_non_english
+  descriptions:
+    minimal: Retrieves the backlinks of a specific non-English...
+    short: Retrieves the backlinks of a specific non-English URL using the RapidAPI service.
+    medium: Retrieves the backlinks of a specific non-English URL using the RapidAPI service.
+    long: Retrieves the backlinks of a specific non-English URL using the RapidAPI service.
+    verbose: Retrieves the backlinks of a specific non-English URL using the RapidAPI service.
+  parameters:
+  - name: domain
+    type: string
+    description: The domain of the non-English URL for which to retrieve backlinks.
+    required: true
+    default: https://codeconia.com/2021/05/28/html-form-to-email-with-attachment-using-php/
+  tags:
+  - exact
+  - url
+  - non
+  test_prompts:
+    single:
+    - Locate backlinks for the Italian fashion blog 'modaitaliana.it'
+    single_clear:
+    - Locate backlinks for the Italian fashion blog 'modaitaliana.it'
+- name: bus_trolley_locations
+  descriptions:
+    minimal: Retrieves the current bus and trolley locations...
+    short: Retrieves the current bus and trolley locations for a specified route.
+    medium: Retrieves the current bus and trolley locations for a specified route.
+    long: Retrieves the current bus and trolley locations for a specified route.
+    verbose: Retrieves the current bus and trolley locations for a specified route.
+  parameters:
+  - name: route
+    type: string
+    description: The route identifier for which to retrieve bus and trolley locations.
+    required: true
+    default: '17'
+  tags:
+  - bus
+  - trolley
+  - locations
+  test_prompts:
+    single:
+    - Can you provide the current locations of buses and trolleys on route 12?
+    single_clear:
+    - Can you provide the current locations of buses and trolleys on route 12?
+- name: by_location
+  descriptions:
+    minimal: Searches for homeless shelters based on provided...
+    short: Searches for homeless shelters based on provided geographical coordinates and radius.
+    medium: Searches for homeless shelters based on provided geographical coordinates and radius.
+    long: Searches for homeless shelters based on provided geographical coordinates and radius.
+    verbose: Searches for homeless shelters based on provided geographical coordinates and radius.
+  parameters:
+  - name: lat
+    type: string
+    description: The latitude of the location to search nearby shelters.
+    required: true
+    default: '47.630703'
+  - name: radius
+    type: string
+    description: The search radius in miles (maximum 10 miles).
+    required: true
+    default: '1.4'
+  - name: lng
+    type: string
+    description: The longitude of the location to search nearby shelters.
+    required: true
+    default: '-122.186370'
+  tags:
+  - by
+  - location
+  test_prompts:
+    single:
+    - Search for shelters around latitude 51.5074 and longitude -0.1278 with a 2-mile radius.
+    - How many homeless shelters are within a 5-mile radius of the coordinates 34.0522, -118.2437 in Los Angeles?
+    single_clear:
+    - Search for shelters around latitude 51.5074 and longitude -0.1278 with a 2-mile radius.
+    - How many homeless shelters are within a 5-mile radius of the coordinates 34.0522, -118.2437 in Los Angeles?
+- name: airports_by_keyword
+  descriptions:
+    minimal: Fetches a list of airport names and their IATA...
+    short: Fetches a list of airport names and their IATA codes that match the given keyword.
+    medium: Fetches a list of airport names and their IATA codes that match the given keyword.
+    long: Fetches a list of airport names and their IATA codes that match the given keyword.
+    verbose: Fetches a list of airport names and their IATA codes that match the given keyword.
+  parameters:
+  - name: keyword
+    type: string
+    description: A search term to match against airport names and IATA codes.
+    required: true
+  tags:
+  - airports
+  - by
+  - keyword
+  test_prompts:
+    single:
+    - List airports containing the keyword 'New York'.
+    single_clear:
+    - List airports containing the keyword 'New York'.
+- name: following_by_username
+  descriptions:
+    minimal: Retrieve the list of users that the specified...
+    short: Retrieve the list of users that the specified Instagram user is following, up to 1000 records.
+    medium: Retrieve the list of users that the specified Instagram user is following, up to 1000 records.
+    long: Retrieve the list of users that the specified Instagram user is following, up to 1000 records.
+    verbose: Retrieve the list of users that the specified Instagram user is following, up to 1000 records.
+  parameters:
+  - name: username
+    type: string
+    description: The Instagram username for which to retrieve the following list.
+    required: true
+    default: therock
+  - name: corsenabled
+    type: string
+    description: Whether CORS is enabled. Defaults to None.
+    required: false
+  - name: nextmaxid
+    type: string
+    description: The next maximum ID for pagination. Defaults to None.
+    required: false
+  tags:
+  - following
+  - by
+  - username
+  test_prompts:
+    single:
+    - Retrieve the list of users that Instagram user 'tech_enthusiast' is following.
+    single_clear:
+    - Retrieve the list of users that Instagram user 'tech_enthusiast' is following.
+- name: get_card_by_slug
+  descriptions:
+    minimal: Fetches card information by slug from the...
+    short: Fetches card information by slug from the Hearthstone API.
+    medium: Fetches card information by slug from the Hearthstone API.
+    long: Fetches card information by slug from the Hearthstone API.
+    verbose: Fetches card information by slug from the Hearthstone API.
+  parameters:
+  - name: slug
+    type: string
+    description: The slug identifier for the card.
+    required: true
+    default: a-light-in-the-darkness
+  tags:
+  - get
+  - card
+  - by
+  test_prompts:
+    single:
+    - I want to get information about the Hearthstone card with the slug 'ancient-watcher'. Can you get that for me?
+    - Get information about the Hearthstone card with the slug 'ragemagnet'
+    single_clear:
+    - I want to get information about the Hearthstone card with the slug 'ancient-watcher'. Can you get that for me?
+    - Get information about the Hearthstone card with the slug 'ragemagnet'

@@ -1,0 +1,1229 @@
+category: audio_operations
+
+tools:
+  - name: convert_audio
+    descriptions:
+      minimal: "Convert audio format"
+      short: "Convert audio files between formats"
+      medium: "Convert audio files from one format to another (MP3, WAV, FLAC, AAC, OGG, etc.)."
+      long: "Convert audio files between formats with configurable quality settings. Supports MP3, WAV, FLAC, AAC, OGG, and more. Example: convert_audio(input='song.wav', output='song.mp3', bitrate=320)."
+      verbose: "Convert audio files between various formats with full control over encoding parameters. Supported formats: MP3 (lossy, widely compatible), WAV (uncompressed), FLAC (lossless), AAC (lossy, better than MP3), OGG Vorbis (lossy, open), AIFF (uncompressed), WMA, OPUS (modern, efficient). Quality options: bitrate, sample_rate, channels, codec. Example: convert_audio(input='recording.wav', output='podcast.mp3', bitrate=192, sample_rate=44100, channels=2). Note: Converting to lossy formats loses quality permanently. Warning: Converting lossy to lossless doesn't restore quality."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input audio file"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output audio file"
+        required: true
+      - name: format
+        type: string
+        description: "Output format (if not inferred from filename)"
+        required: false
+        enum: ["mp3", "wav", "flac", "aac", "ogg", "opus", "wma", "aiff"]
+      - name: bitrate
+        type: integer
+        description: "Bitrate in kbps (for lossy formats)"
+        required: false
+        default: 192
+      - name: sample_rate
+        type: integer
+        description: "Sample rate in Hz"
+        required: false
+      - name: channels
+        type: integer
+        description: "Number of audio channels (1=mono, 2=stereo)"
+        required: false
+    tags: ["audio", "convert", "format", "mp3", "wav", "encoding"]
+    test_prompts:
+      single:
+        - "Convert this WAV file to MP3"
+        - "Convert the audio to FLAC format"
+        - "Change the audio format to AAC"
+        - "Export the audio as OGG"
+      single_clear:
+        - "Please convert an audio file to a different format. Convert this WAV file to MP3"
+        - "Please convert an audio file to a different format. Convert the audio to FLAC format"
+        - "Please convert an audio file to a different format. Change the audio format to AAC"
+        - "Please convert an audio file to a different format. Export the audio as OGG"
+
+  - name: trim_audio
+    descriptions:
+      minimal: "Trim audio"
+      short: "Trim audio to a time range"
+      medium: "Extract a portion of an audio file by specifying start and end times."
+      long: "Trim audio to extract a specific time range. Specify start and end times in seconds or timestamp format. Example: trim_audio(input='podcast.mp3', output='clip.mp3', start='00:05:30', end='00:10:00')."
+      verbose: "Extract a portion of an audio file by specifying the time range. Time formats: seconds (120.5), timestamp ('mm:ss' or 'hh:mm:ss'), or milliseconds with suffix ('5000ms'). Can also specify duration instead of end time. Preserves original quality when possible. Example: trim_audio(input='interview.wav', output='highlight.wav', start='01:23:45', duration=60). Note: Trimming compressed audio may require re-encoding. Warning: Very short clips may have encoding artifacts."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input audio file"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output audio file"
+        required: true
+      - name: start
+        type: string
+        description: "Start time (seconds or 'hh:mm:ss')"
+        required: true
+      - name: end
+        type: string
+        description: "End time (seconds or 'hh:mm:ss')"
+        required: false
+      - name: duration
+        type: number
+        description: "Duration in seconds (alternative to end)"
+        required: false
+      - name: fade_in
+        type: number
+        description: "Fade in duration in seconds"
+        required: false
+        default: 0
+      - name: fade_out
+        type: number
+        description: "Fade out duration in seconds"
+        required: false
+        default: 0
+    tags: ["audio", "trim", "cut", "extract", "clip"]
+    test_prompts:
+      single:
+        - "Cut the audio from 1:00 to 2:30"
+        - "Trim the first 30 seconds of the audio"
+        - "Extract a clip from the podcast"
+        - "Cut out the middle section of the song"
+      single_clear:
+        - "I need to extract a portion of an audio file by specifying a time range. Cut the audio from 1:00 to 2:30"
+        - "I need to extract a portion of an audio file by specifying a time range. Trim the first 30 seconds of the audio"
+        - "I need to extract a portion of an audio file by specifying a time range. Extract a clip from the podcast"
+        - "I need to extract a portion of an audio file by specifying a time range. Cut out the middle section of the song"
+
+  - name: merge_audio
+    descriptions:
+      minimal: "Merge audio files"
+      short: "Combine multiple audio files"
+      medium: "Merge multiple audio files into a single continuous file."
+      long: "Concatenate multiple audio files into one. Files are joined in the order provided. Optional crossfade between tracks. Example: merge_audio(files=['intro.mp3', 'main.mp3', 'outro.mp3'], output='complete.mp3')."
+      verbose: "Combine multiple audio files into a single continuous file. Files are joined sequentially in the order specified. Options: crossfade (smooth transition between tracks), gap (silence between tracks), normalize (equalize volume levels). All input files should ideally have the same format and sample rate. Example: merge_audio(files=['track1.mp3', 'track2.mp3', 'track3.mp3'], output='album.mp3', crossfade=2.0, normalize=true). Note: Different formats will be transcoded to match. Warning: Large files may take significant time and memory."
+    parameters:
+      - name: files
+        type: string
+        description: "JSON array of input file paths"
+        required: true
+      - name: output
+        type: string
+        description: "Path for merged output file"
+        required: true
+      - name: crossfade
+        type: number
+        description: "Crossfade duration in seconds"
+        required: false
+        default: 0
+      - name: gap
+        type: number
+        description: "Gap/silence between tracks in seconds"
+        required: false
+        default: 0
+      - name: normalize
+        type: boolean
+        description: "Normalize volume levels"
+        required: false
+        default: false
+    tags: ["audio", "merge", "combine", "concatenate", "join"]
+    test_prompts:
+      single:
+        - "Merge these audio files together"
+        - "Combine the tracks into one file"
+        - "Join the audio clips"
+        - "Concatenate the MP3 files"
+      single_clear:
+        - "I need to combine multiple audio files into one continuous file. Merge these audio files together"
+        - "I need to combine multiple audio files into one continuous file. Combine the tracks into one file"
+        - "I need to combine multiple audio files into one continuous file. Join the audio clips"
+        - "I need to combine multiple audio files into one continuous file. Concatenate the MP3 files"
+
+  - name: adjust_volume
+    descriptions:
+      minimal: "Adjust audio volume"
+      short: "Change audio volume level"
+      medium: "Increase or decrease the volume of an audio file."
+      long: "Adjust the volume of an audio file by a specified amount. Use decibels or percentage. Example: adjust_volume(input='quiet.mp3', output='louder.mp3', change='+6dB')."
+      verbose: "Modify the volume level of an audio file. Methods: decibels ('+6dB', '-3dB'), percentage ('150%' = 1.5x louder), or normalize to target level. Normalization modes: 'peak' (set peak to target), 'rms' (average loudness), 'loudnorm' (EBU R128 broadcast standard). Example: adjust_volume(input='podcast.mp3', output='normalized.mp3', normalize='loudnorm', target=-16). Note: Increasing volume too much causes clipping/distortion. Warning: EBU R128 normalization is recommended for podcasts and broadcasts."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input audio file"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output audio file"
+        required: true
+      - name: change
+        type: string
+        description: "Volume change (e.g., '+6dB', '-3dB', '150%')"
+        required: false
+      - name: normalize
+        type: string
+        description: "Normalization mode"
+        required: false
+        enum: ["peak", "rms", "loudnorm"]
+      - name: target
+        type: number
+        description: "Target level in dB (for normalization)"
+        required: false
+        default: -16
+    tags: ["audio", "volume", "loudness", "normalize", "gain"]
+    test_prompts:
+      single:
+        - "Make the audio louder"
+        - "Decrease the volume by 3dB"
+        - "Normalize the audio volume"
+        - "Boost the audio volume"
+      single_clear:
+        - "I need to adjust the volume level of an audio file. Make the audio louder"
+        - "I need to adjust the volume level of an audio file. Decrease the volume by 3dB"
+        - "I need to adjust the volume level of an audio file. Normalize the audio volume"
+        - "I need to adjust the volume level of an audio file. Boost the audio volume"
+
+  - name: get_audio_info
+    descriptions:
+      minimal: "Get audio info"
+      short: "Get audio file information"
+      medium: "Retrieve metadata and technical details about an audio file."
+      long: "Get comprehensive information about an audio file including format, duration, bitrate, sample rate, channels, and metadata tags. Example: get_audio_info(file='song.mp3')."
+      verbose: "Extract detailed information about an audio file. Returns: format, codec, duration, bitrate, sample rate, channels, bit depth (for lossless), file size, and metadata tags (title, artist, album, year, genre, etc.). Can also extract waveform data for visualization. Example: get_audio_info(file='track.flac', include_waveform=true, waveform_points=1000). Note: Some formats store more metadata than others. Warning: Waveform extraction for long files may take time."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to audio file"
+        required: true
+      - name: include_waveform
+        type: boolean
+        description: "Include waveform data"
+        required: false
+        default: false
+      - name: waveform_points
+        type: integer
+        description: "Number of waveform data points"
+        required: false
+        default: 500
+    tags: ["audio", "info", "metadata", "duration", "analyze"]
+    test_prompts:
+      single:
+        - "Get info about this audio file"
+        - "What's the duration of this MP3?"
+        - "Show me the audio file metadata"
+        - "What format is this audio?"
+      single_clear:
+        - "I need to retrieve metadata and technical details about an audio file. Get info about this audio file"
+        - "I need to retrieve metadata and technical details about an audio file. What's the duration of this MP3?"
+        - "I need to retrieve metadata and technical details about an audio file. Show me the audio file metadata"
+        - "I need to retrieve metadata and technical details about an audio file. What format is this audio?"
+
+  - name: set_audio_metadata
+    descriptions:
+      minimal: "Set audio metadata"
+      short: "Set audio file metadata tags"
+      medium: "Set or update metadata tags (title, artist, album, etc.) on an audio file."
+      long: "Set ID3 tags or other metadata on audio files. Supports common tags like title, artist, album, year, genre, track number. Example: set_audio_metadata(file='song.mp3', title='My Song', artist='Artist Name')."
+      verbose: "Set or update metadata tags on audio files. Supported tags vary by format: MP3 (ID3v2), FLAC (Vorbis comments), AAC (iTunes tags), OGG (Vorbis comments). Common tags: title, artist, album, album_artist, year, genre, track, disc, composer, lyrics, comment. Can also embed album artwork. Example: set_audio_metadata(file='track.mp3', title='Great Song', artist='Best Band', album='Hit Album', year=2024, genre='Rock', artwork='cover.jpg'). Note: Some players may not display all tags. Warning: Original file is modified; make backup if needed."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to audio file"
+        required: true
+      - name: title
+        type: string
+        description: "Track title"
+        required: false
+      - name: artist
+        type: string
+        description: "Artist name"
+        required: false
+      - name: album
+        type: string
+        description: "Album name"
+        required: false
+      - name: album_artist
+        type: string
+        description: "Album artist"
+        required: false
+      - name: year
+        type: integer
+        description: "Release year"
+        required: false
+      - name: genre
+        type: string
+        description: "Music genre"
+        required: false
+      - name: track
+        type: integer
+        description: "Track number"
+        required: false
+      - name: artwork
+        type: string
+        description: "Path to album art image"
+        required: false
+    tags: ["audio", "metadata", "tags", "id3", "edit"]
+    test_prompts:
+      single:
+        - "Set the artist name on this MP3"
+        - "Update the album metadata"
+        - "Add tags to the audio file"
+        - "Set the title and artist"
+      single_clear:
+        - "I need to set or update metadata tags on an audio file. Set the artist name on this MP3"
+        - "I need to set or update metadata tags on an audio file. Update the album metadata"
+        - "I need to set or update metadata tags on an audio file. Add tags to the audio file"
+        - "I need to set or update metadata tags on an audio file. Set the title and artist"
+
+  - name: transcribe_audio
+    descriptions:
+      minimal: "Transcribe audio"
+      short: "Convert speech to text"
+      medium: "Transcribe spoken audio into text using speech recognition."
+      long: "Convert spoken audio to text. Supports multiple languages and outputs with timestamps. Example: transcribe_audio(file='interview.mp3', language='en', format='srt')."
+      verbose: "Transcribe speech in audio files to text using automatic speech recognition. Features: multiple languages, speaker diarization (who spoke when), word-level timestamps, punctuation, output formats (plain text, SRT, VTT, JSON). Example: transcribe_audio(file='podcast.mp3', language='en', diarize=true, output_format='srt', output_file='subtitles.srt'). Note: Accuracy depends on audio quality and speaker clarity. Warning: Background noise and accents may reduce accuracy."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to audio file"
+        required: true
+      - name: language
+        type: string
+        description: "Language code (e.g., 'en', 'es', 'fr')"
+        required: false
+        default: "en"
+      - name: output_format
+        type: string
+        description: "Output format"
+        required: false
+        default: "text"
+        enum: ["text", "srt", "vtt", "json"]
+      - name: output_file
+        type: string
+        description: "Path for output file"
+        required: false
+      - name: diarize
+        type: boolean
+        description: "Enable speaker diarization"
+        required: false
+        default: false
+      - name: word_timestamps
+        type: boolean
+        description: "Include word-level timestamps"
+        required: false
+        default: false
+    tags: ["audio", "transcribe", "speech", "text", "stt"]
+    test_prompts:
+      single:
+        - "Transcribe this audio to text"
+        - "Convert the speech to text"
+        - "Create subtitles from the audio"
+        - "Get the transcript of this recording"
+      single_clear:
+        - "I need to transcribe speech in an audio file to text. Transcribe this audio to text"
+        - "I need to transcribe speech in an audio file to text. Convert the speech to text"
+        - "I need to transcribe speech in an audio file to text. Create subtitles from the audio"
+        - "I need to transcribe speech in an audio file to text. Get the transcript of this recording"
+
+  - name: text_to_speech
+    descriptions:
+      minimal: "Text to speech"
+      short: "Convert text to speech audio"
+      medium: "Generate spoken audio from text using text-to-speech synthesis."
+      long: "Convert text to spoken audio. Choose voice, language, speed, and output format. Example: text_to_speech(text='Hello, world!', voice='female', output='greeting.mp3')."
+      verbose: "Generate natural-sounding speech audio from text. Options: voice selection (male/female, different styles), language and accent, speech rate, pitch adjustment, output format (MP3, WAV, OGG). Can process SSML for advanced control over pronunciation and prosody. Example: text_to_speech(text='Welcome to the show!', voice='en-US-Standard-D', rate=1.0, pitch=0, output='welcome.mp3', format='mp3'). Note: Available voices vary by service. Warning: Long texts may take significant processing time."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to convert to speech"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output audio file"
+        required: true
+      - name: voice
+        type: string
+        description: "Voice ID or name"
+        required: false
+        default: "default"
+      - name: language
+        type: string
+        description: "Language code"
+        required: false
+        default: "en-US"
+      - name: rate
+        type: number
+        description: "Speech rate (0.5 to 2.0)"
+        required: false
+        default: 1.0
+      - name: pitch
+        type: number
+        description: "Pitch adjustment (-10 to 10)"
+        required: false
+        default: 0
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "mp3"
+        enum: ["mp3", "wav", "ogg"]
+    tags: ["audio", "tts", "speech", "voice", "synthesis"]
+    test_prompts:
+      single:
+        - "Convert this text to speech"
+        - "Read this text out loud and save it"
+        - "Generate audio from the text"
+        - "Create a voiceover for this text"
+      single_clear:
+        - "I need to generate speech audio from text. Convert this text to speech"
+        - "I need to generate speech audio from text. Read this text out loud and save it"
+        - "I need to generate speech audio from text. Generate audio from the text"
+        - "I need to generate speech audio from text. Create a voiceover for this text"
+
+  - name: add_audio_effect
+    descriptions:
+      minimal: "Add audio effect"
+      short: "Apply effects to audio"
+      medium: "Apply audio effects like echo, reverb, distortion, or equalization."
+      long: "Apply audio effects to transform sound. Supports reverb, echo, distortion, EQ, compression, and more. Example: add_audio_effect(input='vocal.wav', output='vocal_reverb.wav', effect='reverb', amount=50)."
+      verbose: "Apply audio effects to modify sound characteristics. Effects: 'reverb' (room ambience), 'echo' (delay), 'distortion' (overdrive), 'chorus' (thickening), 'flanger', 'phaser', 'eq' (equalization), 'compressor' (dynamic range), 'noise_gate' (remove quiet noise), 'pitch_shift', 'tempo_change'. Each effect has specific parameters. Example: add_audio_effect(input='guitar.wav', output='processed.wav', effect='reverb', room_size=0.7, damping=0.5, wet=0.3). Note: Multiple effects can be chained. Warning: Heavy processing may introduce artifacts."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input audio file"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output audio file"
+        required: true
+      - name: effect
+        type: string
+        description: "Effect to apply"
+        required: true
+        enum: ["reverb", "echo", "distortion", "chorus", "flanger", "phaser", "eq", "compressor", "noise_gate", "pitch_shift", "tempo_change"]
+      - name: amount
+        type: number
+        description: "Effect intensity (0-100)"
+        required: false
+        default: 50
+      - name: parameters
+        type: string
+        description: "JSON object of effect-specific parameters"
+        required: false
+    tags: ["audio", "effect", "reverb", "echo", "process"]
+    test_prompts:
+      single:
+        - "Add reverb to this audio"
+        - "Apply echo effect to the recording"
+        - "Add distortion to the guitar track"
+        - "Apply compression to the audio"
+      single_clear:
+        - "I need to apply audio effects to transform sound. Add reverb to this audio"
+        - "I need to apply audio effects to transform sound. Apply echo effect to the recording"
+        - "I need to apply audio effects to transform sound. Add distortion to the guitar track"
+        - "I need to apply audio effects to transform sound. Apply compression to the audio"
+
+  - name: remove_noise
+    descriptions:
+      minimal: "Remove noise"
+      short: "Remove background noise from audio"
+      medium: "Reduce or remove background noise from audio recordings."
+      long: "Remove unwanted background noise from audio. Can target specific noise types or use adaptive noise reduction. Example: remove_noise(input='noisy_recording.wav', output='clean.wav', strength=50)."
+      verbose: "Reduce background noise in audio recordings using various algorithms. Methods: 'spectral' (frequency-based, best for constant noise like hum/hiss), 'adaptive' (learns and removes noise pattern), 'rnn' (neural network, best for complex noise). Can provide a noise sample for better removal. Example: remove_noise(input='interview.wav', output='clean.wav', method='adaptive', noise_sample='room_noise.wav', strength=70). Note: Aggressive noise removal may affect voice quality. Warning: Start with lower strength and increase gradually."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input audio file"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output audio file"
+        required: true
+      - name: method
+        type: string
+        description: "Noise removal method"
+        required: false
+        default: "adaptive"
+        enum: ["spectral", "adaptive", "rnn"]
+      - name: noise_sample
+        type: string
+        description: "Path to sample of noise to remove"
+        required: false
+      - name: strength
+        type: integer
+        description: "Noise reduction strength (0-100)"
+        required: false
+        default: 50
+    tags: ["audio", "noise", "clean", "denoise", "restore"]
+    test_prompts:
+      single:
+        - "Remove background noise from this recording"
+        - "Clean up the noisy audio"
+        - "Reduce the hiss in the audio"
+        - "Remove the hum from the recording"
+      single_clear:
+        - "I need to reduce or remove background noise from an audio recording. Remove background noise from this recording"
+        - "I need to reduce or remove background noise from an audio recording. Clean up the noisy audio"
+        - "I need to reduce or remove background noise from an audio recording. Reduce the hiss in the audio"
+        - "I need to reduce or remove background noise from an audio recording. Remove the hum from the recording"
+
+  - name: extract_audio
+    descriptions:
+      minimal: "Extract audio"
+      short: "Extract audio from video"
+      medium: "Extract the audio track from a video file."
+      long: "Extract audio from video files. Choose output format and quality settings. Example: extract_audio(video='movie.mp4', output='soundtrack.mp3', format='mp3', bitrate=256)."
+      verbose: "Extract audio track from video files for separate processing or use. Supports all common video formats (MP4, MKV, AVI, MOV, WebM). Output formats: MP3, WAV, FLAC, AAC, OGG. Can extract specific audio tracks from multi-track videos. Example: extract_audio(video='concert.mkv', output='audio.flac', track=0, format='flac'). Note: Lossless extraction preserves original audio quality. Warning: Some videos have multiple audio tracks; specify track index if needed."
+    parameters:
+      - name: video
+        type: string
+        description: "Path to video file"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output audio file"
+        required: true
+      - name: format
+        type: string
+        description: "Output audio format"
+        required: false
+        default: "mp3"
+        enum: ["mp3", "wav", "flac", "aac", "ogg"]
+      - name: bitrate
+        type: integer
+        description: "Bitrate for lossy formats (kbps)"
+        required: false
+        default: 192
+      - name: track
+        type: integer
+        description: "Audio track index (for multi-track videos)"
+        required: false
+        default: 0
+    tags: ["audio", "extract", "video", "rip", "convert"]
+    test_prompts:
+      single:
+        - "Extract the audio from this video"
+        - "Rip the audio track from the movie"
+        - "Get the audio from the MP4 file"
+        - "Convert video to audio"
+      single_clear:
+        - "I need to extract the audio track from a video file. Extract the audio from this video"
+        - "I need to extract the audio track from a video file. Rip the audio track from the movie"
+        - "I need to extract the audio track from a video file. Get the audio from the MP4 file"
+        - "I need to extract the audio track from a video file. Convert video to audio"
+
+  - name: split_audio
+    descriptions:
+      minimal: "Split audio"
+      short: "Split audio into multiple parts"
+      medium: "Split an audio file into multiple segments by time, silence, or count."
+      long: "Split audio into multiple parts. Split by specific times, silence detection, or equal segments. Example: split_audio(input='podcast.mp3', output_dir='./segments/', split_by='silence')."
+      verbose: "Divide audio files into multiple segments. Split methods: 'times' (specific timestamps), 'silence' (detect and split at silent gaps), 'equal' (divide into equal parts), 'duration' (fixed-length segments). Silence detection is useful for podcast chapters or song separation. Example: split_audio(input='album.flac', output_dir='./tracks/', split_by='silence', min_silence=1.0, silence_threshold=-40). Note: Output files are named with original filename + segment number. Warning: Silence detection may miss soft transitions."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input audio file"
+        required: true
+      - name: output_dir
+        type: string
+        description: "Directory for output segments"
+        required: true
+      - name: split_by
+        type: string
+        description: "Split method"
+        required: true
+        enum: ["times", "silence", "equal", "duration"]
+      - name: times
+        type: string
+        description: "JSON array of split times (for 'times' method)"
+        required: false
+      - name: count
+        type: integer
+        description: "Number of segments (for 'equal' method)"
+        required: false
+      - name: duration
+        type: number
+        description: "Segment duration in seconds (for 'duration' method)"
+        required: false
+      - name: min_silence
+        type: number
+        description: "Minimum silence duration (for 'silence' method)"
+        required: false
+        default: 0.5
+      - name: silence_threshold
+        type: integer
+        description: "Silence threshold in dB"
+        required: false
+        default: -40
+    tags: ["audio", "split", "segment", "divide", "chapters"]
+    test_prompts:
+      single:
+        - "Split the audio into 5 equal parts"
+        - "Split the podcast by silence"
+        - "Divide the audio at specific times"
+        - "Segment the audio file"
+      single_clear:
+        - "I need to split an audio file into multiple segments. Split the audio into 5 equal parts"
+        - "I need to split an audio file into multiple segments. Split the podcast by silence"
+        - "I need to split an audio file into multiple segments. Divide the audio at specific times"
+        - "I need to split an audio file into multiple segments. Segment the audio file"
+
+  - name: mix_audio_tracks
+    descriptions:
+      minimal: "Mix audio tracks"
+      short: "Mix multiple audio tracks together"
+      medium: "Mix multiple audio tracks into a single file with volume control for each track."
+      long: "Combine multiple audio tracks into a single mix with individual volume control. Useful for layering music, vocals, and effects. Example: mix_audio_tracks(tracks='[{\"file\": \"voice.wav\", \"volume\": 100}, {\"file\": \"music.wav\", \"volume\": 30}]', output='mixed.wav')."
+      verbose: "Mix multiple audio tracks together with precise control over each track. Each track can have: volume level, pan (left/right positioning), start time offset, fade in/out. Useful for: combining voice with background music, layering sound effects, creating podcast mixes. Example: mix_audio_tracks(tracks='[{\"file\":\"vocal.wav\",\"volume\":100,\"pan\":0},{\"file\":\"bgm.wav\",\"volume\":25,\"pan\":0,\"start\":2.0}]', output='podcast.mp3'). Note: Tracks are mixed in parallel, not sequentially. Warning: Mixing many tracks may require volume normalization to prevent clipping."
+    parameters:
+      - name: tracks
+        type: string
+        description: "JSON array of track objects with file, volume, pan, start"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output mixed file"
+        required: true
+      - name: normalize
+        type: boolean
+        description: "Normalize final mix to prevent clipping"
+        required: false
+        default: true
+      - name: duration
+        type: number
+        description: "Total duration (longest track if not specified)"
+        required: false
+    tags: ["audio", "mix", "layer", "combine", "multitrack"]
+    test_prompts:
+      single:
+        - "Mix the voice and music tracks"
+        - "Layer these audio files together"
+        - "Combine multiple tracks into one mix"
+        - "Mix the audio with background music"
+      single_clear:
+        - "I need to mix multiple audio tracks together with volume control. Mix the voice and music tracks"
+        - "I need to mix multiple audio tracks together with volume control. Layer these audio files together"
+        - "I need to mix multiple audio tracks together with volume control. Combine multiple tracks into one mix"
+        - "I need to mix multiple audio tracks together with volume control. Mix the audio with background music"
+
+  - name: analyze_audio
+    descriptions:
+      minimal: "Analyze audio"
+      short: "Analyze audio characteristics"
+      medium: "Analyze audio for tempo, key, loudness, and other characteristics."
+      long: "Analyze audio to detect musical and technical characteristics like BPM, key, loudness levels, and frequency spectrum. Example: analyze_audio(file='song.mp3', analysis=['tempo', 'key', 'loudness'])."
+      verbose: "Perform detailed analysis of audio files. Analyses available: 'tempo' (BPM detection), 'key' (musical key detection), 'loudness' (integrated/peak loudness, dynamic range), 'spectrum' (frequency analysis), 'beats' (beat timestamps), 'segments' (structural segmentation), 'silence' (detect silent regions). Returns structured data for each analysis type. Example: analyze_audio(file='track.wav', analysis=['tempo', 'key', 'loudness', 'beats']). Note: Analysis accuracy varies with audio type and quality. Warning: Some analyses are computationally intensive for long files."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to audio file"
+        required: true
+      - name: analysis
+        type: string
+        description: "JSON array of analysis types"
+        required: false
+        default: "[\"tempo\", \"loudness\"]"
+    tags: ["audio", "analyze", "bpm", "tempo", "key"]
+    test_prompts:
+      single:
+        - "What's the tempo of this song?"
+        - "Analyze the audio characteristics"
+        - "Detect the key of this track"
+        - "Measure the loudness of the audio"
+      single_clear:
+        - "I need to analyze audio for tempo, key, loudness, and other characteristics. What's the tempo of this song?"
+        - "I need to analyze audio for tempo, key, loudness, and other characteristics. Analyze the audio characteristics"
+        - "I need to analyze audio for tempo, key, loudness, and other characteristics. Detect the key of this track"
+        - "I need to analyze audio for tempo, key, loudness, and other characteristics. Measure the loudness of the audio"
+
+  - name: change_audio_speed
+    descriptions:
+      minimal: "Change audio speed"
+      short: "Change audio playback speed"
+      medium: "Change the speed/tempo of audio with optional pitch preservation."
+      long: "Speed up or slow down audio. Option to preserve original pitch or let it change naturally. Example: change_audio_speed(input='lecture.mp3', output='lecture_fast.mp3', speed=1.5, preserve_pitch=true)."
+      verbose: "Adjust audio playback speed with control over pitch. Options: 'preserve_pitch' (time-stretch without changing pitch, good for speech), 'natural' (pitch changes with speed, like a turntable). Speed range typically 0.25x to 4x. Uses high-quality time-stretching algorithms. Example: change_audio_speed(input='podcast.mp3', output='fast.mp3', speed=1.25, preserve_pitch=true, quality='high'). Note: Extreme speed changes may introduce artifacts. Warning: Large speedups make speech hard to understand."
+    parameters:
+      - name: input
+        type: string
+        description: "Path to input audio file"
+        required: true
+      - name: output
+        type: string
+        description: "Path for output audio file"
+        required: true
+      - name: speed
+        type: number
+        description: "Speed multiplier (e.g., 1.5 = 50% faster)"
+        required: true
+      - name: preserve_pitch
+        type: boolean
+        description: "Keep original pitch"
+        required: false
+        default: true
+      - name: quality
+        type: string
+        description: "Processing quality"
+        required: false
+        default: "medium"
+        enum: ["low", "medium", "high"]
+    tags: ["audio", "speed", "tempo", "pitch", "time"]
+    test_prompts:
+      single:
+        - "Speed up the audio by 1.5x"
+        - "Slow down the podcast"
+        - "Make the audio 2x faster"
+        - "Change the audio speed without changing pitch"
+      single_clear:
+        - "I need to change the playback speed of an audio file. Speed up the audio by 1.5x"
+        - "I need to change the playback speed of an audio file. Slow down the podcast"
+        - "I need to change the playback speed of an audio file. Make the audio 2x faster"
+        - "I need to change the playback speed of an audio file. Change the audio speed without changing pitch"
+
+  - name: record_audio
+    descriptions:
+      minimal: "Record audio"
+      short: "Record audio from microphone"
+      medium: "Record audio from a microphone or audio input device."
+      long: "Record audio from the default or specified audio input device. Configure format, quality, and duration. Example: record_audio(output='recording.wav', duration=60, format='wav')."
+      verbose: "Record audio from microphone or other audio input devices. Settings: device selection, format (WAV, MP3, FLAC), sample rate, channels (mono/stereo), bit depth. Can record for a set duration or until stopped. Optional: voice activation (start/stop on speech), real-time level monitoring. Example: record_audio(output='memo.wav', device='default', format='wav', sample_rate=44100, channels=1, max_duration=300, voice_activated=true). Note: Ensure correct input device is selected. Warning: Check levels before important recordings."
+    parameters:
+      - name: output
+        type: string
+        description: "Path for output recording"
+        required: true
+      - name: duration
+        type: integer
+        description: "Recording duration in seconds (0 for manual stop)"
+        required: false
+        default: 0
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "wav"
+        enum: ["wav", "mp3", "flac"]
+      - name: device
+        type: string
+        description: "Input device name or ID"
+        required: false
+        default: "default"
+      - name: sample_rate
+        type: integer
+        description: "Sample rate in Hz"
+        required: false
+        default: 44100
+      - name: channels
+        type: integer
+        description: "Number of channels (1=mono, 2=stereo)"
+        required: false
+        default: 1
+      - name: voice_activated
+        type: boolean
+        description: "Enable voice activation"
+        required: false
+        default: false
+    tags: ["audio", "record", "microphone", "capture", "input"]
+    test_prompts:
+      single:
+        - "Record audio for 30 seconds"
+        - "Start recording from the microphone"
+        - "Record a voice memo"
+        - "Capture audio input"
+      single_clear:
+        - "I need to record audio from a microphone or audio input device. Record audio for 30 seconds"
+        - "I need to record audio from a microphone or audio input device. Start recording from the microphone"
+        - "I need to record audio from a microphone or audio input device. Record a voice memo"
+        - "I need to record audio from a microphone or audio input device. Capture audio input"
+
+  - name: generate_tone
+    descriptions:
+      minimal: "Generate tone"
+      short: "Generate an audio tone"
+      medium: "Generate a pure tone, noise, or simple waveform."
+      long: "Generate audio tones and waveforms. Create sine waves, square waves, noise, or musical notes. Example: generate_tone(output='beep.wav', frequency=440, duration=1, waveform='sine')."
+      verbose: "Generate synthetic audio tones and signals. Waveforms: 'sine' (pure tone), 'square', 'triangle', 'sawtooth', 'white_noise', 'pink_noise'. Can specify frequency in Hz or as musical note (e.g., 'A4', 'C#5'). Options for fade in/out, stereo panning, and volume. Example: generate_tone(output='alert.wav', frequency=880, duration=0.5, waveform='sine', fade_in=0.05, fade_out=0.1). Note: 440 Hz is concert pitch A4. Warning: Very high frequencies may not be audible or damage speakers."
+    parameters:
+      - name: output
+        type: string
+        description: "Path for output audio file"
+        required: true
+      - name: frequency
+        type: number
+        description: "Frequency in Hz (or note name like 'A4')"
+        required: true
+      - name: duration
+        type: number
+        description: "Duration in seconds"
+        required: true
+      - name: waveform
+        type: string
+        description: "Waveform type"
+        required: false
+        default: "sine"
+        enum: ["sine", "square", "triangle", "sawtooth", "white_noise", "pink_noise"]
+      - name: volume
+        type: number
+        description: "Volume (0.0 to 1.0)"
+        required: false
+        default: 0.8
+      - name: fade_in
+        type: number
+        description: "Fade in duration in seconds"
+        required: false
+        default: 0
+      - name: fade_out
+        type: number
+        description: "Fade out duration in seconds"
+        required: false
+        default: 0
+      - name: sample_rate
+        type: integer
+        description: "Sample rate in Hz"
+        required: false
+        default: 44100
+    tags: ["audio", "generate", "tone", "synthesize", "waveform"]
+    test_prompts:
+      single:
+        - "Generate a 1-second beep at 440Hz"
+        - "Create a 2-second sine wave"
+        - "Generate white noise for 10 seconds"
+        - "Create a musical note tone"
+      single_clear:
+        - "I need to generate a synthetic audio tone or waveform. Generate a 1-second beep at 440Hz"
+        - "I need to generate a synthetic audio tone or waveform. Create a 2-second sine wave"
+        - "I need to generate a synthetic audio tone or waveform. Generate white noise for 10 seconds"
+        - "I need to generate a synthetic audio tone or waveform. Create a musical note tone"
+
+  - name: apply_audio_effect
+    descriptions:
+      minimal: "Apply effect"
+      short: "Apply audio effect"
+      medium: "Apply audio effects like reverb, delay, chorus, or distortion to audio."
+      long: "Apply audio effects to a sound file. Supports reverb, delay, chorus, flanger, distortion, compression, and more. Example: apply_audio_effect(input='vocal.wav', effect='reverb', output='vocal_reverb.wav')."
+      verbose: "Apply signal processing effects to audio files. Effects: 'reverb' (room simulation), 'delay' (echo), 'chorus' (thickening), 'flanger' (sweeping), 'phaser', 'distortion' (clipping), 'compression' (dynamic range), 'limiter', 'tremolo', 'vibrato', 'wahwah'. Each effect has specific parameters. Example: apply_audio_effect(input='guitar.wav', effect='reverb', room_size=0.7, damping=0.5, wet=0.3, output='guitar_wet.wav'). Note: Effect parameters vary by effect type. Warning: Heavy effects increase processing time; distortion may cause clipping."
+    parameters:
+      - name: input
+        type: string
+        description: "Input audio file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output audio file path"
+        required: true
+      - name: effect
+        type: string
+        description: "Effect to apply"
+        required: true
+        enum: ["reverb", "delay", "chorus", "flanger", "phaser", "distortion", "compression", "limiter", "tremolo", "vibrato"]
+      - name: mix
+        type: number
+        description: "Wet/dry mix (0.0 to 1.0)"
+        required: false
+        default: 0.5
+      - name: intensity
+        type: number
+        description: "Effect intensity"
+        required: false
+        default: 0.5
+    tags: ["audio", "effect", "reverb", "delay", "processing"]
+    test_prompts:
+      single:
+        - "Add reverb to the vocal track"
+        - "Apply delay effect to the audio"
+        - "Add distortion to the guitar"
+        - "Put a chorus effect on this track"
+      single_clear:
+        - "I need to apply signal processing effects to an audio file. Add reverb to the vocal track"
+        - "I need to apply signal processing effects to an audio file. Apply delay effect to the audio"
+        - "I need to apply signal processing effects to an audio file. Add distortion to the guitar"
+        - "I need to apply signal processing effects to an audio file. Put a chorus effect on this track"
+
+  - name: split_audio
+    descriptions:
+      minimal: "Split audio"
+      short: "Split audio into parts"
+      medium: "Split an audio file into multiple parts by time, silence, or count."
+      long: "Split audio into multiple segments. Split by duration, number of parts, silence detection, or custom markers. Example: split_audio(input='podcast.mp3', mode='duration', duration=300)."
+      verbose: "Split audio files into multiple segments. Modes: 'duration' (fixed length chunks), 'count' (N equal parts), 'silence' (detect gaps), 'markers' (at specific times). Example: split_audio(input='album.flac', mode='silence', min_silence=2, silence_threshold=-40, output_pattern='track_{n}.flac') splits at 2+ second silences. Note: Silence detection uses dB threshold. Warning: Very short silences may not be detected; very long files take time to process."
+    parameters:
+      - name: input
+        type: string
+        description: "Input audio file path"
+        required: true
+      - name: output_dir
+        type: string
+        description: "Output directory for segments"
+        required: true
+      - name: mode
+        type: string
+        description: "Split mode"
+        required: true
+        enum: ["duration", "count", "silence", "markers"]
+      - name: duration
+        type: number
+        description: "Segment duration in seconds (for duration mode)"
+        required: false
+      - name: count
+        type: integer
+        description: "Number of segments (for count mode)"
+        required: false
+      - name: markers
+        type: string
+        description: "JSON array of split times (for markers mode)"
+        required: false
+      - name: min_silence
+        type: number
+        description: "Minimum silence duration in seconds"
+        required: false
+        default: 0.5
+      - name: output_pattern
+        type: string
+        description: "Output filename pattern (use {n} for number)"
+        required: false
+        default: "segment_{n}"
+    tags: ["audio", "split", "segment", "divide", "cut"]
+    test_prompts:
+      single:
+        - "Split this podcast into 5-minute segments"
+        - "Divide the audio by silence"
+        - "Split the album into individual tracks"
+        - "Cut the audio into 10 equal parts"
+      single_clear:
+        - "I need to split an audio file into multiple parts. Split this podcast into 5-minute segments"
+        - "I need to split an audio file into multiple parts. Divide the audio by silence"
+        - "I need to split an audio file into multiple parts. Split the album into individual tracks"
+        - "I need to split an audio file into multiple parts. Cut the audio into 10 equal parts"
+
+  - name: detect_bpm
+    descriptions:
+      minimal: "Detect BPM"
+      short: "Detect audio tempo/BPM"
+      medium: "Detect the tempo (beats per minute) of an audio file."
+      long: "Analyze audio to detect tempo in BPM. Also detects time signature and beat positions. Example: detect_bpm(file='song.mp3')."
+      verbose: "Detect tempo (BPM - beats per minute) of audio using beat tracking algorithms. Also returns: beat positions (timestamps), detected time signature, tempo confidence score. Can detect tempo changes in tracks with varying tempo. Example: detect_bpm(file='dance_track.mp3', detect_changes=true) returns {bpm: 128, confidence: 0.92, time_signature: '4/4', beats: [...], tempo_changes: []}. Note: Works best with rhythmic music. Warning: Complex polyrhythmic or rubato music may have lower accuracy."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to audio file"
+        required: true
+      - name: detect_changes
+        type: boolean
+        description: "Detect tempo changes"
+        required: false
+        default: false
+      - name: include_beats
+        type: boolean
+        description: "Include beat positions"
+        required: false
+        default: false
+      - name: start_time
+        type: number
+        description: "Analysis start time in seconds"
+        required: false
+      - name: end_time
+        type: number
+        description: "Analysis end time in seconds"
+        required: false
+    tags: ["audio", "bpm", "tempo", "beat", "analyze", "music"]
+    test_prompts:
+      single:
+        - "What's the BPM of this song?"
+        - "Detect the tempo of the track"
+        - "Find the beats per minute"
+        - "Analyze the rhythm of this audio"
+      single_clear:
+        - "I need to detect the tempo in beats per minute of an audio file. What's the BPM of this song?"
+        - "I need to detect the tempo in beats per minute of an audio file. Detect the tempo of the track"
+        - "I need to detect the tempo in beats per minute of an audio file. Find the beats per minute"
+        - "I need to detect the tempo in beats per minute of an audio file. Analyze the rhythm of this audio"
+
+  - name: audio_spectrum_analysis
+    descriptions:
+      minimal: "Spectrum analysis"
+      short: "Analyze audio frequency spectrum"
+      medium: "Perform frequency spectrum analysis on audio to visualize frequencies."
+      long: "Analyze audio frequency spectrum using FFT. Generate spectrograms, frequency plots, and detect dominant frequencies. Example: audio_spectrum_analysis(file='sample.wav', output='spectrum.png')."
+      verbose: "Perform frequency domain analysis on audio using Fast Fourier Transform (FFT). Outputs: spectrogram (time-frequency plot), frequency histogram, dominant frequencies, spectral centroid, rolloff, bandwidth. Example: audio_spectrum_analysis(file='recording.wav', window_size=2048, hop_size=512, output_spectrogram='spectrogram.png', frequency_range=[20, 20000]) generates visual spectrogram. Note: Larger window = better frequency resolution, worse time resolution. Warning: Long audio files produce large spectrograms."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to audio file"
+        required: true
+      - name: output
+        type: string
+        description: "Output path for visualization"
+        required: false
+      - name: window_size
+        type: integer
+        description: "FFT window size"
+        required: false
+        default: 2048
+      - name: hop_size
+        type: integer
+        description: "Hop size between windows"
+        required: false
+        default: 512
+      - name: frequency_range
+        type: string
+        description: "Frequency range as [min, max] Hz"
+        required: false
+      - name: output_format
+        type: string
+        description: "Output format"
+        required: false
+        default: "png"
+        enum: ["png", "svg", "json", "csv"]
+    tags: ["audio", "spectrum", "fft", "frequency", "analyze", "spectrogram"]
+    test_prompts:
+      single:
+        - "Generate a spectrogram of this audio"
+        - "Analyze the frequency content"
+        - "Show the audio spectrum"
+        - "What frequencies are dominant?"
+      single_clear:
+        - "I need to perform frequency spectrum analysis on audio. Generate a spectrogram of this audio"
+        - "I need to perform frequency spectrum analysis on audio. Analyze the frequency content"
+        - "I need to perform frequency spectrum analysis on audio. Show the audio spectrum"
+        - "I need to perform frequency spectrum analysis on audio. What frequencies are dominant?"
+
+  - name: remove_background_noise
+    descriptions:
+      minimal: "Remove noise"
+      short: "Remove background noise"
+      medium: "Remove or reduce background noise from audio recordings."
+      long: "Apply noise reduction to audio files. Uses spectral gating or adaptive filtering. Example: remove_background_noise(input='noisy_recording.wav', output='clean.wav', strength=0.7)."
+      verbose: "Remove or reduce background noise from audio recordings. Methods: 'spectral_gate' (learn noise profile, subtract), 'adaptive' (real-time adaptation), 'rnn' (neural network-based), 'lowpass'/'highpass' (frequency filtering). Example: remove_background_noise(input='interview.wav', output='clean.wav', method='spectral_gate', noise_sample_start=0, noise_sample_end=1, strength=0.8) uses first second as noise profile. Note: Sample a noise-only section for best results. Warning: Aggressive noise reduction may affect speech quality."
+    parameters:
+      - name: input
+        type: string
+        description: "Input audio file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output audio file path"
+        required: true
+      - name: method
+        type: string
+        description: "Noise reduction method"
+        required: false
+        default: "spectral_gate"
+        enum: ["spectral_gate", "adaptive", "rnn", "lowpass", "highpass"]
+      - name: strength
+        type: number
+        description: "Reduction strength (0.0 to 1.0)"
+        required: false
+        default: 0.5
+      - name: noise_sample_start
+        type: number
+        description: "Start of noise sample in seconds"
+        required: false
+      - name: noise_sample_end
+        type: number
+        description: "End of noise sample in seconds"
+        required: false
+    tags: ["audio", "noise", "denoise", "clean", "filter", "restoration"]
+    test_prompts:
+      single:
+        - "Remove the background noise"
+        - "Clean up this noisy recording"
+        - "Reduce the hiss in the audio"
+        - "Filter out the static"
+      single_clear:
+        - "I need to remove or reduce background noise from an audio recording. Remove the background noise"
+        - "I need to remove or reduce background noise from an audio recording. Clean up this noisy recording"
+        - "I need to remove or reduce background noise from an audio recording. Reduce the hiss in the audio"
+        - "I need to remove or reduce background noise from an audio recording. Filter out the static"
+
+  - name: audio_pitch_detection
+    descriptions:
+      minimal: "Detect pitch"
+      short: "Detect audio pitch/notes"
+      medium: "Detect pitch and musical notes in audio."
+      long: "Detect pitch/frequency over time in audio. Identify musical notes and create pitch contours. Example: audio_pitch_detection(file='melody.wav')."
+      verbose: "Detect pitch (fundamental frequency) over time in audio. Returns: pitch contour (frequency vs time), detected notes (MIDI, note name), onset times. Algorithms: 'yin' (accurate for monophonic), 'pyin' (probabilistic), 'crepe' (neural network). Example: audio_pitch_detection(file='vocal.wav', algorithm='pyin', output_midi='melody.mid', min_frequency=80, max_frequency=1000) returns pitch track and creates MIDI file. Note: Works best with monophonic audio (single voice/instrument). Warning: Polyphonic audio requires specialized chord detection."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to audio file"
+        required: true
+      - name: algorithm
+        type: string
+        description: "Pitch detection algorithm"
+        required: false
+        default: "yin"
+        enum: ["yin", "pyin", "crepe", "autocorrelation"]
+      - name: min_frequency
+        type: number
+        description: "Minimum frequency to detect (Hz)"
+        required: false
+        default: 50
+      - name: max_frequency
+        type: number
+        description: "Maximum frequency to detect (Hz)"
+        required: false
+        default: 2000
+      - name: output_midi
+        type: string
+        description: "Output MIDI file path"
+        required: false
+      - name: include_confidence
+        type: boolean
+        description: "Include confidence scores"
+        required: false
+        default: false
+    tags: ["audio", "pitch", "note", "melody", "music", "analyze"]
+    test_prompts:
+      single:
+        - "Detect the pitch of this vocal"
+        - "What notes are being sung?"
+        - "Analyze the melody"
+        - "Extract the pitch contour"
+      single_clear:
+        - "I need to detect pitch and musical notes in audio. Detect the pitch of this vocal"
+        - "I need to detect pitch and musical notes in audio. What notes are being sung?"
+        - "I need to detect pitch and musical notes in audio. Analyze the melody"
+        - "I need to detect pitch and musical notes in audio. Extract the pitch contour"
+
+  - name: sync_audio_video
+    descriptions:
+      minimal: "Sync audio/video"
+      short: "Synchronize audio with video"
+      medium: "Synchronize audio with video by adjusting timing or replacing audio track."
+      long: "Synchronize audio with video files. Match timings, replace audio tracks, or adjust sync offset. Example: sync_audio_video(video='clip.mp4', audio='new_audio.wav', output='synced.mp4')."
+      verbose: "Synchronize audio with video files. Operations: 'replace' (swap audio track), 'offset' (shift audio timing), 'auto_sync' (detect and align), 'merge' (combine video+audio). Auto-sync uses audio fingerprinting or visual cues. Example: sync_audio_video(video='interview.mp4', audio='backup_audio.wav', operation='auto_sync', output='final.mp4', method='audio_fingerprint') automatically aligns based on audio similarity. Note: Auto-sync requires overlapping audio content. Warning: Large files require significant processing time."
+    parameters:
+      - name: video
+        type: string
+        description: "Video file path"
+        required: true
+      - name: audio
+        type: string
+        description: "Audio file path"
+        required: true
+      - name: output
+        type: string
+        description: "Output file path"
+        required: true
+      - name: operation
+        type: string
+        description: "Sync operation"
+        required: false
+        default: "replace"
+        enum: ["replace", "offset", "auto_sync", "merge"]
+      - name: offset
+        type: number
+        description: "Audio offset in seconds (for offset mode)"
+        required: false
+        default: 0
+      - name: method
+        type: string
+        description: "Auto-sync method"
+        required: false
+        default: "audio_fingerprint"
+        enum: ["audio_fingerprint", "visual_cue", "manual"]
+    tags: ["audio", "video", "sync", "align", "timing", "media"]
+    test_prompts:
+      single:
+        - "Replace the audio in this video"
+        - "Sync the audio with the video"
+        - "Fix the audio-video sync issue"
+        - "Align this audio track with the video"
+      single_clear:
+        - "I need to synchronize audio with video by adjusting timing or replacing the audio track. Replace the audio in this video"
+        - "I need to synchronize audio with video by adjusting timing or replacing the audio track. Sync the audio with the video"
+        - "I need to synchronize audio with video by adjusting timing or replacing the audio track. Fix the audio-video sync issue"
+        - "I need to synchronize audio with video by adjusting timing or replacing the audio track. Align this audio track with the video"
+
+  - name: extract_vocals
+    descriptions:
+      minimal: "Extract vocals"
+      short: "Separate vocals from music"
+      medium: "Extract vocals or instruments from a mixed audio track."
+      long: "Separate vocals from instrumental parts in music. Uses source separation techniques. Example: extract_vocals(input='song.mp3', output_vocals='vocals.wav', output_instrumental='instrumental.wav')."
+      verbose: "Perform source separation to extract vocals from mixed music. Uses deep learning models (Spleeter, Demucs) to isolate: vocals, drums, bass, other instruments. Quality depends on mix complexity. Example: extract_vocals(input='song.mp3', model='demucs', stems=4, output_dir='./separated/') creates separate files for vocals, drums, bass, other. Note: 2-stem separates vocals/accompaniment; 4-stem or 5-stem for individual instruments. Warning: Heavily processed or complex mixes may have artifacts."
+    parameters:
+      - name: input
+        type: string
+        description: "Input audio file path"
+        required: true
+      - name: output_dir
+        type: string
+        description: "Output directory for separated stems"
+        required: true
+      - name: model
+        type: string
+        description: "Separation model"
+        required: false
+        default: "spleeter"
+        enum: ["spleeter", "demucs", "open_unmix"]
+      - name: stems
+        type: integer
+        description: "Number of stems to separate"
+        required: false
+        default: 2
+        enum: [2, 4, 5]
+      - name: output_format
+        type: string
+        description: "Output audio format"
+        required: false
+        default: "wav"
+        enum: ["wav", "mp3", "flac"]
+    tags: ["audio", "vocals", "separation", "karaoke", "music", "stems"]
+    test_prompts:
+      single:
+        - "Extract the vocals from this song"
+        - "Separate vocals and instrumental"
+        - "Create a karaoke version"
+        - "Isolate the drums from the mix"
+      single_clear:
+        - "I need to separate vocals or instruments from a mixed audio track. Extract the vocals from this song"
+        - "I need to separate vocals or instruments from a mixed audio track. Separate vocals and instrumental"
+        - "I need to separate vocals or instruments from a mixed audio track. Create a karaoke version"
+        - "I need to separate vocals or instruments from a mixed audio track. Isolate the drums from the mix"
+
+  - name: audio_fingerprint
+    descriptions:
+      minimal: "Audio fingerprint"
+      short: "Generate audio fingerprint"
+      medium: "Generate an acoustic fingerprint to identify or match audio."
+      long: "Generate acoustic fingerprints for audio identification. Can match against database or compare two files. Example: audio_fingerprint(file='unknown_song.mp3', action='identify')."
+      verbose: "Generate acoustic fingerprints for audio identification. Uses algorithms similar to Shazam. Operations: 'generate' (create fingerprint), 'identify' (match against database), 'compare' (similarity between files), 'store' (add to database). Example: audio_fingerprint(file='recording.mp3', action='identify', database='music_library.db') returns matching tracks and confidence. Note: Fingerprints are robust to compression and noise. Warning: Identification accuracy depends on database coverage."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to audio file"
+        required: true
+      - name: action
+        type: string
+        description: "Fingerprint action"
+        required: true
+        enum: ["generate", "identify", "compare", "store"]
+      - name: file_b
+        type: string
+        description: "Second file for comparison"
+        required: false
+      - name: database
+        type: string
+        description: "Fingerprint database path"
+        required: false
+      - name: duration
+        type: number
+        description: "Duration to analyze in seconds"
+        required: false
+        default: 30
+    tags: ["audio", "fingerprint", "identify", "match", "recognition"]
+    test_prompts:
+      single:
+        - "Identify this song"
+        - "Generate an audio fingerprint"
+        - "Check if these two audio files match"
+        - "What song is playing?"
+      single_clear:
+        - "I need to generate an acoustic fingerprint to identify or match audio. Identify this song"
+        - "I need to generate an acoustic fingerprint to identify or match audio. Generate an audio fingerprint"
+        - "I need to generate an acoustic fingerprint to identify or match audio. Check if these two audio files match"
+        - "I need to generate an acoustic fingerprint to identify or match audio. What song is playing?"

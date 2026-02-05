@@ -1,0 +1,921 @@
+category: category_10
+tools:
+- name: user_follower_list
+  descriptions:
+    minimal: Fetches the follower list of a specified TikTok...
+    short: Fetches the follower list of a specified TikTok user.
+    medium: Fetches the follower list of a specified TikTok user.
+    long: Fetches the follower list of a specified TikTok user.
+    verbose: Fetches the follower list of a specified TikTok user.
+  parameters:
+  - name: user_id
+    type: string
+    description: The ID of the TikTok user whose followers are to be fetched.
+    required: true
+    default: '107955'
+  - name: time
+    type: string
+    description: The start time for fetching followers. Default is '0'.
+    required: false
+    default: '0'
+  - name: count
+    type: string
+    description: The number of followers to fetch. Maximum is 200. Default is '50'.
+    required: false
+    default: '50'
+  tags:
+  - user
+  - follower
+  - list
+  test_prompts:
+    single:
+    - List the last 100 followers of TikTok user 'user456'.
+    single_clear:
+    - List the last 100 followers of TikTok user 'user456'.
+- name: places_list_by_radius_nearby_search
+  descriptions:
+    minimal: Fetches objects closest to a selected point...
+    short: Fetches objects closest to a selected point filtered by optional parameters.
+    medium: Fetches objects closest to a selected point filtered by optional parameters.
+    long: Fetches objects closest to a selected point filtered by optional parameters.
+    verbose: Fetches objects closest to a selected point filtered by optional parameters.
+  parameters:
+  - name: lang
+    type: string
+    description: Language code (2 characters, ISO639-1). Available values include 'en' (English) and 'ru' (Russian).
+    required: true
+  - name: radius
+    type: integer
+    description: Maximum distance from the selected point in meters.
+    required: true
+    default: '500'
+  - name: lon
+    type: integer
+    description: Longitude of the selected point.
+    required: true
+    default: '38.364285'
+  - name: lat
+    type: integer
+    description: Latitude of the selected point.
+    required: true
+    default: '59.855685'
+  - name: src_attr
+    type: string
+    description: Source of the object attributes, multiple sources can be separated by commas. Defaults to None. Available
+      values include 'osm', 'wikidata', 'snow', 'cultura.ru', 'rosnedra', 'user'.
+    required: false
+  - name: format
+    type: string
+    description: The output format. Defaults to GeoJSON. Values can be 'json', 'geojson', or 'count'.
+    required: false
+  - name: kinds
+    type: string
+    description: Object category, multiple categories can be separated by commas. Defaults to None. See object category hierarchy
+      at 'https://dev.opentripmap.com/doc/en/'.
+    required: false
+  - name: src_geom
+    type: string
+    description: Source of the object geometry. Defaults to None. Available values include 'osm', 'wikidata', 'snow', 'cultura.ru',
+      'rosnedra'.
+    required: false
+  - name: rate
+    type: string
+    description: Minimum rating of the object popularity. Defaults to None. Available values are '1', '2', '3', '1h', '2h',
+      '3h'.
+    required: false
+  - name: limit
+    type: integer
+    description: Maximum number of returned objects. Defaults to None, with a maximum limit of 500.
+    required: false
+  - name: name
+    type: string
+    description: Text string to search at the beginning of the object name (minimum 3 characters). Defaults to None.
+    required: false
+  tags:
+  - places
+  - list
+  - by
+  test_prompts:
+    single:
+    - What are the top-rated attractions within 2000 meters of the Statue of Liberty?
+    single_clear:
+    - What are the top-rated attractions within 2000 meters of the Statue of Liberty?
+- name: get_podcast_metadata
+  descriptions:
+    minimal: Fetch full details of a podcast using its Show ID...
+    short: Fetch full details of a podcast using its Show ID from Spotify's metadata API.
+    medium: Fetch full details of a podcast using its Show ID from Spotify's metadata API.
+    long: Fetch full details of a podcast using its Show ID from Spotify's metadata API.
+    verbose: Fetch full details of a podcast using its Show ID from Spotify's metadata API.
+  parameters:
+  - name: showid
+    type: string
+    description: The unique identifier for the podcast show.
+    required: true
+    default: 4oTBzqC3DHbaKNFq2YXpQw
+  tags:
+  - get
+  - podcast
+  - metadata
+  test_prompts:
+    single:
+    - I need the full metadata for the podcast with Show ID '4iVcZGZGzRjHapWXYqXToT'.
+    single_clear:
+    - I need the full metadata for the podcast with Show ID '4iVcZGZGzRjHapWXYqXToT'.
+- name: validate_email
+  descriptions:
+    minimal: Validate an email address using the "Validate...
+    short: Validate an email address using the "Validate Email" API.
+    medium: Validate an email address using the "Validate Email" API.
+    long: Validate an email address using the "Validate Email" API.
+    verbose: Validate an email address using the "Validate Email" API.
+  parameters:
+  - name: email
+    type: string
+    description: The email address to be validated.
+    required: true
+    default: hello@apitier.com
+  tags:
+  - validate
+  - email
+  test_prompts:
+    single:
+    - Is the email address 'john.doe@example.com' valid?
+    - What does the Validate Email API say about 'test@123.com'? Is it valid?
+    - Validate the email address hello@world.com.
+    single_clear:
+    - Is the email address 'john.doe@example.com' valid?
+    - What does the Validate Email API say about 'test@123.com'? Is it valid?
+    - Validate the email address hello@world.com.
+- name: get_range
+  descriptions:
+    minimal: Helper function to format the range string.
+    short: Helper function to format the range string.
+    medium: Helper function to format the range string.
+    long: Helper function to format the range string.
+    verbose: Helper function to format the range string.
+  parameters:
+  - name: start
+    type: integer
+    description: The start of the range.
+    required: true
+  - name: end
+    type: integer
+    description: The end of the range.
+    required: true
+  tags:
+  - get
+  - range
+  test_prompts:
+    single:
+    - Express the range of temperatures from -5 to 15 degrees Celsius.
+    - What is the range of numbers from 30 to 45?
+    - What is the range from 25 to 35?
+    - What is the range string for numbers from 10 to 20?
+    - Provide the range string for numbers from 10 to 20.
+    - What is the range from 5 to 15?
+    single_clear:
+    - Express the range of temperatures from -5 to 15 degrees Celsius.
+    - What is the range of numbers from 30 to 45?
+    - What is the range from 25 to 35?
+    - What is the range string for numbers from 10 to 20?
+    - Provide the range string for numbers from 10 to 20.
+    - What is the range from 5 to 15?
+- name: list_all_conversation_turns
+  descriptions:
+    minimal: Fetches and lists all conversation turns based on...
+    short: Fetches and lists all conversation turns based on specified search parameters.
+    medium: Fetches and lists all conversation turns based on specified search parameters.
+    long: Fetches and lists all conversation turns based on specified search parameters.
+    verbose: Fetches and lists all conversation turns based on specified search parameters.
+  parameters:
+  - name: limit
+    type: integer
+    description: The number of records to return. Default is 20.
+    required: false
+    default: 20
+  - name: conversation
+    type: string
+    description: The slug of the conversation. Conversations are linked to conversation turns.
+    required: false
+  - name: conversation_id
+    type: integer
+    description: The ID of the conversation. Conversations are linked to conversation turns.
+    required: false
+  - name: dir
+    type: string
+    description: The direction of the ordering. Default is 'asc'.
+    required: false
+    default: asc
+  - name: input
+    type: string
+    description: The input to the bot by the client for partial search.
+    required: false
+  - name: page
+    type: integer
+    description: The page number of results to start from. Default is 1.
+    required: false
+    default: 1
+  - name: output
+    type: string
+    description: The output from the bot in response to the client input for partial search.
+    required: false
+  - name: is_id
+    type: integer
+    description: The ID of the conversation turn.
+    required: false
+  - name: order
+    type: string
+    description: The search field to order by. Default is 'id'.
+    required: false
+    default: id
+  tags:
+  - list
+  - all
+  - conversation
+  test_prompts:
+    single:
+    - Retrieve the conversation turns where the output from the bot includes the phrase 'peace be upon him'.
+    - What are the conversation turns for the conversation with ID 150, ordered by the input in descending order?
+    - Retrieve the conversation turns where the client input contains 'password reset' and the output mentions 'success'.
+    single_clear:
+    - Retrieve the conversation turns where the output from the bot includes the phrase 'peace be upon him'.
+    - What are the conversation turns for the conversation with ID 150, ordered by the input in descending order?
+    - Retrieve the conversation turns where the client input contains 'password reset' and the output mentions 'success'.
+- name: get_city_from_zipcode
+  descriptions:
+    minimal: Retrieves the city name for a given ZIP code...
+    short: Retrieves the city name for a given ZIP code using the Ziptastic API.
+    medium: Retrieves the city name for a given ZIP code using the Ziptastic API.
+    long: Retrieves the city name for a given ZIP code using the Ziptastic API.
+    verbose: Retrieves the city name for a given ZIP code using the Ziptastic API.
+  parameters:
+  - name: zipcode
+    type: string
+    description: The ZIP code to look up.
+    required: true
+  tags:
+  - get
+  - city
+  - from
+  test_prompts:
+    single:
+    - Can you find the city associated with the ZIP code 90210?
+    - What city is associated with the ZIP code 10001?
+    - What city is associated with the ZIP code 90210?
+    - What city is associated with the ZIP code 90210?
+    single_clear:
+    - Can you find the city associated with the ZIP code 90210?
+    - What city is associated with the ZIP code 10001?
+    - What city is associated with the ZIP code 90210?
+    - What city is associated with the ZIP code 90210?
+- name: search_return_flights
+  descriptions:
+    minimal: Retrieve all return flights for a given...
+    short: Retrieve all return flights for a given contract/return bundle from FlightDepartures using the getFlightReturns
+      endpoint.
+    medium: Retrieve all return flights for a given contract/return bundle from FlightDepartures using the getFlightReturns
+      endpoint.
+    long: Retrieve all return flights for a given contract/return bundle from FlightDepartures using the getFlightReturns
+      endpoint.
+    verbose: Retrieve all return flights for a given contract/return bundle from FlightDepartures using the getFlightReturns
+      endpoint.
+  parameters:
+  - name: sid
+    type: string
+    description: Session ID. A random string to identify the session, e.g., 'j10k11l12m13n14'.
+    required: true
+  - name: ppn_bundle
+    type: string
+    description: A unique ID used to identify a specific return rate bundle provided by FlightDepartures.
+    required: true
+  - name: convert_currency
+    type: string
+    description: The requested currency for the results, in ISO 4217 format. Defaults to None.
+    required: false
+  tags:
+  - search
+  - return
+  - flights
+  test_prompts:
+    single:
+    - Search for return flights from Chicago to Paris with a session ID 'CHI2023' and a bundle ID 'RP3456'. Convert the prices
+      to USD.
+    single_clear:
+    - Search for return flights from Chicago to Paris with a session ID 'CHI2023' and a bundle ID 'RP3456'. Convert the prices
+      to USD.
+- name: get_time_zones
+  descriptions:
+    minimal: Fetch a list of time zones based on certain...
+    short: Fetch a list of time zones based on certain search criteria.
+    medium: Fetch a list of time zones based on certain search criteria.
+    long: Fetch a list of time zones based on certain search criteria.
+    verbose: Fetch a list of time zones based on certain search criteria.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the time zone to filter by. Defaults to None.
+    required: false
+  - name: keyword
+    type: string
+    description: The keyword to search for in the time zones. Defaults to 'asia'.
+    required: false
+    default: asia
+  - name: page
+    type: integer
+    description: The page number for pagination. Defaults to 1.
+    required: false
+    default: '1'
+  - name: perpage
+    type: integer
+    description: The number of records per page for pagination. Defaults to 50.
+    required: false
+    default: '50'
+  tags:
+  - get
+  - time
+  - zones
+  test_prompts:
+    single:
+    - What are the time zones associated with the ID 'UTC-11'?
+    single_clear:
+    - What are the time zones associated with the ID 'UTC-11'?
+- name: latest_rates
+  descriptions:
+    minimal: Fetches the latest real-time exchange rates for...
+    short: Fetches the latest real-time exchange rates for given symbols based on a specified base currency.
+    medium: Fetches the latest real-time exchange rates for given symbols based on a specified base currency.
+    long: Fetches the latest real-time exchange rates for given symbols based on a specified base currency.
+    verbose: Fetches the latest real-time exchange rates for given symbols based on a specified base currency.
+  parameters:
+  - name: symbols
+    type: string
+    description: Comma-separated list of currency or commodity codes to retrieve rates for.
+    required: true
+    default: BRENTOIL
+  - name: base
+    type: string
+    description: Three-letter currency or commodity code to use as the base currency.
+    required: true
+    default: USD
+  tags:
+  - latest
+  - rates
+  test_prompts:
+    single:
+    - Can you find the current rates for the Euro, the British Pound, and the Japanese Yen when compared to the Australian
+      Dollar?
+    - Fetch the latest exchange rates for AUD against USD, EUR, and GBP.
+    - What are the current exchange rates of CHF to USD, EUR, and GBP?
+    - Can you find the latest exchange rates for USD, EUR, and JPY against the base currency GBP as of today?
+    - I need the latest exchange rates for CAD, AUD, and NZD based on the Euro.
+    single_clear:
+    - Can you find the current rates for the Euro, the British Pound, and the Japanese Yen when compared to the Australian
+      Dollar?
+    - Fetch the latest exchange rates for AUD against USD, EUR, and GBP.
+    - What are the current exchange rates of CHF to USD, EUR, and GBP?
+    - Can you find the latest exchange rates for USD, EUR, and JPY against the base currency GBP as of today?
+    - I need the latest exchange rates for CAD, AUD, and NZD based on the Euro.
+- name: billboard_global_200
+  descriptions:
+    minimal: Fetch Billboard Global 200 chart information for...
+    short: Fetch Billboard Global 200 chart information for a specific date.
+    medium: Fetch Billboard Global 200 chart information for a specific date.
+    long: Fetch Billboard Global 200 chart information for a specific date.
+    verbose: Fetch Billboard Global 200 chart information for a specific date.
+  parameters:
+  - name: date
+    type: string
+    description: The date for which to retrieve the chart information, in the format 'YYYY-MM-DD'.
+    required: true
+    default: '2020-09-19'
+  tags:
+  - billboard
+  - global
+  - '200'
+  test_prompts:
+    single:
+    - What songs were trending globally on the Billboard chart during the summer of 2018? Specifically, on June 21, 2018?
+    - Provide the Billboard Global 200 chart for the date of February 28, 2023.
+    single_clear:
+    - What songs were trending globally on the Billboard chart during the summer of 2018? Specifically, on June 21, 2018?
+    - Provide the Billboard Global 200 chart for the date of February 28, 2023.
+- name: get_birthday_draws
+  descriptions:
+    minimal: Fetches lottery draw results for a given birthday...
+    short: Fetches lottery draw results for a given birthday date (in 'mm-dd' format) and returns related statistics and potentially
+      a lucky number.
+    medium: Fetches lottery draw results for a given birthday date (in 'mm-dd' format) and returns related statistics and
+      potentially a lucky number.
+    long: Fetches lottery draw results for a given birthday date (in 'mm-dd' format) and returns related statistics and potentially
+      a lucky number.
+    verbose: Fetches lottery draw results for a given birthday date (in 'mm-dd' format) and returns related statistics and
+      potentially a lucky number.
+  parameters:
+  - name: date
+    type: string
+    description: The birthday date in 'mm-dd' format for which to fetch the lottery draw results.
+    required: true
+    default: 01-21
+  tags:
+  - get
+  - birthday
+  - draws
+  test_prompts:
+    single:
+    - Could you provide the Euro Millions draw details for February 29th?
+    single_clear:
+    - Could you provide the Euro Millions draw details for February 29th?
+- name: products_get_reviews
+  descriptions:
+    minimal: Fetches brief reviews of a product from the Shein...
+    short: Fetches brief reviews of a product from the Shein API.
+    medium: Fetches brief reviews of a product from the Shein API.
+    long: Fetches brief reviews of a product from the Shein API.
+    verbose: Fetches brief reviews of a product from the Shein API.
+  parameters:
+  - name: goods_spu
+    type: string
+    description: The value of 'productRelationID' returned in the /products/list or /products/search endpoints. Defaults to
+      'm22022854841'.
+    required: false
+    default: m22022854841
+  - name: cat_id
+    type: string
+    description: The value of 'cat_id' returned in the /products/list or /products/search endpoints. Defaults to '1727'.
+    required: false
+    default: '1727'
+  - name: sku
+    type: string
+    description: The value of 'goods_sn' returned in the /products/list or /products/search endpoints. Defaults to 'rm2202285484176751'.
+    required: false
+    default: rm2202285484176751
+  - name: currency
+    type: string
+    description: The 3-letter currency code. Defaults to 'USD'.
+    required: false
+    default: USD
+  - name: goods_id
+    type: string
+    description: The value of 'goods_id' field returned in the /products/list or /products/search endpoints. Defaults to '10196865'.
+    required: false
+    default: '10196865'
+  - name: language
+    type: string
+    description: The 2-letter language code. Defaults to 'en'.
+    required: false
+    default: en
+  - name: country
+    type: string
+    description: The 2-letter country code. Defaults to 'US'.
+    required: false
+    default: US
+  tags:
+  - products
+  - get
+  - reviews
+  test_prompts:
+    single:
+    - I need reviews for a specific product with ID 10196865 in USD, can you get that?
+    - Please provide reviews for a set of kitchen utensils in Canada, in English, and with prices in CAD.
+    - Retrieve reviews for the product with goods_spu 'm22022854841' in Spanish from Spain.
+    single_clear:
+    - I need reviews for a specific product with ID 10196865 in USD, can you get that?
+    - Please provide reviews for a set of kitchen utensils in Canada, in English, and with prices in CAD.
+    - Retrieve reviews for the product with goods_spu 'm22022854841' in Spanish from Spain.
+- name: random
+  descriptions:
+    minimal: Generate a random string of a specified length...
+    short: Generate a random string of a specified length using the Toolbench RapidAPI service.
+    medium: Generate a random string of a specified length using the Toolbench RapidAPI service.
+    long: Generate a random string of a specified length using the Toolbench RapidAPI service.
+    verbose: Generate a random string of a specified length using the Toolbench RapidAPI service.
+  parameters:
+  - name: length
+    type: integer
+    description: The length of the random string to generate. Defaults to 20.
+    required: true
+    default: '20'
+  tags:
+  - random
+  test_prompts:
+    single:
+    - Create a random string of length 25.
+    - Retrieve 3 random chess puzzles.
+    single_clear:
+    - Create a random string of length 25.
+    - Retrieve 3 random chess puzzles.
+- name: country_by_iso_code
+  descriptions:
+    minimal: Fetches information about a country using its...
+    short: Fetches information about a country using its 2-letter ISO code, localized to a specified language.
+    medium: Fetches information about a country using its 2-letter ISO code, localized to a specified language.
+    long: Fetches information about a country using its 2-letter ISO code, localized to a specified language.
+    verbose: Fetches information about a country using its 2-letter ISO code, localized to a specified language.
+  parameters:
+  - name: iso_code
+    type: string
+    description: The 2-letter ISO country code.
+    required: true
+    default: US
+  - name: fields
+    type: string
+    description: A comma-delimited list of fields to include in the response. Defaults to None.
+    required: false
+  - name: lang
+    type: string
+    description: The 2-letter ISO language code for localizing the country name. Defaults to 'en'.
+    required: false
+    default: en
+  tags:
+  - country
+  - by
+  - iso
+  test_prompts:
+    single:
+    - Get information about France in French, including capital and population.
+    single_clear:
+    - Get information about France in French, including capital and population.
+- name: get_signals
+  descriptions:
+    minimal: Fetches trading signals and trends for a...
+    short: Fetches trading signals and trends for a specified cryptocurrency pair from the given exchange and market type.
+    medium: Fetches trading signals and trends for a specified cryptocurrency pair from the given exchange and market type.
+    long: Fetches trading signals and trends for a specified cryptocurrency pair from the given exchange and market type.
+    verbose: Fetches trading signals and trends for a specified cryptocurrency pair from the given exchange and market type.
+  parameters:
+  - name: coin
+    type: string
+    description: The cryptocurrency pair to get signals for (e.g., BTC, ETH, TRX).
+    required: true
+    default: BTC
+  - name: exchange
+    type: string
+    description: The exchange to get signals from (e.g., Binance, Bybit, Huobi, Kucoin, Coinex, MXC, Gate).
+    required: true
+    default: Bybit
+  - name: market_type
+    type: string
+    description: The market type to get signals for (e.g., SPOT, FUTURES).
+    required: true
+    default: SPOT
+  tags:
+  - get
+  - signals
+  test_prompts:
+    single:
+    - Fetch trading signals for ETH on Bybit in the FUTURES market.
+    single_clear:
+    - Fetch trading signals for ETH on Bybit in the FUTURES market.
+- name: search_wikipedia
+  descriptions:
+    minimal: Searches Wikipedia and returns the top K...
+    short: Searches Wikipedia and returns the top K summarized information along with similar items.
+    medium: Searches Wikipedia and returns the top K summarized information along with similar items. Additionally, images
+      and coordinates with map links are provided when available.
+    long: Searches Wikipedia and returns the top K summarized information along with similar items. Additionally, images and
+      coordinates with map links are provided when available.
+    verbose: Searches Wikipedia and returns the top K summarized information along with similar items. Additionally, images
+      and coordinates with map links are provided when available.
+  parameters:
+  - name: q
+    type: string
+    description: Query string to search for on Wikipedia.
+    required: true
+    default: Messi
+  - name: topk
+    type: integer
+    description: Number of top summarized items to return. Defaults to 3. Must be greater than 0.
+    required: false
+    default: '3'
+  tags:
+  - search
+  - wikipedia
+  test_prompts:
+    single:
+    - What are the top 3 Wikipedia entries for 'Albert Einstein'?
+    single_clear:
+    - What are the top 3 Wikipedia entries for 'Albert Einstein'?
+- name: format_date
+  descriptions:
+    minimal: Converts a date string from one format to another.
+    short: Converts a date string from one format to another.
+    medium: Converts a date string from one format to another.
+    long: Converts a date string from one format to another.
+    verbose: Converts a date string from one format to another.
+  parameters:
+  - name: date
+    type: string
+    description: The date string to convert.
+    required: true
+  - name: input_format
+    type: string
+    description: The format of the input date string.
+    required: true
+  - name: output_format
+    type: string
+    description: The desired format of the output date string.
+    required: true
+  tags:
+  - format
+  - date
+  test_prompts:
+    single:
+    - Convert the date '2023-01-01' from ISO format to 'January 1, 2023' format.
+    - Can you change the date '2023-01-01' from YYYY-MM-DD format to DD/MM/YYYY?
+    - I have a date in the format 'YYYY-MM-DD'. Convert it from '2023-04-05' to 'DD/MM/YYYY' format.
+    - How do I change the date '03/15/2023' from MM/DD/YYYY to DD/MM/YYYY?
+    - Convert the date '2023-03-15' from 'YYYY-MM-DD' format to 'MM/DD/YYYY' format.
+    - Convert the date '2023-04-05' from 'yyyy-mm-dd' to 'dd-mm-yyyy' format.
+    - Convert the date '01/01/2023' from 'MM/DD/YYYY' to 'YYYY-MM-DD'
+    - I'm looking to change '2023-01-01T00:00:00' from ISO 8601 to DD/MM/YYYY format, is that possible?
+    - I need to change '01/04/2023' from DD/MM/YYYY to YYYY-MM-DD format.
+    single_clear:
+    - Convert the date '2023-01-01' from ISO format to 'January 1, 2023' format.
+    - Can you change the date '2023-01-01' from YYYY-MM-DD format to DD/MM/YYYY?
+    - I have a date in the format 'YYYY-MM-DD'. Convert it from '2023-04-05' to 'DD/MM/YYYY' format.
+    - How do I change the date '03/15/2023' from MM/DD/YYYY to DD/MM/YYYY?
+    - Convert the date '2023-03-15' from 'YYYY-MM-DD' format to 'MM/DD/YYYY' format.
+    - Convert the date '2023-04-05' from 'yyyy-mm-dd' to 'dd-mm-yyyy' format.
+    - Convert the date '01/01/2023' from 'MM/DD/YYYY' to 'YYYY-MM-DD'
+    - I'm looking to change '2023-01-01T00:00:00' from ISO 8601 to DD/MM/YYYY format, is that possible?
+    - I need to change '01/04/2023' from DD/MM/YYYY to YYYY-MM-DD format.
+- name: geocodingsearch
+  descriptions:
+    minimal: Performs a forward geocoding search using a...
+    short: Performs a forward geocoding search using a free-form query string and optional parameters to specify query filters
+      and output format.
+    medium: Performs a forward geocoding search using a free-form query string and optional parameters to specify query filters
+      and output format.
+    long: Performs a forward geocoding search using a free-form query string and optional parameters to specify query filters
+      and output format.
+    verbose: Performs a forward geocoding search using a free-form query string and optional parameters to specify query filters
+      and output format.
+  parameters:
+  - name: q
+    type: string
+    description: Free-form query string for the geocoding search.
+    required: true
+    default: New York City NY USA
+  - name: countrycodes
+    type: string
+    description: Two-letter country code as defined in ISO 3166-1 alpha2 to restrict search to a specific country.
+    required: false
+  - name: json_callback
+    type: string
+    description: Name of JSON callback function for JSONP calls; use this when the format is set to JSON.
+    required: false
+  - name: polygon_text
+    type: string
+    description: Include a textual representation of the polygon geometry in the output.
+    required: false
+  - name: namedetails
+    type: string
+    description: Include detailed naming information in the output.
+    required: false
+  - name: limit
+    type: string
+    description: Limit the number of search results.
+    required: false
+  - name: viewbox
+    type: string
+    description: Specify a bounding box for the search area in the format 'x1,y1,x2,y2', where x is longitude and y is latitude.
+    required: false
+  - name: format
+    type: string
+    description: Output format of the response (e.g., JSON).
+    required: false
+  - name: polygon_geojson
+    type: string
+    description: Include GeoJSON representation of the polygon geometry in the output.
+    required: false
+  - name: bounded
+    type: string
+    description: Use '1' to restrict the search area to the specified viewbox.
+    required: false
+  - name: polygon_svg
+    type: string
+    description: Include SVG representation of the polygon geometry in the output.
+    required: false
+  - name: polygon_kml
+    type: string
+    description: Include KML representation of the polygon geometry in the output.
+    required: false
+  - name: polygon_threshold
+    type: integer
+    description: Simplification threshold for the polygon geometry.
+    required: false
+    default: '0.0'
+  - name: accept_language
+    type: string
+    description: Set the query and response language using two-letter language codes (e.g., 'en' or 'es') or a combination
+      of language and region code (e.g., 'en-GB' or 'es-AR'). Default is 'en'.
+    required: false
+    default: en
+  - name: addressdetails
+    type: string
+    description: Include detailed address information in the output.
+    required: false
+  tags:
+  - geocodingsearch
+  test_prompts:
+    single:
+    - Search for 'Buckingham Palace' in London, UK, including detailed naming information and address details, with results
+      in British English.
+    - Can you provide the detailed address information for the Eiffel Tower in Paris, France, including any namedetails and
+      polygon_text?
+    - Perform a geocoding search for 'Empire State Building' in New York, USA.
+    single_clear:
+    - Search for 'Buckingham Palace' in London, UK, including detailed naming information and address details, with results
+      in British English.
+    - Can you provide the detailed address information for the Eiffel Tower in Paris, France, including any namedetails and
+      polygon_text?
+    - Perform a geocoding search for 'Empire State Building' in New York, USA.
+- name: namebydomain
+  descriptions:
+    minimal: Fetch the organization name using a given domain...
+    short: Fetch the organization name using a given domain through the RapidAPI service.
+    medium: Fetch the organization name using a given domain through the RapidAPI service.
+    long: Fetch the organization name using a given domain through the RapidAPI service.
+    verbose: Fetch the organization name using a given domain through the RapidAPI service.
+  parameters:
+  - name: domain
+    type: string
+    description: The domain name for which the organization name is to be fetched.
+    required: true
+    default: tftus.com
+  tags:
+  - namebydomain
+  test_prompts:
+    single:
+    - Identify the organization linked to the domain 'innovatech.org'.
+    - Fetch the organization name for the domain 'example.com'.
+    single_clear:
+    - Identify the organization linked to the domain 'innovatech.org'.
+    - Fetch the organization name for the domain 'example.com'.
+- name: download_states
+  descriptions:
+    minimal: Downloads a list of states from the Priceline API...
+    short: Downloads a list of states from the Priceline API using the provided parameters.
+    medium: Downloads a list of states from the Priceline API using the provided parameters.
+    long: Downloads a list of states from the Priceline API using the provided parameters.
+    verbose: Downloads a list of states from the Priceline API using the provided parameters.
+  parameters:
+  - name: limit
+    type: integer
+    description: Limits the number of results returned by the API. Defaults to 100.
+    required: false
+    default: 100
+  - name: resume_key
+    type: string
+    description: A key to resume results from a specific ID. Defaults to None.
+    required: false
+  tags:
+  - download
+  - states
+  test_prompts:
+    single:
+    - What are the states available in the Priceline API?
+    single_clear:
+    - What are the states available in the Priceline API?
+- name: price_probability
+  descriptions:
+    minimal: Fetch the probabilistic outcome of a stock's...
+    short: Fetch the probabilistic outcome of a stock's price based on over 1000 forecasts.
+    medium: Fetch the probabilistic outcome of a stock's price based on over 1000 forecasts.
+    long: Fetch the probabilistic outcome of a stock's price based on over 1000 forecasts.
+    verbose: Fetch the probabilistic outcome of a stock's price based on over 1000 forecasts.
+  parameters:
+  - name: symbol
+    type: string
+    description: The stock symbol for which the probabilistic outcome is to be fetched.
+    required: true
+    default: AAPL
+  tags:
+  - price
+  - probability
+  test_prompts:
+    single:
+    - What is the probability of Apple Inc.'s stock (AAPL) price being above $150 in the next quarter?
+    - What is the probability of Apple's stock (AAPL) price being above the current price?
+    single_clear:
+    - What is the probability of Apple Inc.'s stock (AAPL) price being above $150 in the next quarter?
+    - What is the probability of Apple's stock (AAPL) price being above the current price?
+- name: find_kth_smallest_number
+  descriptions:
+    minimal: Finds the kth smallest number in a list.
+    short: Finds the kth smallest number in a list.
+    medium: Finds the kth smallest number in a list.
+    long: Finds the kth smallest number in a list.
+    verbose: Finds the kth smallest number in a list.
+  parameters:
+  - name: nums
+    type: string
+    description: The list of numbers.
+    required: true
+  - name: k
+    type: integer
+    description: The position (1-based index) of the smallest number to find.
+    required: true
+  tags:
+  - find
+  - kth
+  - smallest
+  test_prompts:
+    single:
+    - Find the 3rd smallest number in the list [5, 2, 9, 1, 8, 3].
+    - What is the 1st smallest number in the sequence [10, 20, 30, 40, 50]?
+    - Find the 5th smallest number in the list [22, 33, 11, 44, 55, 66, 77]
+    - Find the 1st smallest number in the list [10, 20, 30, 40, 50].
+    - Find the 4th smallest number in the list [12, 45, 67, 23, 89, 34, 56, 78].
+    - I'm looking for the 6th smallest number in the array [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].
+    - Find the 3rd smallest number in the list [5, 2, 9, 1, 8, 3, 7, 4, 6].
+    - What is the 3rd smallest number in the list [7, 2, 9, 4, 1, 6, 8, 3, 5]?
+    - Find the 5th smallest number in the list [12, 45, 67, 23, 89, 34, 56, 78, 90]
+    single_clear:
+    - Find the 3rd smallest number in the list [5, 2, 9, 1, 8, 3].
+    - What is the 1st smallest number in the sequence [10, 20, 30, 40, 50]?
+    - Find the 5th smallest number in the list [22, 33, 11, 44, 55, 66, 77]
+    - Find the 1st smallest number in the list [10, 20, 30, 40, 50].
+    - Find the 4th smallest number in the list [12, 45, 67, 23, 89, 34, 56, 78].
+    - I'm looking for the 6th smallest number in the array [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].
+    - Find the 3rd smallest number in the list [5, 2, 9, 1, 8, 3, 7, 4, 6].
+    - What is the 3rd smallest number in the list [7, 2, 9, 4, 1, 6, 8, 3, 5]?
+    - Find the 5th smallest number in the list [12, 45, 67, 23, 89, 34, 56, 78, 90]
+- name: label_templates
+  descriptions:
+    minimal: Fetches a list of label templates filtered by...
+    short: Fetches a list of label templates filtered by various parameters such as paper format, brand, label size, and shape.
+    medium: Fetches a list of label templates filtered by various parameters such as paper format, brand, label size, and
+      shape.
+    long: Fetches a list of label templates filtered by various parameters such as paper format, brand, label size, and shape.
+    verbose: Fetches a list of label templates filtered by various parameters such as paper format, brand, label size, and
+      shape.
+  parameters:
+  - name: format
+    type: string
+    description: The paper format, either 'Letter' (8.5 inch by 11 inch) or 'A4' (210 mm by 297 mm).
+    required: true
+    default: letter
+  - name: brand
+    type: string
+    description: The name of the label manufacturer. Default is 'avery'. Possible values include 'Avery', 'Herma', 'Onlinelabels',
+      'Uline', 'Megastar', 'Sheetlabels'.
+    required: false
+    default: avery
+  - name: height
+    type: string
+    description: The height of the label.
+    required: false
+  - name: code
+    type: string
+    description: A string representing approximate label sizes in the format [width]x[height]. Default is '2x2'.
+    required: false
+    default: 2x2
+  - name: width
+    type: string
+    description: The width of the label.
+    required: false
+  - name: shape
+    type: string
+    description: The shape of the label. Valid values include 'square', 'rectangle', 'circle', 'oval'.
+    required: false
+  tags:
+  - label
+  - templates
+  test_prompts:
+    single:
+    - I need to find label templates for 'A4' paper format from 'Herma' brand, with a label size of '3x3' and 'rectangle'
+      shape.
+    - Can you find label templates for Avery brand in A4 format with a 3x4 code and a circle shape?
+    - Find label templates for 'A4' format with 'Onlinelabels' brand, '2x4' code, and 'rectangle' shape.
+    single_clear:
+    - I need to find label templates for 'A4' paper format from 'Herma' brand, with a label size of '3x3' and 'rectangle'
+      shape.
+    - Can you find label templates for Avery brand in A4 format with a 3x4 code and a circle shape?
+    - Find label templates for 'A4' format with 'Onlinelabels' brand, '2x4' code, and 'rectangle' shape.
+- name: nhl_summary
+  descriptions:
+    minimal: Fetch the game summary data for a specified NHL...
+    short: Fetch the game summary data for a specified NHL game using the RapidAPI service.
+    medium: Fetch the game summary data for a specified NHL game using the RapidAPI service.
+    long: Fetch the game summary data for a specified NHL game using the RapidAPI service.
+    verbose: Fetch the game summary data for a specified NHL game using the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: string
+    description: The game ID for which the summary data is requested.
+    required: true
+    default: '401458986'
+  tags:
+  - nhl
+  - summary
+  test_prompts:
+    single:
+    - Provide the summary for the game identified by ID 2017060005.
+    - Fetch the game summary for the NHL game with ID 2019020001.
+    - Get me the details of the NHL game with the ID '20230303'.
+    single_clear:
+    - Provide the summary for the game identified by ID 2017060005.
+    - Fetch the game summary for the NHL game with ID 2019020001.
+    - Get me the details of the NHL game with the ID '20230303'.

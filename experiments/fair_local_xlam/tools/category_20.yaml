@@ -1,0 +1,810 @@
+category: category_20
+tools:
+- name: is_prime
+  descriptions:
+    minimal: Determines if a given number is prime by querying...
+    short: Determines if a given number is prime by querying an external API.
+    medium: Determines if a given number is prime by querying an external API.
+    long: Determines if a given number is prime by querying an external API.
+    verbose: Determines if a given number is prime by querying an external API.
+  parameters:
+  - name: number
+    type: integer
+    description: The number to be checked for primality.
+    required: true
+  tags:
+  - is
+  - prime
+  test_prompts:
+    single:
+    - Check if 47 is a prime number.
+    single_clear:
+    - Check if 47 is a prime number.
+- name: get_biden_articles_from_specific_newspaper
+  descriptions:
+    minimal: Fetches all articles related to Biden from a...
+    short: Fetches all articles related to Biden from a specified newspaper using a given API key.
+    medium: Fetches all articles related to Biden from a specified newspaper using a given API key.
+    long: Fetches all articles related to Biden from a specified newspaper using a given API key.
+    verbose: Fetches all articles related to Biden from a specified newspaper using a given API key.
+  parameters:
+  - name: newspaper
+    type: string
+    description: The name of the newspaper from which to fetch the articles.
+    required: true
+    default: boston_globe,new_york_times,cnn,washington_post,los_angeles_times,chicago_tribute
+  tags:
+  - get
+  - biden
+  - articles
+  test_prompts:
+    single:
+    - Can you fetch all Biden-related articles from 'The New York Times'?
+    - Can you fetch the latest Biden-related articles from 'The New York Times'?
+    single_clear:
+    - Can you fetch all Biden-related articles from 'The New York Times'?
+    - Can you fetch the latest Biden-related articles from 'The New York Times'?
+- name: geogrid_seach_with_ranking
+  descriptions:
+    minimal: Perform a full grid search and retrieve the...
+    short: Perform a full grid search and retrieve the ranking of a business at every coordinate point in the grid.
+    medium: Perform a full grid search and retrieve the ranking of a business at every coordinate point in the grid. The grid
+      cells in the results are ordered left-to-right, then top-to-bottom. Additional ranking data for the business is provided
+      based on either place ID or business name.
+    long: Perform a full grid search and retrieve the ranking of a business at every coordinate point in the grid. The grid
+      cells in the results are ordered left-to-right, then top-to-bottom. Additional ranking data for the business is provided
+      based on either place ID or business name.
+    verbose: Perform a full grid search and retrieve the ranking of a business at every coordinate point in the grid. The
+      grid cells in the results are ordered left-to-right, then top-to-bottom. Additional ranking data for the business is
+      provided based on either place ID or business name.
+  parameters:
+  - name: match_value
+    type: string
+    description: The search query or keyword.
+    required: true
+    default: ChIJoejvAr3Mj4ARtHrbKxtAHXI
+  - name: query
+    type: string
+    description: The Google Place ID of the business or the business name to match in results. Use the `match_type` parameter
+      to specify the choice.
+    required: true
+    default: web design
+  - name: lng
+    type: integer
+    description: Longitude value of the grid center coordinate point.
+    required: true
+    default: '-121.938314'
+  - name: lat
+    type: integer
+    description: Latitude value of the grid center coordinate point.
+    required: true
+    default: '37.341759'
+  - name: zoom
+    type: integer
+    description: Google Maps zoom level to use for searching each grid point. Default is 13.
+    required: false
+    default: '13'
+  - name: match_type
+    type: string
+    description: The type of match to perform for ranking. Either 'place_id' or 'name'. Default is 'place_id'.
+    required: false
+    default: place_id
+  - name: distance_unit
+    type: string
+    description: The unit of measurement for distance. Default is 'km'.
+    required: false
+    default: km
+  - name: width
+    type: integer
+    description: The width of the grid in location points for non-square grid searches. Default is 5.
+    required: false
+    default: '5'
+  - name: height
+    type: integer
+    description: The height of the grid in location points for non-square grid searches. Default is 5.
+    required: false
+    default: '5'
+  - name: grid_size
+    type: integer
+    description: The size of the grid (e.g., 3x3, 5x5). Default is 5.
+    required: false
+    default: '5'
+  - name: distance
+    type: integer
+    description: The distance between coordinate points on the same row/column in the grid. Default is 1.
+    required: false
+    default: '1'
+  tags:
+  - geogrid
+  - seach
+  - with
+  test_prompts:
+    single:
+    - Analyze the ranking of a hotel named 'Grand Plaza' in Chicago, using a 6x6 grid with a distance of 3 units between points
+      and a zoom level of 16.
+    single_clear:
+    - Analyze the ranking of a hotel named 'Grand Plaza' in Chicago, using a 6x6 grid with a distance of 3 units between points
+      and a zoom level of 16.
+- name: market_most_actives
+  descriptions:
+    minimal: Fetches the most active stocks ordered by...
+    short: Fetches the most active stocks ordered by intraday trade volume using the Yahoo Finance API.
+    medium: Fetches the most active stocks ordered by intraday trade volume using the Yahoo Finance API.
+    long: Fetches the most active stocks ordered by intraday trade volume using the Yahoo Finance API.
+    verbose: Fetches the most active stocks ordered by intraday trade volume using the Yahoo Finance API.
+  parameters:
+  - name: start
+    type: integer
+    description: The start index for the request. Defaults to 0.
+    required: false
+    default: '0'
+  tags:
+  - market
+  - most
+  - actives
+  test_prompts:
+    single:
+    - List the most active stocks starting from the 10th entry.
+    single_clear:
+    - List the most active stocks starting from the 10th entry.
+- name: calculate_order_total
+  descriptions:
+    minimal: Calculates the total cost of an order based on...
+    short: Calculates the total cost of an order based on the items, quantities, and prices.
+    medium: Calculates the total cost of an order based on the items, quantities, and prices.
+    long: Calculates the total cost of an order based on the items, quantities, and prices.
+    verbose: Calculates the total cost of an order based on the items, quantities, and prices.
+  parameters:
+  - name: items
+    type: string
+    description: A list of item names.
+    required: true
+  - name: quantities
+    type: string
+    description: A list of corresponding quantities for each item.
+    required: true
+  - name: prices
+    type: string
+    description: A list of corresponding prices for each item.
+    required: true
+  tags:
+  - calculate
+  - order
+  - total
+  test_prompts:
+    single:
+    - Calculate the total cost of an order with 1 book at $15, 2 pens at $1 each, and 1 notebook at $5.
+    - Calculate the total cost of an order with items 'Book', 'Pen', and 'Notebook' at quantities of 2, 3, and 1 respectively,
+      with prices $15, $2, and $5.
+    - Calculate the total cost of an order with items 'Apple', 'Banana', and 'Cherry', quantities 5, 10, and 15, and prices
+      $1.00, $0.50, and $2.00 respectively.
+    - Calculate the total cost of an order with 3 apples at $1.00 each, 2 oranges at $0.75 each, and 1 banana at $0.50.
+    - Find the total cost of an order including 6 shirts at $25 each and 3 pairs of shoes at $50 each.
+    - What is the total cost of an order containing 2 T-shirts at $15 each and 3 hats at $10 each?
+    single_clear:
+    - Calculate the total cost of an order with 1 book at $15, 2 pens at $1 each, and 1 notebook at $5.
+    - Calculate the total cost of an order with items 'Book', 'Pen', and 'Notebook' at quantities of 2, 3, and 1 respectively,
+      with prices $15, $2, and $5.
+    - Calculate the total cost of an order with items 'Apple', 'Banana', and 'Cherry', quantities 5, 10, and 15, and prices
+      $1.00, $0.50, and $2.00 respectively.
+    - Calculate the total cost of an order with 3 apples at $1.00 each, 2 oranges at $0.75 each, and 1 banana at $0.50.
+    - Find the total cost of an order including 6 shirts at $25 each and 3 pairs of shoes at $50 each.
+    - What is the total cost of an order containing 2 T-shirts at $15 each and 3 hats at $10 each?
+- name: venuedetails
+  descriptions:
+    minimal: Fetches detailed information about a specific...
+    short: Fetches detailed information about a specific venue using a given venue ID and language.
+    medium: Fetches detailed information about a specific venue using a given venue ID and language.
+    long: Fetches detailed information about a specific venue using a given venue ID and language.
+    verbose: Fetches detailed information about a specific venue using a given venue ID and language.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the venue for which details are to be fetched.
+    required: true
+    default: 56c467cb7b0d464811a42017
+  - name: lang
+    type: string
+    description: The language code for the details to be retrieved in.
+    required: true
+    default: zh-hans
+  tags:
+  - venuedetails
+  test_prompts:
+    single:
+    - What are the details of the venue '67890' in German?
+    single_clear:
+    - What are the details of the venue '67890' in German?
+- name: medprice
+  descriptions:
+    minimal: Fetches the median price (MEDPRICE) of a given...
+    short: Fetches the median price (MEDPRICE) of a given financial instrument over a specified interval using the Twelve
+      Data API.
+    medium: Fetches the median price (MEDPRICE) of a given financial instrument over a specified interval using the Twelve
+      Data API.
+    long: Fetches the median price (MEDPRICE) of a given financial instrument over a specified interval using the Twelve Data
+      API.
+    verbose: Fetches the median price (MEDPRICE) of a given financial instrument over a specified interval using the Twelve
+      Data API.
+  parameters:
+  - name: interval
+    type: string
+    description: Interval between two consecutive points in the time series. Supported values are `1min`, `5min`, `15min`,
+      `30min`, `45min`, `1h`, `2h`, `4h`, `1day`, `1week`, `1month`.
+    required: true
+    default: 1min
+  - name: symbol
+    type: string
+    description: Instrument symbol such as equity, index, ETF, forex, or cryptocurrency. Examples include `AAPL`, `EUR/USD`,
+      `ETH/BTC`.
+    required: true
+    default: AAPL
+  - name: format
+    type: string
+    description: Response format. Can be `CSV` or `JSON`. Defaults to `json`.
+    required: false
+    default: json
+  - name: outputsize
+    type: integer
+    description: Number of data points in the response. Defaults to `30`.
+    required: false
+    default: 30
+  tags:
+  - medprice
+  test_prompts:
+    single:
+    - Fetch the median price of Bitcoin over a 1-hour interval.
+    single_clear:
+    - Fetch the median price of Bitcoin over a 1-hour interval.
+- name: get_wisdom_quotes_by_page
+  descriptions:
+    minimal: Retrieves wisdom quotes from a specified page...
+    short: Retrieves wisdom quotes from a specified page using the Toolbench RapidAPI.
+    medium: Retrieves wisdom quotes from a specified page using the Toolbench RapidAPI.
+    long: Retrieves wisdom quotes from a specified page using the Toolbench RapidAPI.
+    verbose: Retrieves wisdom quotes from a specified page using the Toolbench RapidAPI.
+  parameters:
+  - name: page
+    type: string
+    description: The page number to retrieve quotes from.
+    required: true
+    default: '12'
+  tags:
+  - get
+  - wisdom
+  - quotes
+  test_prompts:
+    single:
+    - Get wisdom quotes from the 5th page.
+    - Could you get quotes from the first page?
+    single_clear:
+    - Get wisdom quotes from the 5th page.
+    - Could you get quotes from the first page?
+- name: assess_diabetes_risk
+  descriptions:
+    minimal: Assesses the risk of developing type 2 diabetes...
+    short: Assesses the risk of developing type 2 diabetes based on body mass index (BMI) and physical activity level.
+    medium: Assesses the risk of developing type 2 diabetes based on body mass index (BMI) and physical activity level.
+    long: Assesses the risk of developing type 2 diabetes based on body mass index (BMI) and physical activity level.
+    verbose: Assesses the risk of developing type 2 diabetes based on body mass index (BMI) and physical activity level.
+  parameters:
+  - name: weight_lbs
+    type: integer
+    description: Body weight in pounds.
+    required: true
+  - name: height_inches
+    type: integer
+    description: Height in inches.
+    required: true
+  - name: activity
+    type: string
+    description: 'Physical activity level. Allowed values: "sedentary", "lightly active", "moderately active", or "very active".'
+    required: true
+  tags:
+  - assess
+  - diabetes
+  - risk
+  test_prompts:
+    single:
+    - Assess the risk of developing type 2 diabetes for a person weighing 180 lbs, 70 inches tall, and moderately active.
+    - Assess the risk of diabetes for a person weighing 180 lbs, 70 inches tall, with a sedentary lifestyle.
+    - Evaluate the diabetes risk for a very active person who is 140 lbs and 64 inches tall.
+    - Assess the diabetes risk for a person weighing 180 lbs and 70 inches tall, with a sedentary lifestyle.
+    single_clear:
+    - Assess the risk of developing type 2 diabetes for a person weighing 180 lbs, 70 inches tall, and moderately active.
+    - Assess the risk of diabetes for a person weighing 180 lbs, 70 inches tall, with a sedentary lifestyle.
+    - Evaluate the diabetes risk for a very active person who is 140 lbs and 64 inches tall.
+    - Assess the diabetes risk for a person weighing 180 lbs and 70 inches tall, with a sedentary lifestyle.
+- name: getlearningresources
+  descriptions:
+    minimal: Fetches Power BI learning resources from the...
+    short: Fetches Power BI learning resources from the specified API page.
+    medium: Fetches Power BI learning resources from the specified API page.
+    long: Fetches Power BI learning resources from the specified API page.
+    verbose: Fetches Power BI learning resources from the specified API page.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number of the learning resources to retrieve.
+    required: true
+    default: '1'
+  tags:
+  - getlearningresources
+  test_prompts:
+    single:
+    - Fetch Power BI learning resources from page 3.
+    single_clear:
+    - Fetch Power BI learning resources from page 3.
+- name: fetch_latest
+  descriptions:
+    minimal: Fetch the latest updated manga from the server...
+    short: Fetch the latest updated manga from the server based on specified genres and page number.
+    medium: Fetch the latest updated manga from the server based on specified genres and page number.
+    long: Fetch the latest updated manga from the server based on specified genres and page number.
+    verbose: Fetch the latest updated manga from the server based on specified genres and page number.
+  parameters:
+  - name: genres
+    type: string
+    description: A comma-separated list of genres to filter the manga by (e.g., 'Harem,Fantasy'). Defaults to 'Harem,Fantasy'.
+    required: false
+    default: Harem,Fantasy
+  - name: page
+    type: string
+    description: The page number to fetch, starting from '1'. Defaults to '1'.
+    required: false
+    default: '1'
+  tags:
+  - fetch
+  - latest
+  test_prompts:
+    single:
+    - What are the latest manga in the 'Horror' genre on the first page?
+    - Fetch the latest manga updates in the genres of Sci-Fi and Horror from page 2.
+    single_clear:
+    - What are the latest manga in the 'Horror' genre on the first page?
+    - Fetch the latest manga updates in the genres of Sci-Fi and Horror from page 2.
+- name: baseball_league_rankings
+  descriptions:
+    minimal: Fetches and returns the baseball league standings...
+    short: Fetches and returns the baseball league standings for a given league ID.
+    medium: Fetches and returns the baseball league standings for a given league ID.
+    long: Fetches and returns the baseball league standings for a given league ID.
+    verbose: Fetches and returns the baseball league standings for a given league ID.
+  parameters:
+  - name: league_id
+    type: string
+    description: The ID of the baseball league for which rankings are to be fetched. League IDs can be retrieved from the
+      Baseball Live Matches endpoint.
+    required: true
+    default: '41276'
+  tags:
+  - baseball
+  - league
+  - rankings
+  test_prompts:
+    single:
+    - Find the rankings of the Central League in baseball.
+    - What are the current standings for the MLB in the 2023 season?
+    single_clear:
+    - Find the rankings of the Central League in baseball.
+    - What are the current standings for the MLB in the 2023 season?
+- name: navigations_get_node_content
+  descriptions:
+    minimal: Fetches the content of a node in a navigation...
+    short: Fetches the content of a node in a navigation hierarchy.
+    medium: Fetches the content of a node in a navigation hierarchy.
+    long: Fetches the content of a node in a navigation hierarchy.
+    verbose: Fetches the content of a node in a navigation hierarchy.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The 'id' field value returned from the /navigations/get-root endpoint.
+    required: true
+    default: '26066300130'
+  - name: cat_id
+    type: integer
+    description: The 'cat_id' field value returned from the /navigations/get-tabs endpoint.
+    required: true
+    default: '2026'
+  - name: language
+    type: string
+    description: The 2-letter language code (default is 'en').
+    required: false
+    default: en
+  - name: currency
+    type: string
+    description: The 3-letter currency code (default is 'USD').
+    required: false
+    default: USD
+  - name: country
+    type: string
+    description: The 2-letter country code (default is 'US').
+    required: false
+    default: US
+  tags:
+  - navigations
+  - get
+  - node
+  test_prompts:
+    single:
+    - Fetch the content of a node in a navigation hierarchy with ID 55667788 and category ID 99001122 in Spanish.
+    single_clear:
+    - Fetch the content of a node in a navigation hierarchy with ID 55667788 and category ID 99001122 in Spanish.
+- name: video_related_contents
+  descriptions:
+    minimal: Fetches related video contents from YouTube using...
+    short: Fetches related video contents from YouTube using the RapidAPI service.
+    medium: Fetches related video contents from YouTube using the RapidAPI service.
+    long: Fetches related video contents from YouTube using the RapidAPI service.
+    verbose: Fetches related video contents from YouTube using the RapidAPI service.
+  parameters:
+  - name: hl
+    type: string
+    description: Language code for the response (default is 'en').
+    required: true
+    default: en
+  - name: is_id
+    type: string
+    description: The YouTube video ID for which related contents are to be fetched (default is 'kJQP7kiw5Fk').
+    required: true
+    default: kJQP7kiw5Fk
+  - name: gl
+    type: string
+    description: Country code for the response (default is 'US').
+    required: true
+    default: US
+  - name: cursor
+    type: string
+    description: Token for pagination to retrieve the next set of results.
+    required: false
+  tags:
+  - video
+  - related
+  - contents
+  test_prompts:
+    single:
+    - Retrieve related video contents for the YouTube video with ID 'dQw4w9WgXcQ'.
+    single_clear:
+    - Retrieve related video contents for the YouTube video with ID 'dQw4w9WgXcQ'.
+- name: get_2_thumbnail_ready
+  descriptions:
+    minimal: Generate a thumbnail of a specified size from a...
+    short: Generate a thumbnail of a specified size from a given URL by polling an API.
+    medium: Generate a thumbnail of a specified size from a given URL by polling an API.
+    long: Generate a thumbnail of a specified size from a given URL by polling an API.
+    verbose: Generate a thumbnail of a specified size from a given URL by polling an API.
+  parameters:
+  - name: size
+    type: string
+    description: 'The size of the thumbnail to generate. Options are:'
+    required: true
+    default: m
+  - name: url
+    type: string
+    description: The URL from which to generate the thumbnail.
+    required: true
+    default: http://www.mashape.com/
+  tags:
+  - get
+  - '2'
+  - thumbnail
+  test_prompts:
+    single:
+    - Generate an extra large thumbnail for the URL https://example.com/image3.gif.
+    single_clear:
+    - Generate an extra large thumbnail for the URL https://example.com/image3.gif.
+- name: searchentries
+  descriptions:
+    minimal: Search for entries with various filters in the...
+    short: Search for entries with various filters in the query.
+    medium: Search for entries with various filters in the query.
+    long: Search for entries with various filters in the query.
+    verbose: Search for entries with various filters in the query.
+  parameters:
+  - name: sample
+    type: integer
+    description: Number of randomly-sampled results to return.
+    required: false
+  - name: source
+    type: string
+    description: The resource to search within.
+    required: false
+  - name: language
+    type: string
+    description: The language code of the entry’s language.
+    required: false
+  - name: analyzed
+    type: boolean
+    description: Whether to search using the language analyzer or to get exact matches only.
+    required: false
+  - name: subcategorization
+    type: string
+    description: The subcategorization (e.g., countable, transitive) to search for.
+    required: false
+  - name: polysemous
+    type: boolean
+    description: Whether to only return polysemous entries.
+    required: false
+  - name: pos
+    type: string
+    description: The part of speech (POS) to search for.
+    required: false
+  - name: gender
+    type: string
+    description: The grammatical gender to search for.
+    required: false
+  - name: monosemous
+    type: boolean
+    description: Whether to only return monosemous entries.
+    required: false
+  - name: morph
+    type: boolean
+    description: Whether to search in headword inflections, if they exist.
+    required: false
+  - name: text
+    type: string
+    description: The headword text to search for.
+    required: false
+  - name: number
+    type: string
+    description: The grammatical number to search for.
+    required: false
+  - name: page
+    type: integer
+    description: Page number of results to return (1-indexed).
+    required: false
+  tags:
+  - searchentries
+  test_prompts:
+    single:
+    - Search for English language entries related to 'technology' with a specific part of speech and return a sample of 5
+      results.
+    single_clear:
+    - Search for English language entries related to 'technology' with a specific part of speech and return a sample of 5
+      results.
+- name: time_zone_api
+  descriptions:
+    minimal: Fetches up-to-date time zone and local time...
+    short: Fetches up-to-date time zone and local time information as JSON based on a given query parameter.
+    medium: Fetches up-to-date time zone and local time information as JSON based on a given query parameter.
+    long: Fetches up-to-date time zone and local time information as JSON based on a given query parameter.
+    verbose: Fetches up-to-date time zone and local time information as JSON based on a given query parameter.
+  parameters:
+  - name: q
+    type: string
+    description: Query parameter to fetch time zone data.
+    required: true
+  tags:
+  - time
+  - zone
+  - api
+  test_prompts:
+    single:
+    - What is the timezone of a location with coordinates 40.7128, -74.0060?
+    single_clear:
+    - What is the timezone of a location with coordinates 40.7128, -74.0060?
+- name: hashtag_data_by_name
+  descriptions:
+    minimal: Fetches data for a specified TikTok hashtag using...
+    short: Fetches data for a specified TikTok hashtag using the given challenge name.
+    medium: Fetches data for a specified TikTok hashtag using the given challenge name.
+    long: Fetches data for a specified TikTok hashtag using the given challenge name.
+    verbose: Fetches data for a specified TikTok hashtag using the given challenge name.
+  parameters:
+  - name: challenge_name
+    type: string
+    description: The name of the TikTok hashtag challenge to retrieve data for.
+    required: true
+    default: food
+  tags:
+  - hashtag
+  - data
+  - by
+  test_prompts:
+    single:
+    - Fetch data for the TikTok hashtag challenge 'dancechallenge2023'.
+    single_clear:
+    - Fetch data for the TikTok hashtag challenge 'dancechallenge2023'.
+- name: live_events
+  descriptions:
+    minimal: Retrieves a list of ongoing live events from the...
+    short: Retrieves a list of ongoing live events from the specified endpoint, optionally filtered by city, genre, and location.
+    medium: Retrieves a list of ongoing live events from the specified endpoint, optionally filtered by city, genre, and location.
+    long: Retrieves a list of ongoing live events from the specified endpoint, optionally filtered by city, genre, and location.
+    verbose: Retrieves a list of ongoing live events from the specified endpoint, optionally filtered by city, genre, and
+      location.
+  parameters:
+  - name: city
+    type: string
+    description: The city to filter the events by. Defaults to 'Firenze'.
+    required: true
+    default: Firenze
+  - name: genre
+    type: string
+    description: The genre to filter the events by. Defaults to 'festival'.
+    required: true
+    default: festival
+  - name: location
+    type: string
+    description: The location to filter the events by. Defaults to 'PIAZZA SANTA MARIA NOVELLA'.
+    required: true
+    default: PIAZZA SANTA MARIA NOVELLA
+  tags:
+  - live
+  - events
+  test_prompts:
+    single:
+    - What are the ongoing art festivals in Rome at Piazza del Popolo?
+    single_clear:
+    - What are the ongoing art festivals in Rome at Piazza del Popolo?
+- name: domain_data
+  descriptions:
+    minimal: Retrieves domain information for a given website...
+    short: Retrieves domain information for a given website using the Website Analyze and SEO Audit Pro API.
+    medium: Retrieves domain information for a given website using the Website Analyze and SEO Audit Pro API.
+    long: Retrieves domain information for a given website using the Website Analyze and SEO Audit Pro API.
+    verbose: Retrieves domain information for a given website using the Website Analyze and SEO Audit Pro API.
+  parameters:
+  - name: website
+    type: string
+    description: The URL of the website for which to retrieve domain information.
+    required: true
+    default: getecz.com
+  tags:
+  - domain
+  - data
+  test_prompts:
+    single:
+    - What are the domain details for the website https://www.wikipedia.org?
+    - What domain information can you provide for the website 'www.example.com'?
+    - Provide the domain data for the URL https://www.bbc.co.uk, focusing on its domain age.
+    single_clear:
+    - What are the domain details for the website https://www.wikipedia.org?
+    - What domain information can you provide for the website 'www.example.com'?
+    - Provide the domain data for the URL https://www.bbc.co.uk, focusing on its domain age.
+- name: get_random_word
+  descriptions:
+    minimal: Fetches a random word based on specified criteria...
+    short: Fetches a random word based on specified criteria from the Dicolink API.
+    medium: Fetches a random word based on specified criteria from the Dicolink API.
+    long: Fetches a random word based on specified criteria from the Dicolink API.
+    verbose: Fetches a random word based on specified criteria from the Dicolink API.
+  parameters:
+  - name: verbeconjugue
+    type: boolean
+    description: Whether to fetch a conjugated verb. Defaults to None.
+    required: false
+    default: 'false'
+  - name: minlong
+    type: string
+    description: Minimum length of the word. Defaults to '5'.
+    required: false
+    default: '5'
+  - name: maxlong
+    type: string
+    description: Maximum length of the word. Defaults to '-1' for no maximum.
+    required: false
+    default: '-1'
+  - name: avecdef
+    type: boolean
+    description: Whether to include the definition of the word. Defaults to None.
+    required: false
+    default: true
+  tags:
+  - get
+  - random
+  - word
+  test_prompts:
+    single:
+    - Fetch a random conjugated verb that is between 4 and 10 characters long, including its definition.
+    - Can you provide a random word that is at least 6 characters long and is not a conjugated verb?
+    single_clear:
+    - Fetch a random conjugated verb that is between 4 and 10 characters long, including its definition.
+    - Can you provide a random word that is at least 6 characters long and is not a conjugated verb?
+- name: get_sample_userprofile
+  descriptions:
+    minimal: Generates fake user profile sample data using an...
+    short: Generates fake user profile sample data using an external API.
+    medium: Generates fake user profile sample data using an external API.
+    long: Generates fake user profile sample data using an external API.
+    verbose: Generates fake user profile sample data using an external API.
+  parameters:
+  - name: count
+    type: integer
+    description: The number of profiles to generate. Defaults to 2. Maximum value is 1000.
+    required: false
+    default: '2'
+  - name: locale
+    type: string
+    description: The locale to use for generating user profiles. Defaults to 'en'.
+    required: false
+    default: en
+  tags:
+  - get
+  - sample
+  - userprofile
+  test_prompts:
+    single:
+    - What happens if I request 1001 profiles in Italian?
+    - Generate 10 user profiles in 'de' for a user interface testing project.
+    single_clear:
+    - What happens if I request 1001 profiles in Italian?
+    - Generate 10 user profiles in 'de' for a user interface testing project.
+- name: get_channel_panels
+  descriptions:
+    minimal: Fetches the channel panels for a specified Twitch...
+    short: Fetches the channel panels for a specified Twitch channel using the Twitch API.
+    medium: Fetches the channel panels for a specified Twitch channel using the Twitch API.
+    long: Fetches the channel panels for a specified Twitch channel using the Twitch API.
+    verbose: Fetches the channel panels for a specified Twitch channel using the Twitch API.
+  parameters:
+  - name: channel
+    type: string
+    description: The name of the Twitch channel to retrieve panels for.
+    required: true
+    default: xQc
+  tags:
+  - get
+  - channel
+  - panels
+  test_prompts:
+    single:
+    - What are the channel panels for the Twitch channel 'ESL_SC2'?
+    - Retrieve the channel panels for the Twitch channel 'Ninja'.
+    - Retrieve the channel panels for the Twitch channel 'esl_csgo'.
+    single_clear:
+    - What are the channel panels for the Twitch channel 'ESL_SC2'?
+    - Retrieve the channel panels for the Twitch channel 'Ninja'.
+    - Retrieve the channel panels for the Twitch channel 'esl_csgo'.
+- name: categories
+  descriptions:
+    minimal: Fetches categories from the AliExpress unofficial...
+    short: Fetches categories from the AliExpress unofficial API, optionally filtered by locale and country.
+    medium: Fetches categories from the AliExpress unofficial API, optionally filtered by locale and country.
+    long: Fetches categories from the AliExpress unofficial API, optionally filtered by locale and country.
+    verbose: Fetches categories from the AliExpress unofficial API, optionally filtered by locale and country.
+  parameters:
+  - name: locale
+    type: string
+    description: The locale to filter categories by. Defaults to None.
+    required: false
+  - name: country
+    type: string
+    description: The country to filter categories by. Defaults to None.
+    required: false
+  tags:
+  - categories
+  test_prompts:
+    single:
+    - Retrieve categories from AliExpress without specifying any filters.
+    - I need to know the categories on AliExpress that are relevant to French users. How can I access this information?
+    - Can you help me find the categories on AliExpress that are tailored for Italian speakers?
+    single_clear:
+    - Retrieve categories from AliExpress without specifying any filters.
+    - I need to know the categories on AliExpress that are relevant to French users. How can I access this information?
+    - Can you help me find the categories on AliExpress that are tailored for Italian speakers?
+- name: game_lookup
+  descriptions:
+    minimal: Fetches detailed information for a specific game...
+    short: Fetches detailed information for a specific game from the CheapShark API, including a list of all deals associated
+      with the game.
+    medium: Fetches detailed information for a specific game from the CheapShark API, including a list of all deals associated
+      with the game.
+    long: Fetches detailed information for a specific game from the CheapShark API, including a list of all deals associated
+      with the game.
+    verbose: Fetches detailed information for a specific game from the CheapShark API, including a list of all deals associated
+      with the game.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The unique identifier for the game to look up.
+    required: true
+    default: '612'
+  tags:
+  - game
+  - lookup
+  test_prompts:
+    single:
+    - Fetch detailed information and deals for the game with ID 100001 from the CheapShark API.
+    single_clear:
+    - Fetch detailed information and deals for the game with ID 100001 from the CheapShark API.

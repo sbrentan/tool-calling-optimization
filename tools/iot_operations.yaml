@@ -1,0 +1,1290 @@
+category: iot_operations
+description: IoT device management and sensor operations
+tools:
+  - name: register_device
+    descriptions:
+      minimal: "Register device"
+      short: "Register an IoT device"
+      medium: "Register a new IoT device with the platform."
+      long: "Register a new IoT device. Provision credentials and configure settings. Example: register_device(device_id='sensor-001', type='temperature', location='warehouse-a')."
+      verbose: "Register and provision IoT devices. Registration includes: device ID, device type, credentials (certificates/keys), metadata, initial configuration. Security: X.509 certificates, SAS tokens, or TPM attestation. Example: register_device(device_id='temp-sensor-001', type='temperature_humidity', location='building-1-floor-2', tags='{\"zone\": \"hvac\", \"priority\": \"high\"}', provisioning='certificate'). Note: Devices must be registered before sending data. Warning: Secure credential storage is critical."
+    parameters:
+      - name: device_id
+        type: string
+        description: "Unique device identifier"
+        required: true
+      - name: type
+        type: string
+        description: "Device type"
+        required: true
+      - name: location
+        type: string
+        description: "Physical location"
+        required: false
+      - name: tags
+        type: string
+        description: "JSON metadata tags"
+        required: false
+      - name: provisioning
+        type: string
+        description: "Provisioning method"
+        required: false
+        default: "key"
+        enum: ["key", "certificate", "tpm"]
+    tags: ["iot", "device", "register", "provision", "setup"]
+    test_prompts:
+      single:
+        - "Register a new sensor"
+        - "Add an IoT device"
+        - "Provision the temperature sensor"
+        - "Set up the new device"
+      single_clear:
+        - "I need to register a new IoT device. Register a new sensor"
+        - "I need to register a new IoT device. Add an IoT device"
+        - "I need to register a new IoT device. Provision the temperature sensor"
+        - "I need to register a new IoT device. Set up the new device"
+
+  - name: send_command
+    descriptions:
+      minimal: "Send command"
+      short: "Send command to IoT device"
+      medium: "Send a command or message to an IoT device."
+      long: "Send commands to IoT devices. Control device behavior, request data, or trigger actions. Example: send_command(device_id='actuator-001', command='turn_on', params='{\"duration\": 60}')."
+      verbose: "Send commands to IoT devices for remote control. Command types: direct methods (synchronous), cloud-to-device messages (async), desired properties (twin). Options: timeout, acknowledgment, retry policy. Example: send_command(device_id='valve-001', command='set_position', params='{\"position\": 75, \"speed\": \"slow\"}', timeout=30, wait_response=true). Note: Commands require device to be online. Warning: Critical commands should have confirmation mechanisms."
+    parameters:
+      - name: device_id
+        type: string
+        description: "Target device ID"
+        required: true
+      - name: command
+        type: string
+        description: "Command name"
+        required: true
+      - name: params
+        type: string
+        description: "JSON command parameters"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Command timeout (seconds)"
+        required: false
+        default: 30
+      - name: wait_response
+        type: boolean
+        description: "Wait for device response"
+        required: false
+        default: true
+    tags: ["iot", "command", "control", "device", "actuator"]
+    test_prompts:
+      single:
+        - "Turn on the device"
+        - "Send command to the sensor"
+        - "Control the actuator"
+        - "Set the device parameter"
+      single_clear:
+        - "Please send a command to an IoT device. Turn on the device"
+        - "Please send a command to an IoT device. Send command to the sensor"
+        - "Please send a command to an IoT device. Control the actuator"
+        - "Please send a command to an IoT device. Set the device parameter"
+
+  - name: get_telemetry
+    descriptions:
+      minimal: "Get telemetry"
+      short: "Get device telemetry data"
+      medium: "Retrieve telemetry data from IoT devices."
+      long: "Get telemetry/sensor data from devices. Query historical or real-time data. Example: get_telemetry(device_id='sensor-001', metrics='[\"temperature\", \"humidity\"]', period='1h')."
+      verbose: "Retrieve IoT device telemetry data. Data types: sensor readings, status, events, diagnostics. Query options: time range, aggregation, sampling. Output: time series data, statistics. Example: get_telemetry(device_id='weather-station-01', metrics='[\"temperature\", \"humidity\", \"pressure\"]', period='24h', aggregation='1h', stats='[\"avg\", \"min\", \"max\"]'). Note: Data retention limits apply. Warning: High-frequency queries may impact performance."
+    parameters:
+      - name: device_id
+        type: string
+        description: "Device identifier"
+        required: true
+      - name: metrics
+        type: string
+        description: "JSON array of metric names"
+        required: false
+      - name: period
+        type: string
+        description: "Time period (e.g., '1h', '24h')"
+        required: false
+        default: "1h"
+      - name: aggregation
+        type: string
+        description: "Aggregation interval"
+        required: false
+      - name: stats
+        type: string
+        description: "Statistics to calculate"
+        required: false
+    tags: ["iot", "telemetry", "sensor", "data", "monitoring"]
+    test_prompts:
+      single:
+        - "Get temperature readings"
+        - "Show sensor data for last hour"
+        - "Retrieve device telemetry"
+        - "Get the humidity data"
+      single_clear:
+        - "I need to retrieve telemetry data from an IoT device. Get temperature readings"
+        - "I need to retrieve telemetry data from an IoT device. Show sensor data for last hour"
+        - "I need to retrieve telemetry data from an IoT device. Retrieve device telemetry"
+        - "I need to retrieve telemetry data from an IoT device. Get the humidity data"
+
+  - name: update_device_twin
+    descriptions:
+      minimal: "Update twin"
+      short: "Update device twin properties"
+      medium: "Update the desired properties of a device twin."
+      long: "Update device twin desired properties. Configure device settings without direct command. Example: update_device_twin(device_id='thermostat-001', properties='{\"target_temp\": 72}')."
+      verbose: "Update IoT device twin desired properties. Device twins store: desired properties (cloud-set), reported properties (device-set), tags (metadata). Use cases: configuration changes, feature flags, thresholds. Example: update_device_twin(device_id='thermostat-001', desired='{\"target_temp\": 72, \"mode\": \"auto\", \"schedule\": {...}}', tags='{\"building\": \"HQ\", \"floor\": 3}'). Note: Devices sync twins when connected. Warning: Large twin updates may timeout."
+    parameters:
+      - name: device_id
+        type: string
+        description: "Device identifier"
+        required: true
+      - name: desired
+        type: string
+        description: "JSON desired properties"
+        required: false
+      - name: tags
+        type: string
+        description: "JSON device tags"
+        required: false
+    tags: ["iot", "twin", "device", "properties", "config"]
+    test_prompts:
+      single:
+        - "Update the device settings"
+        - "Set desired temperature"
+        - "Change device configuration"
+        - "Update the device twin"
+      single_clear:
+        - "I need to update device twin properties. Update the device settings"
+        - "I need to update device twin properties. Set desired temperature"
+        - "I need to update device twin properties. Change device configuration"
+        - "I need to update device twin properties. Update the device twin"
+
+  - name: create_alert_rule
+    descriptions:
+      minimal: "Create alert"
+      short: "Create IoT alert rule"
+      medium: "Create an alert rule for IoT device conditions."
+      long: "Create alerting rules for IoT conditions. Trigger alerts on sensor thresholds or device status. Example: create_alert_rule(name='high_temp', condition='temperature > 100', devices='[\"sensor-*\"]', action='notify')."
+      verbose: "Create IoT alerting rules for condition monitoring. Conditions: metric thresholds, rate of change, anomaly detection, device offline. Actions: notification, command execution, webhook, escalation. Example: create_alert_rule(name='freezer_temp_alert', condition='temperature > -10 OR temperature < -25', devices='[\"freezer-*\"]', severity='critical', actions='[{\"type\": \"sms\", \"to\": \"+1234567890\"}, {\"type\": \"command\", \"command\": \"activate_backup\"}]'). Note: Multiple conditions can be combined with AND/OR. Warning: Set appropriate cooldown to prevent alert storms."
+    parameters:
+      - name: name
+        type: string
+        description: "Alert rule name"
+        required: true
+      - name: condition
+        type: string
+        description: "Alert condition expression"
+        required: true
+      - name: devices
+        type: string
+        description: "JSON array of device patterns"
+        required: true
+      - name: severity
+        type: string
+        description: "Alert severity"
+        required: false
+        default: "warning"
+        enum: ["info", "warning", "error", "critical"]
+      - name: actions
+        type: string
+        description: "JSON array of alert actions"
+        required: true
+      - name: cooldown
+        type: integer
+        description: "Cooldown period (seconds)"
+        required: false
+        default: 300
+    tags: ["iot", "alert", "rule", "threshold", "monitor"]
+    test_prompts:
+      single:
+        - "Alert when temperature exceeds 100"
+        - "Create a low battery alert"
+        - "Set up device offline alert"
+        - "Create sensor threshold alert"
+      single_clear:
+        - "I need to create an IoT alert rule. Alert when temperature exceeds 100"
+        - "I need to create an IoT alert rule. Create a low battery alert"
+        - "I need to create an IoT alert rule. Set up device offline alert"
+        - "I need to create an IoT alert rule. Create sensor threshold alert"
+
+  - name: manage_firmware
+    descriptions:
+      minimal: "Manage firmware"
+      short: "Manage device firmware"
+      medium: "Upload, deploy, or manage firmware updates for IoT devices."
+      long: "Manage IoT device firmware. Upload new versions and deploy updates. Example: manage_firmware(action='deploy', firmware_id='v2.1.0', devices='[\"device-group-a\"]')."
+      verbose: "Manage IoT device firmware lifecycle. Actions: 'upload' (add new version), 'deploy' (push to devices), 'rollback' (revert), 'status' (check deployment). Deployment strategies: immediate, scheduled, staged rollout. Example: manage_firmware(action='deploy', firmware_id='v2.1.0', devices='[\"production-sensors\"]', strategy='staged', batch_size=10, batch_interval=300). Note: Devices must support OTA updates. Warning: Failed updates may brick devices; ensure rollback capability."
+    parameters:
+      - name: action
+        type: string
+        description: "Firmware action"
+        required: true
+        enum: ["upload", "deploy", "rollback", "status"]
+      - name: firmware_id
+        type: string
+        description: "Firmware version ID"
+        required: true
+      - name: devices
+        type: string
+        description: "JSON array of device groups"
+        required: false
+      - name: file
+        type: string
+        description: "Firmware file path (for upload)"
+        required: false
+      - name: strategy
+        type: string
+        description: "Deployment strategy"
+        required: false
+        default: "immediate"
+        enum: ["immediate", "scheduled", "staged"]
+    tags: ["iot", "firmware", "update", "ota", "deploy"]
+    test_prompts:
+      single:
+        - "Deploy firmware update"
+        - "Upload new firmware"
+        - "Check firmware status"
+        - "Rollback to previous version"
+      single_clear:
+        - "I need to manage device firmware. Deploy firmware update"
+        - "I need to manage device firmware. Upload new firmware"
+        - "I need to manage device firmware. Check firmware status"
+        - "I need to manage device firmware. Rollback to previous version"
+
+  - name: query_devices
+    descriptions:
+      minimal: "Query devices"
+      short: "Query IoT devices"
+      medium: "Query devices based on properties, status, or telemetry."
+      long: "Query IoT devices using filters on properties, tags, status, or telemetry. Example: query_devices(filter='type=\"temperature\" AND status=\"online\"')."
+      verbose: "Query IoT device registry. Filter by: device properties, tags, connection status, twin properties, telemetry values. Returns: device list with metadata. Example: query_devices(filter='tags.building=\"HQ\" AND properties.firmware_version < \"2.0\" AND connectionState=\"Connected\"', select='[\"deviceId\", \"lastActivityTime\", \"properties.firmware_version\"]'). Note: Complex queries may be slow on large device fleets. Warning: Query results may be paginated."
+    parameters:
+      - name: filter
+        type: string
+        description: "Query filter expression"
+        required: true
+      - name: select
+        type: string
+        description: "JSON array of fields to return"
+        required: false
+      - name: limit
+        type: integer
+        description: "Maximum devices to return"
+        required: false
+        default: 100
+    tags: ["iot", "query", "devices", "search", "filter"]
+    test_prompts:
+      single:
+        - "Find all offline devices"
+        - "Query devices in building A"
+        - "List temperature sensors"
+        - "Find devices needing update"
+      single_clear:
+        - "I need to query IoT devices. Find all offline devices"
+        - "I need to query IoT devices. Query devices in building A"
+        - "I need to query IoT devices. List temperature sensors"
+        - "I need to query IoT devices. Find devices needing update"
+
+  - name: create_device_group
+    descriptions:
+      minimal: "Create group"
+      short: "Create a device group"
+      medium: "Create a group of IoT devices for bulk operations."
+      long: "Create device groups for bulk management. Group by location, type, or custom criteria. Example: create_device_group(name='floor-1-sensors', query='location=\"floor-1\"')."
+      verbose: "Create IoT device groups for bulk operations. Group types: 'static' (manual membership), 'dynamic' (query-based auto-membership). Use cases: bulk commands, firmware deployment, monitoring. Example: create_device_group(name='critical-sensors', type='dynamic', query='tags.priority=\"critical\" AND connectionState=\"Connected\"', auto_update=true). Note: Dynamic groups update automatically. Warning: Large groups may slow bulk operations."
+    parameters:
+      - name: name
+        type: string
+        description: "Group name"
+        required: true
+      - name: type
+        type: string
+        description: "Group type"
+        required: false
+        default: "static"
+        enum: ["static", "dynamic"]
+      - name: query
+        type: string
+        description: "Membership query (for dynamic)"
+        required: false
+      - name: devices
+        type: string
+        description: "JSON array of device IDs (for static)"
+        required: false
+      - name: auto_update
+        type: boolean
+        description: "Auto-update membership"
+        required: false
+        default: true
+    tags: ["iot", "group", "devices", "organize", "bulk"]
+    test_prompts:
+      single:
+        - "Create a sensor group"
+        - "Group devices by location"
+        - "Create a device collection"
+        - "Organize devices into groups"
+      single_clear:
+        - "I need to create an IoT device group. Create a sensor group"
+        - "I need to create an IoT device group. Group devices by location"
+        - "I need to create an IoT device group. Create a device collection"
+        - "I need to create an IoT device group. Organize devices into groups"
+
+  - name: get_device_status
+    descriptions:
+      minimal: "Get status"
+      short: "Get device status"
+      medium: "Get the current status and health of an IoT device."
+      long: "Get device status including connection state, health, and diagnostics. Example: get_device_status(device_id='sensor-001')."
+      verbose: "Get comprehensive IoT device status. Information: connection state, last activity, health metrics, error logs, firmware version, twin sync status. Example: get_device_status(device_id='gateway-001', include_diagnostics=true, include_telemetry=true). Note: Real-time status requires active connection. Warning: Offline devices show last known state."
+    parameters:
+      - name: device_id
+        type: string
+        description: "Device identifier"
+        required: true
+      - name: include_diagnostics
+        type: boolean
+        description: "Include diagnostic info"
+        required: false
+        default: false
+      - name: include_telemetry
+        type: boolean
+        description: "Include latest telemetry"
+        required: false
+        default: false
+    tags: ["iot", "status", "device", "health", "diagnostics"]
+    test_prompts:
+      single:
+        - "Check if the sensor is online"
+        - "Get device health status"
+        - "Is the device connected?"
+        - "Show device diagnostics"
+      single_clear:
+        - "I need to get the status of an IoT device. Check if the sensor is online"
+        - "I need to get the status of an IoT device. Get device health status"
+        - "I need to get the status of an IoT device. Is the device connected?"
+        - "I need to get the status of an IoT device. Show device diagnostics"
+
+  - name: simulate_device
+    descriptions:
+      minimal: "Simulate device"
+      short: "Simulate an IoT device"
+      medium: "Simulate an IoT device for testing without physical hardware."
+      long: "Simulate IoT device telemetry and behavior for testing. Example: simulate_device(device_id='test-sensor', type='temperature', interval=5)."
+      verbose: "Simulate IoT devices for development and testing. Features: realistic telemetry patterns, configurable intervals, anomaly injection, failure scenarios. Example: simulate_device(device_id='simulated-temp-01', type='temperature', interval=10, pattern='sinusoidal', range='[18, 28]', noise=0.5, duration=3600). Note: Simulated devices use same APIs as real devices. Warning: Clean up simulated devices after testing."
+    parameters:
+      - name: device_id
+        type: string
+        description: "Simulated device ID"
+        required: true
+      - name: type
+        type: string
+        description: "Device type to simulate"
+        required: true
+      - name: interval
+        type: integer
+        description: "Telemetry interval (seconds)"
+        required: false
+        default: 10
+      - name: pattern
+        type: string
+        description: "Data pattern"
+        required: false
+        default: "random"
+        enum: ["random", "sinusoidal", "linear", "step"]
+      - name: duration
+        type: integer
+        description: "Simulation duration (seconds)"
+        required: false
+        default: 3600
+    tags: ["iot", "simulate", "test", "development", "mock"]
+    test_prompts:
+      single:
+        - "Simulate a temperature sensor"
+        - "Create a test device"
+        - "Run device simulation"
+        - "Mock IoT telemetry"
+      single_clear:
+        - "I need to simulate an IoT device for testing. Simulate a temperature sensor"
+        - "I need to simulate an IoT device for testing. Create a test device"
+        - "I need to simulate an IoT device for testing. Run device simulation"
+        - "I need to simulate an IoT device for testing. Mock IoT telemetry"
+  - name: create_device_group
+    descriptions:
+      minimal: "Create device group"
+      short: "Create a group of IoT devices"
+      medium: "Create a logical group of IoT devices for bulk management and monitoring."
+      long: "Create device groups for organizing and managing multiple devices together. Apply bulk operations and policies. Example: create_device_group(name='floor-1-sensors', query='tags.floor = 1', description='All sensors on floor 1')."
+      verbose: "Create logical device groups for bulk management. Grouping methods: static (explicit list), dynamic (query-based), hierarchical (nested groups). Features: bulk commands, group policies, aggregate telemetry, shared configurations. Example: create_device_group(name='critical-hvac', type='dynamic', query='type = \"thermostat\" AND tags.priority = \"critical\"', parent_group='hvac-devices', policies='{\"update_window\": \"02:00-04:00\", \"alert_threshold\": \"high\"}'). Note: Dynamic groups auto-update membership. Warning: Large groups may impact performance of bulk operations."
+    parameters:
+      - name: name
+        type: string
+        description: "Group name"
+        required: true
+      - name: description
+        type: string
+        description: "Group description"
+        required: false
+      - name: type
+        type: string
+        description: "Group type"
+        required: false
+        default: "static"
+        enum: ["static", "dynamic"]
+      - name: query
+        type: string
+        description: "Query for dynamic membership"
+        required: false
+      - name: device_ids
+        type: string
+        description: "JSON array of device IDs (for static)"
+        required: false
+      - name: parent_group
+        type: string
+        description: "Parent group for hierarchy"
+        required: false
+    tags: ["iot", "device", "group", "organize", "manage"]
+    test_prompts:
+      single:
+        - "Create a group of temperature sensors"
+        - "Group all devices on floor 2"
+        - "Organize devices by building"
+        - "Create a device collection"
+      single_clear:
+        - "I need to create an IoT device group. Create a group of temperature sensors"
+        - "I need to create an IoT device group. Group all devices on floor 2"
+        - "I need to create an IoT device group. Organize devices by building"
+        - "I need to create an IoT device group. Create a device collection"
+
+  - name: schedule_device_job
+    descriptions:
+      minimal: "Schedule job"
+      short: "Schedule a job for IoT devices"
+      medium: "Schedule a job to run on one or more IoT devices at a specific time."
+      long: "Schedule batch jobs for device operations like updates, restarts, or configuration changes. Example: schedule_device_job(name='nightly-restart', target='group:sensors', action='restart', schedule='0 2 * * *')."
+      verbose: "Schedule jobs for bulk device operations. Job types: firmware update, configuration change, restart, command execution, data collection. Targeting: single device, device group, query-based selection. Scheduling: immediate, one-time, recurring (cron). Example: schedule_device_job(name='weekly-calibration', target_query='type = \"pressure_sensor\"', action='run_method', params='{\"method\": \"calibrate\"}', schedule='0 3 * * 0', max_concurrency=10, retry_policy='{\"attempts\": 3, \"backoff\": \"exponential\"}'). Note: Jobs track progress per device. Warning: Schedule maintenance during low-activity periods."
+    parameters:
+      - name: name
+        type: string
+        description: "Job name"
+        required: true
+      - name: target
+        type: string
+        description: "Target devices/group"
+        required: false
+      - name: target_query
+        type: string
+        description: "Query for target devices"
+        required: false
+      - name: action
+        type: string
+        description: "Job action"
+        required: true
+        enum: ["restart", "update_firmware", "configure", "run_method", "collect_diagnostics"]
+      - name: params
+        type: string
+        description: "JSON action parameters"
+        required: false
+      - name: schedule
+        type: string
+        description: "Cron schedule or 'immediate'"
+        required: false
+        default: "immediate"
+      - name: max_concurrency
+        type: integer
+        description: "Max parallel executions"
+        required: false
+        default: 100
+    tags: ["iot", "job", "schedule", "batch", "automation"]
+    test_prompts:
+      single:
+        - "Schedule device restart"
+        - "Plan firmware update for all sensors"
+        - "Create a scheduled configuration job"
+        - "Set up nightly device maintenance"
+      single_clear:
+        - "I need to schedule a job for IoT devices. Schedule device restart"
+        - "I need to schedule a job for IoT devices. Plan firmware update for all sensors"
+        - "I need to schedule a job for IoT devices. Create a scheduled configuration job"
+        - "I need to schedule a job for IoT devices. Set up nightly device maintenance"
+
+  - name: manage_device_twin
+    descriptions:
+      minimal: "Manage device twin"
+      short: "Manage IoT device twin"
+      medium: "Read or update the device twin for configuration and state management."
+      long: "Manage device twins for configuration synchronization. Update desired properties or read reported state. Example: manage_device_twin(device_id='sensor-001', action='update', desired='{\"threshold\": 25}')."
+      verbose: "Manage IoT device twins for state synchronization. Components: desired properties (cloud-set), reported properties (device-set), tags (metadata). Operations: get (read full twin), update_desired (set config), update_tags, query (search twins). Example: manage_device_twin(device_id='hvac-unit-12', action='update', desired='{\"target_temp\": 22, \"mode\": \"cooling\"}', tags='{\"maintenance_due\": \"2024-06-01\"}'). Note: Device receives desired properties when online. Warning: Large twin documents impact sync performance."
+    parameters:
+      - name: device_id
+        type: string
+        description: "Device ID"
+        required: true
+      - name: action
+        type: string
+        description: "Twin action"
+        required: true
+        enum: ["get", "update_desired", "update_tags", "query"]
+      - name: desired
+        type: string
+        description: "JSON desired properties"
+        required: false
+      - name: tags
+        type: string
+        description: "JSON tags"
+        required: false
+    tags: ["iot", "device", "twin", "state", "configuration"]
+    test_prompts:
+      single:
+        - "Update device configuration"
+        - "Set desired temperature threshold"
+        - "Get device twin state"
+        - "Sync device settings"
+      single_clear:
+        - "I need to manage an IoT device twin. Update device configuration"
+        - "I need to manage an IoT device twin. Set desired temperature threshold"
+        - "I need to manage an IoT device twin. Get device twin state"
+        - "I need to manage an IoT device twin. Sync device settings"
+
+  - name: configure_data_route
+    descriptions:
+      minimal: "Configure data route"
+      short: "Configure IoT data routing"
+      medium: "Set up routing rules for IoT telemetry data to different endpoints."
+      long: "Configure message routing for IoT telemetry. Route data to storage, analytics, or external systems. Example: configure_data_route(name='hot-alerts', source='telemetry', condition='temperature > 80', endpoint='event-hub')."
+      verbose: "Configure IoT data routing and message enrichment. Endpoints: Event Hub, Service Bus, Storage, Functions, custom webhooks. Features: condition-based routing, message enrichment, format transformation. Example: configure_data_route(name='anomaly-route', source='telemetry', condition='anomaly_score > 0.9', endpoint='event-hub-anomalies', enrichments='{\"device_location\": \"$twin.tags.location\", \"processed_at\": \"$system.time\"}', format='json'). Note: Multiple routes can match same message. Warning: Route conditions impact message processing latency."
+    parameters:
+      - name: name
+        type: string
+        description: "Route name"
+        required: true
+      - name: source
+        type: string
+        description: "Message source"
+        required: true
+        enum: ["telemetry", "twin_changes", "device_lifecycle", "device_connection"]
+      - name: condition
+        type: string
+        description: "Routing condition"
+        required: false
+      - name: endpoint
+        type: string
+        description: "Destination endpoint"
+        required: true
+      - name: enrichments
+        type: string
+        description: "JSON message enrichments"
+        required: false
+      - name: enabled
+        type: boolean
+        description: "Enable route"
+        required: false
+        default: true
+    tags: ["iot", "routing", "data", "pipeline", "integration"]
+    test_prompts:
+      single:
+        - "Route sensor data to storage"
+        - "Set up telemetry routing"
+        - "Configure alert routing"
+        - "Send data to Event Hub"
+      single_clear:
+        - "I need to configure IoT data routing. Route sensor data to storage"
+        - "I need to configure IoT data routing. Set up telemetry routing"
+        - "I need to configure IoT data routing. Configure alert routing"
+        - "I need to configure IoT data routing. Send data to Event Hub"
+
+  - name: create_edge_deployment
+    descriptions:
+      minimal: "Deploy to edge"
+      short: "Deploy modules to IoT Edge"
+      medium: "Deploy container modules to IoT Edge devices for local processing."
+      long: "Deploy edge modules to IoT Edge devices. Configure containers, routes, and settings. Example: create_edge_deployment(device_id='edge-gateway-01', modules='[{\"name\": \"filter\", \"image\": \"myfilter:1.0\"}]')."
+      verbose: "Deploy and manage IoT Edge modules. Module types: custom containers, Azure services (Stream Analytics, Functions, ML), marketplace modules. Configuration: container settings, environment variables, routes, create options. Example: create_edge_deployment(device_id='edge-001', modules='[{\"name\": \"temp_filter\", \"image\": \"myacr.azurecr.io/filter:v1\", \"env\": {\"THRESHOLD\": \"25\"}}]', routes='{\"filter_to_hub\": \"FROM /messages/modules/temp_filter/* INTO $upstream\"}', priority=10). Note: Use layered deployments for scale. Warning: Large images increase deployment time."
+    parameters:
+      - name: device_id
+        type: string
+        description: "Edge device ID"
+        required: false
+      - name: target_condition
+        type: string
+        description: "Targeting condition for group"
+        required: false
+      - name: modules
+        type: string
+        description: "JSON array of modules"
+        required: true
+      - name: routes
+        type: string
+        description: "JSON routing configuration"
+        required: false
+      - name: priority
+        type: integer
+        description: "Deployment priority"
+        required: false
+        default: 10
+    tags: ["iot", "edge", "deploy", "container", "gateway"]
+    test_prompts:
+      single:
+        - "Deploy module to edge device"
+        - "Update edge deployment"
+        - "Add container to IoT Edge"
+        - "Configure edge gateway"
+      single_clear:
+        - "I need to deploy to IoT Edge. Deploy module to edge device"
+        - "I need to deploy to IoT Edge. Update edge deployment"
+        - "I need to deploy to IoT Edge. Add container to IoT Edge"
+        - "I need to deploy to IoT Edge. Configure edge gateway"
+
+  - name: analyze_device_data
+    descriptions:
+      minimal: "Analyze device data"
+      short: "Analyze IoT device data"
+      medium: "Run analytics on historical IoT device telemetry data."
+      long: "Analyze historical device telemetry for patterns and insights. Aggregate, filter, and visualize data. Example: analyze_device_data(device_id='sensor-001', metric='temperature', period='7d', aggregation='average')."
+      verbose: "Analyze IoT telemetry for insights and trends. Analysis types: time-series aggregation, anomaly detection, correlation, forecasting. Aggregations: average, min, max, sum, count, percentile. Features: multi-device comparison, downsampling, gap filling. Example: analyze_device_data(device_ids='[\"sensor-001\", \"sensor-002\"]', metric='temperature', period='30d', interval='1h', aggregation='average', detect_anomalies=true, compare=true). Note: Large time ranges are automatically downsampled. Warning: Raw data queries on long periods may timeout."
+    parameters:
+      - name: device_ids
+        type: string
+        description: "JSON array of device IDs"
+        required: true
+      - name: metric
+        type: string
+        description: "Metric to analyze"
+        required: true
+      - name: period
+        type: string
+        description: "Time period (e.g., 7d, 24h)"
+        required: true
+      - name: interval
+        type: string
+        description: "Aggregation interval"
+        required: false
+        default: "1h"
+      - name: aggregation
+        type: string
+        description: "Aggregation function"
+        required: false
+        default: "average"
+        enum: ["average", "min", "max", "sum", "count", "median"]
+      - name: detect_anomalies
+        type: boolean
+        description: "Run anomaly detection"
+        required: false
+        default: false
+    tags: ["iot", "analytics", "data", "telemetry", "insights"]
+    test_prompts:
+      single:
+        - "Analyze temperature trends"
+        - "Show average sensor readings"
+        - "Detect anomalies in device data"
+        - "Compare multiple sensors"
+      single_clear:
+        - "I need to analyze IoT device data. Analyze temperature trends"
+        - "I need to analyze IoT device data. Show average sensor readings"
+        - "I need to analyze IoT device data. Detect anomalies in device data"
+        - "I need to analyze IoT device data. Compare multiple sensors"
+
+  - name: manage_device_security
+    descriptions:
+      minimal: "Manage device security"
+      short: "Manage IoT device security settings"
+      medium: "Configure security settings, certificates, and access policies for IoT devices."
+      long: "Manage device security including certificates, access policies, and authentication. Example: manage_device_security(device_id='sensor-001', action='rotate_key', notify=true)."
+      verbose: "Comprehensive IoT device security management. Actions: rotate_key (regenerate auth), revoke_access (disable device), update_certificate, set_policy, audit_access. Features: automatic key rotation, certificate management, IP filtering, connection monitoring. Example: manage_device_security(device_id='hvac-001', action='update_certificate', certificate_pem='...', expiry_alert_days=30, auto_rotate=true). Note: Key rotation requires device reconnection. Warning: Revoking access immediately disconnects device."
+    parameters:
+      - name: device_id
+        type: string
+        description: "Device ID"
+        required: true
+      - name: action
+        type: string
+        description: "Security action"
+        required: true
+        enum: ["rotate_key", "revoke_access", "update_certificate", "set_policy", "audit_access", "restore_access"]
+      - name: certificate_pem
+        type: string
+        description: "Certificate PEM content"
+        required: false
+      - name: policy
+        type: string
+        description: "JSON security policy"
+        required: false
+      - name: auto_rotate
+        type: boolean
+        description: "Enable automatic rotation"
+        required: false
+        default: false
+    tags: ["iot", "security", "certificate", "authentication", "access"]
+    test_prompts:
+      single:
+        - "Rotate device security keys"
+        - "Update device certificate"
+        - "Revoke device access"
+        - "Set device security policy"
+      single_clear:
+        - "I need to manage IoT device security. Rotate device security keys"
+        - "I need to manage IoT device security. Update device certificate"
+        - "I need to manage IoT device security. Revoke device access"
+        - "I need to manage IoT device security. Set device security policy"
+
+  - name: configure_device_alert
+    descriptions:
+      minimal: "Configure device alert"
+      short: "Set up alerts for IoT devices"
+      medium: "Configure alerts for device telemetry thresholds or status changes."
+      long: "Set up alerting rules for device monitoring. Trigger on thresholds, anomalies, or connectivity issues. Example: configure_device_alert(name='high-temp', device_id='sensor-001', condition='temperature > 30', actions='[\"email\", \"sms\"]')."
+      verbose: "Configure IoT device alerts and notifications. Trigger types: threshold breach, anomaly detected, device offline, battery low, geofence exit. Actions: email, SMS, webhook, push notification, automated remediation. Example: configure_device_alert(name='temp-critical', target='group:warehouse-sensors', condition='temperature > 35 OR temperature < 5', severity='critical', actions='[{\"type\": \"email\", \"to\": \"ops@company.com\"}, {\"type\": \"webhook\", \"url\": \"...\"}]', cooldown=300). Note: Set appropriate cooldown to prevent alert storms. Warning: Critical alerts should have redundant notification channels."
+    parameters:
+      - name: name
+        type: string
+        description: "Alert name"
+        required: true
+      - name: device_id
+        type: string
+        description: "Target device ID"
+        required: false
+      - name: target
+        type: string
+        description: "Target group/query"
+        required: false
+      - name: condition
+        type: string
+        description: "Alert condition"
+        required: true
+      - name: severity
+        type: string
+        description: "Alert severity"
+        required: false
+        default: "warning"
+        enum: ["info", "warning", "critical"]
+      - name: actions
+        type: string
+        description: "JSON alert actions"
+        required: true
+      - name: cooldown
+        type: integer
+        description: "Seconds between re-alerts"
+        required: false
+        default: 300
+    tags: ["iot", "alert", "notification", "monitoring", "threshold"]
+    test_prompts:
+      single:
+        - "Alert when temperature exceeds 30"
+        - "Notify when device goes offline"
+        - "Create low battery alert"
+        - "Set up sensor threshold alert"
+      single_clear:
+        - "I need to configure an IoT device alert. Alert when temperature exceeds 30"
+        - "I need to configure an IoT device alert. Notify when device goes offline"
+        - "I need to configure an IoT device alert. Create low battery alert"
+        - "I need to configure an IoT device alert. Set up sensor threshold alert"
+
+  - name: provision_device_batch
+    descriptions:
+      minimal: "Bulk provision"
+      short: "Provision multiple IoT devices"
+      medium: "Bulk provision and register multiple IoT devices at once."
+      long: "Batch provision multiple devices for efficient onboarding. Import from file or template. Example: provision_device_batch(count=100, template='sensor-{n}', type='temperature')."
+      verbose: "Bulk device provisioning for large-scale deployments. Methods: count-based (generate IDs), file import (CSV/JSON), template-based. Features: automatic credential generation, group assignment, initial configuration. Example: provision_device_batch(source='import', file='devices.csv', columns='{\"id\": 0, \"type\": 1, \"location\": 2}', group='new-sensors', default_config='{\"reporting_interval\": 60}', generate_credentials=true). Note: Credentials can be exported for secure distribution. Warning: Large batches may take several minutes; monitor progress."
+    parameters:
+      - name: source
+        type: string
+        description: "Provisioning source"
+        required: true
+        enum: ["generate", "import"]
+      - name: count
+        type: integer
+        description: "Number to generate"
+        required: false
+      - name: template
+        type: string
+        description: "ID template (e.g., sensor-{n})"
+        required: false
+      - name: file
+        type: string
+        description: "Import file path"
+        required: false
+      - name: type
+        type: string
+        description: "Device type"
+        required: true
+      - name: group
+        type: string
+        description: "Assign to group"
+        required: false
+      - name: default_config
+        type: string
+        description: "JSON default configuration"
+        required: false
+    tags: ["iot", "provision", "batch", "bulk", "onboarding"]
+    test_prompts:
+      single:
+        - "Provision 100 new sensors"
+        - "Import devices from CSV"
+        - "Bulk register devices"
+        - "Mass provision temperature sensors"
+      single_clear:
+        - "I need to bulk provision IoT devices. Provision 100 new sensors"
+        - "I need to bulk provision IoT devices. Import devices from CSV"
+        - "I need to bulk provision IoT devices. Bulk register devices"
+        - "I need to bulk provision IoT devices. Mass provision temperature sensors"
+
+  - name: configure_device_shadow
+    descriptions:
+      minimal: "Configure shadow"
+      short: "Configure device shadow"
+      medium: "Manage device shadow state for IoT devices."
+      long: "Manage device twin/shadow for desired and reported states. Example: configure_device_shadow(device_id='sensor-001', desired='{\"interval\": 60}')."
+      verbose: "Device shadow/twin state management. Features: desired state, reported state, delta calculation, offline sync. Shadow operations: get, update desired, update reported, delete. Use cases: configuration management, state synchronization, offline devices. Example: configure_device_shadow(device_id='thermostat-001', action='update', desired='{\"temperature\": 72, \"mode\": \"cool\"}', version_check=true). Query: configure_device_shadow(action='get', device_id='sensor-001', sections='[\"desired\", \"reported\", \"delta\"]'). Note: Version checking prevents race conditions. Warning: Large shadow documents increase sync latency."
+    parameters:
+      - name: device_id
+        type: string
+        description: "Device identifier"
+        required: true
+      - name: action
+        type: string
+        description: "Shadow action"
+        required: true
+        enum: ["get", "update", "delete"]
+      - name: desired
+        type: string
+        description: "JSON desired state"
+        required: false
+      - name: reported
+        type: string
+        description: "JSON reported state"
+        required: false
+      - name: version_check
+        type: boolean
+        description: "Check version before update"
+        required: false
+        default: true
+      - name: sections
+        type: string
+        description: "JSON array of sections to retrieve"
+        required: false
+    tags: ["iot", "shadow", "twin", "state", "sync"]
+    test_prompts:
+      single:
+        - "Update device shadow"
+        - "Get device twin state"
+        - "Set desired device config"
+        - "Sync device state"
+      single_clear:
+        - "I need to configure a device shadow. Update device shadow"
+        - "I need to configure a device shadow. Get device twin state"
+        - "I need to configure a device shadow. Set desired device config"
+        - "I need to configure a device shadow. Sync device state"
+
+  - name: manage_iot_rules
+    descriptions:
+      minimal: "Manage IoT rules"
+      short: "Manage IoT rules engine"
+      medium: "Create and manage rules for IoT data processing and actions."
+      long: "Set up rules to process IoT data and trigger actions. Example: manage_iot_rules(action='create', name='high-temp-alert', condition='temperature > 100', actions='[{\"type\": \"sns\"}]')."
+      verbose: "IoT rules engine for event processing. Actions: create, update, delete, enable, disable, list, test. Rule components: SQL-like query, conditions, actions. Action types: Lambda, SNS, SQS, DynamoDB, Kinesis, S3, IoT republish. Example: manage_iot_rules(action='create', name='motion-detected', sql='SELECT * FROM sensors/motion WHERE detected = true', actions='[{\"type\": \"lambda\", \"function\": \"process-motion\"}, {\"type\": \"sns\", \"topic\": \"alerts\"}]', error_action='{\"type\": \"s3\", \"bucket\": \"iot-errors\"}'). Note: Test rules with sample data before enabling. Warning: Complex rules may increase message processing costs."
+    parameters:
+      - name: action
+        type: string
+        description: "Rule action"
+        required: true
+        enum: ["create", "update", "delete", "enable", "disable", "list", "test"]
+      - name: name
+        type: string
+        description: "Rule name"
+        required: true
+      - name: sql
+        type: string
+        description: "Rule SQL query"
+        required: false
+      - name: condition
+        type: string
+        description: "Simple condition expression"
+        required: false
+      - name: actions
+        type: string
+        description: "JSON array of actions"
+        required: false
+      - name: error_action
+        type: string
+        description: "JSON error handling action"
+        required: false
+      - name: test_data
+        type: string
+        description: "JSON test payload"
+        required: false
+    tags: ["iot", "rules", "engine", "automation", "processing"]
+    test_prompts:
+      single:
+        - "Create IoT rule"
+        - "Set up temperature alert"
+        - "Process motion sensor data"
+        - "Route IoT messages"
+      single_clear:
+        - "I need to manage IoT rules engine. Create IoT rule"
+        - "I need to manage IoT rules engine. Set up temperature alert"
+        - "I need to manage IoT rules engine. Process motion sensor data"
+        - "I need to manage IoT rules engine. Route IoT messages"
+
+  - name: configure_iot_security
+    descriptions:
+      minimal: "Configure IoT security"
+      short: "Configure IoT security"
+      medium: "Configure security settings for IoT devices and connections."
+      long: "Set up certificates, policies, and authentication for IoT. Example: configure_iot_security(action='create_cert', device_id='sensor-001', auto_activate=true)."
+      verbose: "IoT security configuration. Actions: create_cert, revoke_cert, create_policy, attach_policy, rotate_cert. Authentication: X.509 certificates, custom auth, Cognito. Features: certificate rotation, policy versioning, audit logging. Example: configure_iot_security(action='create_cert', device_id='gateway-001', auto_activate=true, policy_name='gateway-policy', save_keys='/certs/gateway-001/'). Policy: configure_iot_security(action='create_policy', name='sensor-policy', statements='[{\"effect\": \"Allow\", \"action\": [\"iot:Publish\"], \"resource\": [\"topic/sensors/*\"]}]'). Note: Store private keys securely. Warning: Revoking certificates disconnects devices immediately."
+    parameters:
+      - name: action
+        type: string
+        description: "Security action"
+        required: true
+        enum: ["create_cert", "revoke_cert", "create_policy", "attach_policy", "detach_policy", "rotate_cert", "audit"]
+      - name: device_id
+        type: string
+        description: "Device identifier"
+        required: false
+      - name: policy_name
+        type: string
+        description: "Policy name"
+        required: false
+      - name: statements
+        type: string
+        description: "JSON policy statements"
+        required: false
+      - name: auto_activate
+        type: boolean
+        description: "Auto-activate certificate"
+        required: false
+        default: true
+      - name: save_keys
+        type: string
+        description: "Path to save keys"
+        required: false
+    tags: ["iot", "security", "certificates", "policy", "authentication"]
+    test_prompts:
+      single:
+        - "Create device certificate"
+        - "Set up IoT security policy"
+        - "Rotate device credentials"
+        - "Revoke compromised certificate"
+      single_clear:
+        - "I need to configure IoT security. Create device certificate"
+        - "I need to configure IoT security. Set up IoT security policy"
+        - "I need to configure IoT security. Rotate device credentials"
+        - "I need to configure IoT security. Revoke compromised certificate"
+
+  - name: manage_iot_fleet
+    descriptions:
+      minimal: "Manage fleet"
+      short: "Manage IoT device fleet"
+      medium: "Manage groups and fleets of IoT devices at scale."
+      long: "Organize devices into groups and manage fleet-wide operations. Example: manage_iot_fleet(action='create_group', name='factory-floor', parent='building-a')."
+      verbose: "IoT fleet and group management. Actions: create_group, add_device, remove_device, delete_group, list_groups, fleet_metrics. Features: hierarchical groups, dynamic groups (query-based), fleet indexing. Fleet operations: bulk OTA, mass configuration, aggregate metrics. Example: manage_iot_fleet(action='create_group', name='hvac-units', description='All HVAC controllers', query='thingType = \"hvac\" AND attributes.location = \"building-a\"', dynamic=true). Fleet metrics: manage_iot_fleet(action='fleet_metrics', group='factory-floor', metrics='[\"online_count\", \"avg_temperature\", \"error_rate\"]'). Note: Dynamic groups update automatically. Warning: Large fleet operations may take time to propagate."
+    parameters:
+      - name: action
+        type: string
+        description: "Fleet action"
+        required: true
+        enum: ["create_group", "add_device", "remove_device", "delete_group", "list_groups", "fleet_metrics", "update_group"]
+      - name: name
+        type: string
+        description: "Group name"
+        required: true
+      - name: parent
+        type: string
+        description: "Parent group"
+        required: false
+      - name: device_id
+        type: string
+        description: "Device to add/remove"
+        required: false
+      - name: query
+        type: string
+        description: "Dynamic group query"
+        required: false
+      - name: dynamic
+        type: boolean
+        description: "Create dynamic group"
+        required: false
+        default: false
+      - name: metrics
+        type: string
+        description: "JSON array of metrics"
+        required: false
+    tags: ["iot", "fleet", "group", "management", "organization"]
+    test_prompts:
+      single:
+        - "Create device group"
+        - "Add device to fleet"
+        - "Get fleet metrics"
+        - "Create dynamic group"
+      single_clear:
+        - "I need to manage an IoT device fleet. Create device group"
+        - "I need to manage an IoT device fleet. Add device to fleet"
+        - "I need to manage an IoT device fleet. Get fleet metrics"
+        - "I need to manage an IoT device fleet. Create dynamic group"
+
+  - name: configure_iot_stream
+    descriptions:
+      minimal: "Configure stream"
+      short: "Configure IoT data stream"
+      medium: "Set up data streaming for IoT telemetry and events."
+      long: "Configure streaming of IoT data to analytics platforms. Example: configure_iot_stream(action='create', name='sensor-stream', destination='kinesis', topic='sensors/#')."
+      verbose: "IoT data streaming configuration. Destinations: Kinesis, Kafka, S3, Timestream, InfluxDB, Elasticsearch. Actions: create, update, delete, list, pause, resume. Features: batching, filtering, transformation, partitioning. Example: configure_iot_stream(action='create', name='telemetry-stream', source_topic='devices/+/telemetry', destination='{\"type\": \"kinesis\", \"stream\": \"iot-telemetry\"}', batch_size=100, batch_window=60, transform='SELECT deviceId, timestamp, temperature, humidity FROM *'). Note: Larger batches are more efficient but add latency. Warning: High-throughput streams may incur significant costs."
+    parameters:
+      - name: action
+        type: string
+        description: "Stream action"
+        required: true
+        enum: ["create", "update", "delete", "list", "pause", "resume", "status"]
+      - name: name
+        type: string
+        description: "Stream name"
+        required: true
+      - name: source_topic
+        type: string
+        description: "MQTT topic filter"
+        required: false
+      - name: destination
+        type: string
+        description: "JSON destination config"
+        required: false
+      - name: batch_size
+        type: integer
+        description: "Batch size"
+        required: false
+        default: 100
+      - name: batch_window
+        type: integer
+        description: "Batch window in seconds"
+        required: false
+        default: 60
+      - name: transform
+        type: string
+        description: "Transformation SQL"
+        required: false
+    tags: ["iot", "stream", "telemetry", "kinesis", "analytics"]
+    test_prompts:
+      single:
+        - "Create IoT data stream"
+        - "Stream to Kinesis"
+        - "Set up telemetry pipeline"
+        - "Configure streaming analytics"
+      single_clear:
+        - "I need to configure an IoT data stream. Create IoT data stream"
+        - "I need to configure an IoT data stream. Stream to Kinesis"
+        - "I need to configure an IoT data stream. Set up telemetry pipeline"
+        - "I need to configure an IoT data stream. Configure streaming analytics"
+
+  - name: manage_iot_jobs
+    descriptions:
+      minimal: "Manage IoT jobs"
+      short: "Manage IoT jobs"
+      medium: "Create and manage remote jobs for IoT devices."
+      long: "Execute operations across IoT devices with job management. Example: manage_iot_jobs(action='create', name='reboot-job', targets='[\"group:sensors\"]', document='{\"operation\": \"reboot\"}')."
+      verbose: "IoT job management for remote operations. Job types: continuous, snapshot. Actions: create, cancel, delete, describe, list. Features: rollout configuration, abort threshold, retry logic, timeouts. Example: manage_iot_jobs(action='create', name='config-update-v2', targets='[\"group:all-devices\"]', document='{\"type\": \"config\", \"settings\": {\"interval\": 30}}', rollout='{\"rate\": 100, \"incrementFactor\": 2}', abort_threshold='{\"failureType\": \"ALL\", \"thresholdPercentage\": 10}'). Note: Use rollout configuration for large fleets. Warning: Aborting jobs may leave devices in inconsistent states."
+    parameters:
+      - name: action
+        type: string
+        description: "Job action"
+        required: true
+        enum: ["create", "cancel", "delete", "describe", "list", "get_executions"]
+      - name: job_id
+        type: string
+        description: "Job identifier"
+        required: false
+      - name: name
+        type: string
+        description: "Job name"
+        required: false
+      - name: targets
+        type: string
+        description: "JSON array of targets"
+        required: false
+      - name: document
+        type: string
+        description: "JSON job document"
+        required: false
+      - name: rollout
+        type: string
+        description: "JSON rollout configuration"
+        required: false
+      - name: abort_threshold
+        type: string
+        description: "JSON abort threshold"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Job timeout in minutes"
+        required: false
+    tags: ["iot", "jobs", "remote", "operations", "management"]
+    test_prompts:
+      single:
+        - "Create device reboot job"
+        - "Deploy configuration to fleet"
+        - "Cancel running job"
+        - "Check job status"
+      single_clear:
+        - "I need to manage IoT jobs. Create device reboot job"
+        - "I need to manage IoT jobs. Deploy configuration to fleet"
+        - "I need to manage IoT jobs. Cancel running job"
+        - "I need to manage IoT jobs. Check job status"
+
+  - name: configure_edge_gateway
+    descriptions:
+      minimal: "Configure gateway"
+      short: "Configure edge gateway"
+      medium: "Configure edge computing gateways for local IoT processing."
+      long: "Set up and manage edge gateways for local data processing. Example: configure_edge_gateway(gateway_id='gw-001', action='deploy', components='[{\"name\": \"filter\"}]')."
+      verbose: "Edge gateway configuration for local processing. Actions: deploy, configure, restart, update, status, logs. Components: local processing, data filtering, ML inference, protocol translation. Features: offline operation, local actions, data buffering. Example: configure_edge_gateway(gateway_id='factory-gateway-1', action='deploy', components='[{\"name\": \"data-aggregator\", \"version\": \"2.0\"}, {\"name\": \"anomaly-detector\", \"model\": \"s3://models/anomaly-v3\"}]', sync_shadow=true, buffer_size='1GB'). Note: Edge components run with limited resources. Warning: Gateway restarts may interrupt local device communication."
+    parameters:
+      - name: gateway_id
+        type: string
+        description: "Gateway identifier"
+        required: true
+      - name: action
+        type: string
+        description: "Gateway action"
+        required: true
+        enum: ["deploy", "configure", "restart", "update", "status", "logs", "remove"]
+      - name: components
+        type: string
+        description: "JSON array of components"
+        required: false
+      - name: config
+        type: string
+        description: "JSON gateway configuration"
+        required: false
+      - name: sync_shadow
+        type: boolean
+        description: "Sync with cloud shadow"
+        required: false
+        default: true
+      - name: buffer_size
+        type: string
+        description: "Offline buffer size"
+        required: false
+    tags: ["iot", "edge", "gateway", "processing", "local"]
+    test_prompts:
+      single:
+        - "Deploy edge component"
+        - "Configure edge gateway"
+        - "Check gateway status"
+        - "Update edge software"
+      single_clear:
+        - "I need to configure an edge gateway. Deploy edge component"
+        - "I need to configure an edge gateway. Configure edge gateway"
+        - "I need to configure an edge gateway. Check gateway status"
+        - "I need to configure an edge gateway. Update edge software"
+
+  - name: analyze_iot_anomalies
+    descriptions:
+      minimal: "Analyze anomalies"
+      short: "Analyze IoT anomalies"
+      medium: "Detect and analyze anomalies in IoT sensor data."
+      long: "Use ML to detect anomalies in device telemetry. Example: analyze_iot_anomalies(device_id='sensor-001', metric='temperature', window='24h')."
+      verbose: "IoT anomaly detection and analysis. Methods: statistical (z-score, IQR), ML (isolation forest, autoencoder). Actions: detect, train_model, analyze, alert_config. Features: real-time detection, historical analysis, pattern learning. Example: analyze_iot_anomalies(action='detect', devices='group:hvac-units', metrics='[\"temperature\", \"power_consumption\"]', window='7d', sensitivity='medium', alert_on='critical'). Training: analyze_iot_anomalies(action='train_model', device_group='sensors', training_window='30d', model='isolation_forest'). Note: Models need baseline training period. Warning: New device types may generate false positives initially."
+    parameters:
+      - name: action
+        type: string
+        description: "Anomaly action"
+        required: true
+        enum: ["detect", "train_model", "analyze", "alert_config", "list_anomalies"]
+      - name: device_id
+        type: string
+        description: "Device identifier"
+        required: false
+      - name: devices
+        type: string
+        description: "Device group or list"
+        required: false
+      - name: metrics
+        type: string
+        description: "JSON array of metrics"
+        required: false
+      - name: window
+        type: string
+        description: "Analysis time window"
+        required: false
+        default: "24h"
+      - name: sensitivity
+        type: string
+        description: "Detection sensitivity"
+        required: false
+        default: "medium"
+        enum: ["low", "medium", "high"]
+      - name: model
+        type: string
+        description: "Anomaly detection model"
+        required: false
+        default: "statistical"
+    tags: ["iot", "anomaly", "detection", "ml", "monitoring"]
+    test_prompts:
+      single:
+        - "Detect sensor anomalies"
+        - "Analyze unusual patterns"
+        - "Train anomaly model"
+        - "Find anomalies in fleet"
+      single_clear:
+        - "I need to analyze IoT anomalies. Detect sensor anomalies"
+        - "I need to analyze IoT anomalies. Analyze unusual patterns"
+        - "I need to analyze IoT anomalies. Train anomaly model"
+        - "I need to analyze IoT anomalies. Find anomalies in fleet"
+
+  - name: simulate_iot_devices
+    descriptions:
+      minimal: "Simulate devices"
+      short: "Simulate IoT devices"
+      medium: "Simulate IoT devices for testing and development."
+      long: "Create virtual IoT devices for testing scenarios. Example: simulate_iot_devices(count=50, type='temperature_sensor', publish_interval=10)."
+      verbose: "IoT device simulation for testing. Features: multiple device types, realistic data patterns, configurable rates, failure scenarios. Device types: sensors (temp, humidity, motion), actuators, gateways. Example: simulate_iot_devices(action='start', count=100, type='smart_meter', publish_interval=60, data_pattern='realistic', variation=0.1, failure_rate=0.01, duration='1h'). Scenarios: simulate_iot_devices(action='scenario', name='peak_load', devices=1000, ramp_up='5m', messages_per_second=500). Note: Simulations consume cloud resources. Warning: High message rates may trigger throttling."
+    parameters:
+      - name: action
+        type: string
+        description: "Simulation action"
+        required: true
+        enum: ["start", "stop", "status", "scenario", "configure"]
+      - name: count
+        type: integer
+        description: "Number of devices to simulate"
+        required: false
+        default: 10
+      - name: type
+        type: string
+        description: "Device type to simulate"
+        required: false
+        default: "generic_sensor"
+      - name: publish_interval
+        type: integer
+        description: "Publish interval in seconds"
+        required: false
+        default: 30
+      - name: data_pattern
+        type: string
+        description: "Data generation pattern"
+        required: false
+        default: "random"
+        enum: ["random", "realistic", "sine_wave", "custom"]
+      - name: failure_rate
+        type: number
+        description: "Simulated failure rate"
+        required: false
+        default: 0
+      - name: duration
+        type: string
+        description: "Simulation duration"
+        required: false
+    tags: ["iot", "simulation", "testing", "development", "virtual"]
+    test_prompts:
+      single:
+        - "Simulate 100 sensors"
+        - "Start device simulation"
+        - "Test with virtual devices"
+        - "Run load test simulation"
+      single_clear:
+        - "I need to simulate IoT devices for testing. Simulate 100 sensors"
+        - "I need to simulate IoT devices for testing. Start device simulation"
+        - "I need to simulate IoT devices for testing. Test with virtual devices"
+        - "I need to simulate IoT devices for testing. Run load test simulation"

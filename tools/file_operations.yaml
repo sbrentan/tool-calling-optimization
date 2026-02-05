@@ -1,0 +1,1225 @@
+category: file_operations
+
+tools:
+  - name: read_file
+    descriptions:
+      minimal: "Read a file"
+      short: "Read the contents of a file from disk"
+      medium: "Read the contents of a file from the filesystem. Specify the file path and optionally the encoding."
+      long: "Read the contents of a file from the filesystem. Supports text files with various encodings. Returns the file content as a string. Example: read_file(path='/etc/config.json') returns the JSON content."
+      verbose: "Read the contents of a file from the filesystem. This tool opens a file in read mode and returns its contents as a string. Supports various text encodings including UTF-8, ASCII, and Latin-1. The file must exist and be readable. Example usage: read_file(path='config.json', encoding='utf-8'). Note: Binary files should use read_binary_file instead. Warning: Large files may consume significant memory."
+    parameters:
+      - name: file_path
+        type: string
+        description: "The path to the file to read"
+        required: true
+      - name: encoding
+        type: string
+        description: "The file encoding (default: utf-8)"
+        required: false
+        default: "utf-8"
+    tags: ["file", "read", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Read the contents of config.json"
+        - "Show me what's in the README.md file"
+        - "Open and display the content of /var/log/app.log"
+        - "Get the text from document.txt"
+      single_clear:
+        - "I need to read and display the text contents of a file from the filesystem. Read the contents of config.json"
+        - "I need to read and display the text contents of a file from the filesystem. Show me what's in the README.md file"
+        - "I need to read and display the text contents of a file from the filesystem. Open and display the content of /var/log/app.log"
+        - "I need to read and display the text contents of a file from the filesystem. Get the text from document.txt"
+      multi:
+        - prompt: "Read config.json and then write its contents to backup.json"
+          required_tools: ["read_file", "write_file"]
+
+  - name: write_file
+    descriptions:
+      minimal: "Write to a file"
+      short: "Write content to a file on disk"
+      medium: "Write content to a file on the filesystem. Creates the file if it doesn't exist. Can optionally append instead of overwrite."
+      long: "Write content to a file on the filesystem. Creates the file if it doesn't exist, or overwrites existing content by default. Use append mode to add content to the end of existing files. Example: write_file(path='output.txt', content='Hello World')."
+      verbose: "Write content to a file on the filesystem. This tool creates a new file or modifies an existing one. By default, it overwrites existing content, but setting append=true adds content to the end instead. The parent directory must exist. Example: write_file(path='log.txt', content='New entry', append=true). Note: Creates the file if it doesn't exist. Warning: Overwrites existing content unless append mode is enabled."
+    parameters:
+      - name: file_path
+        type: string
+        description: "The path to the file to write"
+        required: true
+      - name: content
+        type: string
+        description: "The content to write to the file"
+        required: true
+      - name: append
+        type: boolean
+        description: "If true, append to file instead of overwriting"
+        required: false
+        default: false
+    tags: ["file", "write", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Write 'Hello World' to output.txt"
+        - "Save the text 'Configuration updated' to config.log"
+        - "Create a file called notes.txt with the content 'Meeting at 3pm'"
+        - "Append 'New line' to the end of log.txt"
+      single_clear:
+        - "Please write text content to a file on the filesystem, creating it if it doesn't exist. Write 'Hello World' to output.txt"
+        - "Please write text content to a file on the filesystem, creating it if it doesn't exist. Save the text 'Configuration updated' to config.log"
+        - "Please write text content to a file on the filesystem, creating it if it doesn't exist. Create a file called notes.txt with the content 'Meeting at 3pm'"
+        - "Please write text content to a file on the filesystem, creating it if it doesn't exist. Append 'New line' to the end of log.txt"
+
+  - name: delete_file
+    descriptions:
+      minimal: "Delete a file"
+      short: "Delete a file from the filesystem"
+      medium: "Delete a file from the filesystem permanently. The file must exist. Use force option to skip confirmation."
+      long: "Delete a file from the filesystem permanently. The file path must point to an existing file (not a directory). By default, asks for confirmation. Use force=true to delete without confirmation. Example: delete_file(path='temp.txt', force=true)."
+      verbose: "Delete a file from the filesystem permanently. This operation cannot be undone - the file is permanently removed, not moved to trash. The path must point to a file, not a directory. Use force=true to bypass confirmation prompts. Example: delete_file(path='/tmp/cache.dat', force=true). Note: Does not work on directories, use delete_directory instead. Warning: This action is irreversible."
+    parameters:
+      - name: file_path
+        type: string
+        description: "The path to the file to delete"
+        required: true
+      - name: force
+        type: boolean
+        description: "If true, delete without confirmation"
+        required: false
+        default: false
+    tags: ["file", "delete", "io", "filesystem", "destructive"]
+    test_prompts:
+      single:
+        - "Delete the file temp.txt"
+        - "Remove the old backup file backup.old"
+        - "Delete cache.dat without asking for confirmation"
+      single_clear:
+        - "I need to permanently delete a file from the filesystem. Delete the file temp.txt"
+        - "I need to permanently delete a file from the filesystem. Remove the old backup file backup.old"
+        - "I need to permanently delete a file from the filesystem. Delete cache.dat without asking for confirmation"
+
+  - name: copy_file
+    descriptions:
+      minimal: "Copy a file"
+      short: "Copy a file to a new location"
+      medium: "Copy a file from one location to another. The source file must exist. Optionally overwrite if destination exists."
+      long: "Copy a file from a source path to a destination path. The source file must exist and be readable. If the destination already exists, use overwrite=true to replace it. Example: copy_file(source='data.csv', destination='backup/data.csv')."
+      verbose: "Copy a file from a source path to a destination path. Creates an exact duplicate of the source file at the destination. The source must be an existing file. If the destination exists, the operation fails unless overwrite=true is set. The destination directory must exist. Example: copy_file(source='report.pdf', destination='archive/report_2024.pdf', overwrite=false). Note: Does not copy directories, use copy_directory instead. Warning: With overwrite=true, existing destination files are permanently replaced."
+    parameters:
+      - name: source_path
+        type: string
+        description: "The path to the source file"
+        required: true
+      - name: destination_path
+        type: string
+        description: "The path to the destination file"
+        required: true
+      - name: overwrite
+        type: boolean
+        description: "If true, overwrite destination if it exists"
+        required: false
+        default: false
+    tags: ["file", "copy", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Copy config.json to config.backup.json"
+        - "Make a copy of report.pdf in the archive folder"
+        - "Duplicate the data.csv file to backup/data.csv"
+      single_clear:
+        - "Please copy a file to a new location while keeping the original intact. Copy config.json to config.backup.json"
+        - "Please copy a file to a new location while keeping the original intact. Make a copy of report.pdf in the archive folder"
+        - "Please copy a file to a new location while keeping the original intact. Duplicate the data.csv file to backup/data.csv"
+
+  - name: move_file
+    descriptions:
+      minimal: "Move a file"
+      short: "Move a file to a new location"
+      medium: "Move a file from one location to another. This removes the original file. Can also be used to rename files."
+      long: "Move a file from a source path to a destination path, removing it from the original location. Can also be used to rename files within the same directory. Example: move_file(source='old_name.txt', destination='new_name.txt')."
+      verbose: "Move a file from a source path to a destination path. The source file is removed after being copied to the destination. This can be used for both moving files between directories and renaming files. If the destination exists, set overwrite=true to replace it. Example: move_file(source='downloads/file.zip', destination='archive/file.zip'). Note: Atomic operation when on same filesystem. Warning: Source file is deleted after successful move."
+    parameters:
+      - name: source_path
+        type: string
+        description: "The current path of the file"
+        required: true
+      - name: destination_path
+        type: string
+        description: "The new path for the file"
+        required: true
+      - name: overwrite
+        type: boolean
+        description: "If true, overwrite destination if it exists"
+        required: false
+        default: false
+    tags: ["file", "move", "rename", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Move report.pdf to the archive folder"
+        - "Rename old_config.json to new_config.json"
+        - "Move the downloaded file from downloads to documents"
+      single_clear:
+        - "I need to move or rename a file to a different location. Move report.pdf to the archive folder"
+        - "I need to move or rename a file to a different location. Rename old_config.json to new_config.json"
+        - "I need to move or rename a file to a different location. Move the downloaded file from downloads to documents"
+
+  - name: list_directory
+    descriptions:
+      minimal: "List directory contents"
+      short: "List all files and folders in a directory"
+      medium: "List the contents of a directory, showing all files and subdirectories. Can optionally list recursively and filter by pattern."
+      long: "List the contents of a directory. Returns names of all files and subdirectories. Use recursive=true to include contents of subdirectories. Use pattern to filter results (e.g., '*.txt'). Example: list_directory(path='./src', pattern='*.py')."
+      verbose: "List the contents of a directory. Returns a list of file and subdirectory names. By default, only lists immediate children. Set recursive=true to traverse all subdirectories. Use pattern for glob-style filtering (e.g., '*.log', 'test_*'). Example: list_directory(path='/var/log', recursive=false, pattern='*.log'). Note: Hidden files (starting with .) are included by default. Warning: Recursive listing on large directories may be slow."
+    parameters:
+      - name: directory_path
+        type: string
+        description: "The path to the directory to list"
+        required: true
+      - name: recursive
+        type: boolean
+        description: "If true, list contents recursively"
+        required: false
+        default: false
+      - name: pattern
+        type: string
+        description: "Glob pattern to filter results (e.g., '*.txt')"
+        required: false
+    tags: ["file", "directory", "list", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Show me all files in the src folder"
+        - "List the contents of the current directory"
+        - "Find all Python files in the project directory"
+        - "What files are in /var/log?"
+      single_clear:
+        - "Please list all the files and subdirectories in a directory. Show me all files in the src folder"
+        - "Please list all the files and subdirectories in a directory. List the contents of the current directory"
+        - "Please list all the files and subdirectories in a directory. Find all Python files in the project directory"
+        - "Please list all the files and subdirectories in a directory. What files are in /var/log?"
+
+  - name: create_directory
+    descriptions:
+      minimal: "Create a directory"
+      short: "Create a new directory on the filesystem"
+      medium: "Create a new directory at the specified path. Can create parent directories if they don't exist."
+      long: "Create a new directory at the specified path. If parents=true, creates all necessary parent directories (like mkdir -p). Example: create_directory(path='project/src/utils', parents=true)."
+      verbose: "Create a new directory at the specified path. By default, fails if parent directories don't exist. Set parents=true to create the entire directory tree. If the directory already exists and exist_ok=true, no error is raised. Example: create_directory(path='/app/data/cache', parents=true, exist_ok=true). Note: Created with default permissions. Warning: Setting exist_ok=false will raise an error if directory exists."
+    parameters:
+      - name: directory_path
+        type: string
+        description: "The path of the directory to create"
+        required: true
+      - name: parents
+        type: boolean
+        description: "If true, create parent directories as needed"
+        required: false
+        default: false
+      - name: exist_ok
+        type: boolean
+        description: "If true, don't error if directory exists"
+        required: false
+        default: false
+    tags: ["file", "directory", "create", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Create a new folder called 'backup'"
+        - "Make a directory at project/src/components"
+        - "Create the output directory if it doesn't exist"
+      single_clear:
+        - "I need to create a new directory/folder on the filesystem. Create a new folder called 'backup'"
+        - "I need to create a new directory/folder on the filesystem. Make a directory at project/src/components"
+        - "I need to create a new directory/folder on the filesystem. Create the output directory if it doesn't exist"
+
+  - name: get_file_info
+    descriptions:
+      minimal: "Get file information"
+      short: "Get metadata about a file"
+      medium: "Get metadata about a file including size, creation date, modification date, and permissions."
+      long: "Get detailed metadata about a file. Returns information including file size in bytes, creation timestamp, last modification timestamp, and file permissions. Example: get_file_info(path='document.pdf')."
+      verbose: "Get comprehensive metadata about a file. Returns a detailed object containing: size (in bytes), created_at (timestamp), modified_at (timestamp), accessed_at (timestamp), permissions (octal), owner, group, and file type. Example: get_file_info(path='/etc/passwd') returns {size: 2834, permissions: '0644', ...}. Note: Some fields may not be available on all operating systems. Warning: Accessing certain system files may require elevated permissions."
+    parameters:
+      - name: file_path
+        type: string
+        description: "The path to the file"
+        required: true
+    tags: ["file", "info", "metadata", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "What is the size of report.pdf?"
+        - "When was config.json last modified?"
+        - "Get information about the log file"
+        - "Show me the metadata for document.docx"
+      single_clear:
+        - "Please get detailed metadata about a file including size, dates, and permissions. What is the size of report.pdf?"
+        - "Please get detailed metadata about a file including size, dates, and permissions. When was config.json last modified?"
+        - "Please get detailed metadata about a file including size, dates, and permissions. Get information about the log file"
+        - "Please get detailed metadata about a file including size, dates, and permissions. Show me the metadata for document.docx"
+
+  - name: search_files
+    descriptions:
+      minimal: "Search for files"
+      short: "Search for files matching a pattern"
+      medium: "Search for files in a directory that match a name pattern. Can search recursively through subdirectories."
+      long: "Search for files matching a pattern within a directory. Uses glob patterns for matching (e.g., '*.py', 'test_*'). Set recursive=true to search in subdirectories. Example: search_files(directory='.', pattern='*.log', recursive=true)."
+      verbose: "Search for files matching a pattern within a directory tree. Supports glob patterns including wildcards (* matches any characters, ? matches single character). By default searches only the specified directory. Set recursive=true to search all subdirectories. Returns a list of matching file paths. Example: search_files(directory='/var/log', pattern='error*.log', recursive=true). Note: Pattern is case-sensitive on Unix systems. Warning: Searching large directory trees recursively may be slow."
+    parameters:
+      - name: directory
+        type: string
+        description: "The directory to search in"
+        required: true
+      - name: pattern
+        type: string
+        description: "The glob pattern to match (e.g., '*.txt')"
+        required: true
+      - name: recursive
+        type: boolean
+        description: "If true, search in subdirectories"
+        required: false
+        default: false
+    tags: ["file", "search", "find", "io", "filesystem"]
+    test_prompts:
+      single:
+        - "Find all .log files in the logs directory"
+        - "Search for Python files in the project"
+        - "Find all files named 'config' in the system"
+        - "Look for any JSON files in the data folder"
+      single_clear:
+        - "I need to search for files matching a pattern in a directory. Find all .log files in the logs directory"
+        - "I need to search for files matching a pattern in a directory. Search for Python files in the project"
+        - "I need to search for files matching a pattern in a directory. Find all files named 'config' in the system"
+        - "I need to search for files matching a pattern in a directory. Look for any JSON files in the data folder"
+
+  - name: compress_files
+    descriptions:
+      minimal: "Compress files"
+      short: "Compress files into an archive"
+      medium: "Compress one or more files into a zip, tar, or gzip archive."
+      long: "Compress files or directories into an archive file. Supports zip, tar.gz, tar.bz2, and 7z formats. Example: compress_files(files='[\"doc1.txt\", \"doc2.txt\"]', output='archive.zip', format='zip')."
+      verbose: "Compress multiple files or directories into an archive. Supports formats: 'zip' (widely compatible), 'tar.gz' (Unix standard, gzip compression), 'tar.bz2' (better compression), '7z' (best compression). Can include or exclude files by pattern. Preserves directory structure optionally. Example: compress_files(files='[\"src/\", \"docs/\"]', output='project_backup.tar.gz', format='tar.gz', compression_level=9). Note: Compression level ranges 1-9. Warning: Large directories may take significant time to compress."
+    parameters:
+      - name: files
+        type: string
+        description: "JSON array of file/directory paths to compress"
+        required: true
+      - name: output
+        type: string
+        description: "Output archive path"
+        required: true
+      - name: format
+        type: string
+        description: "Archive format"
+        required: false
+        default: "zip"
+        enum: ["zip", "tar.gz", "tar.bz2", "7z"]
+      - name: compression_level
+        type: integer
+        description: "Compression level (1-9)"
+        required: false
+        default: 6
+    tags: ["file", "compress", "archive", "zip", "tar", "backup"]
+    test_prompts:
+      single:
+        - "Compress the src folder into a zip file"
+        - "Create a tar.gz archive of the logs directory"
+        - "Zip up all the document files"
+        - "Make a backup archive of the project"
+      single_clear:
+        - "Please compress files or directories into an archive. Compress the src folder into a zip file"
+        - "Please compress files or directories into an archive. Create a tar.gz archive of the logs directory"
+        - "Please compress files or directories into an archive. Zip up all the document files"
+        - "Please compress files or directories into an archive. Make a backup archive of the project"
+
+  - name: extract_archive
+    descriptions:
+      minimal: "Extract archive"
+      short: "Extract files from an archive"
+      medium: "Extract files from a zip, tar, or other archive format to a destination directory."
+      long: "Extract files from an archive to a specified destination. Supports zip, tar, tar.gz, tar.bz2, and 7z formats. Example: extract_archive(archive='backup.zip', destination='./restored/')."
+      verbose: "Extract files from various archive formats to a destination directory. Auto-detects format from extension. Can extract specific files using a pattern. Options to overwrite existing files or preserve directory structure. Example: extract_archive(archive='data.tar.gz', destination='./extracted/', pattern='*.csv', overwrite=true). Note: Creates destination directory if it doesn't exist. Warning: Be cautious with archives from untrusted sources (zip bombs, path traversal)."
+    parameters:
+      - name: archive
+        type: string
+        description: "Path to the archive file"
+        required: true
+      - name: destination
+        type: string
+        description: "Directory to extract to"
+        required: true
+      - name: pattern
+        type: string
+        description: "Only extract files matching this pattern"
+        required: false
+      - name: overwrite
+        type: boolean
+        description: "Overwrite existing files"
+        required: false
+        default: false
+    tags: ["file", "extract", "archive", "unzip", "decompress"]
+    test_prompts:
+      single:
+        - "Extract the zip file to the downloads folder"
+        - "Unzip the archive to the current directory"
+        - "Extract only the CSV files from the archive"
+        - "Decompress the tar.gz backup file"
+      single_clear:
+        - "I need to extract files from a compressed archive. Extract the zip file to the downloads folder"
+        - "I need to extract files from a compressed archive. Unzip the archive to the current directory"
+        - "I need to extract files from a compressed archive. Extract only the CSV files from the archive"
+        - "I need to extract files from a compressed archive. Decompress the tar.gz backup file"
+
+  - name: rename_files_batch
+    descriptions:
+      minimal: "Batch rename files"
+      short: "Rename multiple files at once"
+      medium: "Rename multiple files using patterns, find-replace, or numbering schemes."
+      long: "Batch rename files in a directory using various strategies: pattern replacement, sequential numbering, or custom templates. Example: rename_files_batch(directory='./photos', pattern='IMG_*.jpg', template='vacation_{n:04d}.jpg')."
+      verbose: "Rename multiple files in a directory using flexible renaming strategies. Strategies: 'replace' (find/replace in names), 'template' (use template with variables like {n}, {name}, {ext}, {date}), 'regex' (regex substitution). Example: rename_files_batch(directory='./images', pattern='*.PNG', strategy='replace', find='.PNG', replace='.png'). Note: Preview mode shows changes without applying. Warning: Renaming is not atomic; partial failures may leave some files renamed."
+    parameters:
+      - name: directory
+        type: string
+        description: "Directory containing files to rename"
+        required: true
+      - name: pattern
+        type: string
+        description: "Glob pattern to match files"
+        required: true
+      - name: strategy
+        type: string
+        description: "Renaming strategy"
+        required: true
+        enum: ["replace", "template", "regex"]
+      - name: find
+        type: string
+        description: "String to find (for replace/regex)"
+        required: false
+      - name: replace
+        type: string
+        description: "Replacement string"
+        required: false
+      - name: template
+        type: string
+        description: "Name template with placeholders"
+        required: false
+      - name: preview
+        type: boolean
+        description: "Preview changes without applying"
+        required: false
+        default: true
+    tags: ["file", "rename", "batch", "bulk", "organize"]
+    test_prompts:
+      single:
+        - "Rename all jpg files with sequential numbers"
+        - "Replace spaces with underscores in all filenames"
+        - "Batch rename the photos with a date prefix"
+        - "Change all file extensions from .txt to .md"
+      single_clear:
+        - "I need to batch rename multiple files at once using patterns or numbering. Rename all jpg files with sequential numbers"
+        - "I need to batch rename multiple files at once using patterns or numbering. Replace spaces with underscores in all filenames"
+        - "I need to batch rename multiple files at once using patterns or numbering. Batch rename the photos with a date prefix"
+        - "I need to batch rename multiple files at once using patterns or numbering. Change all file extensions from .txt to .md"
+
+  - name: watch_directory
+    descriptions:
+      minimal: "Watch directory"
+      short: "Monitor a directory for changes"
+      medium: "Watch a directory for file changes and trigger notifications for create, modify, or delete events."
+      long: "Monitor a directory for file system changes. Detects file creation, modification, deletion, and moves. Can filter by file pattern. Example: watch_directory(directory='./uploads', events='[\"created\", \"modified\"]', pattern='*.csv')."
+      verbose: "Set up a file system watcher on a directory to detect changes in real-time. Events: 'created' (new files), 'modified' (content changes), 'deleted' (removals), 'moved' (renames or moves). Can watch recursively and filter by file pattern. Returns a watcher ID for later management. Example: watch_directory(directory='/var/log/app', events='[\"created\", \"modified\"]', pattern='*.log', recursive=true). Note: High-change directories may generate many events. Warning: System limits on file watchers may apply."
+    parameters:
+      - name: directory
+        type: string
+        description: "Directory to watch"
+        required: true
+      - name: events
+        type: string
+        description: "JSON array of events to watch"
+        required: false
+        default: "[\"created\", \"modified\", \"deleted\"]"
+      - name: pattern
+        type: string
+        description: "Filter files by pattern"
+        required: false
+      - name: recursive
+        type: boolean
+        description: "Watch subdirectories too"
+        required: false
+        default: false
+    tags: ["file", "watch", "monitor", "events", "realtime"]
+    test_prompts:
+      single:
+        - "Watch the uploads folder for new files"
+        - "Monitor the config directory for changes"
+        - "Set up a watcher for log file modifications"
+        - "Alert me when files are deleted from the temp folder"
+      single_clear:
+        - "I need to monitor a directory for file changes in real-time. Watch the uploads folder for new files"
+        - "I need to monitor a directory for file changes in real-time. Monitor the config directory for changes"
+        - "I need to monitor a directory for file changes in real-time. Set up a watcher for log file modifications"
+        - "I need to monitor a directory for file changes in real-time. Alert me when files are deleted from the temp folder"
+
+  - name: calculate_checksum
+    descriptions:
+      minimal: "Calculate checksum"
+      short: "Calculate file checksum"
+      medium: "Calculate the checksum of a file using MD5, SHA1, SHA256, or other hash algorithms."
+      long: "Calculate the checksum/hash of a file for integrity verification. Supports MD5, SHA1, SHA256, SHA512. Example: calculate_checksum(file_path='download.iso', algorithm='sha256')."
+      verbose: "Calculate a cryptographic checksum of a file for integrity verification. Common use cases: verifying downloads, detecting file changes, creating manifests. Algorithms: 'md5' (fast, not cryptographically secure), 'sha1' (deprecated for security), 'sha256' (recommended), 'sha512' (most secure). Example: calculate_checksum(file_path='ubuntu.iso', algorithm='sha256'). Note: Large files are processed in chunks for memory efficiency. Warning: MD5/SHA1 should only be used for integrity, not security."
+    parameters:
+      - name: file_path
+        type: string
+        description: "Path to the file"
+        required: true
+      - name: algorithm
+        type: string
+        description: "Hash algorithm to use"
+        required: false
+        default: "sha256"
+        enum: ["md5", "sha1", "sha256", "sha512"]
+    tags: ["file", "checksum", "hash", "verify", "integrity"]
+    test_prompts:
+      single:
+        - "Calculate the SHA256 checksum of the downloaded file"
+        - "Get the MD5 hash of the ISO image"
+        - "Verify the file checksum"
+        - "Generate a checksum for the backup file"
+      single_clear:
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Calculate the SHA256 checksum of the downloaded file"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Get the MD5 hash of the ISO image"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Verify the file checksum"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Generate a checksum for the backup file"
+
+  - name: sync_directories
+    descriptions:
+      minimal: "Sync directories"
+      short: "Synchronize two directories"
+      medium: "Synchronize the contents of two directories, copying new and modified files."
+      long: "Synchronize files between a source and destination directory. Can mirror, update only newer files, or perform bidirectional sync. Example: sync_directories(source='/data', destination='/backup', mode='mirror')."
+      verbose: "Synchronize files between directories with multiple strategies. Modes: 'mirror' (destination matches source exactly, deletes extra files), 'update' (copy newer files only), 'merge' (copy from both, keep newest), 'backup' (one-way copy, never delete). Options for handling conflicts and preserving attributes. Example: sync_directories(source='./local', destination='./remote', mode='update', delete_extra=false, dry_run=true). Note: Dry run shows what would change without modifying files. Warning: Mirror mode will delete files from destination."
+    parameters:
+      - name: source
+        type: string
+        description: "Source directory path"
+        required: true
+      - name: destination
+        type: string
+        description: "Destination directory path"
+        required: true
+      - name: mode
+        type: string
+        description: "Sync mode"
+        required: false
+        default: "update"
+        enum: ["mirror", "update", "merge", "backup"]
+      - name: delete_extra
+        type: boolean
+        description: "Delete files in destination not in source"
+        required: false
+        default: false
+      - name: dry_run
+        type: boolean
+        description: "Preview changes without applying"
+        required: false
+        default: false
+    tags: ["file", "sync", "copy", "backup", "directory"]
+    test_prompts:
+      single:
+        - "Sync the local folder to the backup drive"
+        - "Mirror the source directory to destination"
+        - "Update the backup folder with new files"
+        - "Synchronize the two directories"
+      single_clear:
+        - "I need to synchronize files between two directories, keeping them in sync. Sync the local folder to the backup drive"
+        - "I need to synchronize files between two directories, keeping them in sync. Mirror the source directory to destination"
+        - "I need to synchronize files between two directories, keeping them in sync. Update the backup folder with new files"
+        - "I need to synchronize files between two directories, keeping them in sync. Synchronize the two directories"
+
+  - name: change_permissions
+    descriptions:
+      minimal: "Change permissions"
+      short: "Change file or directory permissions"
+      medium: "Change the permissions (read, write, execute) on a file or directory."
+      long: "Modify file or directory permissions using chmod-style modes. Supports octal notation (755) or symbolic (u+x). Example: change_permissions(path='script.sh', mode='755')."
+      verbose: "Change file or directory permissions using Unix-style permission modes. Accepts octal notation (755, 644) or symbolic notation (u+x, go-w). Can apply recursively to directories. Example: change_permissions(path='./scripts', mode='755', recursive=true) makes all scripts in the directory executable. Note: Symbolic notation allows incremental changes. Warning: Incorrect permissions can create security vulnerabilities or break applications."
+    parameters:
+      - name: path
+        type: string
+        description: "Path to file or directory"
+        required: true
+      - name: mode
+        type: string
+        description: "Permission mode (octal or symbolic)"
+        required: true
+      - name: recursive
+        type: boolean
+        description: "Apply to directory contents recursively"
+        required: false
+        default: false
+    tags: ["file", "permissions", "chmod", "security", "access"]
+    test_prompts:
+      single:
+        - "Make the script executable"
+        - "Change permissions to 644 on the config file"
+        - "Set the folder permissions to 755"
+        - "Remove write access from the log file"
+      single_clear:
+        - "I need to change file or directory permissions (read, write, execute). Make the script executable"
+        - "I need to change file or directory permissions (read, write, execute). Change permissions to 644 on the config file"
+        - "I need to change file or directory permissions (read, write, execute). Set the folder permissions to 755"
+        - "I need to change file or directory permissions (read, write, execute). Remove write access from the log file"
+
+  - name: find_duplicates
+    descriptions:
+      minimal: "Find duplicates"
+      short: "Find duplicate files"
+      medium: "Find duplicate files in a directory based on content hash, size, or name."
+      long: "Scan a directory to find duplicate files. Can compare by content hash (exact duplicates), size, or name. Example: find_duplicates(directory='./photos', method='hash', recursive=true)."
+      verbose: "Find duplicate files in a directory tree. Methods: 'hash' (exact content match using SHA256), 'size' (same file size, fast but may have false positives), 'name' (same filename regardless of content). Returns groups of duplicate files. Options to include minimum size threshold and file patterns. Example: find_duplicates(directory='./media', method='hash', min_size=1048576, pattern='*.mp4', recursive=true). Note: Hash comparison reads full file contents and may be slow. Warning: Exercise caution when deleting duplicates."
+    parameters:
+      - name: directory
+        type: string
+        description: "Directory to scan"
+        required: true
+      - name: method
+        type: string
+        description: "Comparison method"
+        required: false
+        default: "hash"
+        enum: ["hash", "size", "name"]
+      - name: recursive
+        type: boolean
+        description: "Include subdirectories"
+        required: false
+        default: true
+      - name: min_size
+        type: integer
+        description: "Minimum file size in bytes"
+        required: false
+        default: 0
+      - name: pattern
+        type: string
+        description: "Filter files by pattern"
+        required: false
+    tags: ["file", "duplicate", "find", "cleanup", "storage"]
+    test_prompts:
+      single:
+        - "Find duplicate files in my photos folder"
+        - "Scan for duplicate documents"
+        - "Find files with the same content in the directory"
+        - "Identify duplicate images in the media library"
+      single_clear:
+        - "I need to find duplicate files in a directory based on content or size. Find duplicate files in my photos folder"
+        - "I need to find duplicate files in a directory based on content or size. Scan for duplicate documents"
+        - "I need to find duplicate files in a directory based on content or size. Find files with the same content in the directory"
+        - "I need to find duplicate files in a directory based on content or size. Identify duplicate images in the media library"
+
+  - name: read_binary_file
+    descriptions:
+      minimal: "Read binary file"
+      short: "Read a binary file's contents"
+      medium: "Read the contents of a binary file and return as base64 or hex encoded string."
+      long: "Read a binary file and return its contents encoded as base64 or hexadecimal. Useful for images, executables, or other non-text files. Example: read_binary_file(file_path='image.png', encoding='base64')."
+      verbose: "Read the contents of a binary file and return as an encoded string. Encodings: 'base64' (compact, standard), 'hex' (readable, verbose). Can read partial file using offset and length. Useful for handling images, PDFs, executables, or any non-text data. Example: read_binary_file(file_path='photo.jpg', encoding='base64', offset=0, length=1024). Note: Large files are memory-intensive when fully loaded. Warning: Base64 encoding increases size by ~33%."
+    parameters:
+      - name: file_path
+        type: string
+        description: "Path to the binary file"
+        required: true
+      - name: encoding
+        type: string
+        description: "Output encoding format"
+        required: false
+        default: "base64"
+        enum: ["base64", "hex"]
+      - name: offset
+        type: integer
+        description: "Byte offset to start reading"
+        required: false
+        default: 0
+      - name: length
+        type: integer
+        description: "Number of bytes to read (0 = all)"
+        required: false
+        default: 0
+    tags: ["file", "binary", "read", "base64", "hex"]
+    test_prompts:
+      single:
+        - "Read the binary content of the image file"
+        - "Get the base64 encoding of the PDF"
+        - "Read the first 100 bytes of the executable"
+        - "Load the binary file as hex string"
+      single_clear:
+        - "I need to read a binary file and get its contents as base64 or hex encoded data. Read the binary content of the image file"
+        - "I need to read a binary file and get its contents as base64 or hex encoded data. Get the base64 encoding of the PDF"
+        - "I need to read a binary file and get its contents as base64 or hex encoded data. Read the first 100 bytes of the executable"
+        - "I need to read a binary file and get its contents as base64 or hex encoded data. Load the binary file as hex string"
+
+  - name: write_binary_file
+    descriptions:
+      minimal: "Write binary file"
+      short: "Write binary data to a file"
+      medium: "Write base64 or hex encoded data to a binary file."
+      long: "Write binary data (provided as base64 or hex string) to a file. Useful for creating images, documents, or other binary files. Example: write_binary_file(file_path='output.png', data='iVBORw0...', encoding='base64')."
+      verbose: "Write binary data to a file from an encoded string representation. Encodings: 'base64' or 'hex'. Can append to existing files. Useful for reconstructing binary files from encoded data. Example: write_binary_file(file_path='restored_image.png', data='...base64data...', encoding='base64', append=false). Note: Decoding happens before writing. Warning: Invalid encoding will cause errors; verify data integrity."
+    parameters:
+      - name: file_path
+        type: string
+        description: "Path for the output file"
+        required: true
+      - name: data
+        type: string
+        description: "Encoded binary data"
+        required: true
+      - name: encoding
+        type: string
+        description: "Input data encoding"
+        required: false
+        default: "base64"
+        enum: ["base64", "hex"]
+      - name: append
+        type: boolean
+        description: "Append to existing file"
+        required: false
+        default: false
+    tags: ["file", "binary", "write", "base64", "hex"]
+    test_prompts:
+      single:
+        - "Save the base64 data as an image file"
+        - "Write the binary data to a new file"
+        - "Create a PDF from the encoded content"
+        - "Save the hex string as a binary file"
+      single_clear:
+        - "I need to write binary data (base64 or hex encoded) to a file. Save the base64 data as an image file"
+        - "I need to write binary data (base64 or hex encoded) to a file. Write the binary data to a new file"
+        - "I need to write binary data (base64 or hex encoded) to a file. Create a PDF from the encoded content"
+        - "I need to write binary data (base64 or hex encoded) to a file. Save the hex string as a binary file"
+
+  - name: get_disk_usage
+    descriptions:
+      minimal: "Get disk usage"
+      short: "Get disk space usage for a path"
+      medium: "Get disk usage statistics for a file, directory, or mount point."
+      long: "Get disk usage information for a path including total size, used space, and free space. Can analyze directory sizes. Example: get_disk_usage(path='/home/user', include_subdirs=true)."
+      verbose: "Get disk usage statistics for a file or directory. For mount points, returns total, used, and free space. For directories, calculates recursive size of all contents. Can break down usage by subdirectory. Example: get_disk_usage(path='/var/log', include_subdirs=true, top_n=10) shows top 10 largest subdirectories. Note: Recursive directory scanning may be slow for large trees. Warning: Some system directories may require elevated permissions."
+    parameters:
+      - name: path
+        type: string
+        description: "Path to analyze"
+        required: true
+      - name: include_subdirs
+        type: boolean
+        description: "Include subdirectory breakdown"
+        required: false
+        default: false
+      - name: top_n
+        type: integer
+        description: "Show top N largest items"
+        required: false
+        default: 10
+    tags: ["file", "disk", "usage", "storage", "space"]
+    test_prompts:
+      single:
+        - "How much disk space is the logs folder using?"
+        - "Check the free space on the drive"
+        - "Get disk usage for the home directory"
+        - "Find the largest folders in the project"
+      single_clear:
+        - "I need to get disk space usage statistics for a file or directory. How much disk space is the logs folder using?"
+        - "I need to get disk space usage statistics for a file or directory. Check the free space on the drive"
+        - "I need to get disk space usage statistics for a file or directory. Get disk usage for the home directory"
+        - "I need to get disk space usage statistics for a file or directory. Find the largest folders in the project"
+
+  - name: create_symlink
+    descriptions:
+      minimal: "Create symlink"
+      short: "Create a symbolic link"
+      medium: "Create a symbolic link (symlink) pointing to a target file or directory."
+      long: "Create a symbolic link at the specified path pointing to a target. Symlinks are like shortcuts that reference another file or directory. Example: create_symlink(target='/data/config', link_path='/etc/app-config')."
+      verbose: "Create a symbolic (soft) link at link_path pointing to target. Symlinks are references to other files/directories. Can create relative or absolute links. Example: create_symlink(target='../shared/config.yaml', link_path='./config.yaml', relative=true). Note: Target doesn't need to exist when creating the link (dangling symlink). Warning: Circular symlinks can cause infinite loops in some tools."
+    parameters:
+      - name: target
+        type: string
+        description: "Path the symlink points to"
+        required: true
+      - name: link_path
+        type: string
+        description: "Path for the new symlink"
+        required: true
+      - name: relative
+        type: boolean
+        description: "Create relative symlink"
+        required: false
+        default: false
+    tags: ["file", "symlink", "link", "reference", "shortcut"]
+    test_prompts:
+      single:
+        - "Create a symlink to the config file"
+        - "Make a symbolic link to the shared directory"
+        - "Link the current config to the default config"
+        - "Create a shortcut to the data folder"
+      single_clear:
+        - "I need to create a symbolic link that points to another file or directory. Create a symlink to the config file"
+        - "I need to create a symbolic link that points to another file or directory. Make a symbolic link to the shared directory"
+        - "I need to create a symbolic link that points to another file or directory. Link the current config to the default config"
+        - "I need to create a symbolic link that points to another file or directory. Create a shortcut to the data folder"
+
+  - name: split_file
+    descriptions:
+      minimal: "Split file"
+      short: "Split a file into smaller parts"
+      medium: "Split a large file into smaller chunks by size or number of parts."
+      long: "Split a large file into smaller parts. Can split by maximum chunk size or number of parts. Useful for transferring or storing large files. Example: split_file(file_path='large.iso', chunk_size='100MB', output_dir='./chunks/')."
+      verbose: "Split a large file into multiple smaller parts. Methods: by chunk size (e.g., '100MB', '1GB') or by number of parts. Output files are named with numeric suffixes (.001, .002, etc.). Useful for file transfer limits or storage constraints. Example: split_file(file_path='backup.tar.gz', chunk_size='50MB', output_dir='./parts/'). Note: Use join_files to reconstruct the original file. Warning: Ensure sufficient disk space for the output parts."
+    parameters:
+      - name: file_path
+        type: string
+        description: "Path to the file to split"
+        required: true
+      - name: chunk_size
+        type: string
+        description: "Size of each chunk (e.g., '100MB')"
+        required: false
+      - name: num_parts
+        type: integer
+        description: "Number of parts to create"
+        required: false
+      - name: output_dir
+        type: string
+        description: "Directory for output parts"
+        required: false
+    tags: ["file", "split", "chunk", "divide", "transfer"]
+    test_prompts:
+      single:
+        - "Split the large file into 100MB chunks"
+        - "Divide the ISO into 5 equal parts"
+        - "Break up the archive for email attachment"
+        - "Split the video file into smaller pieces"
+      single_clear:
+        - "I need to split a large file into smaller chunks or parts. Split the large file into 100MB chunks"
+        - "I need to split a large file into smaller chunks or parts. Divide the ISO into 5 equal parts"
+        - "I need to split a large file into smaller chunks or parts. Break up the archive for email attachment"
+        - "I need to split a large file into smaller chunks or parts. Split the video file into smaller pieces"
+
+  - name: join_files
+    descriptions:
+      minimal: "Join files"
+      short: "Join file parts back together"
+      medium: "Combine split file parts back into the original file."
+      long: "Join multiple file parts back into a single file. Typically used with files created by split_file. Example: join_files(parts='[\"file.001\", \"file.002\", \"file.003\"]', output='original.iso')."
+      verbose: "Combine multiple file parts back into a single file. Parts are concatenated in the order specified. Can auto-detect parts by pattern. Verifies completeness if part count is known. Example: join_files(input_dir='./chunks/', pattern='backup.*.part', output='backup.tar.gz'). Note: Parts must be in correct order for proper reconstruction. Warning: Resulting file may be large; ensure sufficient disk space."
+    parameters:
+      - name: parts
+        type: string
+        description: "JSON array of part file paths (in order)"
+        required: false
+      - name: input_dir
+        type: string
+        description: "Directory containing parts"
+        required: false
+      - name: pattern
+        type: string
+        description: "Pattern to match parts in input_dir"
+        required: false
+      - name: output
+        type: string
+        description: "Output file path"
+        required: true
+    tags: ["file", "join", "combine", "merge", "reconstruct"]
+    test_prompts:
+      single:
+        - "Join the split file parts back together"
+        - "Combine the chunks into the original file"
+        - "Merge the file parts into one file"
+        - "Reconstruct the ISO from the split pieces"
+      single_clear:
+        - "I need to join/combine split file parts back into the original file. Join the split file parts back together"
+        - "I need to join/combine split file parts back into the original file. Combine the chunks into the original file"
+        - "I need to join/combine split file parts back into the original file. Merge the file parts into one file"
+        - "I need to join/combine split file parts back into the original file. Reconstruct the ISO from the split pieces"
+
+  - name: watch_file
+    descriptions:
+      minimal: "Watch file"
+      short: "Watch a file for changes"
+      medium: "Monitor a file for changes and trigger actions when modifications are detected."
+      long: "Watch a file for changes such as modifications, deletions, or renames. Returns events when changes occur. Example: watch_file(path='config.json', events=['modify', 'delete'])."
+      verbose: "Monitor one or more files for filesystem changes. Events: 'modify' (content changed), 'create' (new file), 'delete' (file removed), 'rename' (file renamed), 'access' (file read). Can trigger callbacks or return events. Example: watch_file(path='/etc/config/*', events=['modify', 'delete'], recursive=false, debounce_ms=500, callback_url='http://localhost:8080/hook'). Note: Some systems have limits on number of watched files. Warning: Watching many files may impact system performance."
+    parameters:
+      - name: path
+        type: string
+        description: "File or directory path to watch"
+        required: true
+      - name: events
+        type: array
+        description: "Event types to watch for"
+        required: false
+      - name: recursive
+        type: boolean
+        description: "Watch subdirectories"
+        required: false
+        default: false
+      - name: debounce_ms
+        type: integer
+        description: "Debounce time in milliseconds"
+        required: false
+        default: 100
+      - name: callback_url
+        type: string
+        description: "URL to notify on changes"
+        required: false
+    tags: ["file", "watch", "monitor", "events", "filesystem"]
+    test_prompts:
+      single:
+        - "Watch this file for changes"
+        - "Monitor the config directory"
+        - "Notify me when the file is modified"
+        - "Set up a file watcher on the logs folder"
+      single_clear:
+        - "I need to monitor a file for changes and trigger actions when modifications are detected. Watch this file for changes"
+        - "I need to monitor a file for changes and trigger actions when modifications are detected. Monitor the config directory"
+        - "I need to monitor a file for changes and trigger actions when modifications are detected. Notify me when the file is modified"
+        - "I need to monitor a file for changes and trigger actions when modifications are detected. Set up a file watcher on the logs folder"
+
+  - name: get_file_checksum
+    descriptions:
+      minimal: "Get checksum"
+      short: "Calculate file checksum"
+      medium: "Calculate the checksum or hash of a file using MD5, SHA-256, or other algorithms."
+      long: "Calculate a cryptographic hash of a file for integrity verification. Supports MD5, SHA-1, SHA-256, SHA-512. Example: get_file_checksum(path='download.iso', algorithm='sha256')."
+      verbose: "Calculate the cryptographic hash/checksum of a file. Algorithms: 'md5' (fast, not secure), 'sha1' (legacy), 'sha256' (recommended), 'sha512' (strongest), 'crc32' (fast, non-crypto). Useful for verifying downloads, detecting changes, and deduplication. Example: get_file_checksum(path='ubuntu-22.04.iso', algorithm='sha256', compare='abc123...') returns {\"hash\": \"abc123...\", \"match\": true}. Note: Large files may take time to hash. Warning: MD5 and SHA-1 are cryptographically broken; use SHA-256+ for security."
+    parameters:
+      - name: path
+        type: string
+        description: "Path to the file"
+        required: true
+      - name: algorithm
+        type: string
+        description: "Hash algorithm"
+        required: false
+        default: "sha256"
+        enum: ["md5", "sha1", "sha256", "sha512", "crc32"]
+      - name: compare
+        type: string
+        description: "Expected hash to compare"
+        required: false
+    tags: ["file", "checksum", "hash", "verify", "integrity"]
+    test_prompts:
+      single:
+        - "Get the SHA-256 hash of this file"
+        - "Calculate the MD5 checksum"
+        - "Verify the file against this hash"
+        - "Check the file integrity"
+      single_clear:
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Get the SHA-256 hash of this file"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Calculate the MD5 checksum"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Verify the file against this hash"
+        - "I need to calculate a cryptographic hash/checksum of a file for integrity verification. Check the file integrity"
+
+  - name: find_duplicates
+    descriptions:
+      minimal: "Find duplicates"
+      short: "Find duplicate files"
+      medium: "Scan a directory to find duplicate files based on content hash or file size."
+      long: "Find duplicate files in a directory by comparing content hashes. Returns groups of duplicate files. Example: find_duplicates(path='/photos', method='hash', recursive=true)."
+      verbose: "Scan directories to identify duplicate files. Methods: 'hash' (exact content match via SHA-256), 'size' (same file size, faster but less accurate), 'name' (same filename). Returns groups of duplicates with paths and sizes. Example: find_duplicates(path='/backup', method='hash', recursive=true, min_size=1024, exclude=['*.tmp', '.git/*']) returns duplicate groups for files larger than 1KB. Note: Hash comparison is accurate but slower. Warning: Large directory scans may take significant time."
+    parameters:
+      - name: path
+        type: string
+        description: "Directory to scan"
+        required: true
+      - name: method
+        type: string
+        description: "Comparison method"
+        required: false
+        default: "hash"
+        enum: ["hash", "size", "name"]
+      - name: recursive
+        type: boolean
+        description: "Scan subdirectories"
+        required: false
+        default: true
+      - name: min_size
+        type: integer
+        description: "Minimum file size in bytes"
+        required: false
+        default: 1
+      - name: exclude
+        type: array
+        description: "Patterns to exclude"
+        required: false
+    tags: ["file", "duplicate", "find", "scan", "cleanup"]
+    test_prompts:
+      single:
+        - "Find duplicate files in my photos folder"
+        - "Scan for duplicates in the backup directory"
+        - "Identify duplicate files"
+        - "Find files with the same content"
+      single_clear:
+        - "I need to find duplicate files in a directory based on content or size. Find duplicate files in my photos folder"
+        - "I need to find duplicate files in a directory based on content or size. Scan for duplicates in the backup directory"
+        - "I need to find duplicate files in a directory based on content or size. Identify duplicate files"
+        - "I need to find duplicate files in a directory based on content or size. Find files with the same content"
+
+  - name: set_permissions
+    descriptions:
+      minimal: "Set permissions"
+      short: "Set file permissions"
+      medium: "Change the permissions (read, write, execute) on a file or directory."
+      long: "Set file or directory permissions using numeric mode or symbolic notation. Example: set_permissions(path='script.sh', mode='755') or set_permissions(path='data/', mode='u+rwx,g+rx')."
+      verbose: "Change file or directory permissions (Unix-like systems). Modes: numeric (e.g., '755' = rwxr-xr-x) or symbolic (e.g., 'u+x' = add execute for user). Can apply recursively to directories. Example: set_permissions(path='/var/www/html', mode='644', recursive=true, dir_mode='755') sets files to 644 and directories to 755. Note: Windows uses ACLs instead of Unix permissions. Warning: Incorrect permissions can create security vulnerabilities."
+    parameters:
+      - name: path
+        type: string
+        description: "File or directory path"
+        required: true
+      - name: mode
+        type: string
+        description: "Permission mode (numeric or symbolic)"
+        required: true
+      - name: recursive
+        type: boolean
+        description: "Apply recursively"
+        required: false
+        default: false
+      - name: dir_mode
+        type: string
+        description: "Separate mode for directories"
+        required: false
+    tags: ["file", "permissions", "chmod", "security", "access"]
+    test_prompts:
+      single:
+        - "Make the script executable"
+        - "Set file permissions to 644"
+        - "Change permissions on the directory"
+        - "chmod 755 the file"
+      single_clear:
+        - "I need to set file or directory permissions (read, write, execute). Make the script executable"
+        - "I need to set file or directory permissions (read, write, execute). Set file permissions to 644"
+        - "I need to set file or directory permissions (read, write, execute). Change permissions on the directory"
+        - "I need to set file or directory permissions (read, write, execute). chmod 755 the file"
+
+  - name: set_owner
+    descriptions:
+      minimal: "Set owner"
+      short: "Change file owner"
+      medium: "Change the owner and/or group of a file or directory."
+      long: "Change the owner and group of a file or directory. Requires appropriate privileges. Example: set_owner(path='data/', owner='www-data', group='www-data', recursive=true)."
+      verbose: "Change file or directory ownership. Can set user owner, group owner, or both. Recursive option for directories. Example: set_owner(path='/var/www', owner='nginx', group='webusers', recursive=true, follow_symlinks=false). Note: Requires root/administrator privileges on most systems. Warning: Changing ownership of system files can break functionality."
+    parameters:
+      - name: path
+        type: string
+        description: "File or directory path"
+        required: true
+      - name: owner
+        type: string
+        description: "New owner username"
+        required: false
+      - name: group
+        type: string
+        description: "New group name"
+        required: false
+      - name: recursive
+        type: boolean
+        description: "Apply recursively"
+        required: false
+        default: false
+      - name: follow_symlinks
+        type: boolean
+        description: "Follow symbolic links"
+        required: false
+        default: true
+    tags: ["file", "owner", "chown", "permissions", "security"]
+    test_prompts:
+      single:
+        - "Change the owner of this file to nginx"
+        - "Set the group to www-data"
+        - "Change ownership of the directory"
+        - "chown the files to the web user"
+      single_clear:
+        - "I need to change the owner and/or group of a file or directory. Change the owner of this file to nginx"
+        - "I need to change the owner and/or group of a file or directory. Set the group to www-data"
+        - "I need to change the owner and/or group of a file or directory. Change ownership of the directory"
+        - "I need to change the owner and/or group of a file or directory. chown the files to the web user"
+
+  - name: create_symlink
+    descriptions:
+      minimal: "Create symlink"
+      short: "Create a symbolic link"
+      medium: "Create a symbolic link (shortcut) that points to another file or directory."
+      long: "Create a symbolic link that references another file or directory. Example: create_symlink(target='/var/log/app/current.log', link='/var/log/app.log')."
+      verbose: "Create a symbolic (soft) link that points to a target file or directory. Symlinks are like shortcuts that reference the original. Options: overwrite existing link, create as relative path. Example: create_symlink(target='./versions/v2.0', link='./current', relative=true, force=true) creates/updates a relative symlink. Note: Broken symlinks occur if target is moved/deleted. Warning: Symlink loops can cause infinite recursion in some tools."
+    parameters:
+      - name: target
+        type: string
+        description: "Path to the target file/directory"
+        required: true
+      - name: link
+        type: string
+        description: "Path for the symbolic link"
+        required: true
+      - name: relative
+        type: boolean
+        description: "Create relative symlink"
+        required: false
+        default: false
+      - name: force
+        type: boolean
+        description: "Overwrite existing link"
+        required: false
+        default: false
+    tags: ["file", "symlink", "link", "shortcut", "reference"]
+    test_prompts:
+      single:
+        - "Create a symlink to the config file"
+        - "Link 'current' to the latest version"
+        - "Create a symbolic link"
+        - "Make a shortcut to this directory"
+      single_clear:
+        - "I need to create a symbolic link that points to another file or directory. Create a symlink to the config file"
+        - "I need to create a symbolic link that points to another file or directory. Link 'current' to the latest version"
+        - "I need to create a symbolic link that points to another file or directory. Create a symbolic link"
+        - "I need to create a symbolic link that points to another file or directory. Make a shortcut to this directory"
+
+  - name: get_disk_usage
+    descriptions:
+      minimal: "Get disk usage"
+      short: "Get disk usage for a path"
+      medium: "Calculate the total disk space used by a file or directory."
+      long: "Calculate disk usage for a file or directory tree. Returns total size, file count, and breakdown. Example: get_disk_usage(path='/home/user', depth=2)."
+      verbose: "Calculate disk space usage for files and directories. Returns: total size, file count, directory count, and optionally size breakdown by subdirectory or file type. Example: get_disk_usage(path='/var/log', depth=1, breakdown_by='directory', human_readable=true, exclude=['*.tmp']) returns usage summary with per-subdirectory breakdown. Note: Hardlinked files may be counted multiple times. Warning: Scanning large directories may take time."
+    parameters:
+      - name: path
+        type: string
+        description: "File or directory path"
+        required: true
+      - name: depth
+        type: integer
+        description: "Depth for breakdown (0=total only)"
+        required: false
+        default: 0
+      - name: breakdown_by
+        type: string
+        description: "How to break down usage"
+        required: false
+        enum: ["none", "directory", "extension", "size_range"]
+      - name: human_readable
+        type: boolean
+        description: "Format sizes for readability"
+        required: false
+        default: true
+      - name: exclude
+        type: array
+        description: "Patterns to exclude"
+        required: false
+    tags: ["file", "disk", "usage", "size", "space", "du"]
+    test_prompts:
+      single:
+        - "How much space is the folder using?"
+        - "Get disk usage for /var/log"
+        - "Calculate the size of this directory"
+        - "Show disk usage breakdown by folder"
+      single_clear:
+        - "I need to get disk space usage statistics for a file or directory. How much space is the folder using?"
+        - "I need to get disk space usage statistics for a file or directory. Get disk usage for /var/log"
+        - "I need to get disk space usage statistics for a file or directory. Calculate the size of this directory"
+        - "I need to get disk space usage statistics for a file or directory. Show disk usage breakdown by folder"
+
+  - name: search_file_content
+    descriptions:
+      minimal: "Search in files"
+      short: "Search for text within files"
+      medium: "Search for a pattern or text string within files, similar to grep."
+      long: "Search for text patterns within files. Supports regex, case sensitivity options, and context lines. Example: search_file_content(path='/var/log', pattern='error', recursive=true)."
+      verbose: "Search for text or regex patterns within files (like grep). Returns matching lines with file paths and line numbers. Options: regex support, case sensitivity, context lines before/after, file type filtering. Example: search_file_content(path='/project/src', pattern='TODO:|FIXME:', regex=true, include=['*.py', '*.js'], context=2, max_matches=100) finds all TODO/FIXME comments with context. Note: Binary files are typically skipped. Warning: Searching large directories with broad patterns may be slow."
+    parameters:
+      - name: path
+        type: string
+        description: "Directory or file to search"
+        required: true
+      - name: pattern
+        type: string
+        description: "Search pattern"
+        required: true
+      - name: regex
+        type: boolean
+        description: "Treat pattern as regex"
+        required: false
+        default: false
+      - name: case_sensitive
+        type: boolean
+        description: "Case-sensitive matching"
+        required: false
+        default: true
+      - name: recursive
+        type: boolean
+        description: "Search subdirectories"
+        required: false
+        default: true
+      - name: include
+        type: array
+        description: "File patterns to include"
+        required: false
+      - name: context
+        type: integer
+        description: "Context lines before/after match"
+        required: false
+        default: 0
+      - name: max_matches
+        type: integer
+        description: "Maximum matches to return"
+        required: false
+    tags: ["file", "search", "grep", "find", "content", "text"]
+    test_prompts:
+      single:
+        - "Search for 'error' in the log files"
+        - "Find all files containing 'TODO'"
+        - "Grep for the pattern in the source code"
+        - "Search for this text in the directory"
+      single_clear:
+        - "I need to search for text or patterns within files, similar to grep. Search for 'error' in the log files"
+        - "I need to search for text or patterns within files, similar to grep. Find all files containing 'TODO'"
+        - "I need to search for text or patterns within files, similar to grep. Grep for the pattern in the source code"
+        - "I need to search for text or patterns within files, similar to grep. Search for this text in the directory"
+
+  - name: tail_file
+    descriptions:
+      minimal: "Tail file"
+      short: "Show the last lines of a file"
+      medium: "Display the last N lines of a file, optionally following for new content."
+      long: "Read the last lines of a file, like the Unix tail command. Can follow the file for real-time updates. Example: tail_file(path='/var/log/app.log', lines=100, follow=true)."
+      verbose: "Display the last portion of a file. Modes: 'lines' (last N lines), 'bytes' (last N bytes). Follow mode watches for new content appended to the file (useful for logs). Example: tail_file(path='/var/log/syslog', lines=50, follow=true, filter='error|warning', timeout=60) shows last 50 lines then follows, filtering for errors/warnings. Note: Follow mode continues until timeout or manual stop. Warning: Very long lines may consume significant memory."
+    parameters:
+      - name: path
+        type: string
+        description: "Path to the file"
+        required: true
+      - name: lines
+        type: integer
+        description: "Number of lines to show"
+        required: false
+        default: 10
+      - name: bytes
+        type: integer
+        description: "Number of bytes (alternative to lines)"
+        required: false
+      - name: follow
+        type: boolean
+        description: "Follow file for new content"
+        required: false
+        default: false
+      - name: filter
+        type: string
+        description: "Regex filter for lines"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Follow timeout in seconds"
+        required: false
+    tags: ["file", "tail", "log", "read", "follow", "stream"]
+    test_prompts:
+      single:
+        - "Show the last 100 lines of the log"
+        - "Tail the log file"
+        - "Follow the application log"
+        - "Watch the log file for new entries"
+      single_clear:
+        - "I need to display the last lines of a file, optionally following for new content. Show the last 100 lines of the log"
+        - "I need to display the last lines of a file, optionally following for new content. Tail the log file"
+        - "I need to display the last lines of a file, optionally following for new content. Follow the application log"
+        - "I need to display the last lines of a file, optionally following for new content. Watch the log file for new entries"

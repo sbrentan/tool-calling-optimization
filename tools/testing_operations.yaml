@@ -1,0 +1,1239 @@
+category: testing_operations
+description: Software testing and quality assurance operations
+tools:
+  - name: run_tests
+    descriptions:
+      minimal: "Run tests"
+      short: "Run test suites"
+      medium: "Execute automated test suites and return results."
+      long: "Run automated tests. Execute unit, integration, or E2E tests. Example: run_tests(suite='unit', path='tests/', pattern='test_*.py')."
+      verbose: "Execute automated test suites. Types: 'unit', 'integration', 'e2e', 'regression', 'smoke'. Options: test path, pattern matching, parallel execution, coverage. Example: run_tests(suite='unit', path='tests/unit/', pattern='test_*.py', parallel=4, coverage=true, fail_fast=true). Output: passed/failed counts, duration, failures, coverage report. Note: Run in isolated environment. Warning: E2E tests may require external services."
+    parameters:
+      - name: suite
+        type: string
+        description: "Test suite type"
+        required: false
+        default: "all"
+        enum: ["unit", "integration", "e2e", "regression", "smoke", "all"]
+      - name: path
+        type: string
+        description: "Test directory or file path"
+        required: false
+      - name: pattern
+        type: string
+        description: "Test file pattern"
+        required: false
+      - name: parallel
+        type: integer
+        description: "Parallel test runners"
+        required: false
+        default: 1
+      - name: coverage
+        type: boolean
+        description: "Collect code coverage"
+        required: false
+        default: false
+      - name: fail_fast
+        type: boolean
+        description: "Stop on first failure"
+        required: false
+        default: false
+    tags: ["testing", "test", "run", "suite", "automated"]
+    test_prompts:
+      single:
+        - "Run the unit tests"
+        - "Execute the test suite"
+        - "Run tests with coverage"
+        - "Run integration tests"
+      single_clear:
+        - "I need to run tests. Run the unit tests"
+        - "I need to run tests. Execute the test suite"
+        - "I need to run tests. Run tests with coverage"
+        - "I need to run tests. Run integration tests"
+
+  - name: generate_test
+    descriptions:
+      minimal: "Generate test"
+      short: "Generate test cases"
+      medium: "Auto-generate test cases for a function or module."
+      long: "Generate test cases automatically. Create unit tests based on function signatures. Example: generate_test(file='src/utils.py', function='calculate_total', framework='pytest')."
+      verbose: "Auto-generate test cases using AI/static analysis. Features: infer inputs from types, generate edge cases, mock dependencies, setup fixtures. Frameworks: pytest, jest, junit, mocha, rspec. Example: generate_test(file='src/services/payment.py', function='process_payment', framework='pytest', include_mocks=true, edge_cases=true, docstring=true). Note: Generated tests should be reviewed and customized. Warning: Complex logic may need manual test design."
+    parameters:
+      - name: file
+        type: string
+        description: "Source file path"
+        required: true
+      - name: function
+        type: string
+        description: "Function/method name"
+        required: false
+      - name: framework
+        type: string
+        description: "Test framework"
+        required: false
+        default: "pytest"
+        enum: ["pytest", "jest", "junit", "mocha", "rspec", "unittest"]
+      - name: include_mocks
+        type: boolean
+        description: "Generate mock objects"
+        required: false
+        default: true
+      - name: edge_cases
+        type: boolean
+        description: "Include edge cases"
+        required: false
+        default: true
+    tags: ["testing", "generate", "unit", "cases", "automated"]
+    test_prompts:
+      single:
+        - "Generate tests for this function"
+        - "Create unit tests"
+        - "Auto-generate test cases"
+        - "Write tests for the module"
+      single_clear:
+        - "I need to generate test cases. Generate tests for this function"
+        - "I need to generate test cases. Create unit tests"
+        - "I need to generate test cases. Auto-generate test cases"
+        - "I need to generate test cases. Write tests for the module"
+
+  - name: run_load_test
+    descriptions:
+      minimal: "Load test"
+      short: "Run a load test"
+      medium: "Execute performance and load testing against an endpoint."
+      long: "Run load/performance tests. Simulate concurrent users and measure response times. Example: run_load_test(url='https://api.example.com/users', users=100, duration=60)."
+      verbose: "Performance and load testing execution. Metrics: response time, throughput, error rate, percentiles. Patterns: constant load, ramp-up, spike, stress. Example: run_load_test(url='https://api.example.com/users', method='GET', users=100, duration=300, ramp_up=60, headers='{\"Authorization\": \"Bearer ...\"}', assertions='{\"p95_response_time\": 500, \"error_rate\": 0.01}'). Note: Coordinate with ops before load testing production. Warning: May affect system performance."
+    parameters:
+      - name: url
+        type: string
+        description: "Target URL"
+        required: true
+      - name: method
+        type: string
+        description: "HTTP method"
+        required: false
+        default: "GET"
+      - name: users
+        type: integer
+        description: "Concurrent virtual users"
+        required: false
+        default: 10
+      - name: duration
+        type: integer
+        description: "Test duration (seconds)"
+        required: false
+        default: 60
+      - name: ramp_up
+        type: integer
+        description: "Ramp-up time (seconds)"
+        required: false
+        default: 10
+      - name: headers
+        type: string
+        description: "JSON request headers"
+        required: false
+      - name: body
+        type: string
+        description: "Request body"
+        required: false
+    tags: ["testing", "load", "performance", "stress", "benchmark"]
+    test_prompts:
+      single:
+        - "Run a load test"
+        - "Performance test the API"
+        - "Stress test with 100 users"
+        - "Benchmark the endpoint"
+      single_clear:
+        - "I need to run a load test. Run a load test"
+        - "I need to run a load test. Performance test the API"
+        - "I need to run a load test. Stress test with 100 users"
+        - "I need to run a load test. Benchmark the endpoint"
+
+  - name: create_mock
+    descriptions:
+      minimal: "Create mock"
+      short: "Create a mock service"
+      medium: "Create a mock API or service for testing."
+      long: "Create mock APIs for testing. Define endpoints and responses. Example: create_mock(name='payment-api', endpoints='[{\"path\": \"/charge\", \"response\": {...}}]')."
+      verbose: "Create mock services for integration testing. Features: define endpoints, static/dynamic responses, response delays, conditional responses. Example: create_mock(name='payment-api', base_url='/mock/payment', endpoints='[{\"path\": \"/charge\", \"method\": \"POST\", \"response\": {\"status\": \"success\", \"id\": \"{{uuid}}\"}, \"delay\": 100}]', persist=true). Note: Mocks should match real API contracts. Warning: Remove mocks before production deployment."
+    parameters:
+      - name: name
+        type: string
+        description: "Mock service name"
+        required: true
+      - name: base_url
+        type: string
+        description: "Base URL path"
+        required: false
+        default: "/mock"
+      - name: endpoints
+        type: string
+        description: "JSON array of endpoint definitions"
+        required: true
+      - name: persist
+        type: boolean
+        description: "Persist mock configuration"
+        required: false
+        default: false
+      - name: port
+        type: integer
+        description: "Server port"
+        required: false
+        default: 8080
+    tags: ["testing", "mock", "stub", "api", "service"]
+    test_prompts:
+      single:
+        - "Create a mock API"
+        - "Mock the payment service"
+        - "Set up stub endpoints"
+        - "Create test doubles"
+      single_clear:
+        - "I need to create a mock service. Create a mock API"
+        - "I need to create a mock service. Mock the payment service"
+        - "I need to create a mock service. Set up stub endpoints"
+        - "I need to create a mock service. Create test doubles"
+
+  - name: get_coverage
+    descriptions:
+      minimal: "Get coverage"
+      short: "Get code coverage report"
+      medium: "Retrieve code coverage metrics and reports."
+      long: "Get code coverage reports. View line, branch, and function coverage. Example: get_coverage(path='src/', format='html')."
+      verbose: "Code coverage analysis and reporting. Metrics: line coverage, branch coverage, function coverage, statement coverage. Reports: summary, per-file, uncovered lines. Example: get_coverage(path='src/', format='json', thresholds='{\"line\": 80, \"branch\": 70}', exclude='[\"**/tests/**\", \"**/__mocks__/**\"]'). Note: Coverage doesn't guarantee test quality. Warning: 100% coverage doesn't mean bug-free code."
+    parameters:
+      - name: path
+        type: string
+        description: "Source code path"
+        required: false
+        default: "src/"
+      - name: format
+        type: string
+        description: "Report format"
+        required: false
+        default: "summary"
+        enum: ["summary", "html", "json", "xml", "lcov"]
+      - name: thresholds
+        type: string
+        description: "JSON coverage thresholds"
+        required: false
+      - name: exclude
+        type: string
+        description: "JSON array of exclusion patterns"
+        required: false
+    tags: ["testing", "coverage", "report", "metrics", "quality"]
+    test_prompts:
+      single:
+        - "Get code coverage"
+        - "Show coverage report"
+        - "Check test coverage"
+        - "Generate coverage report"
+      single_clear:
+        - "I need to get code coverage. Get code coverage"
+        - "I need to get code coverage. Show coverage report"
+        - "I need to get code coverage. Check test coverage"
+        - "I need to get code coverage. Generate coverage report"
+
+  - name: run_security_scan
+    descriptions:
+      minimal: "Security scan"
+      short: "Run security scan"
+      medium: "Scan code or application for security vulnerabilities."
+      long: "Run security scans. Detect vulnerabilities in code, dependencies, or runtime. Example: run_security_scan(type='sast', path='src/')."
+      verbose: "Application security scanning. Types: 'sast' (static code), 'dast' (dynamic), 'dependency' (CVE scan), 'container' (image scan), 'secrets' (credential detection). Example: run_security_scan(type='dependency', path='.', severity='high', fail_on_vuln=true, ignore='[\"CVE-2021-12345\"]'). Note: Regular scanning should be part of CI/CD. Warning: DAST scanning should only target test environments."
+    parameters:
+      - name: type
+        type: string
+        description: "Scan type"
+        required: true
+        enum: ["sast", "dast", "dependency", "container", "secrets"]
+      - name: path
+        type: string
+        description: "Path to scan"
+        required: false
+        default: "."
+      - name: severity
+        type: string
+        description: "Minimum severity to report"
+        required: false
+        default: "medium"
+        enum: ["low", "medium", "high", "critical"]
+      - name: fail_on_vuln
+        type: boolean
+        description: "Fail if vulnerabilities found"
+        required: false
+        default: false
+      - name: ignore
+        type: string
+        description: "JSON array of CVEs to ignore"
+        required: false
+    tags: ["testing", "security", "scan", "vulnerability", "sast"]
+    test_prompts:
+      single:
+        - "Scan for vulnerabilities"
+        - "Run security scan"
+        - "Check for CVEs"
+        - "Scan dependencies for security issues"
+      single_clear:
+        - "I need to run a security scan. Scan for vulnerabilities"
+        - "I need to run a security scan. Run security scan"
+        - "I need to run a security scan. Check for CVEs"
+        - "I need to run a security scan. Scan dependencies for security issues"
+
+  - name: run_mutation_test
+    descriptions:
+      minimal: "Mutation test"
+      short: "Run mutation testing"
+      medium: "Run mutation testing to evaluate test suite quality."
+      long: "Run mutation testing. Introduce code mutations to test if tests catch them. Example: run_mutation_test(path='src/', test_path='tests/')."
+      verbose: "Mutation testing for test suite quality assessment. Process: inject code mutations (mutants), run tests, calculate mutation score. Metrics: mutation score, survived mutants, killed mutants. Example: run_mutation_test(path='src/calculator.py', test_path='tests/', mutators='[\"arithmetic\", \"boolean\", \"boundary\"]', timeout=30). Note: Mutation testing can be time-intensive. Warning: High mutation scores don't guarantee comprehensive testing."
+    parameters:
+      - name: path
+        type: string
+        description: "Source code path"
+        required: true
+      - name: test_path
+        type: string
+        description: "Test code path"
+        required: true
+      - name: mutators
+        type: string
+        description: "JSON array of mutator types"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Per-mutant timeout (seconds)"
+        required: false
+        default: 10
+      - name: sample_size
+        type: integer
+        description: "Number of mutants to test"
+        required: false
+    tags: ["testing", "mutation", "quality", "suite", "mutants"]
+    test_prompts:
+      single:
+        - "Run mutation testing"
+        - "Evaluate test quality"
+        - "Find weak tests"
+        - "Calculate mutation score"
+      single_clear:
+        - "I need to run mutation testing. Run mutation testing"
+        - "I need to run mutation testing. Evaluate test quality"
+        - "I need to run mutation testing. Find weak tests"
+        - "I need to run mutation testing. Calculate mutation score"
+
+  - name: run_accessibility_test
+    descriptions:
+      minimal: "A11y test"
+      short: "Run accessibility testing"
+      medium: "Test web pages for accessibility compliance."
+      long: "Run accessibility tests. Check WCAG compliance and accessibility issues. Example: run_accessibility_test(url='https://example.com', standard='WCAG21_AA')."
+      verbose: "Web accessibility testing. Standards: WCAG 2.0 A/AA/AAA, WCAG 2.1, Section 508. Checks: color contrast, alt text, keyboard navigation, ARIA labels, heading structure. Example: run_accessibility_test(url='https://example.com', standard='WCAG21_AA', include='[\"contrast\", \"images\", \"forms\", \"keyboard\"]', viewport='mobile'). Note: Automated tests catch ~30-40% of issues. Warning: Manual testing is also required for full compliance."
+    parameters:
+      - name: url
+        type: string
+        description: "Page URL to test"
+        required: true
+      - name: standard
+        type: string
+        description: "Accessibility standard"
+        required: false
+        default: "WCAG21_AA"
+        enum: ["WCAG20_A", "WCAG20_AA", "WCAG20_AAA", "WCAG21_A", "WCAG21_AA", "WCAG21_AAA"]
+      - name: include
+        type: string
+        description: "JSON array of check categories"
+        required: false
+      - name: viewport
+        type: string
+        description: "Viewport size"
+        required: false
+        default: "desktop"
+        enum: ["desktop", "tablet", "mobile"]
+    tags: ["testing", "accessibility", "a11y", "wcag", "compliance"]
+    test_prompts:
+      single:
+        - "Run accessibility tests"
+        - "Check WCAG compliance"
+        - "Test for accessibility issues"
+        - "Audit page accessibility"
+      single_clear:
+        - "I need to run accessibility tests. Run accessibility tests"
+        - "I need to run accessibility tests. Check WCAG compliance"
+        - "I need to run accessibility tests. Test for accessibility issues"
+        - "I need to run accessibility tests. Audit page accessibility"
+
+  - name: run_visual_regression
+    descriptions:
+      minimal: "Visual test"
+      short: "Run visual regression test"
+      medium: "Compare screenshots to detect visual regressions."
+      long: "Visual regression testing. Compare screenshots against baselines. Example: run_visual_regression(url='https://example.com', baseline='baseline-001')."
+      verbose: "Visual regression testing with screenshot comparison. Process: capture screenshots, compare to baselines, detect pixel differences. Options: viewport sizes, page elements, threshold. Example: run_visual_regression(url='https://example.com/dashboard', baseline='dashboard-v2', viewports='[{\"width\": 1920, \"height\": 1080}, {\"width\": 375, \"height\": 667}]', threshold=0.01, mask='[\"#dynamic-content\"]'). Note: Dynamic content should be masked or mocked. Warning: Baseline updates require review."
+    parameters:
+      - name: url
+        type: string
+        description: "Page URL to test"
+        required: true
+      - name: baseline
+        type: string
+        description: "Baseline identifier"
+        required: true
+      - name: viewports
+        type: string
+        description: "JSON array of viewport sizes"
+        required: false
+      - name: threshold
+        type: number
+        description: "Difference threshold (0-1)"
+        required: false
+        default: 0.01
+      - name: mask
+        type: string
+        description: "JSON array of selectors to mask"
+        required: false
+      - name: update_baseline
+        type: boolean
+        description: "Update baseline if different"
+        required: false
+        default: false
+    tags: ["testing", "visual", "regression", "screenshot", "ui"]
+    test_prompts:
+      single:
+        - "Run visual regression test"
+        - "Compare screenshots"
+        - "Check for visual changes"
+        - "Detect UI regressions"
+      single_clear:
+        - "I need to run visual regression testing. Run visual regression test"
+        - "I need to run visual regression testing. Compare screenshots"
+        - "I need to run visual regression testing. Check for visual changes"
+        - "I need to run visual regression testing. Detect UI regressions"
+
+  - name: manage_test_data
+    descriptions:
+      minimal: "Test data"
+      short: "Manage test data"
+      medium: "Generate, seed, or reset test data."
+      long: "Manage test data. Generate fixtures, seed databases, or reset state. Example: manage_test_data(action='seed', database='test_db', fixtures='users,orders')."
+      verbose: "Test data management operations. Actions: 'generate' (create fake data), 'seed' (populate database), 'reset' (clear test data), 'snapshot' (capture state), 'restore' (restore snapshot). Example: manage_test_data(action='generate', schema='user', count=100, output='fixtures/users.json', locale='en_US'). Note: Test data should be realistic but not contain real PII. Warning: Reset operations are destructive."
+    parameters:
+      - name: action
+        type: string
+        description: "Test data action"
+        required: true
+        enum: ["generate", "seed", "reset", "snapshot", "restore"]
+      - name: database
+        type: string
+        description: "Database name (for seed/reset)"
+        required: false
+      - name: fixtures
+        type: string
+        description: "Fixture names (comma-separated)"
+        required: false
+      - name: schema
+        type: string
+        description: "Data schema (for generate)"
+        required: false
+      - name: count
+        type: integer
+        description: "Number of records to generate"
+        required: false
+        default: 10
+      - name: output
+        type: string
+        description: "Output file path"
+        required: false
+    tags: ["testing", "data", "fixtures", "seed", "generate"]
+    test_prompts:
+      single:
+        - "Generate test data"
+        - "Seed the test database"
+        - "Reset test data"
+        - "Create test fixtures"
+      single_clear:
+        - "I need to manage test data. Generate test data"
+        - "I need to manage test data. Seed the test database"
+        - "I need to manage test data. Reset test data"
+        - "I need to manage test data. Create test fixtures"
+  - name: run_mutation_testing
+    descriptions:
+      minimal: "Mutation test"
+      short: "Run mutation testing"
+      medium: "Run mutation testing to evaluate test suite quality."
+      long: "Perform mutation testing to measure test effectiveness. Injects bugs to test detection. Example: run_mutation_testing(source='src/', tests='tests/', mutators='[\"arithmetic\", \"conditional\"]')."
+      verbose: "Mutation testing for test quality assessment. Mutators: arithmetic, conditional, boundary, return_values, null_injection. Example: run_mutation_testing(source='src/utils/', tests='tests/unit/', mutators='[\"arithmetic\", \"conditional\", \"boundary\"]', timeout=10, exclude='[\"*.config.js\"]', parallel=4). Returns: mutation score, surviving mutants, killed mutants. Note: Mutation testing is slow; run on critical code. Warning: High timeout values can make tests very slow."
+    parameters:
+      - name: source
+        type: string
+        description: "Source code directory"
+        required: true
+      - name: tests
+        type: string
+        description: "Test directory"
+        required: true
+      - name: mutators
+        type: string
+        description: "JSON array of mutator types"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Timeout per mutation (seconds)"
+        required: false
+        default: 5
+      - name: exclude
+        type: string
+        description: "JSON patterns to exclude"
+        required: false
+      - name: parallel
+        type: integer
+        description: "Parallel mutation jobs"
+        required: false
+        default: 2
+    tags: ["testing", "mutation", "quality", "coverage", "effectiveness"]
+    test_prompts:
+      single:
+        - "Run mutation tests"
+        - "Test the test suite"
+        - "Check test effectiveness"
+        - "Measure test quality"
+      single_clear:
+        - "I need to run mutation testing. Run mutation tests"
+        - "I need to run mutation testing. Test the test suite"
+        - "I need to run mutation testing. Check test effectiveness"
+        - "I need to run mutation testing. Measure test quality"
+
+  - name: run_fuzz_testing
+    descriptions:
+      minimal: "Fuzz test"
+      short: "Run fuzz testing"
+      medium: "Perform fuzz testing to find edge cases and vulnerabilities."
+      long: "Run fuzz testing with random inputs to find bugs. Tests edge cases automatically. Example: run_fuzz_testing(target='parse_input', corpus='fuzz_inputs/', iterations=10000)."
+      verbose: "Fuzz testing for security and robustness. Types: coverage-guided, generation-based, mutation-based. Example: run_fuzz_testing(target='api/v1/parse', corpus='fuzz_corpus/', iterations=50000, timeout=300, seeds='[\"valid_input\", \"edge_case\"]', crash_dir='crashes/', sanitizers='[\"address\", \"undefined\"]'). Returns: crashes found, coverage increase, interesting inputs. Note: Fuzz testing can find subtle bugs. Warning: May generate harmful inputs; use in isolated environment."
+    parameters:
+      - name: target
+        type: string
+        description: "Target function or endpoint"
+        required: true
+      - name: corpus
+        type: string
+        description: "Input corpus directory"
+        required: false
+      - name: iterations
+        type: integer
+        description: "Number of iterations"
+        required: false
+        default: 10000
+      - name: timeout
+        type: integer
+        description: "Total timeout (seconds)"
+        required: false
+        default: 60
+      - name: seeds
+        type: string
+        description: "JSON array of seed inputs"
+        required: false
+      - name: crash_dir
+        type: string
+        description: "Directory for crash inputs"
+        required: false
+    tags: ["testing", "fuzz", "security", "edge_cases", "robustness"]
+    test_prompts:
+      single:
+        - "Fuzz test the parser"
+        - "Run fuzzing on API"
+        - "Find edge case bugs"
+        - "Fuzz test for crashes"
+      single_clear:
+        - "I need to run fuzz testing. Fuzz test the parser"
+        - "I need to run fuzz testing. Run fuzzing on API"
+        - "I need to run fuzz testing. Find edge case bugs"
+        - "I need to run fuzz testing. Fuzz test for crashes"
+
+  - name: run_contract_testing
+    descriptions:
+      minimal: "Contract test"
+      short: "Run contract testing"
+      medium: "Verify API contracts between services using consumer-driven testing."
+      long: "Run contract tests to verify API compatibility. Consumer-driven contract testing. Example: run_contract_testing(provider='user-service', consumer='order-service', pact_file='pacts/user-order.json')."
+      verbose: "Contract testing for microservices. Frameworks: Pact, Spring Cloud Contract. Actions: generate (create from consumer), verify (test provider), publish (to broker). Example: run_contract_testing(action='verify', provider='user-service', broker='https://pact-broker.example.com', provider_version='1.2.3', publish_results=true). Returns: verification results, failed interactions. Note: Contract tests ensure API compatibility. Warning: Breaking contracts may affect dependent services."
+    parameters:
+      - name: action
+        type: string
+        description: "Contract action"
+        required: true
+        enum: ["generate", "verify", "publish"]
+      - name: provider
+        type: string
+        description: "Provider service name"
+        required: false
+      - name: consumer
+        type: string
+        description: "Consumer service name"
+        required: false
+      - name: pact_file
+        type: string
+        description: "Pact file path"
+        required: false
+      - name: broker
+        type: string
+        description: "Pact broker URL"
+        required: false
+      - name: publish_results
+        type: boolean
+        description: "Publish verification results"
+        required: false
+        default: false
+    tags: ["testing", "contract", "api", "microservices", "pact"]
+    test_prompts:
+      single:
+        - "Verify API contract"
+        - "Run contract tests"
+        - "Check service compatibility"
+        - "Publish contract to broker"
+      single_clear:
+        - "I need to run contract testing. Verify API contract"
+        - "I need to run contract testing. Run contract tests"
+        - "I need to run contract testing. Check service compatibility"
+        - "I need to run contract testing. Publish contract to broker"
+
+  - name: run_accessibility_test
+    descriptions:
+      minimal: "A11y test"
+      short: "Run accessibility testing"
+      medium: "Test web pages for accessibility compliance (WCAG)."
+      long: "Run accessibility tests against WCAG guidelines. Check for a11y violations. Example: run_accessibility_test(url='https://example.com', standard='WCAG2AA')."
+      verbose: "Automated accessibility testing. Standards: WCAG2A, WCAG2AA, WCAG2AAA, Section508. Tools: axe-core, Pa11y, Lighthouse. Example: run_accessibility_test(url='https://example.com/checkout', standard='WCAG2AA', include='[\"keyboard\", \"color-contrast\", \"aria\"]', viewport='{\"width\": 1280, \"height\": 720}'). Returns: violations, passes, incomplete checks. Note: Automated tests catch ~30-40% of issues; manual testing needed. Warning: Some violations may be false positives."
+    parameters:
+      - name: url
+        type: string
+        description: "URL to test"
+        required: true
+      - name: standard
+        type: string
+        description: "Accessibility standard"
+        required: false
+        default: "WCAG2AA"
+        enum: ["WCAG2A", "WCAG2AA", "WCAG2AAA", "Section508"]
+      - name: include
+        type: string
+        description: "JSON array of rule categories"
+        required: false
+      - name: exclude
+        type: string
+        description: "JSON array of rules to skip"
+        required: false
+      - name: viewport
+        type: string
+        description: "JSON viewport configuration"
+        required: false
+    tags: ["testing", "accessibility", "a11y", "wcag", "compliance"]
+    test_prompts:
+      single:
+        - "Test page accessibility"
+        - "Check WCAG compliance"
+        - "Run a11y audit"
+        - "Find accessibility issues"
+      single_clear:
+        - "I need to run accessibility testing. Test page accessibility"
+        - "I need to run accessibility testing. Check WCAG compliance"
+        - "I need to run accessibility testing. Run a11y audit"
+        - "I need to run accessibility testing. Find accessibility issues"
+
+  - name: run_chaos_testing
+    descriptions:
+      minimal: "Chaos test"
+      short: "Run chaos testing"
+      medium: "Inject failures to test system resilience and recovery."
+      long: "Run chaos engineering experiments. Inject failures to test resilience. Example: run_chaos_testing(target='api-server', failure_type='latency', duration='5m')."
+      verbose: "Chaos engineering for resilience testing. Failure types: latency, cpu_stress, memory_pressure, network_partition, pod_kill. Example: run_chaos_testing(target='payment-service', failure_type='latency', parameters='{\"latency_ms\": 500, \"percentage\": 50}', duration='10m', steady_state='{\"error_rate\": \"< 1%\", \"latency_p99\": \"< 1000ms\"}', rollback_on_failure=true). Note: Run chaos tests in staging first. Warning: Can cause real outages; have rollback ready."
+    parameters:
+      - name: target
+        type: string
+        description: "Target service or component"
+        required: true
+      - name: failure_type
+        type: string
+        description: "Type of failure to inject"
+        required: true
+        enum: ["latency", "cpu_stress", "memory_pressure", "network_partition", "pod_kill", "disk_fill"]
+      - name: parameters
+        type: string
+        description: "JSON failure parameters"
+        required: false
+      - name: duration
+        type: string
+        description: "Experiment duration"
+        required: true
+      - name: steady_state
+        type: string
+        description: "JSON steady state hypotheses"
+        required: false
+      - name: rollback_on_failure
+        type: boolean
+        description: "Auto-rollback if hypothesis fails"
+        required: false
+        default: true
+    tags: ["testing", "chaos", "resilience", "reliability", "failure"]
+    test_prompts:
+      single:
+        - "Run chaos experiment"
+        - "Test service resilience"
+        - "Inject latency failure"
+        - "Kill pods randomly"
+      single_clear:
+        - "I need to run chaos testing. Run chaos experiment"
+        - "I need to run chaos testing. Test service resilience"
+        - "I need to run chaos testing. Inject latency failure"
+        - "I need to run chaos testing. Kill pods randomly"
+
+  - name: generate_test_report
+    descriptions:
+      minimal: "Test report"
+      short: "Generate test report"
+      medium: "Generate comprehensive test execution reports."
+      long: "Create test reports with results, coverage, and trends. Multiple formats available. Example: generate_test_report(results='test-results/', format='html', output='report.html')."
+      verbose: "Comprehensive test reporting. Includes: test results, coverage, trends, flaky tests, slowest tests. Formats: HTML, PDF, JUnit XML, JSON. Example: generate_test_report(results='test-results/', coverage='coverage/', format='html', include_trends=true, history_runs=10, output='reports/test-report.html'). Returns: report path, summary stats. Note: Include coverage data for complete reports. Warning: Large test suites may generate large reports."
+    parameters:
+      - name: results
+        type: string
+        description: "Test results directory"
+        required: true
+      - name: coverage
+        type: string
+        description: "Coverage data directory"
+        required: false
+      - name: format
+        type: string
+        description: "Report format"
+        required: false
+        default: "html"
+        enum: ["html", "pdf", "junit", "json"]
+      - name: include_trends
+        type: boolean
+        description: "Include historical trends"
+        required: false
+        default: false
+      - name: history_runs
+        type: integer
+        description: "Number of historical runs"
+        required: false
+        default: 10
+      - name: output
+        type: string
+        description: "Output file path"
+        required: true
+    tags: ["testing", "report", "results", "coverage", "documentation"]
+    test_prompts:
+      single:
+        - "Generate test report"
+        - "Create HTML test summary"
+        - "Export test results"
+        - "Build coverage report"
+      single_clear:
+        - "I need to generate a test report. Generate test report"
+        - "I need to generate a test report. Create HTML test summary"
+        - "I need to generate a test report. Export test results"
+        - "I need to generate a test report. Build coverage report"
+
+  - name: manage_test_environment
+    descriptions:
+      minimal: "Manage env"
+      short: "Manage test environment"
+      medium: "Create, configure, or tear down test environments."
+      long: "Manage test environments. Spin up, configure, or destroy test infrastructure. Example: manage_test_environment(action='create', template='integration-env', ttl='2h')."
+      verbose: "Test environment lifecycle management. Actions: create, configure, status, extend, destroy. Templates: unit (minimal), integration (with deps), e2e (full stack). Example: manage_test_environment(action='create', template='integration', config='{\"database\": \"postgres\", \"cache\": \"redis\"}', ttl='4h', notify_before_destroy=true). Returns: environment URL, credentials, expiration. Note: Environments consume resources. Warning: TTL ensures cleanup; extend if needed."
+    parameters:
+      - name: action
+        type: string
+        description: "Environment action"
+        required: true
+        enum: ["create", "configure", "status", "extend", "destroy"]
+      - name: environment_id
+        type: string
+        description: "Existing environment ID"
+        required: false
+      - name: template
+        type: string
+        description: "Environment template"
+        required: false
+        enum: ["unit", "integration", "e2e", "custom"]
+      - name: config
+        type: string
+        description: "JSON configuration"
+        required: false
+      - name: ttl
+        type: string
+        description: "Time to live"
+        required: false
+        default: "1h"
+    tags: ["testing", "environment", "infrastructure", "ephemeral", "setup"]
+    test_prompts:
+      single:
+        - "Create test environment"
+        - "Spin up integration env"
+        - "Destroy test environment"
+        - "Extend environment TTL"
+      single_clear:
+        - "I need to manage the test environment. Create test environment"
+        - "I need to manage the test environment. Spin up integration env"
+        - "I need to manage the test environment. Destroy test environment"
+        - "I need to manage the test environment. Extend environment TTL"
+
+  - name: run_smoke_test
+    descriptions:
+      minimal: "Smoke test"
+      short: "Run smoke tests"
+      medium: "Run quick smoke tests to verify basic functionality."
+      long: "Execute smoke tests for deployment verification. Quick sanity checks. Example: run_smoke_test(environment='staging', suite='critical-path')."
+      verbose: "Smoke testing for deployment validation. Purpose: verify critical paths work after deployment. Example: run_smoke_test(environment='production', suite='critical-path', timeout=300, endpoints='[\"health\", \"login\", \"checkout\"]', alert_on_failure='pagerduty'). Returns: pass/fail status, failed checks, timing. Note: Smoke tests should be fast (<5 min). Warning: Don't use smoke tests as substitute for full testing."
+    parameters:
+      - name: environment
+        type: string
+        description: "Target environment"
+        required: true
+      - name: suite
+        type: string
+        description: "Smoke test suite"
+        required: false
+        default: "default"
+      - name: timeout
+        type: integer
+        description: "Suite timeout (seconds)"
+        required: false
+        default: 300
+      - name: endpoints
+        type: string
+        description: "JSON array of endpoints to check"
+        required: false
+      - name: alert_on_failure
+        type: string
+        description: "Alert channel on failure"
+        required: false
+    tags: ["testing", "smoke", "deployment", "sanity", "verification"]
+    test_prompts:
+      single:
+        - "Run smoke tests"
+        - "Verify deployment"
+        - "Quick sanity check"
+        - "Test critical paths"
+      single_clear:
+        - "I need to run smoke tests. Run smoke tests"
+        - "I need to run smoke tests. Verify deployment"
+        - "I need to run smoke tests. Quick sanity check"
+        - "I need to run smoke tests. Test critical paths"
+
+  - name: analyze_test_flakiness
+    descriptions:
+      minimal: "Analyze flaky"
+      short: "Analyze flaky tests"
+      medium: "Identify and analyze flaky tests in the test suite."
+      long: "Detect and analyze flaky tests. Find tests with inconsistent results. Example: analyze_test_flakiness(suite='unit', period='30d', threshold=0.1)."
+      verbose: "Flaky test detection and analysis. Metrics: flakiness rate, first flake date, patterns (time-based, resource-based). Example: analyze_test_flakiness(suite='integration', period='30d', threshold=0.05, min_runs=10, include_patterns=true). Returns: flaky tests list, flakiness scores, patterns, recommendations. Note: Flaky tests reduce confidence in CI. Warning: Some flakiness may indicate real bugs."
+    parameters:
+      - name: suite
+        type: string
+        description: "Test suite to analyze"
+        required: true
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: false
+        default: "30d"
+      - name: threshold
+        type: number
+        description: "Flakiness threshold (0-1)"
+        required: false
+        default: 0.1
+      - name: min_runs
+        type: integer
+        description: "Minimum runs for analysis"
+        required: false
+        default: 5
+      - name: include_patterns
+        type: boolean
+        description: "Include pattern analysis"
+        required: false
+        default: true
+    tags: ["testing", "flaky", "analysis", "reliability", "ci"]
+    test_prompts:
+      single:
+        - "Find flaky tests"
+        - "Analyze test stability"
+        - "Identify unreliable tests"
+        - "Check test flakiness"
+      single_clear:
+        - "I need to analyze test flakiness. Find flaky tests"
+        - "I need to analyze test flakiness. Analyze test stability"
+        - "I need to analyze test flakiness. Identify unreliable tests"
+        - "I need to analyze test flakiness. Check test flakiness"
+
+  - name: run_security_test
+    descriptions:
+      minimal: "Security test"
+      short: "Run security tests"
+      medium: "Run security vulnerability tests on an application."
+      long: "Execute security testing scans. Example: run_security_test(target='https://app.example.com', type='dast', scan_level='standard')."
+      verbose: "Application security testing. Types: DAST (dynamic), SAST (static), dependency scan, penetration. Example: run_security_test(target='https://staging.example.com', type='dast', scan_level='aggressive', auth='{\"type\": \"bearer\", \"token\": \"...\"}', exclude_paths='[\"/admin\"]', report_format='sarif'). Checks: XSS, SQLi, CSRF, auth issues, secrets. Note: Aggressive scans may impact application. Warning: Only test systems you own."
+    parameters:
+      - name: target
+        type: string
+        description: "Target URL or path"
+        required: true
+      - name: type
+        type: string
+        description: "Security test type"
+        required: true
+        enum: ["dast", "sast", "dependency", "pentest"]
+      - name: scan_level
+        type: string
+        description: "Scan aggressiveness"
+        required: false
+        default: "standard"
+        enum: ["passive", "standard", "aggressive"]
+      - name: auth
+        type: string
+        description: "Authentication config (JSON)"
+        required: false
+      - name: exclude_paths
+        type: string
+        description: "JSON array of paths to skip"
+        required: false
+      - name: report_format
+        type: string
+        description: "Output format"
+        required: false
+        default: "json"
+    tags: ["testing", "security", "vulnerability", "dast", "scan"]
+    test_prompts:
+      single:
+        - "Run security scan"
+        - "Test for vulnerabilities"
+        - "Security vulnerability test"
+        - "Scan for security issues"
+      single_clear:
+        - "I need to run security testing. Run security scan"
+        - "I need to run security testing. Test for vulnerabilities"
+        - "I need to run security testing. Security vulnerability test"
+        - "I need to run security testing. Scan for security issues"
+
+  - name: run_accessibility_test
+    descriptions:
+      minimal: "Accessibility test"
+      short: "Run accessibility tests"
+      medium: "Test web pages for accessibility compliance."
+      long: "Run accessibility tests against WCAG standards. Example: run_accessibility_test(url='https://example.com', standard='WCAG21-AA')."
+      verbose: "Web accessibility testing. Standards: WCAG 2.0, WCAG 2.1, Section 508. Levels: A, AA, AAA. Example: run_accessibility_test(url='https://example.com/app', standard='WCAG21-AA', include_best_practices=true, crawl_depth=3, exclude_rules='[\"color-contrast\"]'). Checks: alt text, keyboard nav, contrast, ARIA. Returns: violations, warnings, passes. Note: Automated tests catch ~30% of issues. Warning: Manual testing still required."
+    parameters:
+      - name: url
+        type: string
+        description: "Page URL to test"
+        required: true
+      - name: standard
+        type: string
+        description: "Accessibility standard"
+        required: false
+        default: "WCAG21-AA"
+        enum: ["WCAG20-A", "WCAG20-AA", "WCAG21-A", "WCAG21-AA", "WCAG21-AAA", "Section508"]
+      - name: crawl_depth
+        type: integer
+        description: "Pages to crawl from start"
+        required: false
+        default: 1
+      - name: include_best_practices
+        type: boolean
+        description: "Include best practice checks"
+        required: false
+        default: true
+      - name: exclude_rules
+        type: string
+        description: "JSON array of rules to skip"
+        required: false
+    tags: ["testing", "accessibility", "wcag", "a11y", "compliance"]
+    test_prompts:
+      single:
+        - "Run accessibility test"
+        - "Check WCAG compliance"
+        - "Test for a11y issues"
+        - "Accessibility scan"
+      single_clear:
+        - "I need to run accessibility testing. Run accessibility test"
+        - "I need to run accessibility testing. Check WCAG compliance"
+        - "I need to run accessibility testing. Test for a11y issues"
+        - "I need to run accessibility testing. Accessibility scan"
+
+  - name: run_visual_regression_test
+    descriptions:
+      minimal: "Visual test"
+      short: "Run visual regression test"
+      medium: "Compare screenshots to detect visual regressions."
+      long: "Visual regression testing with screenshot comparison. Example: run_visual_regression_test(url='https://example.com', baseline='main')."
+      verbose: "Visual regression detection. Compares current screenshots to baseline images. Example: run_visual_regression_test(url='https://staging.example.com', baseline='production', viewports='[{\"width\": 1920, \"height\": 1080}, {\"width\": 375, \"height\": 812}]', threshold=0.01, full_page=true). Returns: diff images, percentage changed, affected areas. Note: Threshold controls sensitivity. Warning: Dynamic content may cause false positives."
+    parameters:
+      - name: url
+        type: string
+        description: "Page URL to test"
+        required: true
+      - name: baseline
+        type: string
+        description: "Baseline environment or branch"
+        required: true
+      - name: viewports
+        type: string
+        description: "JSON array of viewport sizes"
+        required: false
+      - name: threshold
+        type: number
+        description: "Difference threshold (0-1)"
+        required: false
+        default: 0.01
+      - name: full_page
+        type: boolean
+        description: "Capture full page"
+        required: false
+        default: true
+      - name: hide_selectors
+        type: string
+        description: "JSON array of selectors to hide"
+        required: false
+    tags: ["testing", "visual", "regression", "screenshot", "ui"]
+    test_prompts:
+      single:
+        - "Run visual regression test"
+        - "Compare screenshots"
+        - "Check for visual changes"
+        - "UI regression test"
+      single_clear:
+        - "I need to run visual regression testing. Run visual regression test"
+        - "I need to run visual regression testing. Compare screenshots"
+        - "I need to run visual regression testing. Check for visual changes"
+        - "I need to run visual regression testing. UI regression test"
+
+  - name: run_contract_test
+    descriptions:
+      minimal: "Contract test"
+      short: "Run API contract tests"
+      medium: "Verify API contracts between services."
+      long: "Run contract tests for API compatibility. Example: run_contract_test(consumer='frontend', provider='api', pact_broker='https://pact.example.com')."
+      verbose: "Consumer-driven contract testing. Verifies API compatibility between services. Example: run_contract_test(consumer='mobile-app', provider='user-service', pact_broker='https://pact.internal', version='1.2.3', provider_states='[\"user exists\", \"user not found\"]', publish_results=true). Frameworks: Pact, Spring Cloud Contract. Note: Contracts should be versioned. Warning: Breaking changes require contract updates."
+    parameters:
+      - name: consumer
+        type: string
+        description: "Consumer service name"
+        required: true
+      - name: provider
+        type: string
+        description: "Provider service name"
+        required: true
+      - name: pact_broker
+        type: string
+        description: "Pact broker URL"
+        required: true
+      - name: version
+        type: string
+        description: "Consumer version"
+        required: false
+      - name: provider_states
+        type: string
+        description: "JSON array of provider states"
+        required: false
+      - name: publish_results
+        type: boolean
+        description: "Publish to broker"
+        required: false
+        default: true
+    tags: ["testing", "contract", "api", "pact", "integration"]
+    test_prompts:
+      single:
+        - "Run contract tests"
+        - "Verify API contract"
+        - "Check Pact compatibility"
+        - "Test service contract"
+      single_clear:
+        - "I need to run contract tests. Run contract tests"
+        - "I need to run contract tests. Verify API contract"
+        - "I need to run contract tests. Check Pact compatibility"
+        - "I need to run contract tests. Test service contract"
+
+  - name: run_chaos_test
+    descriptions:
+      minimal: "Chaos test"
+      short: "Run chaos engineering test"
+      medium: "Run chaos engineering experiments to test resilience."
+      long: "Execute chaos experiments. Example: run_chaos_test(experiment='pod-failure', target='api-deployment', duration='5m')."
+      verbose: "Chaos engineering for resilience testing. Experiments: pod failure, network latency, CPU stress, memory pressure, zone outage. Example: run_chaos_test(experiment='network-latency', target='database-service', duration='5m', parameters='{\"latency_ms\": 500, \"jitter_ms\": 100}', abort_conditions='{\"error_rate\": 0.5}', notify_channel='#chaos-tests'). Note: Start with small blast radius. Warning: Can cause real outages; test in staging first."
+    parameters:
+      - name: experiment
+        type: string
+        description: "Chaos experiment type"
+        required: true
+        enum: ["pod-failure", "network-latency", "network-partition", "cpu-stress", "memory-pressure", "disk-fill"]
+      - name: target
+        type: string
+        description: "Target service or resource"
+        required: true
+      - name: duration
+        type: string
+        description: "Experiment duration"
+        required: true
+      - name: parameters
+        type: string
+        description: "Experiment parameters (JSON)"
+        required: false
+      - name: abort_conditions
+        type: string
+        description: "Conditions to abort (JSON)"
+        required: false
+      - name: dry_run
+        type: boolean
+        description: "Validate without executing"
+        required: false
+        default: false
+    tags: ["testing", "chaos", "resilience", "reliability", "fault"]
+    test_prompts:
+      single:
+        - "Run chaos experiment"
+        - "Test system resilience"
+        - "Inject pod failure"
+        - "Chaos engineering test"
+      single_clear:
+        - "I need to run a chaos test. Run chaos experiment"
+        - "I need to run a chaos test. Test system resilience"
+        - "I need to run a chaos test. Inject pod failure"
+        - "I need to run a chaos test. Chaos engineering test"
+
+  - name: run_soak_test
+    descriptions:
+      minimal: "Soak test"
+      short: "Run soak test"
+      medium: "Run extended soak tests to detect memory leaks and degradation."
+      long: "Long-running soak test. Example: run_soak_test(target='https://api.example.com', duration='24h', rps=100)."
+      verbose: "Extended duration testing for stability. Detects: memory leaks, connection leaks, resource exhaustion, performance degradation. Example: run_soak_test(target='https://api.example.com/endpoint', duration='24h', rps=50, ramp_up='10m', monitor_metrics='[\"memory\", \"connections\", \"response_time\"]', alert_thresholds='{\"memory_growth\": \"10%\", \"p99_latency\": \"500ms\"}'). Note: Run during low-traffic periods. Warning: Long tests consume significant resources."
+    parameters:
+      - name: target
+        type: string
+        description: "Target URL"
+        required: true
+      - name: duration
+        type: string
+        description: "Test duration"
+        required: true
+      - name: rps
+        type: integer
+        description: "Requests per second"
+        required: true
+      - name: ramp_up
+        type: string
+        description: "Ramp-up period"
+        required: false
+        default: "5m"
+      - name: monitor_metrics
+        type: string
+        description: "JSON array of metrics to track"
+        required: false
+      - name: alert_thresholds
+        type: string
+        description: "Alert thresholds (JSON)"
+        required: false
+    tags: ["testing", "soak", "endurance", "stability", "leak"]
+    test_prompts:
+      single:
+        - "Run soak test"
+        - "Extended stability test"
+        - "Check for memory leaks"
+        - "Long-running performance test"
+      single_clear:
+        - "I need to run a soak test. Run soak test"
+        - "I need to run a soak test. Extended stability test"
+        - "I need to run a soak test. Check for memory leaks"
+        - "I need to run a soak test. Long-running performance test"
+
+  - name: create_test_data
+    descriptions:
+      minimal: "Create test data"
+      short: "Generate test data"
+      medium: "Generate realistic test data for testing scenarios."
+      long: "Generate test data programmatically. Example: create_test_data(schema='user', count=100, output='json')."
+      verbose: "Test data generation. Types: users, orders, products, transactions, logs. Features: realistic values, relationships, localization. Example: create_test_data(schema='order', count=1000, locale='en_US', relationships='{\"customer\": \"users\", \"items\": \"products\"}', output='csv', seed=12345). Libraries: Faker patterns. Note: Use seeds for reproducibility. Warning: Don't use test data in production."
+    parameters:
+      - name: schema
+        type: string
+        description: "Data schema/type"
+        required: true
+      - name: count
+        type: integer
+        description: "Number of records"
+        required: true
+      - name: locale
+        type: string
+        description: "Locale for generated data"
+        required: false
+        default: "en_US"
+      - name: relationships
+        type: string
+        description: "Related data schemas (JSON)"
+        required: false
+      - name: output
+        type: string
+        description: "Output format"
+        required: false
+        default: "json"
+        enum: ["json", "csv", "sql", "yaml"]
+      - name: seed
+        type: integer
+        description: "Random seed for reproducibility"
+        required: false
+    tags: ["testing", "data", "generate", "mock", "faker"]
+    test_prompts:
+      single:
+        - "Generate test data"
+        - "Create mock users"
+        - "Generate fake orders"
+        - "Create test dataset"
+      single_clear:
+        - "I need to create test data. Generate test data"
+        - "I need to create test data. Create mock users"
+        - "I need to create test data. Generate fake orders"
+        - "I need to create test data. Create test dataset"
+
+  - name: run_mutation_test
+    descriptions:
+      minimal: "Mutation test"
+      short: "Run mutation testing"
+      medium: "Run mutation testing to evaluate test suite quality."
+      long: "Mutation testing for test quality. Example: run_mutation_test(source_dir='src/', test_command='npm test', mutators='all')."
+      verbose: "Mutation testing evaluates test effectiveness. Introduces small code changes (mutants) and checks if tests catch them. Example: run_mutation_test(source_dir='src/services', test_command='pytest tests/', mutators='[\"arithmetic\", \"conditional\", \"return\"]', timeout_factor=2, exclude='[\"**/generated/**\"]'). Metrics: mutation score, survived mutants, killed mutants. Note: Mutation testing is slow. Warning: High mutation scores (>80%) indicate good test quality."
+    parameters:
+      - name: source_dir
+        type: string
+        description: "Source code directory"
+        required: true
+      - name: test_command
+        type: string
+        description: "Command to run tests"
+        required: true
+      - name: mutators
+        type: string
+        description: "JSON array of mutator types or 'all'"
+        required: false
+        default: "all"
+      - name: timeout_factor
+        type: number
+        description: "Timeout multiplier for mutant tests"
+        required: false
+        default: 1.5
+      - name: exclude
+        type: string
+        description: "JSON array of paths to exclude"
+        required: false
+    tags: ["testing", "mutation", "quality", "coverage", "effectiveness"]
+    test_prompts:
+      single:
+        - "Run mutation tests"
+        - "Evaluate test quality"
+        - "Check mutation score"
+        - "Test effectiveness analysis"
+      single_clear:
+        - "I need to run mutation testing. Run mutation tests"
+        - "I need to run mutation testing. Evaluate test quality"
+        - "I need to run mutation testing. Check mutation score"
+        - "I need to run mutation testing. Test effectiveness analysis"

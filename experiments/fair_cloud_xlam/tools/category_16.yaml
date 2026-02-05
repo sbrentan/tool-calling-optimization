@@ -1,0 +1,746 @@
+category: category_16
+tools:
+- name: get_by_category
+  descriptions:
+    minimal: Fetch a list of plants by their category from the...
+    short: Fetch a list of plants by their category from the house-plants API.
+    medium: Fetch a list of plants by their category from the house-plants API.
+    long: Fetch a list of plants by their category from the house-plants API.
+    verbose: Fetch a list of plants by their category from the house-plants API.
+  parameters:
+  - name: category
+    type: string
+    description: The category of plants to fetch. Defaults to 'flower'.
+    required: true
+    default: flower
+  tags:
+  - get
+  - by
+  - category
+  test_prompts:
+    single:
+    - I'm planning a garden and need to know which flowering plants are easy to maintain. Can you help?
+    single_clear:
+    - I'm planning a garden and need to know which flowering plants are easy to maintain. Can you help?
+- name: generate_a_qr_code_image
+  descriptions:
+    minimal: Generate a QR Code image using the Qrickit API.
+    short: Generate a QR Code image using the Qrickit API.
+    medium: Generate a QR Code image using the Qrickit API.
+    long: Generate a QR Code image using the Qrickit API.
+    verbose: Generate a QR Code image using the Qrickit API.
+  parameters:
+  - name: d
+    type: string
+    description: Data for the QR Code (e.g., URL, text, vCard data, iCal data, etc.).
+    required: true
+    default: YourData
+  - name: logotext
+    type: string
+    description: Header text, typically 15 to 35 characters maximum, displayed at the top of the QR Code.
+    required: false
+  - name: t
+    type: string
+    description: Header text, typically 15 to 35 characters maximum, displayed at the top of the QR Code.
+    required: false
+  - name: fgdcolor
+    type: string
+    description: QR Code color in HTML Hex format (e.g., 'FFFFFF' for white, '000000' for black). Default is black ('000000').
+    required: false
+  - name: qrsize
+    type: integer
+    description: Size of the QR Code image in pixels. Default is 150. Minimum is 80, maximum is 1480.
+    required: false
+  - name: lang
+    type: string
+    description: Set to 'jp' if the footer text contains Japanese characters, otherwise leave blank.
+    required: false
+  - name: e
+    type: integer
+    description: Header text, typically 15 to 35 characters maximum, displayed at the top of the QR Code.
+    required: false
+  - name: addtext
+    type: string
+    description: Footer text, typically 15 to 60 characters maximum, displayed at the bottom of the QR Code.
+    required: false
+  - name: txtcolor
+    type: string
+    description: Footer text color in HTML Hex format (e.g., 'FFFFFF' for white, '000000' for black). Default is black ('000000').
+    required: false
+  - name: bgdcolor
+    type: string
+    description: Background color in HTML Hex format (e.g., 'FFFFFF' for white, '000000' for black). Default is white ('FFFFFF').
+    required: false
+  tags:
+  - generate
+  - a
+  - qr
+  test_prompts:
+    single:
+    - Create a QR code for the text 'Hello World' with a green footer text and a red QR code.
+    - Generate a QR code for 'Hello World' text with a red QR code and a blue footer text.
+    - Create a QR code for the URL 'https://www.google.com' with a footer text 'Visit us!' and a white QR code on a black
+      background.
+    single_clear:
+    - Create a QR code for the text 'Hello World' with a green footer text and a red QR code.
+    - Generate a QR code for 'Hello World' text with a red QR code and a blue footer text.
+    - Create a QR code for the URL 'https://www.google.com' with a footer text 'Visit us!' and a white QR code on a black
+      background.
+- name: more_from_author
+  descriptions:
+    minimal: Fetches more recipes from a specified author...
+    short: Fetches more recipes from a specified author using the Worldwide Recipes API.
+    medium: Fetches more recipes from a specified author using the Worldwide Recipes API.
+    long: Fetches more recipes from a specified author using the Worldwide Recipes API.
+    verbose: Fetches more recipes from a specified author using the Worldwide Recipes API.
+  parameters:
+  - name: profile_display_name
+    type: string
+    description: The display name of the author's profile to retrieve recipes from.
+    required: true
+    default: Gonna Want Seconds
+  - name: canonical_term
+    type: string
+    description: The search term or keyword related to the author's recipes.
+    required: true
+    default: Rachael-Ray_s-Southwestern-Chili-Con-Queso-Pasta-Bake-1178051
+  tags:
+  - more
+  - from
+  - author
+  test_prompts:
+    single:
+    - Find more recipes from 'Chef Jane' related to 'vegan dishes'.
+    - I really enjoyed the recipes by 'Chef Jane', can you find more recipes from her?
+    single_clear:
+    - Find more recipes from 'Chef Jane' related to 'vegan dishes'.
+    - I really enjoyed the recipes by 'Chef Jane', can you find more recipes from her?
+- name: v1_nutrition
+  descriptions:
+    minimal: Fetches the nutrition information for a given...
+    short: Fetches the nutrition information for a given food query using the API Ninjas Nutrition API.
+    medium: Fetches the nutrition information for a given food query using the API Ninjas Nutrition API.
+    long: Fetches the nutrition information for a given food query using the API Ninjas Nutrition API.
+    verbose: Fetches the nutrition information for a given food query using the API Ninjas Nutrition API.
+  parameters:
+  - name: query
+    type: string
+    description: The food query for which to extract nutrition information (e.g., "bacon and 3 eggs").
+    required: true
+    default: 1lb brisket with fries
+  tags:
+  - v1
+  - nutrition
+  test_prompts:
+    single:
+    - Provide the nutrition details for a breakfast of 2 eggs and a slice of whole wheat bread.
+    single_clear:
+    - Provide the nutrition details for a breakfast of 2 eggs and a slice of whole wheat bread.
+- name: autocomplete_search
+  descriptions:
+    minimal: Search for titles and/or people by name or...
+    short: Search for titles and/or people by name or partial name, useful for building an autocomplete feature.
+    medium: Search for titles and/or people by name or partial name, useful for building an autocomplete feature. The results
+      include a `result_type` field indicating whether the result is a title or a person, along with an `image_url` for movie
+      posters or headshots.
+    long: Search for titles and/or people by name or partial name, useful for building an autocomplete feature. The results
+      include a `result_type` field indicating whether the result is a title or a person, along with an `image_url` for movie
+      posters or headshots.
+    verbose: Search for titles and/or people by name or partial name, useful for building an autocomplete feature. The results
+      include a `result_type` field indicating whether the result is a title or a person, along with an `image_url` for movie
+      posters or headshots.
+  parameters:
+  - name: search_value
+    type: string
+    description: The phrase to search for, which can be a full title or person name, or a partial phrase. For example, searching
+      for "The sha" will find the movie "The Shawshank Redemption".
+    required: true
+    default: Breaking Bad
+  - name: search_type
+    type: integer
+    description: Determines the type of search results. 1 includes titles and people (default), 2 includes titles only, 3
+      includes movies only, 4 includes TV shows only, and 5 includes people only.
+    required: false
+    default: '1'
+  tags:
+  - autocomplete
+  - search
+  test_prompts:
+    single:
+    - Get TV shows related to 'Breaking Bad'.
+    single_clear:
+    - Get TV shows related to 'Breaking Bad'.
+- name: fetch_manga
+  descriptions:
+    minimal: Fetch a list of manga from the Mangaverse API...
+    short: Fetch a list of manga from the Mangaverse API based on specified page number and genres.
+    medium: Fetch a list of manga from the Mangaverse API based on specified page number and genres.
+    long: Fetch a list of manga from the Mangaverse API based on specified page number and genres.
+    verbose: Fetch a list of manga from the Mangaverse API based on specified page number and genres.
+  parameters:
+  - name: page
+    type: string
+    description: The page number to fetch, default is '1'.
+    required: true
+    default: '1'
+  - name: genres
+    type: string
+    description: A comma-separated string of genres to filter manga by, default is 'Harem,Fantasy'.
+    required: true
+    default: Harem,Fantasy
+  tags:
+  - fetch
+  - manga
+  test_prompts:
+    single:
+    - What manga are available on page 5 with genres including Horror and Thriller?
+    - Retrieve manga from page 7 that are in the genres of Historical and Mystery.
+    - I need to find manga on page 1 that includes genres of Romance and Comedy.
+    single_clear:
+    - What manga are available on page 5 with genres including Horror and Thriller?
+    - Retrieve manga from page 7 that are in the genres of Historical and Mystery.
+    - I need to find manga on page 1 that includes genres of Romance and Comedy.
+- name: quote_get_margin_requirements
+  descriptions:
+    minimal: Fetches the margin requirements for a given stock...
+    short: Fetches the margin requirements for a given stock symbol from the Schwab API.
+    medium: Fetches the margin requirements for a given stock symbol from the Schwab API.
+    long: Fetches the margin requirements for a given stock symbol from the Schwab API.
+    verbose: Fetches the margin requirements for a given stock symbol from the Schwab API.
+  parameters:
+  - name: symbol
+    type: string
+    description: The stock symbol for which to retrieve margin requirements.
+    required: true
+    default: TSLA
+  tags:
+  - quote
+  - get
+  - margin
+  test_prompts:
+    single:
+    - Retrieve margin requirements for the stock symbol MSFT.
+    single_clear:
+    - Retrieve margin requirements for the stock symbol MSFT.
+- name: event
+  descriptions:
+    minimal: Fetches the details of a single event using its...
+    short: Fetches the details of a single event using its ID from the Spectation Sports Events API.
+    medium: Fetches the details of a single event using its ID from the Spectation Sports Events API.
+    long: Fetches the details of a single event using its ID from the Spectation Sports Events API.
+    verbose: Fetches the details of a single event using its ID from the Spectation Sports Events API.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The unique identifier for the event to be fetched.
+    required: true
+    default: '52'
+  tags:
+  - event
+  test_prompts:
+    single:
+    - What are the details of the sports event with ID 67890?
+    - Could you retrieve information about the event numbered 54321?
+    single_clear:
+    - What are the details of the sports event with ID 67890?
+    - Could you retrieve information about the event numbered 54321?
+- name: random_google
+  descriptions:
+    minimal: Returns a random place of a specified type within...
+    short: Returns a random place of a specified type within a given radius around the provided latitude and longitude.
+    medium: Returns a random place of a specified type within a given radius around the provided latitude and longitude.
+    long: Returns a random place of a specified type within a given radius around the provided latitude and longitude.
+    verbose: Returns a random place of a specified type within a given radius around the provided latitude and longitude.
+  parameters:
+  - name: lat
+    type: integer
+    description: The latitude of the location around which to search for places.
+    required: true
+    default: '49.2803703'
+  - name: lng
+    type: integer
+    description: The longitude of the location around which to search for places.
+    required: true
+    default: '-123.0413988'
+  - name: type
+    type: string
+    description: The type of place to search for. Default is 'cafe'.
+    required: false
+    default: cafe
+  - name: radius
+    type: integer
+    description: The search radius in meters. Default is 500.
+    required: false
+    default: '500'
+  tags:
+  - random
+  - google
+  test_prompts:
+    single:
+    - Find a random cafe within a 1000 meter radius around the coordinates '51.5074,-0.1278' in London.
+    single_clear:
+    - Find a random cafe within a 1000 meter radius around the coordinates '51.5074,-0.1278' in London.
+- name: gamesdata
+  descriptions:
+    minimal: Fetches data for a specific game using its APP_ID...
+    short: Fetches data for a specific game using its APP_ID from the Steam Games Data API.
+    medium: Fetches data for a specific game using its APP_ID from the Steam Games Data API.
+    long: Fetches data for a specific game using its APP_ID from the Steam Games Data API.
+    verbose: Fetches data for a specific game using its APP_ID from the Steam Games Data API.
+  parameters:
+  - name: app_id
+    type: integer
+    description: The unique identifier for the game whose data is to be fetched.
+    required: true
+    default: '1581770'
+  tags:
+  - gamesdata
+  test_prompts:
+    single:
+    - What are the current special offers for the game with APP_ID 730 (CS:GO) on Steam?
+    single_clear:
+    - What are the current special offers for the game with APP_ID 730 (CS:GO) on Steam?
+- name: is_valid_parentheses
+  descriptions:
+    minimal: Checks if a string contains valid parentheses.
+    short: Checks if a string contains valid parentheses.
+    medium: Checks if a string contains valid parentheses.
+    long: Checks if a string contains valid parentheses.
+    verbose: Checks if a string contains valid parentheses.
+  parameters:
+  - name: s
+    type: string
+    description: The input string.
+    required: true
+  tags:
+  - is
+  - valid
+  - parentheses
+  test_prompts:
+    single:
+    - Is the string '((()))[]{}' valid in terms of parentheses usage?
+    - Check if the string '(())[]{}' has valid parentheses
+    - Check if the string '([]{})' has valid parentheses.
+    - Is the string '((()))' a valid sequence of parentheses?
+    single_clear:
+    - Is the string '((()))[]{}' valid in terms of parentheses usage?
+    - Check if the string '(())[]{}' has valid parentheses
+    - Check if the string '([]{})' has valid parentheses.
+    - Is the string '((()))' a valid sequence of parentheses?
+- name: sources
+  descriptions:
+    minimal: Fetches a list of all the organizations from...
+    short: Fetches a list of all the organizations from which information is collected.
+    medium: Fetches a list of all the organizations from which information is collected.
+    long: Fetches a list of all the organizations from which information is collected.
+    verbose: Fetches a list of all the organizations from which information is collected.
+  parameters:
+  - name: json_callback
+    type: string
+    description: If using JSONP, specify the function name here.
+    required: false
+  tags:
+  - sources
+  test_prompts:
+    single:
+    - Fetch all sources of information from Jailbase.
+    - Retrieve streaming sources in the 'US' region that are 'subscription' services.
+    - List all sources of information collected by Jailbase.
+    single_clear:
+    - Fetch all sources of information from Jailbase.
+    - Retrieve streaming sources in the 'US' region that are 'subscription' services.
+    - List all sources of information collected by Jailbase.
+- name: binary_search
+  descriptions:
+    minimal: Performs binary search on a sorted list to find...
+    short: Performs binary search on a sorted list to find the index of a target value.
+    medium: Performs binary search on a sorted list to find the index of a target value.
+    long: Performs binary search on a sorted list to find the index of a target value.
+    verbose: Performs binary search on a sorted list to find the index of a target value.
+  parameters:
+  - name: arr
+    type: string
+    description: The sorted list of integers.
+    required: true
+  - name: target
+    type: integer
+    description: The target value to search for.
+    required: true
+  tags:
+  - binary
+  - search
+  test_prompts:
+    single:
+    - Can you find the index of the number 7 in a sorted list [1, 2, 3, 4, 5, 6, 7, 8, 9]?
+    - Perform binary search on the list [1, 3, 5, 7, 9] to find the index of the number 7.
+    - Find the index of 30 in the list [10, 20, 30, 40, 50] if it exists.
+    - I have a sorted list of numbers [1, 3, 5, 7, 9, 11, 13, 15] and I need to find the index of the number 7 using binary
+      search.
+    - I have a sorted list [3, 6, 9, 12, 15, 18, 21, 24] and I want to find the index of the number 18 using binary search.
+    - Search for the index of 5 in the sorted list [1, 2, 3, 4, 5, 6, 7].
+    single_clear:
+    - Can you find the index of the number 7 in a sorted list [1, 2, 3, 4, 5, 6, 7, 8, 9]?
+    - Perform binary search on the list [1, 3, 5, 7, 9] to find the index of the number 7.
+    - Find the index of 30 in the list [10, 20, 30, 40, 50] if it exists.
+    - I have a sorted list of numbers [1, 3, 5, 7, 9, 11, 13, 15] and I need to find the index of the number 7 using binary
+      search.
+    - I have a sorted list [3, 6, 9, 12, 15, 18, 21, 24] and I want to find the index of the number 18 using binary search.
+    - Search for the index of 5 in the sorted list [1, 2, 3, 4, 5, 6, 7].
+- name: business_search
+  descriptions:
+    minimal: Search for Yelp businesses by keyword and...
+    short: Search for Yelp businesses by keyword and location, with options for pagination, price range, domain, and sorting
+      order.
+    medium: Search for Yelp businesses by keyword and location, with options for pagination, price range, domain, and sorting
+      order.
+    long: Search for Yelp businesses by keyword and location, with options for pagination, price range, domain, and sorting
+      order.
+    verbose: Search for Yelp businesses by keyword and location, with options for pagination, price range, domain, and sorting
+      order.
+  parameters:
+  - name: location
+    type: string
+    description: The location to search for businesses (e.g., "New York, NY, USA").
+    required: true
+    default: San Francisco, CA, USA
+  - name: query
+    type: string
+    description: The search keyword or query (e.g., "Plumbing", "Chinese restaurants").
+    required: true
+    default: Plumbers
+  - name: start
+    type: integer
+    description: The number of results to skip, mainly used for pagination. Default is 0.
+    required: false
+    default: '0'
+  - name: price_range
+    type: string
+    description: Specific price ranges to search for, specified as a comma-delimited list (e.g., "$,$$", "$$")
+    required: false
+  - name: yelp_domain
+    type: string
+    description: The Yelp domain to use for the search. Default is 'yelp.com'. Supported domains include 'yelp.com', 'yelp.com.au',
+      'yelp.co.nz', and others.
+    required: false
+    default: yelp.com
+  - name: sort_by
+    type: string
+    description: The order to sort the search results by. Default is 'RECOMMENDED'. Allowed values are 'RECOMMENDED', 'HIGHEST_RATED',
+      'REVIEW_COUNT'.
+    required: false
+  tags:
+  - business
+  - search
+  test_prompts:
+    single:
+    - Find all Mexican restaurants in London, UK, within the price range of $$$.
+    - Search for Chinese restaurants in New York starting from the 10th result, sorted by highest rating.
+    single_clear:
+    - Find all Mexican restaurants in London, UK, within the price range of $$$.
+    - Search for Chinese restaurants in New York starting from the 10th result, sorted by highest rating.
+- name: get_subcontrol_by_control
+  descriptions:
+    minimal: Fetches all subcontrols or CCIs associated with a...
+    short: Fetches all subcontrols or CCIs associated with a specified control.
+    medium: Fetches all subcontrols or CCIs associated with a specified control.
+    long: Fetches all subcontrols or CCIs associated with a specified control.
+    verbose: Fetches all subcontrols or CCIs associated with a specified control.
+  parameters:
+  - name: control
+    type: string
+    description: The identifier of the control (e.g., "AC-1") for which subcontrols or CCIs are to be fetched.
+    required: true
+    default: AC-1
+  tags:
+  - get
+  - subcontrol
+  - by
+  test_prompts:
+    single:
+    - Retrieve all subcontrols associated with control 'AC-1'.
+    single_clear:
+    - Retrieve all subcontrols associated with control 'AC-1'.
+- name: word_frequency
+  descriptions:
+    minimal: Calculates the frequency of each word in a text.
+    short: Calculates the frequency of each word in a text.
+    medium: Calculates the frequency of each word in a text.
+    long: Calculates the frequency of each word in a text.
+    verbose: Calculates the frequency of each word in a text.
+  parameters:
+  - name: text
+    type: string
+    description: The input text.
+    required: true
+  tags:
+  - word
+  - frequency
+  test_prompts:
+    single:
+    - 'Find the word frequency in the technical document excerpt: ''Data analysis is crucial for decision making. Analysis
+      of data requires careful consideration.'''
+    - Find the word frequency in the phrase 'Artificial intelligence is transforming industries.'
+    single_clear:
+    - 'Find the word frequency in the technical document excerpt: ''Data analysis is crucial for decision making. Analysis
+      of data requires careful consideration.'''
+    - Find the word frequency in the phrase 'Artificial intelligence is transforming industries.'
+- name: superfund_search
+  descriptions:
+    minimal: Search for Superfund sites based on provided...
+    short: Search for Superfund sites based on provided latitude, longitude, and radius.
+    medium: Search for Superfund sites based on provided latitude, longitude, and radius.
+    long: Search for Superfund sites based on provided latitude, longitude, and radius.
+    verbose: Search for Superfund sites based on provided latitude, longitude, and radius.
+  parameters:
+  - name: radius
+    type: string
+    description: The radius within which to search for Superfund sites.
+    required: true
+    default: '2'
+  - name: lat
+    type: string
+    description: The latitude coordinate for the center of the search.
+    required: true
+    default: '37.391935'
+  - name: lng
+    type: string
+    description: The longitude coordinate for the center of the search.
+    required: true
+    default: '-122.079515'
+  tags:
+  - superfund
+  - search
+  test_prompts:
+    single:
+    - Could you search for Superfund sites within a 50-mile radius of a location with latitude 38.8977 and longitude -77.0365?
+    single_clear:
+    - Could you search for Superfund sites within a 50-mile radius of a location with latitude 38.8977 and longitude -77.0365?
+- name: canvas_genres_list
+  descriptions:
+    minimal: Fetches a list of genres in the canvas category...
+    short: Fetches a list of genres in the canvas category from the Webtoon API.
+    medium: Fetches a list of genres in the canvas category from the Webtoon API.
+    long: Fetches a list of genres in the canvas category from the Webtoon API.
+    verbose: Fetches a list of genres in the canvas category from the Webtoon API.
+  parameters:
+  - name: language
+    type: string
+    description: The language in which to return the genres. Acceptable values are 'en', 'zh-hant', 'de', 'fr', 'es', 'th',
+      and 'id'. Default is 'en'.
+    required: false
+    default: en
+  tags:
+  - canvas
+  - genres
+  - list
+  test_prompts:
+    single:
+    - Provide a list of genres in German from the Webtoon API.
+    - List all genres available in English from the Webtoon API.
+    single_clear:
+    - Provide a list of genres in German from the Webtoon API.
+    - List all genres available in English from the Webtoon API.
+- name: get_pokemon_move_info
+  descriptions:
+    minimal: Retrieves information about a Pokémon's move...
+    short: Retrieves information about a Pokémon's move using the PokéAPI.
+    medium: Retrieves information about a Pokémon's move using the PokéAPI.
+    long: Retrieves information about a Pokémon's move using the PokéAPI.
+    verbose: Retrieves information about a Pokémon's move using the PokéAPI.
+  parameters:
+  - name: pokemon_name
+    type: string
+    description: The name of the Pokémon.
+    required: true
+    default: run
+  - name: move_name
+    type: string
+    description: The name of the move to check. Defaults to "run".
+    required: false
+    default: run
+  tags:
+  - get
+  - pokemon
+  - move
+  test_prompts:
+    single:
+    - List all moves that Charmander can learn.
+    - Can Charmander learn the move Flamethrower?
+    - What moves can Bulbasaur learn?
+    - Can Pikachu learn the move Thunderbolt?
+    single_clear:
+    - List all moves that Charmander can learn.
+    - Can Charmander learn the move Flamethrower?
+    - What moves can Bulbasaur learn?
+    - Can Pikachu learn the move Thunderbolt?
+- name: calculate_median
+  descriptions:
+    minimal: Calculates the median of a list of numbers.
+    short: Calculates the median of a list of numbers.
+    medium: Calculates the median of a list of numbers.
+    long: Calculates the median of a list of numbers.
+    verbose: Calculates the median of a list of numbers.
+  parameters:
+  - name: numbers
+    type: string
+    description: The list of numbers.
+    required: true
+  tags:
+  - calculate
+  - median
+  test_prompts:
+    single:
+    - What is the median of the numbers [10, 20, 30, 40, 50]?
+    - What is the median of the ages [25, 30, 35, 40, 45, 50]?
+    - Determine the median of the sequence 5.5, 10.2, 15.7, 20.3, 25.8.
+    - Find the median of the numbers [15, 23, 8, 12, 20, 31].
+    - Calculate the median of the numbers [3, 1, 8, 5, 2, 9, 4, 7, 6]
+    - What is the median of a list containing 1.1, 2.2, 3.3, 4.4, 5.5?
+    - What is the median of the numbers 10, 20, 30, 40, 50?
+    - Calculate the median of the numbers [3, 6, 9, 12, 15].
+    - Calculate the median of the numbers [5, 10, 15, 20, 25].
+    - Determine the median of the list [1, 3, 3, 6, 7, 8, 9]
+    single_clear:
+    - What is the median of the numbers [10, 20, 30, 40, 50]?
+    - What is the median of the ages [25, 30, 35, 40, 45, 50]?
+    - Determine the median of the sequence 5.5, 10.2, 15.7, 20.3, 25.8.
+    - Find the median of the numbers [15, 23, 8, 12, 20, 31].
+    - Calculate the median of the numbers [3, 1, 8, 5, 2, 9, 4, 7, 6]
+    - What is the median of a list containing 1.1, 2.2, 3.3, 4.4, 5.5?
+    - What is the median of the numbers 10, 20, 30, 40, 50?
+    - Calculate the median of the numbers [3, 6, 9, 12, 15].
+    - Calculate the median of the numbers [5, 10, 15, 20, 25].
+    - Determine the median of the list [1, 3, 3, 6, 7, 8, 9]
+- name: top_grossing_games
+  descriptions:
+    minimal: Fetches the top-grossing games chart from the...
+    short: Fetches the top-grossing games chart from the Google Play Store, with support for filtering by category, language,
+      and region.
+    medium: Fetches the top-grossing games chart from the Google Play Store, with support for filtering by category, language,
+      and region.
+    long: Fetches the top-grossing games chart from the Google Play Store, with support for filtering by category, language,
+      and region.
+    verbose: Fetches the top-grossing games chart from the Google Play Store, with support for filtering by category, language,
+      and region.
+  parameters:
+  - name: limit
+    type: integer
+    description: The maximum number of results to return. Allowed values are between 1 and 200. Default is 50. Note that requests
+      with a limit value between 101-200 will be charged double (2 requests).
+    required: false
+    default: '50'
+  - name: language
+    type: string
+    description: The language to use, specified as a 2-letter language code according to ISO 639-1. Default is 'en'.
+    required: false
+    default: en
+  - name: category
+    type: string
+    description: The specific Google Play category to filter the chart by (e.g., 'GAME_RACING'). Default is None.
+    required: false
+  - name: region
+    type: string
+    description: The 2-letter country code according to ISO 3166-1 to specify the region. Default is 'us'.
+    required: false
+    default: us
+  tags:
+  - top
+  - grossing
+  - games
+  test_prompts:
+    single:
+    - What are the top 15 simulation games in Germany in German?
+    single_clear:
+    - What are the top 15 simulation games in Germany in German?
+- name: runner_up
+  descriptions:
+    minimal: Fetches the runner-up team data for the given...
+    short: Fetches the runner-up team data for the given identifying parameter from the NCAA Final Four API.
+    medium: Fetches the runner-up team data for the given identifying parameter from the NCAA Final Four API.
+    long: Fetches the runner-up team data for the given identifying parameter from the NCAA Final Four API.
+    verbose: Fetches the runner-up team data for the given identifying parameter from the NCAA Final Four API.
+  parameters:
+  - name: identifier
+    type: string
+    description: The identifier (e.g., year) to fetch the runner-up team data for.
+    required: true
+    default: '1959'
+  tags:
+  - runner
+  - up
+  test_prompts:
+    single:
+    - Who was the runner-up in the NCAA Final Four for the year 2010?
+    - Who was the runner-up in the NCAA Final Four for the year 2015?
+    single_clear:
+    - Who was the runner-up in the NCAA Final Four for the year 2010?
+    - Who was the runner-up in the NCAA Final Four for the year 2015?
+- name: count_occurrences
+  descriptions:
+    minimal: Counts the occurrences of each element in a list...
+    short: Counts the occurrences of each element in a list and returns a dictionary with the counts.
+    medium: Counts the occurrences of each element in a list and returns a dictionary with the counts.
+    long: Counts the occurrences of each element in a list and returns a dictionary with the counts.
+    verbose: Counts the occurrences of each element in a list and returns a dictionary with the counts.
+  parameters:
+  - name: lst
+    type: array
+    description: The input list.
+    required: true
+  tags:
+  - count
+  - occurrences
+  test_prompts:
+    single:
+    - Count the occurrences of each element in the list [1, 2, 2, 3, 3, 3, 4, 4, 4, 4].
+    - Count occurrences of each element in the list [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+    - How many times does each element appear in the list [5, 2, 9, 5, 2, 9, 9]?
+    - Count occurrences of each element in the list [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+    single_clear:
+    - Count the occurrences of each element in the list [1, 2, 2, 3, 3, 3, 4, 4, 4, 4].
+    - Count occurrences of each element in the list [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+    - How many times does each element appear in the list [5, 2, 9, 5, 2, 9, 9]?
+    - Count occurrences of each element in the list [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+- name: artist_overview
+  descriptions:
+    minimal: Fetches the overview of an artist from the...
+    short: Fetches the overview of an artist from the Spotify API using RapidAPI.
+    medium: Fetches the overview of an artist from the Spotify API using RapidAPI.
+    long: Fetches the overview of an artist from the Spotify API using RapidAPI.
+    verbose: Fetches the overview of an artist from the Spotify API using RapidAPI.
+  parameters:
+  - name: is_id
+    type: string
+    description: The unique identifier of the artist to retrieve information for.
+    required: true
+    default: 2w9zwq3AktTeYYMuhMjju8
+  tags:
+  - artist
+  - overview
+  test_prompts:
+    single:
+    - Get details about the artist with ID '2wz5ZwzyjM3a1d73gFZQqd'
+    single_clear:
+    - Get details about the artist with ID '2wz5ZwzyjM3a1d73gFZQqd'
+- name: random_credit_card_by_id
+  descriptions:
+    minimal: Retrieve fake credit card details by ID using the...
+    short: Retrieve fake credit card details by ID using the RapidAPI service.
+    medium: Retrieve fake credit card details by ID using the RapidAPI service.
+    long: Retrieve fake credit card details by ID using the RapidAPI service.
+    verbose: Retrieve fake credit card details by ID using the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID used to retrieve the fake credit card details.
+    required: true
+    default: '1'
+  tags:
+  - random
+  - credit
+  - card
+  test_prompts:
+    single:
+    - Can you generate a fake credit card detail using ID 12345?
+    single_clear:
+    - Can you generate a fake credit card detail using ID 12345?

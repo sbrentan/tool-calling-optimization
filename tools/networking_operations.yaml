@@ -1,0 +1,457 @@
+category: networking_operations
+description: Network management, DNS, firewall, and connectivity operations
+tools:
+  - name: ping_host
+    descriptions:
+      minimal: "Ping host"
+      short: "Ping a host"
+      medium: "Send ICMP ping to check if a host is reachable."
+      long: "Ping a host to verify connectivity. Example: ping_host(host='example.com', count=4)."
+      verbose: "ICMP connectivity test. Features: configurable packet count, timeout, packet size, TTL. Example: ping_host(host='192.168.1.1', count=10, timeout=5, packet_size=64, interval=1). Returns: {\"host\": \"192.168.1.1\", \"packets_sent\": 10, \"packets_received\": 10, \"loss_percent\": 0, \"min_ms\": 1.2, \"avg_ms\": 2.5, \"max_ms\": 4.1}. Note: Some hosts block ICMP. Warning: High packet counts may be seen as abuse."
+    parameters:
+      - name: host
+        type: string
+        description: "Hostname or IP address"
+        required: true
+      - name: count
+        type: integer
+        description: "Number of pings"
+        required: false
+        default: 4
+      - name: timeout
+        type: integer
+        description: "Timeout in seconds"
+        required: false
+        default: 5
+      - name: packet_size
+        type: integer
+        description: "Packet size in bytes"
+        required: false
+        default: 64
+    tags: ["network", "ping", "connectivity", "icmp", "test"]
+    test_prompts:
+      single:
+        - "Ping the server"
+        - "Check if host is reachable"
+        - "Test connectivity to IP"
+        - "Ping this address"
+      single_clear:
+        - "Please check if a host is reachable. Ping the server"
+        - "Please check if a host is reachable. Check if host is reachable"
+        - "Please check if a host is reachable. Test connectivity to IP"
+        - "Please check if a host is reachable. Ping this address"
+
+  - name: dns_lookup
+    descriptions:
+      minimal: "DNS lookup"
+      short: "Perform DNS lookup"
+      medium: "Resolve DNS records for a domain."
+      long: "Query DNS for A, AAAA, MX, CNAME, TXT records. Example: dns_lookup(domain='example.com', record_type='A')."
+      verbose: "Comprehensive DNS resolution. Record types: A, AAAA, MX, CNAME, TXT, NS, SOA, PTR, SRV. Example: dns_lookup(domain='example.com', record_type='MX', dns_server='8.8.8.8', timeout=10). Returns: [{\"type\": \"MX\", \"priority\": 10, \"value\": \"mail.example.com\", \"ttl\": 3600}]. Use for: troubleshooting, email configuration, verification. Note: Results may vary by DNS server. Warning: TTL affects caching behavior."
+    parameters:
+      - name: domain
+        type: string
+        description: "Domain name to query"
+        required: true
+      - name: record_type
+        type: string
+        description: "DNS record type"
+        required: false
+        default: "A"
+        enum: ["A", "AAAA", "MX", "CNAME", "TXT", "NS", "SOA", "PTR", "SRV"]
+      - name: dns_server
+        type: string
+        description: "DNS server to use"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Query timeout seconds"
+        required: false
+        default: 10
+    tags: ["network", "dns", "lookup", "resolve", "domain"]
+    test_prompts:
+      single:
+        - "DNS lookup for domain"
+        - "Resolve DNS records"
+        - "Get MX records"
+        - "Look up IP address"
+      single_clear:
+        - "I need to perform a DNS lookup. DNS lookup for domain"
+        - "I need to perform a DNS lookup. Resolve DNS records"
+        - "I need to perform a DNS lookup. Get MX records"
+        - "I need to perform a DNS lookup. Look up IP address"
+
+  - name: traceroute
+    descriptions:
+      minimal: "Traceroute"
+      short: "Trace route to host"
+      medium: "Trace the network path to a destination host."
+      long: "Trace network hops to destination. Example: traceroute(host='example.com', max_hops=30)."
+      verbose: "Trace network path with hop-by-hop details. Features: configurable max hops, timeout, protocol selection. Example: traceroute(host='api.example.com', max_hops=25, timeout=5, protocol='icmp', resolve_hostnames=true). Returns: [{\"hop\": 1, \"ip\": \"192.168.1.1\", \"hostname\": \"router.local\", \"rtt_ms\": [1.2, 1.5, 1.3]}]. Use for: diagnosing routing issues, latency problems. Note: Some hops may not respond. Warning: Firewalls may block traceroute packets."
+    parameters:
+      - name: host
+        type: string
+        description: "Destination host"
+        required: true
+      - name: max_hops
+        type: integer
+        description: "Maximum number of hops"
+        required: false
+        default: 30
+      - name: timeout
+        type: integer
+        description: "Timeout per hop"
+        required: false
+        default: 5
+      - name: protocol
+        type: string
+        description: "Protocol to use"
+        required: false
+        default: "icmp"
+        enum: ["icmp", "udp", "tcp"]
+      - name: resolve_hostnames
+        type: boolean
+        description: "Resolve IP to hostnames"
+        required: false
+        default: true
+    tags: ["network", "traceroute", "routing", "path", "hops"]
+    test_prompts:
+      single:
+        - "Traceroute to server"
+        - "Trace network path"
+        - "Show route to host"
+        - "Network path analysis"
+      single_clear:
+        - "I need to trace the network path to a destination. Traceroute to server"
+        - "I need to trace the network path to a destination. Trace network path"
+        - "I need to trace the network path to a destination. Show route to host"
+        - "I need to trace the network path to a destination. Network path analysis"
+
+  - name: port_scan
+    descriptions:
+      minimal: "Port scan"
+      short: "Scan ports on a host"
+      medium: "Scan for open ports on a target host."
+      long: "Scan TCP/UDP ports on a host. Example: port_scan(host='192.168.1.1', ports='22,80,443')."
+      verbose: "Network port scanning. Features: TCP/UDP, port ranges, service detection, timeout configuration. Example: port_scan(host='server.example.com', ports='1-1000', protocol='tcp', detect_service=true, timeout=3). Returns: [{\"port\": 22, \"state\": \"open\", \"service\": \"ssh\"}, {\"port\": 80, \"state\": \"open\", \"service\": \"http\"}]. Note: Only scan hosts you have permission to scan. Warning: Unauthorized port scanning may be illegal."
+    parameters:
+      - name: host
+        type: string
+        description: "Target host"
+        required: true
+      - name: ports
+        type: string
+        description: "Ports (e.g., '22,80,443' or '1-1000')"
+        required: true
+      - name: protocol
+        type: string
+        description: "Protocol to scan"
+        required: false
+        default: "tcp"
+        enum: ["tcp", "udp"]
+      - name: detect_service
+        type: boolean
+        description: "Detect service names"
+        required: false
+        default: true
+      - name: timeout
+        type: integer
+        description: "Timeout per port"
+        required: false
+        default: 3
+    tags: ["network", "port", "scan", "security", "discovery"]
+    test_prompts:
+      single:
+        - "Scan ports on server"
+        - "Check open ports"
+        - "Port scan the host"
+        - "Find open services"
+      single_clear:
+        - "I need to scan for open ports on a host. Scan ports on server"
+        - "I need to scan for open ports on a host. Check open ports"
+        - "I need to scan for open ports on a host. Port scan the host"
+        - "I need to scan for open ports on a host. Find open services"
+
+  - name: configure_firewall_rule
+    descriptions:
+      minimal: "Firewall rule"
+      short: "Configure firewall rule"
+      medium: "Add, modify, or delete firewall rules."
+      long: "Manage firewall rules. Example: configure_firewall_rule(action='allow', direction='inbound', port=443, protocol='tcp')."
+      verbose: "Comprehensive firewall rule management. Actions: allow, deny, drop. Features: port ranges, IP CIDR blocks, protocols, priority ordering. Example: configure_firewall_rule(action='allow', direction='inbound', port='443', protocol='tcp', source_cidr='0.0.0.0/0', priority=100, name='allow-https', description='Allow HTTPS traffic'). Note: Rule order matters; lower priority numbers are evaluated first. Warning: Misconfigured rules can lock you out of systems."
+    parameters:
+      - name: action
+        type: string
+        description: "Rule action"
+        required: true
+        enum: ["allow", "deny", "drop"]
+      - name: direction
+        type: string
+        description: "Traffic direction"
+        required: true
+        enum: ["inbound", "outbound"]
+      - name: port
+        type: string
+        description: "Port or port range"
+        required: true
+      - name: protocol
+        type: string
+        description: "Protocol"
+        required: true
+        enum: ["tcp", "udp", "icmp", "all"]
+      - name: source_cidr
+        type: string
+        description: "Source IP CIDR"
+        required: false
+        default: "0.0.0.0/0"
+      - name: priority
+        type: integer
+        description: "Rule priority"
+        required: false
+        default: 1000
+      - name: name
+        type: string
+        description: "Rule name"
+        required: true
+    tags: ["network", "firewall", "security", "rule", "access"]
+    test_prompts:
+      single:
+        - "Add firewall rule"
+        - "Allow port 443"
+        - "Block incoming traffic"
+        - "Configure firewall"
+      single_clear:
+        - "I need to configure a firewall rule. Add firewall rule"
+        - "I need to configure a firewall rule. Allow port 443"
+        - "I need to configure a firewall rule. Block incoming traffic"
+        - "I need to configure a firewall rule. Configure firewall"
+
+  - name: create_dns_record
+    descriptions:
+      minimal: "Create DNS record"
+      short: "Create a DNS record"
+      medium: "Create a new DNS record for a domain."
+      long: "Add DNS records to a zone. Example: create_dns_record(zone='example.com', name='api', type='A', value='192.168.1.100')."
+      verbose: "Create DNS records in managed zones. Types: A, AAAA, CNAME, MX, TXT, NS, SRV. Example: create_dns_record(zone='example.com', name='api', type='A', value='203.0.113.50', ttl=300, proxied=false). For MX: priority required. For SRV: weight, port, target required. Note: DNS propagation takes time (minutes to hours). Warning: Incorrect records can break services."
+    parameters:
+      - name: zone
+        type: string
+        description: "DNS zone/domain"
+        required: true
+      - name: name
+        type: string
+        description: "Record name (subdomain)"
+        required: true
+      - name: type
+        type: string
+        description: "Record type"
+        required: true
+        enum: ["A", "AAAA", "CNAME", "MX", "TXT", "NS", "SRV"]
+      - name: value
+        type: string
+        description: "Record value"
+        required: true
+      - name: ttl
+        type: integer
+        description: "Time to live (seconds)"
+        required: false
+        default: 3600
+      - name: priority
+        type: integer
+        description: "Priority (for MX)"
+        required: false
+    tags: ["network", "dns", "record", "create", "domain"]
+    test_prompts:
+      single:
+        - "Create DNS record"
+        - "Add A record"
+        - "Set up subdomain"
+        - "Add MX record"
+      single_clear:
+        - "I need to create a DNS record. Create DNS record"
+        - "I need to create a DNS record. Add A record"
+        - "I need to create a DNS record. Set up subdomain"
+        - "I need to create a DNS record. Add MX record"
+
+  - name: get_network_interfaces
+    descriptions:
+      minimal: "Get interfaces"
+      short: "Get network interfaces"
+      medium: "List network interfaces and their configuration."
+      long: "Get information about network interfaces. Example: get_network_interfaces(include_stats=true)."
+      verbose: "Retrieve network interface details. Information: IP addresses, MAC addresses, MTU, status, statistics. Example: get_network_interfaces(include_stats=true, include_ipv6=true). Returns: [{\"name\": \"eth0\", \"mac\": \"00:11:22:33:44:55\", \"ipv4\": \"192.168.1.100\", \"netmask\": \"255.255.255.0\", \"status\": \"up\", \"mtu\": 1500, \"rx_bytes\": 1000000, \"tx_bytes\": 500000}]. Note: Requires appropriate permissions. Warning: Virtual interfaces may also be listed."
+    parameters:
+      - name: include_stats
+        type: boolean
+        description: "Include traffic statistics"
+        required: false
+        default: false
+      - name: include_ipv6
+        type: boolean
+        description: "Include IPv6 addresses"
+        required: false
+        default: true
+      - name: interface_name
+        type: string
+        description: "Filter by interface name"
+        required: false
+    tags: ["network", "interface", "config", "ip", "info"]
+    test_prompts:
+      single:
+        - "List network interfaces"
+        - "Get interface info"
+        - "Show network config"
+        - "What's my IP address"
+      single_clear:
+        - "I need to get network interface information. List network interfaces"
+        - "I need to get network interface information. Get interface info"
+        - "I need to get network interface information. Show network config"
+        - "I need to get network interface information. What's my IP address"
+
+  - name: configure_load_balancer
+    descriptions:
+      minimal: "Configure LB"
+      short: "Configure load balancer"
+      medium: "Configure load balancer settings and backend servers."
+      long: "Manage load balancer configuration. Example: configure_load_balancer(name='web-lb', backends='[{\"host\": \"server1\", \"port\": 80}]')."
+      verbose: "Load balancer management. Features: backend pools, health checks, session affinity, SSL termination, algorithms. Example: configure_load_balancer(name='api-lb', backends='[{\"host\": \"api1.internal\", \"port\": 8080, \"weight\": 2}, {\"host\": \"api2.internal\", \"port\": 8080, \"weight\": 1}]', algorithm='weighted_round_robin', health_check_path='/health', health_check_interval=30, session_affinity='cookie'). Note: Health checks ensure traffic goes to healthy backends. Warning: Misconfiguration can cause downtime."
+    parameters:
+      - name: name
+        type: string
+        description: "Load balancer name"
+        required: true
+      - name: backends
+        type: string
+        description: "JSON array of backend servers"
+        required: true
+      - name: algorithm
+        type: string
+        description: "Load balancing algorithm"
+        required: false
+        default: "round_robin"
+        enum: ["round_robin", "least_connections", "ip_hash", "weighted_round_robin"]
+      - name: health_check_path
+        type: string
+        description: "Health check endpoint"
+        required: false
+        default: "/"
+      - name: health_check_interval
+        type: integer
+        description: "Check interval (seconds)"
+        required: false
+        default: 30
+      - name: session_affinity
+        type: string
+        description: "Session affinity type"
+        required: false
+        enum: ["none", "cookie", "ip"]
+    tags: ["network", "loadbalancer", "backend", "routing", "traffic"]
+    test_prompts:
+      single:
+        - "Configure load balancer"
+        - "Add backend servers"
+        - "Set up load balancing"
+        - "Manage LB backends"
+      single_clear:
+        - "I need to configure a load balancer. Configure load balancer"
+        - "I need to configure a load balancer. Add backend servers"
+        - "I need to configure a load balancer. Set up load balancing"
+        - "I need to configure a load balancer. Manage LB backends"
+
+  - name: create_vpn_connection
+    descriptions:
+      minimal: "Create VPN"
+      short: "Create VPN connection"
+      medium: "Establish a VPN connection to a remote network."
+      long: "Create site-to-site or point-to-site VPN. Example: create_vpn_connection(name='office-vpn', remote_gateway='vpn.example.com', type='ipsec')."
+      verbose: "VPN tunnel configuration. Types: IPsec site-to-site, OpenVPN, WireGuard. Example: create_vpn_connection(name='datacenter-tunnel', type='ipsec', remote_gateway='203.0.113.1', psk='shared-secret', local_subnets='[\"10.0.0.0/8\"]', remote_subnets='[\"192.168.0.0/16\"]', ike_version=2). Features: pre-shared keys, certificate auth, IKEv1/v2, custom encryption. Note: Both ends must be configured. Warning: Weak PSKs are a security risk."
+    parameters:
+      - name: name
+        type: string
+        description: "VPN connection name"
+        required: true
+      - name: type
+        type: string
+        description: "VPN type"
+        required: true
+        enum: ["ipsec", "openvpn", "wireguard"]
+      - name: remote_gateway
+        type: string
+        description: "Remote VPN gateway IP/hostname"
+        required: true
+      - name: psk
+        type: string
+        description: "Pre-shared key"
+        required: false
+      - name: local_subnets
+        type: string
+        description: "JSON array of local subnets"
+        required: false
+      - name: remote_subnets
+        type: string
+        description: "JSON array of remote subnets"
+        required: false
+      - name: ike_version
+        type: integer
+        description: "IKE version (1 or 2)"
+        required: false
+        default: 2
+    tags: ["network", "vpn", "tunnel", "ipsec", "security"]
+    test_prompts:
+      single:
+        - "Create VPN connection"
+        - "Set up site-to-site VPN"
+        - "Configure IPsec tunnel"
+        - "Establish VPN tunnel"
+      single_clear:
+        - "I need to create a VPN connection. Create VPN connection"
+        - "I need to create a VPN connection. Set up site-to-site VPN"
+        - "I need to create a VPN connection. Configure IPsec tunnel"
+        - "I need to create a VPN connection. Establish VPN tunnel"
+
+  - name: bandwidth_test
+    descriptions:
+      minimal: "Bandwidth test"
+      short: "Test network bandwidth"
+      medium: "Measure network bandwidth to a target server."
+      long: "Test upload/download bandwidth. Example: bandwidth_test(server='speedtest.example.com', duration=10)."
+      verbose: "Network throughput measurement. Tests: download speed, upload speed, latency, jitter. Example: bandwidth_test(server='iperf.example.com', duration=10, protocol='tcp', parallel_streams=4, direction='both'). Returns: {\"download_mbps\": 945.5, \"upload_mbps\": 892.3, \"latency_ms\": 12.5, \"jitter_ms\": 1.2}. Use for: capacity planning, troubleshooting, SLA verification. Note: Results vary by time of day and network load. Warning: Bandwidth tests consume significant network resources."
+    parameters:
+      - name: server
+        type: string
+        description: "Target server for testing"
+        required: true
+      - name: duration
+        type: integer
+        description: "Test duration (seconds)"
+        required: false
+        default: 10
+      - name: protocol
+        type: string
+        description: "Test protocol"
+        required: false
+        default: "tcp"
+        enum: ["tcp", "udp"]
+      - name: parallel_streams
+        type: integer
+        description: "Number of parallel streams"
+        required: false
+        default: 1
+      - name: direction
+        type: string
+        description: "Test direction"
+        required: false
+        default: "both"
+        enum: ["download", "upload", "both"]
+    tags: ["network", "bandwidth", "speed", "throughput", "test"]
+    test_prompts:
+      single:
+        - "Test network bandwidth"
+        - "Run speed test"
+        - "Check network throughput"
+        - "Measure connection speed"
+      single_clear:
+        - "I need to test network bandwidth. Test network bandwidth"
+        - "I need to test network bandwidth. Run speed test"
+        - "I need to test network bandwidth. Check network throughput"
+        - "I need to test network bandwidth. Measure connection speed"

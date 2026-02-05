@@ -1,0 +1,1318 @@
+category: database_operations
+description: Database management and query operations
+tools:
+  - name: execute_query
+    descriptions:
+      minimal: "Execute SQL query"
+      short: "Execute a SQL query on a database"
+      medium: "Execute a SQL query against a database and return results."
+      long: "Execute a SQL query on a connected database. Supports SELECT, INSERT, UPDATE, DELETE. Example: execute_query(query='SELECT * FROM users', database='mydb')."
+      verbose: "Execute SQL queries against databases. Supports: SELECT (returns rows), INSERT/UPDATE/DELETE (returns affected count), DDL statements. Connection: specify connection string or use named connection. Features: parameterized queries, transaction control, timeout. Example: execute_query(query='SELECT * FROM users WHERE age > ?', params='[18]', database='postgres://localhost/mydb', timeout=30) returns query results. Note: Use parameterized queries to prevent SQL injection. Warning: DDL operations may lock tables."
+    parameters:
+      - name: query
+        type: string
+        description: "SQL query to execute"
+        required: true
+      - name: database
+        type: string
+        description: "Database connection string or name"
+        required: true
+      - name: params
+        type: string
+        description: "JSON array of query parameters"
+        required: false
+      - name: timeout
+        type: integer
+        description: "Query timeout in seconds"
+        required: false
+        default: 30
+      - name: fetch_size
+        type: integer
+        description: "Number of rows to fetch"
+        required: false
+        default: 1000
+    tags: ["database", "sql", "query", "execute", "select"]
+    test_prompts:
+      single:
+        - "Run this SQL query"
+        - "Execute SELECT * FROM users"
+        - "Query the database"
+        - "Run an INSERT statement"
+      single_clear:
+        - "I need to execute a SQL query against a database and retrieve the results. Run this SQL query"
+        - "I need to execute a SQL query against a database and retrieve the results. Execute SELECT * FROM users"
+        - "I need to execute a SQL query against a database and retrieve the results. Query the database"
+        - "I need to execute a SQL query against a database and retrieve the results. Run an INSERT statement"
+
+  - name: create_table
+    descriptions:
+      minimal: "Create table"
+      short: "Create a database table"
+      medium: "Create a new table in a database with specified columns and constraints."
+      long: "Create a new database table. Define columns with types, constraints, and keys. Example: create_table(name='users', columns='[{\"name\": \"id\", \"type\": \"INT\", \"primary_key\": true}]', database='mydb')."
+      verbose: "Create database tables with full schema definition. Column properties: name, type, nullable, default, primary_key, unique, foreign_key. Table options: engine (MySQL), partitioning, indexes. Example: create_table(name='orders', columns='[{\"name\": \"id\", \"type\": \"SERIAL\", \"primary_key\": true}, {\"name\": \"user_id\", \"type\": \"INT\", \"foreign_key\": \"users(id)\"}]', database='postgres://localhost/shop'). Note: Types vary by database. Warning: IF NOT EXISTS prevents errors on existing tables."
+    parameters:
+      - name: name
+        type: string
+        description: "Table name"
+        required: true
+      - name: columns
+        type: string
+        description: "JSON array of column definitions"
+        required: true
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: if_not_exists
+        type: boolean
+        description: "Only create if not exists"
+        required: false
+        default: true
+      - name: primary_key
+        type: string
+        description: "Primary key column(s)"
+        required: false
+    tags: ["database", "table", "create", "ddl", "schema"]
+    test_prompts:
+      single:
+        - "Create a users table"
+        - "Define a new table with these columns"
+        - "Create the orders table"
+        - "Set up a new database table"
+      single_clear:
+        - "Please create a new database table with specified columns and data types. Create a users table"
+        - "Please create a new database table with specified columns and data types. Define a new table with these columns"
+        - "Please create a new database table with specified columns and data types. Create the orders table"
+        - "Please create a new database table with specified columns and data types. Set up a new database table"
+
+  - name: backup_database
+    descriptions:
+      minimal: "Backup database"
+      short: "Create a database backup"
+      medium: "Create a backup of a database or specific tables."
+      long: "Create a backup/dump of a database. Options for full or partial backup, compression, and format. Example: backup_database(database='mydb', output='backup.sql')."
+      verbose: "Create database backups. Types: 'full' (all data and schema), 'schema' (structure only), 'data' (data only), 'incremental' (changes since last backup). Formats: SQL dump, binary, archive. Options: compression (gzip, bzip2), specific tables, exclude patterns. Example: backup_database(database='postgres://localhost/prod', type='full', format='sql', compress=true, output='prod_backup.sql.gz'). Note: Large databases should use streaming backup. Warning: Backups may lock tables; schedule during low usage."
+    parameters:
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: output
+        type: string
+        description: "Output file path"
+        required: true
+      - name: type
+        type: string
+        description: "Backup type"
+        required: false
+        default: "full"
+        enum: ["full", "schema", "data", "incremental"]
+      - name: format
+        type: string
+        description: "Backup format"
+        required: false
+        default: "sql"
+        enum: ["sql", "binary", "archive"]
+      - name: compress
+        type: boolean
+        description: "Compress output"
+        required: false
+        default: false
+      - name: tables
+        type: string
+        description: "JSON array of specific tables"
+        required: false
+    tags: ["database", "backup", "dump", "export", "disaster_recovery"]
+    test_prompts:
+      single:
+        - "Backup the database"
+        - "Create a database dump"
+        - "Export the database to SQL"
+        - "Make a backup of the users table"
+      single_clear:
+        - "I need to create a backup dump of the database. Backup the database"
+        - "I need to create a backup dump of the database. Create a database dump"
+        - "I need to create a backup dump of the database. Export the database to SQL"
+        - "I need to create a backup dump of the database. Make a backup of the users table"
+
+  - name: restore_database
+    descriptions:
+      minimal: "Restore database"
+      short: "Restore a database from backup"
+      medium: "Restore a database from a backup file."
+      long: "Restore a database from a backup dump file. Supports SQL dumps and binary formats. Example: restore_database(backup='backup.sql', database='mydb')."
+      verbose: "Restore databases from backup files. Options: drop existing database, create new database, restore specific tables, skip errors. Formats: SQL dump, pg_dump binary, mysqldump. Example: restore_database(backup='prod_backup.sql.gz', database='postgres://localhost/test', drop_existing=true, decompress=true). Note: Ensure database user has sufficient privileges. Warning: drop_existing destroys all current data; verify target carefully."
+    parameters:
+      - name: backup
+        type: string
+        description: "Backup file path"
+        required: true
+      - name: database
+        type: string
+        description: "Target database connection"
+        required: true
+      - name: drop_existing
+        type: boolean
+        description: "Drop existing database first"
+        required: false
+        default: false
+      - name: decompress
+        type: boolean
+        description: "Decompress backup file"
+        required: false
+        default: false
+      - name: tables
+        type: string
+        description: "JSON array of specific tables to restore"
+        required: false
+    tags: ["database", "restore", "import", "recovery", "backup"]
+    test_prompts:
+      single:
+        - "Restore the database from backup"
+        - "Import the SQL dump"
+        - "Restore from this backup file"
+        - "Recover the database"
+      single_clear:
+        - "Please restore a database from a backup file. Restore the database from backup"
+        - "Please restore a database from a backup file. Import the SQL dump"
+        - "Please restore a database from a backup file. Restore from this backup file"
+        - "Please restore a database from a backup file. Recover the database"
+
+  - name: create_index
+    descriptions:
+      minimal: "Create index"
+      short: "Create a database index"
+      medium: "Create an index on a database table to improve query performance."
+      long: "Create an index on table columns for faster queries. Supports unique, partial, and composite indexes. Example: create_index(table='users', columns='[\"email\"]', name='idx_users_email')."
+      verbose: "Create database indexes for query optimization. Types: 'btree' (default, range queries), 'hash' (equality), 'gin' (full-text), 'gist' (geometric). Options: unique, partial (WHERE clause), include columns, concurrent creation. Example: create_index(table='orders', columns='[\"user_id\", \"created_at\"]', type='btree', name='idx_orders_user_date', where='status = \"active\"', database='postgres://localhost/shop'). Note: Indexes speed reads but slow writes. Warning: Creating indexes on large tables can take time and lock writes."
+    parameters:
+      - name: table
+        type: string
+        description: "Table name"
+        required: true
+      - name: columns
+        type: string
+        description: "JSON array of column names"
+        required: true
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: name
+        type: string
+        description: "Index name"
+        required: false
+      - name: type
+        type: string
+        description: "Index type"
+        required: false
+        default: "btree"
+        enum: ["btree", "hash", "gin", "gist"]
+      - name: unique
+        type: boolean
+        description: "Create unique index"
+        required: false
+        default: false
+      - name: concurrent
+        type: boolean
+        description: "Create concurrently (no locks)"
+        required: false
+        default: false
+    tags: ["database", "index", "create", "performance", "optimization"]
+    test_prompts:
+      single:
+        - "Create an index on the email column"
+        - "Add an index to the users table"
+        - "Create a composite index"
+        - "Add a unique index"
+      single_clear:
+        - "I need to create a database index on columns for faster queries. Create an index on the email column"
+        - "I need to create a database index on columns for faster queries. Add an index to the users table"
+        - "I need to create a database index on columns for faster queries. Create a composite index"
+        - "I need to create a database index on columns for faster queries. Add a unique index"
+
+  - name: analyze_query
+    descriptions:
+      minimal: "Analyze query"
+      short: "Analyze SQL query performance"
+      medium: "Analyze a SQL query's execution plan and performance characteristics."
+      long: "Get the execution plan for a SQL query. Shows how the database will execute the query and estimated costs. Example: analyze_query(query='SELECT * FROM users WHERE email = ?', database='mydb')."
+      verbose: "Analyze SQL query execution plans for performance optimization. Returns: execution plan, estimated rows, actual time (if executed), index usage, join methods, sequential scans. Modes: 'explain' (plan only), 'analyze' (execute and measure). Example: analyze_query(query='SELECT * FROM orders o JOIN users u ON o.user_id = u.id', mode='analyze', format='json', database='postgres://localhost/shop'). Note: ANALYZE actually executes the query. Warning: Use EXPLAIN only for data-modifying queries unless you want them to execute."
+    parameters:
+      - name: query
+        type: string
+        description: "SQL query to analyze"
+        required: true
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: mode
+        type: string
+        description: "Analysis mode"
+        required: false
+        default: "explain"
+        enum: ["explain", "analyze"]
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "text"
+        enum: ["text", "json", "yaml"]
+      - name: params
+        type: string
+        description: "Query parameters"
+        required: false
+    tags: ["database", "query", "analyze", "performance", "explain"]
+    test_prompts:
+      single:
+        - "Explain this query"
+        - "Analyze the query performance"
+        - "Show the execution plan"
+        - "Why is this query slow?"
+      single_clear:
+        - "Please analyze a SQL query's execution plan for optimization. Explain this query"
+        - "Please analyze a SQL query's execution plan for optimization. Analyze the query performance"
+        - "Please analyze a SQL query's execution plan for optimization. Show the execution plan"
+        - "Please analyze a SQL query's execution plan for optimization. Why is this query slow?"
+
+  - name: manage_connection_pool
+    descriptions:
+      minimal: "Manage pool"
+      short: "Manage database connection pool"
+      medium: "Configure and manage database connection pooling settings."
+      long: "Manage database connection pool. Set min/max connections, timeouts, and view pool statistics. Example: manage_connection_pool(database='mydb', action='stats')."
+      verbose: "Manage database connection pools for optimal performance. Actions: 'create' (initialize pool), 'stats' (view statistics), 'resize' (change limits), 'drain' (close connections), 'refresh' (cycle connections). Settings: min/max connections, idle timeout, max lifetime, connection timeout. Example: manage_connection_pool(database='postgres://localhost/app', action='create', min_size=5, max_size=20, idle_timeout=300). Note: Pool size should match expected concurrency. Warning: Draining pool affects active queries."
+    parameters:
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: action
+        type: string
+        description: "Pool action"
+        required: true
+        enum: ["create", "stats", "resize", "drain", "refresh"]
+      - name: min_size
+        type: integer
+        description: "Minimum pool size"
+        required: false
+        default: 5
+      - name: max_size
+        type: integer
+        description: "Maximum pool size"
+        required: false
+        default: 20
+      - name: idle_timeout
+        type: integer
+        description: "Idle connection timeout (seconds)"
+        required: false
+        default: 300
+    tags: ["database", "connection", "pool", "performance", "manage"]
+    test_prompts:
+      single:
+        - "Show connection pool stats"
+        - "Resize the connection pool"
+        - "Create a connection pool"
+        - "Drain idle connections"
+      single_clear:
+        - "I need to manage database connection pool settings. Show connection pool stats"
+        - "I need to manage database connection pool settings. Resize the connection pool"
+        - "I need to manage database connection pool settings. Create a connection pool"
+        - "I need to manage database connection pool settings. Drain idle connections"
+
+  - name: migrate_database
+    descriptions:
+      minimal: "Migrate database"
+      short: "Run database migrations"
+      medium: "Run database schema migrations to update the database structure."
+      long: "Run database migrations. Apply pending migrations, rollback, or check migration status. Example: migrate_database(action='up', database='mydb')."
+      verbose: "Manage database schema migrations. Actions: 'up' (apply pending), 'down' (rollback last), 'status' (show pending/applied), 'create' (generate migration file), 'redo' (rollback and reapply last). Migration files contain up/down SQL. Example: migrate_database(action='up', count=5, database='postgres://localhost/app', migrations_dir='./migrations'). Note: Always backup before migrating production. Warning: Down migrations may lose data; test thoroughly."
+    parameters:
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: action
+        type: string
+        description: "Migration action"
+        required: true
+        enum: ["up", "down", "status", "create", "redo"]
+      - name: count
+        type: integer
+        description: "Number of migrations to apply/rollback"
+        required: false
+        default: 1
+      - name: migrations_dir
+        type: string
+        description: "Directory containing migrations"
+        required: false
+        default: "./migrations"
+      - name: name
+        type: string
+        description: "Migration name (for create)"
+        required: false
+    tags: ["database", "migration", "schema", "ddl", "versioning"]
+    test_prompts:
+      single:
+        - "Run pending migrations"
+        - "Rollback the last migration"
+        - "Check migration status"
+        - "Create a new migration"
+      single_clear:
+        - "I need to run database schema migrations. Run pending migrations"
+        - "I need to run database schema migrations. Rollback the last migration"
+        - "I need to run database schema migrations. Check migration status"
+        - "I need to run database schema migrations. Create a new migration"
+
+  - name: replicate_database
+    descriptions:
+      minimal: "Replicate database"
+      short: "Set up database replication"
+      medium: "Configure database replication between primary and replica servers."
+      long: "Set up and manage database replication. Configure primary-replica relationships and sync status. Example: replicate_database(primary='db1', replica='db2', action='setup')."
+      verbose: "Configure and manage database replication. Modes: 'sync' (synchronous), 'async' (asynchronous), 'logical' (selective tables). Actions: 'setup' (initialize replication), 'status' (check lag/health), 'promote' (make replica primary), 'pause'/'resume' replication. Example: replicate_database(primary='postgres://primary:5432/db', replica='postgres://replica:5432/db', mode='async', action='setup'). Note: Synchronous replication ensures durability but adds latency. Warning: Promotion is irreversible; ensure failover is intentional."
+    parameters:
+      - name: primary
+        type: string
+        description: "Primary database connection"
+        required: true
+      - name: replica
+        type: string
+        description: "Replica database connection"
+        required: true
+      - name: action
+        type: string
+        description: "Replication action"
+        required: true
+        enum: ["setup", "status", "promote", "pause", "resume"]
+      - name: mode
+        type: string
+        description: "Replication mode"
+        required: false
+        default: "async"
+        enum: ["sync", "async", "logical"]
+      - name: tables
+        type: string
+        description: "Tables to replicate (for logical)"
+        required: false
+    tags: ["database", "replication", "replica", "sync", "high_availability"]
+    test_prompts:
+      single:
+        - "Set up database replication"
+        - "Check replication status"
+        - "Promote the replica to primary"
+        - "Configure master-slave replication"
+      single_clear:
+        - "I need to configure database replication between primary and replica servers. Set up database replication"
+        - "I need to configure database replication between primary and replica servers. Check replication status"
+        - "I need to configure database replication between primary and replica servers. Promote the replica to primary"
+        - "I need to configure database replication between primary and replica servers. Configure master-slave replication"
+
+  - name: vacuum_database
+    descriptions:
+      minimal: "Vacuum database"
+      short: "Vacuum and optimize database"
+      medium: "Vacuum, analyze, or optimize database tables to reclaim space and update statistics."
+      long: "Perform database maintenance: vacuum (reclaim space), analyze (update statistics), optimize. Example: vacuum_database(database='mydb', table='users', action='vacuum')."
+      verbose: "Perform database maintenance operations. Actions: 'vacuum' (reclaim dead row space), 'analyze' (update query planner statistics), 'vacuum_analyze' (both), 'reindex' (rebuild indexes), 'optimize' (database-specific optimization). Options: full vacuum (reclaims more space, locks table), verbose output. Example: vacuum_database(database='postgres://localhost/app', table='orders', action='vacuum_analyze', full=false, verbose=true). Note: Regular maintenance improves performance. Warning: VACUUM FULL locks the table; schedule during maintenance windows."
+    parameters:
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: action
+        type: string
+        description: "Maintenance action"
+        required: true
+        enum: ["vacuum", "analyze", "vacuum_analyze", "reindex", "optimize"]
+      - name: table
+        type: string
+        description: "Specific table (all if omitted)"
+        required: false
+      - name: full
+        type: boolean
+        description: "Full vacuum (locks table)"
+        required: false
+        default: false
+      - name: verbose
+        type: boolean
+        description: "Verbose output"
+        required: false
+        default: false
+    tags: ["database", "vacuum", "maintenance", "optimize", "performance"]
+    test_prompts:
+      single:
+        - "Vacuum the database"
+        - "Update table statistics"
+        - "Optimize the users table"
+        - "Run database maintenance"
+      single_clear:
+        - "I need to vacuum and optimize database tables to reclaim space. Vacuum the database"
+        - "I need to vacuum and optimize database tables to reclaim space. Update table statistics"
+        - "I need to vacuum and optimize database tables to reclaim space. Optimize the users table"
+        - "I need to vacuum and optimize database tables to reclaim space. Run database maintenance"
+  - name: execute_transaction
+    descriptions:
+      minimal: "Execute transaction"
+      short: "Execute database transaction"
+      medium: "Execute multiple SQL statements within a single atomic transaction."
+      long: "Execute multiple statements as an atomic transaction. Either all succeed or all are rolled back. Example: execute_transaction(database='mydb', statements='[\"INSERT INTO...\", \"UPDATE...\"]')."
+      verbose: "Execute SQL statements within a transaction for atomicity. Features: multiple statements, savepoints, isolation levels, automatic rollback on error. Example: execute_transaction(database='postgres://localhost/app', statements='[\"INSERT INTO orders (customer_id, total) VALUES (1, 100.00)\", \"UPDATE inventory SET quantity = quantity - 1 WHERE product_id = 5\"]', isolation_level='serializable', timeout=30). Returns: commit status, rows affected per statement. Note: Long transactions can cause lock contention. Warning: Ensure proper error handling for rollbacks."
+    parameters:
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: statements
+        type: string
+        description: "JSON array of SQL statements"
+        required: true
+      - name: isolation_level
+        type: string
+        description: "Transaction isolation level"
+        required: false
+        default: "read_committed"
+        enum: ["read_uncommitted", "read_committed", "repeatable_read", "serializable"]
+      - name: timeout
+        type: integer
+        description: "Transaction timeout (seconds)"
+        required: false
+        default: 30
+      - name: dry_run
+        type: boolean
+        description: "Rollback after execution"
+        required: false
+        default: false
+    tags: ["database", "transaction", "atomic", "sql", "acid"]
+    test_prompts:
+      single:
+        - "Execute statements in a transaction"
+        - "Run atomic database operation"
+        - "Process transfer as transaction"
+        - "Execute SQL with rollback on error"
+      single_clear:
+        - "I need to execute multiple SQL statements within a single atomic transaction. Execute statements in a transaction"
+        - "I need to execute multiple SQL statements within a single atomic transaction. Run atomic database operation"
+        - "I need to execute multiple SQL statements within a single atomic transaction. Process transfer as transaction"
+        - "I need to execute multiple SQL statements within a single atomic transaction. Execute SQL with rollback on error"
+
+  - name: create_database_user
+    descriptions:
+      minimal: "Create DB user"
+      short: "Create a database user"
+      medium: "Create a new database user with specified roles and permissions."
+      long: "Create a database user with password and role assignments. Configure access privileges. Example: create_database_user(database='mydb', username='app_user', password='...', roles='[\"readonly\"]')."
+      verbose: "Create database users with fine-grained permissions. Configuration: username, password (or external auth), roles, database access, schema access, table-level grants. Example: create_database_user(database='postgres://localhost/app', username='reporting_user', password='secure123', roles='[\"readonly\"]', databases='[\"analytics\"]', grant_select='[\"public.*\"]', valid_until='2025-12-31'). Note: Use principle of least privilege. Warning: Never create users with superuser access for applications."
+    parameters:
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: username
+        type: string
+        description: "New username"
+        required: true
+      - name: password
+        type: string
+        description: "User password"
+        required: true
+      - name: roles
+        type: string
+        description: "JSON array of roles"
+        required: false
+      - name: databases
+        type: string
+        description: "JSON array of accessible databases"
+        required: false
+      - name: grant_select
+        type: string
+        description: "Tables to grant SELECT"
+        required: false
+      - name: valid_until
+        type: string
+        description: "Password expiration date"
+        required: false
+    tags: ["database", "user", "security", "permissions", "create"]
+    test_prompts:
+      single:
+        - "Create a database user"
+        - "Add a read-only user"
+        - "Set up application database user"
+        - "Create user with limited permissions"
+      single_clear:
+        - "I need to create a new database user with specified roles and permissions. Create a database user"
+        - "I need to create a new database user with specified roles and permissions. Add a read-only user"
+        - "I need to create a new database user with specified roles and permissions. Set up application database user"
+        - "I need to create a new database user with specified roles and permissions. Create user with limited permissions"
+
+  - name: monitor_database_performance
+    descriptions:
+      minimal: "Monitor performance"
+      short: "Monitor database performance"
+      medium: "Get database performance metrics and identify slow queries."
+      long: "Monitor database performance metrics. View active queries, slow queries, locks, and resource usage. Example: monitor_database_performance(database='mydb', metrics='[\"slow_queries\", \"locks\"]')."
+      verbose: "Comprehensive database performance monitoring. Metrics: active connections, slow queries (with plans), lock waits, table/index bloat, cache hit ratio, replication lag, disk I/O, query statistics. Example: monitor_database_performance(database='postgres://localhost/app', metrics='[\"active_queries\", \"slow_queries\", \"locks\", \"cache_ratio\"]', slow_threshold_ms=1000, limit=50). Note: Some metrics require pg_stat_statements or similar extensions. Warning: Frequent monitoring queries can impact performance."
+    parameters:
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: metrics
+        type: string
+        description: "JSON array of metrics to collect"
+        required: true
+      - name: slow_threshold_ms
+        type: integer
+        description: "Slow query threshold (ms)"
+        required: false
+        default: 1000
+      - name: limit
+        type: integer
+        description: "Max results per metric"
+        required: false
+        default: 20
+      - name: include_query_plans
+        type: boolean
+        description: "Include EXPLAIN for slow queries"
+        required: false
+        default: false
+    tags: ["database", "monitoring", "performance", "metrics", "slow_queries"]
+    test_prompts:
+      single:
+        - "Show slow database queries"
+        - "Check database performance"
+        - "Monitor active connections"
+        - "Get database metrics"
+      single_clear:
+        - "I need to get database performance metrics and identify slow queries. Show slow database queries"
+        - "I need to get database performance metrics and identify slow queries. Check database performance"
+        - "I need to get database performance metrics and identify slow queries. Monitor active connections"
+        - "I need to get database performance metrics and identify slow queries. Get database metrics"
+
+  - name: manage_database_connection_pool
+    descriptions:
+      minimal: "Manage connection pool"
+      short: "Manage database connection pool"
+      medium: "Configure and monitor database connection pool settings."
+      long: "Manage database connection pooling. Configure pool size, timeouts, and monitor usage. Example: manage_database_connection_pool(action='configure', min_connections=5, max_connections=50)."
+      verbose: "Manage database connection pools for performance. Actions: 'configure' (set parameters), 'status' (current state), 'reset' (clear connections), 'scale' (adjust size). Parameters: min/max connections, idle timeout, connection lifetime, queue timeout. Example: manage_database_connection_pool(database='postgres://localhost/app', action='configure', min_connections=10, max_connections=100, idle_timeout=300, max_lifetime=1800). Note: Pool size should match database max_connections. Warning: Too many connections can overwhelm the database."
+    parameters:
+      - name: database
+        type: string
+        description: "Database identifier"
+        required: true
+      - name: action
+        type: string
+        description: "Pool action"
+        required: true
+        enum: ["configure", "status", "reset", "scale"]
+      - name: min_connections
+        type: integer
+        description: "Minimum pool size"
+        required: false
+      - name: max_connections
+        type: integer
+        description: "Maximum pool size"
+        required: false
+      - name: idle_timeout
+        type: integer
+        description: "Idle connection timeout (seconds)"
+        required: false
+      - name: max_lifetime
+        type: integer
+        description: "Max connection lifetime (seconds)"
+        required: false
+    tags: ["database", "connection", "pool", "performance", "scaling"]
+    test_prompts:
+      single:
+        - "Configure connection pool"
+        - "Check pool status"
+        - "Increase max connections"
+        - "Reset connection pool"
+      single_clear:
+        - "I need to configure and monitor database connection pool settings. Configure connection pool"
+        - "I need to configure and monitor database connection pool settings. Check pool status"
+        - "I need to configure and monitor database connection pool settings. Increase max connections"
+        - "I need to configure and monitor database connection pool settings. Reset connection pool"
+
+  - name: import_data
+    descriptions:
+      minimal: "Import data"
+      short: "Import data into database"
+      medium: "Import data from files into database tables."
+      long: "Bulk import data from CSV, JSON, or other formats into database tables. Example: import_data(database='mydb', table='users', source='users.csv', format='csv')."
+      verbose: "Bulk data import from files to database tables. Formats: CSV, JSON, Parquet, SQL dump. Options: column mapping, skip rows, batch size, conflict handling, transaction control. Example: import_data(database='postgres://localhost/app', table='products', source='s3://bucket/products.csv', format='csv', column_mapping='{\"sku\": \"product_id\", \"name\": \"product_name\"}', on_conflict='update', batch_size=1000, skip_rows=1). Note: Large imports should be batched. Warning: Validate data before import to avoid constraint violations."
+    parameters:
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: table
+        type: string
+        description: "Target table"
+        required: true
+      - name: source
+        type: string
+        description: "Source file path or URL"
+        required: true
+      - name: format
+        type: string
+        description: "Source format"
+        required: true
+        enum: ["csv", "json", "parquet", "sql"]
+      - name: column_mapping
+        type: string
+        description: "JSON column name mapping"
+        required: false
+      - name: on_conflict
+        type: string
+        description: "Conflict handling"
+        required: false
+        enum: ["skip", "update", "error"]
+      - name: batch_size
+        type: integer
+        description: "Rows per batch"
+        required: false
+        default: 1000
+    tags: ["database", "import", "bulk", "etl", "data"]
+    test_prompts:
+      single:
+        - "Import CSV into database"
+        - "Load data from file"
+        - "Bulk import products"
+        - "Import JSON data"
+      single_clear:
+        - "I need to import data from files into database tables. Import CSV into database"
+        - "I need to import data from files into database tables. Load data from file"
+        - "I need to import data from files into database tables. Bulk import products"
+        - "I need to import data from files into database tables. Import JSON data"
+
+  - name: export_data
+    descriptions:
+      minimal: "Export data"
+      short: "Export data from database"
+      medium: "Export data from database tables to files."
+      long: "Export query results or table data to CSV, JSON, or other formats. Example: export_data(database='mydb', query='SELECT * FROM users', format='csv', output='users.csv')."
+      verbose: "Export database data to files. Formats: CSV, JSON, Parquet, SQL. Options: full table, query results, filtered, with schema. Example: export_data(database='postgres://localhost/app', query='SELECT * FROM orders WHERE created_at > NOW() - INTERVAL \\'7 days\\'', format='csv', output='s3://bucket/weekly_orders.csv', include_headers=true, compression='gzip'). Note: Large exports may need streaming. Warning: Be mindful of sensitive data in exports."
+    parameters:
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: query
+        type: string
+        description: "SQL query to export"
+        required: false
+      - name: table
+        type: string
+        description: "Table to export (alternative)"
+        required: false
+      - name: format
+        type: string
+        description: "Output format"
+        required: true
+        enum: ["csv", "json", "parquet", "sql"]
+      - name: output
+        type: string
+        description: "Output file path"
+        required: true
+      - name: compression
+        type: string
+        description: "Compression type"
+        required: false
+        enum: ["none", "gzip", "zip"]
+      - name: include_headers
+        type: boolean
+        description: "Include column headers"
+        required: false
+        default: true
+    tags: ["database", "export", "backup", "csv", "data"]
+    test_prompts:
+      single:
+        - "Export table to CSV"
+        - "Download query results"
+        - "Export database data"
+        - "Save table to JSON"
+      single_clear:
+        - "I need to export data from database tables to files. Export table to CSV"
+        - "I need to export data from database tables to files. Download query results"
+        - "I need to export data from database tables to files. Export database data"
+        - "I need to export data from database tables to files. Save table to JSON"
+
+  - name: clone_database
+    descriptions:
+      minimal: "Clone database"
+      short: "Clone a database"
+      medium: "Create a copy of a database for testing or development."
+      long: "Clone an entire database including schema and data. Useful for creating test environments. Example: clone_database(source='production', target='staging', exclude_tables='[\"logs\"]')."
+      verbose: "Clone databases for dev/test environments. Options: full clone, schema only, with data transformation, exclude tables, subset data. Example: clone_database(source='postgres://prod/app', target='postgres://dev/app_copy', mode='full', exclude_tables='[\"audit_log\", \"sessions\"]', anonymize='[{\"table\": \"users\", \"columns\": {\"email\": \"fake_email\", \"phone\": \"null\"}}]'). Note: Cloning large databases takes time. Warning: Anonymize sensitive data for non-production clones."
+    parameters:
+      - name: source
+        type: string
+        description: "Source database connection"
+        required: true
+      - name: target
+        type: string
+        description: "Target database connection"
+        required: true
+      - name: mode
+        type: string
+        description: "Clone mode"
+        required: false
+        default: "full"
+        enum: ["full", "schema_only", "data_only"]
+      - name: exclude_tables
+        type: string
+        description: "JSON tables to exclude"
+        required: false
+      - name: anonymize
+        type: string
+        description: "JSON anonymization rules"
+        required: false
+      - name: parallel
+        type: integer
+        description: "Parallel copy workers"
+        required: false
+        default: 4
+    tags: ["database", "clone", "copy", "test", "development"]
+    test_prompts:
+      single:
+        - "Clone production to staging"
+        - "Copy database for testing"
+        - "Create database copy"
+        - "Clone with anonymized data"
+      single_clear:
+        - "I need to create a copy of a database for testing or development. Clone production to staging"
+        - "I need to create a copy of a database for testing or development. Copy database for testing"
+        - "I need to create a copy of a database for testing or development. Create database copy"
+        - "I need to create a copy of a database for testing or development. Clone with anonymized data"
+
+  - name: manage_database_schema
+    descriptions:
+      minimal: "Manage schema"
+      short: "Manage database schema"
+      medium: "View, compare, or sync database schemas."
+      long: "Manage database schemas. Compare versions, generate diffs, sync between databases. Example: manage_database_schema(action='diff', source='dev', target='prod')."
+      verbose: "Database schema management operations. Actions: 'view' (show schema), 'diff' (compare schemas), 'sync' (apply changes), 'generate' (create DDL), 'validate' (check consistency). Example: manage_database_schema(action='diff', source='postgres://dev/app', target='postgres://prod/app', include='[\"tables\", \"indexes\", \"constraints\"]', generate_migration=true). Returns: schema diff, migration script. Note: Always review diffs before sync. Warning: Schema sync can cause downtime."
+    parameters:
+      - name: action
+        type: string
+        description: "Schema action"
+        required: true
+        enum: ["view", "diff", "sync", "generate", "validate"]
+      - name: source
+        type: string
+        description: "Source database/schema"
+        required: true
+      - name: target
+        type: string
+        description: "Target database (for diff/sync)"
+        required: false
+      - name: include
+        type: string
+        description: "JSON object types to include"
+        required: false
+      - name: generate_migration
+        type: boolean
+        description: "Generate migration script"
+        required: false
+        default: false
+    tags: ["database", "schema", "migration", "diff", "ddl"]
+    test_prompts:
+      single:
+        - "Compare database schemas"
+        - "Show schema differences"
+        - "Sync schema changes"
+        - "Generate migration script"
+      single_clear:
+        - "I need to view, compare, or sync database schemas. Compare database schemas"
+        - "I need to view, compare, or sync database schemas. Show schema differences"
+        - "I need to view, compare, or sync database schemas. Sync schema changes"
+        - "I need to view, compare, or sync database schemas. Generate migration script"
+
+  - name: query_explain
+    descriptions:
+      minimal: "Explain query"
+      short: "Explain query execution plan"
+      medium: "Analyze query execution plan for optimization."
+      long: "Get the execution plan for a SQL query. Identify performance bottlenecks. Example: query_explain(database='mydb', query='SELECT * FROM orders WHERE status = \\'pending\\'', analyze=true)."
+      verbose: "Analyze SQL query execution plans. Options: basic plan, ANALYZE (actually execute), BUFFERS (I/O stats), FORMAT (text, JSON, YAML). Identifies: full table scans, missing indexes, inefficient joins, cost estimates. Example: query_explain(database='postgres://localhost/app', query='SELECT o.*, c.name FROM orders o JOIN customers c ON o.customer_id = c.id WHERE o.total > 1000', analyze=true, buffers=true, format='json'). Note: ANALYZE actually runs the query. Warning: Don't use ANALYZE on data-modifying queries in production."
+    parameters:
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: query
+        type: string
+        description: "SQL query to explain"
+        required: true
+      - name: analyze
+        type: boolean
+        description: "Actually execute query"
+        required: false
+        default: false
+      - name: buffers
+        type: boolean
+        description: "Include buffer usage"
+        required: false
+        default: false
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "text"
+        enum: ["text", "json", "yaml", "xml"]
+    tags: ["database", "explain", "query", "performance", "optimization"]
+    test_prompts:
+      single:
+        - "Explain this query"
+        - "Show query execution plan"
+        - "Analyze slow query"
+      single_clear:
+        - "I need to analyze a query execution plan for optimization. Explain this query"
+        - "I need to analyze a query execution plan for optimization. Show query execution plan"
+        - "I need to analyze a query execution plan for optimization. Analyze slow query"
+
+  - name: manage_database_replication
+    descriptions:
+      minimal: "Manage replication"
+      short: "Manage database replication"
+      medium: "Configure and manage database replication for high availability."
+      long: "Set up primary-replica replication with automatic failover. Example: manage_database_replication(action='setup', primary='db-primary', replicas='[\"db-replica-1\"]')."
+      verbose: "Database replication management for HA and read scaling. Types: synchronous, asynchronous, semi-synchronous. Features: automatic failover, read replicas, lag monitoring. Example: manage_database_replication(action='setup', connection=CONNECTION_STRING, config='{\"type\": \"async\", \"replicas\": [\"replica-1\", \"replica-2\"], \"auto_failover\": true, \"max_lag_seconds\": 30}'). Failover: manage_database_replication(action='failover', new_primary='replica-1', reason='planned_maintenance'). Monitor: manage_database_replication(action='status'). Note: Sync replication impacts write latency. Warning: Test failover procedures regularly."
+    parameters:
+      - name: action
+        type: string
+        description: "Replication action"
+        required: true
+        enum: ["setup", "status", "failover", "add_replica", "remove_replica", "pause", "resume"]
+      - name: connection
+        type: string
+        description: "Primary database connection string"
+        required: false
+      - name: config
+        type: string
+        description: "JSON replication configuration"
+        required: false
+      - name: replica_id
+        type: string
+        description: "Specific replica identifier"
+        required: false
+      - name: new_primary
+        type: string
+        description: "New primary for failover"
+        required: false
+      - name: reason
+        type: string
+        description: "Failover reason"
+        required: false
+    tags: ["database", "replication", "ha", "failover", "replica"]
+    test_prompts:
+      single:
+        - "Set up database replication"
+        - "Check replication status"
+        - "Failover to replica"
+        - "Add read replica"
+      single_clear:
+        - "I need to configure and manage database replication for high availability. Set up database replication"
+        - "I need to configure and manage database replication for high availability. Check replication status"
+        - "I need to configure and manage database replication for high availability. Failover to replica"
+        - "I need to configure and manage database replication for high availability. Add read replica"
+
+  - name: manage_database_partitions
+    descriptions:
+      minimal: "Manage partitions"
+      short: "Manage table partitions"
+      medium: "Create and manage table partitions for large datasets."
+      long: "Set up partitioning by range, list, or hash for performance. Example: manage_database_partitions(action='create', table='events', partition_by='range', column='created_at')."
+      verbose: "Table partitioning for performance and maintenance. Types: range (dates, numbers), list (categories), hash (distribution). Features: automatic creation, pruning, archival. Example: manage_database_partitions(action='create', connection=CONNECTION_STRING, table='order_history', type='range', column='order_date', config='{\"interval\": \"monthly\", \"retention_months\": 24, \"auto_create\": true}'). Maintain: manage_database_partitions(action='maintain', table='order_history', operation='archive', older_than='2y'). Note: Partition key must be in primary key. Warning: Adding partitioning requires table recreation."
+    parameters:
+      - name: action
+        type: string
+        description: "Partition action"
+        required: true
+        enum: ["create", "drop", "list", "maintain", "attach", "detach", "analyze"]
+      - name: connection
+        type: string
+        description: "Database connection string"
+        required: false
+      - name: table
+        type: string
+        description: "Table name"
+        required: true
+      - name: type
+        type: string
+        description: "Partition type"
+        required: false
+        enum: ["range", "list", "hash"]
+      - name: column
+        type: string
+        description: "Partition column"
+        required: false
+      - name: config
+        type: string
+        description: "JSON partition configuration"
+        required: false
+      - name: operation
+        type: string
+        description: "Maintenance operation"
+        required: false
+    tags: ["database", "partition", "performance", "large_tables", "maintenance"]
+    test_prompts:
+      single:
+        - "Create table partition"
+        - "List partitions"
+        - "Archive old partitions"
+        - "Set up monthly partitioning"
+      single_clear:
+        - "I need to create and manage table partitions for large datasets. Create table partition"
+        - "I need to create and manage table partitions for large datasets. List partitions"
+        - "I need to create and manage table partitions for large datasets. Archive old partitions"
+        - "I need to create and manage table partitions for large datasets. Set up monthly partitioning"
+
+  - name: manage_database_connections
+    descriptions:
+      minimal: "Manage connections"
+      short: "Manage database connections"
+      medium: "Monitor and manage database connection pools."
+      long: "Control connection pools, kill sessions, and monitor usage. Example: manage_database_connections(action='list') or manage_database_connections(action='kill', session_id='123')."
+      verbose: "Database connection and session management. Features: pool sizing, idle timeout, connection limits, session monitoring. Example: manage_database_connections(action='configure', connection=CONNECTION_STRING, pool='{\"min\": 5, \"max\": 100, \"idle_timeout\": 300, \"max_lifetime\": 3600}'). Monitor: manage_database_connections(action='list', include_queries=true). Kill: manage_database_connections(action='kill', session_id='12345', reason='blocking_queries'). Pool stats: manage_database_connections(action='stats'). Note: Pool sizing affects memory. Warning: Killing sessions may leave transactions incomplete."
+    parameters:
+      - name: action
+        type: string
+        description: "Connection action"
+        required: true
+        enum: ["list", "kill", "configure", "stats", "reset", "limit"]
+      - name: connection
+        type: string
+        description: "Database connection string"
+        required: false
+      - name: session_id
+        type: string
+        description: "Session ID to kill"
+        required: false
+      - name: pool
+        type: string
+        description: "JSON pool configuration"
+        required: false
+      - name: include_queries
+        type: boolean
+        description: "Include active queries"
+        required: false
+        default: false
+      - name: reason
+        type: string
+        description: "Kill reason for audit"
+        required: false
+    tags: ["database", "connections", "pool", "sessions", "monitoring"]
+    test_prompts:
+      single:
+        - "List database connections"
+        - "Kill blocking session"
+        - "Configure connection pool"
+        - "Show connection stats"
+      single_clear:
+        - "I need to monitor and manage database connection pools. List database connections"
+        - "I need to monitor and manage database connection pools. Kill blocking session"
+        - "I need to monitor and manage database connection pools. Configure connection pool"
+        - "I need to monitor and manage database connection pools. Show connection stats"
+
+  - name: manage_database_locks
+    descriptions:
+      minimal: "Manage locks"
+      short: "Manage database locks"
+      medium: "Monitor and manage database locks and deadlocks."
+      long: "View lock waits, detect deadlocks, and resolve blocking issues. Example: manage_database_locks(action='list') or manage_database_locks(action='kill', lock_id='abc')."
+      verbose: "Database lock monitoring and management. Features: lock wait analysis, deadlock detection, blocking tree, auto-kill. Example: manage_database_locks(action='analyze', connection=CONNECTION_STRING, threshold_seconds=30, include_sql=true). Blocking tree: manage_database_locks(action='tree', root_session='12345'). Auto-resolve: manage_database_locks(action='configure', config='{\"deadlock_detection\": true, \"auto_kill_after_seconds\": 60, \"priority\": \"youngest\"}'). Note: Killing locks may rollback transactions. Warning: Be careful with production lock termination."
+    parameters:
+      - name: action
+        type: string
+        description: "Lock action"
+        required: true
+        enum: ["list", "analyze", "tree", "kill", "configure", "history"]
+      - name: connection
+        type: string
+        description: "Database connection string"
+        required: false
+      - name: session_id
+        type: string
+        description: "Session holding/waiting lock"
+        required: false
+      - name: lock_id
+        type: string
+        description: "Lock identifier"
+        required: false
+      - name: threshold_seconds
+        type: integer
+        description: "Minimum wait time to show"
+        required: false
+        default: 5
+      - name: include_sql
+        type: boolean
+        description: "Include SQL statements"
+        required: false
+        default: true
+    tags: ["database", "locks", "deadlock", "blocking", "performance"]
+    test_prompts:
+      single:
+        - "Show database locks"
+        - "Find blocking queries"
+        - "Detect deadlocks"
+        - "Kill blocking lock"
+      single_clear:
+        - "I need to monitor and manage database locks and deadlocks. Show database locks"
+        - "I need to monitor and manage database locks and deadlocks. Find blocking queries"
+        - "I need to monitor and manage database locks and deadlocks. Detect deadlocks"
+        - "I need to monitor and manage database locks and deadlocks. Kill blocking lock"
+
+  - name: manage_database_schema_changes
+    descriptions:
+      minimal: "Manage schema"
+      short: "Manage schema changes"
+      medium: "Execute and track database schema migrations."
+      long: "Apply schema changes with version tracking and rollback. Example: manage_database_schema_changes(action='apply', migration='add_user_email_index')."
+      verbose: "Database schema migration management. Features: version control, up/down migrations, dependency tracking, dry run. Example: manage_database_schema_changes(action='apply', connection=CONNECTION_STRING, migration='V003__add_orders_index', options='{\"dry_run\": false, \"lock_timeout\": 5000, \"statement_timeout\": 60000}'). Rollback: manage_database_schema_changes(action='rollback', steps=1). Status: manage_database_schema_changes(action='status'). Generate: manage_database_schema_changes(action='generate', name='add_user_preferences', type='create_table'). Note: Always test migrations in staging. Warning: Some changes may lock tables."
+    parameters:
+      - name: action
+        type: string
+        description: "Migration action"
+        required: true
+        enum: ["apply", "rollback", "status", "validate", "generate", "repair", "baseline"]
+      - name: connection
+        type: string
+        description: "Database connection string"
+        required: false
+      - name: migration
+        type: string
+        description: "Migration name/version"
+        required: false
+      - name: steps
+        type: integer
+        description: "Number of steps for rollback"
+        required: false
+        default: 1
+      - name: options
+        type: string
+        description: "JSON migration options"
+        required: false
+      - name: type
+        type: string
+        description: "Migration type for generate"
+        required: false
+    tags: ["database", "schema", "migration", "version", "ddl"]
+    test_prompts:
+      single:
+        - "Apply database migration"
+        - "Rollback schema change"
+        - "Check migration status"
+        - "Generate new migration"
+      single_clear:
+        - "I need to execute and track database schema migrations. Apply database migration"
+        - "I need to execute and track database schema migrations. Rollback schema change"
+        - "I need to execute and track database schema migrations. Check migration status"
+        - "I need to execute and track database schema migrations. Generate new migration"
+
+  - name: manage_database_audit
+    descriptions:
+      minimal: "Manage audit"
+      short: "Manage database audit"
+      medium: "Configure and query database audit logs."
+      long: "Enable audit logging for compliance and security tracking. Example: manage_database_audit(action='enable', level='all', tables='[\"users\", \"transactions\"]')."
+      verbose: "Database audit configuration and querying. Audit types: DML (insert/update/delete), DDL (create/alter/drop), login/logout, privilege changes. Example: manage_database_audit(action='configure', connection=CONNECTION_STRING, config='{\"level\": \"statement\", \"log_reads\": false, \"log_writes\": true, \"tables\": [\"sensitive_data\", \"user_accounts\"], \"excluded_users\": [\"backup_user\"]}'). Query: manage_database_audit(action='query', filters='{\"table\": \"users\", \"operation\": \"UPDATE\", \"from\": \"2024-01-01\", \"to\": \"2024-01-31\"}'). Note: Audit logging adds overhead. Warning: Ensure audit logs are secured and retained per policy."
+    parameters:
+      - name: action
+        type: string
+        description: "Audit action"
+        required: true
+        enum: ["configure", "enable", "disable", "query", "export", "status"]
+      - name: connection
+        type: string
+        description: "Database connection string"
+        required: false
+      - name: config
+        type: string
+        description: "JSON audit configuration"
+        required: false
+      - name: filters
+        type: string
+        description: "JSON query filters"
+        required: false
+      - name: format
+        type: string
+        description: "Export format"
+        required: false
+        default: "json"
+        enum: ["json", "csv", "parquet"]
+      - name: destination
+        type: string
+        description: "Export destination"
+        required: false
+    tags: ["database", "audit", "compliance", "security", "logging"]
+    test_prompts:
+      single:
+        - "Enable database auditing"
+        - "Query audit logs"
+        - "Export audit data"
+        - "Configure audit settings"
+      single_clear:
+        - "I need to configure and query database audit logs. Enable database auditing"
+        - "I need to configure and query database audit logs. Query audit logs"
+        - "I need to configure and query database audit logs. Export audit data"
+        - "I need to configure and query database audit logs. Configure audit settings"
+
+  - name: manage_database_triggers
+    descriptions:
+      minimal: "Manage triggers"
+      short: "Manage database triggers"
+      medium: "Create and manage database triggers for automated actions."
+      long: "Set up triggers for insert, update, delete events. Example: manage_database_triggers(action='create', name='audit_changes', table='users', event='after_update')."
+      verbose: "Database trigger management for automation. Events: before/after insert/update/delete, truncate. Features: row-level, statement-level, conditional firing. Example: manage_database_triggers(action='create', connection=CONNECTION_STRING, name='orders_audit_trigger', table='orders', event='after_update', function='log_order_changes', condition='OLD.status IS DISTINCT FROM NEW.status'). Manage: manage_database_triggers(action='disable', name='audit_trigger', table='orders'). List: manage_database_triggers(action='list', table='orders'). Note: Triggers add overhead to DML. Warning: Recursive triggers can cause infinite loops."
+    parameters:
+      - name: action
+        type: string
+        description: "Trigger action"
+        required: true
+        enum: ["create", "drop", "enable", "disable", "list", "describe"]
+      - name: connection
+        type: string
+        description: "Database connection string"
+        required: false
+      - name: name
+        type: string
+        description: "Trigger name"
+        required: false
+      - name: table
+        type: string
+        description: "Table name"
+        required: false
+      - name: event
+        type: string
+        description: "Trigger event"
+        required: false
+        enum: ["before_insert", "after_insert", "before_update", "after_update", "before_delete", "after_delete"]
+      - name: function
+        type: string
+        description: "Function to execute"
+        required: false
+      - name: condition
+        type: string
+        description: "Conditional expression"
+        required: false
+    tags: ["database", "triggers", "automation", "events", "dml"]
+    test_prompts:
+      single:
+        - "Create database trigger"
+        - "List table triggers"
+        - "Disable trigger"
+        - "Set up audit trigger"
+      single_clear:
+        - "I need to create and manage database triggers for automated actions. Create database trigger"
+        - "I need to create and manage database triggers for automated actions. List table triggers"
+        - "I need to create and manage database triggers for automated actions. Disable trigger"
+        - "I need to create and manage database triggers for automated actions. Set up audit trigger"
+
+  - name: analyze_database_performance
+    descriptions:
+      minimal: "Analyze performance"
+      short: "Analyze database performance"
+      medium: "Analyze database performance metrics and identify issues."
+      long: "Generate performance reports with recommendations. Example: analyze_database_performance(report='full') or analyze_database_performance(focus='queries')."
+      verbose: "Comprehensive database performance analysis. Areas: query performance, index usage, table bloat, cache hit ratio, I/O stats. Example: analyze_database_performance(connection=CONNECTION_STRING, report='comprehensive', period='24h', include_recommendations=true). Focus: analyze_database_performance(focus='slow_queries', threshold_ms=1000, top_n=20). Index analysis: analyze_database_performance(focus='indexes', include_unused=true, include_missing=true). Note: Performance analysis queries add load. Warning: Run comprehensive analysis during low-traffic periods."
+    parameters:
+      - name: connection
+        type: string
+        description: "Database connection string"
+        required: false
+      - name: report
+        type: string
+        description: "Report type"
+        required: false
+        default: "summary"
+        enum: ["summary", "comprehensive", "queries", "indexes", "tables"]
+      - name: focus
+        type: string
+        description: "Focus area"
+        required: false
+        enum: ["slow_queries", "indexes", "locks", "connections", "io", "memory"]
+      - name: period
+        type: string
+        description: "Analysis period"
+        required: false
+        default: "1h"
+      - name: threshold_ms
+        type: integer
+        description: "Slow query threshold"
+        required: false
+        default: 100
+      - name: include_recommendations
+        type: boolean
+        description: "Include recommendations"
+        required: false
+        default: true
+    tags: ["database", "performance", "analysis", "optimization", "tuning"]
+    test_prompts:
+      single:
+        - "Analyze database performance"
+        - "Find slow queries"
+        - "Check index usage"
+        - "Generate performance report"
+      single_clear:
+        - "I need to analyze database performance metrics and identify issues. Analyze database performance"
+        - "I need to analyze database performance metrics and identify issues. Find slow queries"
+        - "I need to analyze database performance metrics and identify issues. Check index usage"
+        - "I need to analyze database performance metrics and identify issues. Generate performance report"
+
+  - name: manage_database_encryption
+    descriptions:
+      minimal: "Manage encryption"
+      short: "Manage database encryption"
+      medium: "Configure data encryption at rest and in transit."
+      long: "Enable TDE, column encryption, and TLS connections. Example: manage_database_encryption(action='enable_tde', key_id='cmk-123')."
+      verbose: "Database encryption for security compliance. Types: TDE (transparent data encryption), column-level, connection TLS. Features: key rotation, bring your own key (BYOK). Example: manage_database_encryption(action='enable_tde', connection=CONNECTION_STRING, config='{\"key_type\": \"customer_managed\", \"key_id\": \"arn:aws:kms:...\", \"algorithm\": \"AES-256\"}'). Column: manage_database_encryption(action='encrypt_column', table='users', column='ssn', key='pii-key'). TLS: manage_database_encryption(action='configure_tls', mode='require', min_version='1.2'). Note: Encryption adds CPU overhead. Warning: Test encryption thoroughly before production."
+    parameters:
+      - name: action
+        type: string
+        description: "Encryption action"
+        required: true
+        enum: ["enable_tde", "disable_tde", "encrypt_column", "rotate_key", "configure_tls", "status"]
+      - name: connection
+        type: string
+        description: "Database connection string"
+        required: false
+      - name: config
+        type: string
+        description: "JSON encryption configuration"
+        required: false
+      - name: table
+        type: string
+        description: "Table for column encryption"
+        required: false
+      - name: column
+        type: string
+        description: "Column to encrypt"
+        required: false
+      - name: key_id
+        type: string
+        description: "Encryption key identifier"
+        required: false
+      - name: mode
+        type: string
+        description: "TLS mode"
+        required: false
+        enum: ["prefer", "require", "verify_ca", "verify_full"]
+    tags: ["database", "encryption", "security", "tde", "tls"]
+    test_prompts:
+      single:
+        - "Enable database encryption"
+        - "Rotate encryption key"
+        - "Configure TLS"
+        - "Encrypt sensitive column"
+        - "Get query plan with timing"
+      single_clear:
+        - "I need to configure data encryption at rest and in transit. Enable database encryption"
+        - "I need to configure data encryption at rest and in transit. Rotate encryption key"
+        - "I need to configure data encryption at rest and in transit. Configure TLS"
+        - "I need to configure data encryption at rest and in transit. Encrypt sensitive column"
+        - "I need to configure data encryption at rest and in transit. Get query plan with timing"

@@ -1,0 +1,1371 @@
+category: devops_operations
+description: DevOps and CI/CD operations
+tools:
+  - name: deploy_application
+    descriptions:
+      minimal: "Deploy app"
+      short: "Deploy an application"
+      medium: "Deploy an application to a specified environment."
+      long: "Deploy application to staging, production, or custom environments. Supports various deployment strategies. Example: deploy_application(app='my-api', environment='production', version='1.2.3')."
+      verbose: "Deploy applications to target environments. Strategies: 'rolling' (gradual replacement), 'blue_green' (instant switchover), 'canary' (partial traffic), 'recreate' (stop then start). Options: version, replicas, health checks, rollback on failure. Example: deploy_application(app='user-service', environment='production', version='v2.1.0', strategy='canary', canary_percent=10, health_check='/health', timeout=300). Note: Blue-green requires double resources temporarily. Warning: Production deployments should be tested in staging first."
+    parameters:
+      - name: app
+        type: string
+        description: "Application name"
+        required: true
+      - name: environment
+        type: string
+        description: "Target environment"
+        required: true
+        enum: ["development", "staging", "production"]
+      - name: version
+        type: string
+        description: "Version to deploy"
+        required: true
+      - name: strategy
+        type: string
+        description: "Deployment strategy"
+        required: false
+        default: "rolling"
+        enum: ["rolling", "blue_green", "canary", "recreate"]
+      - name: replicas
+        type: integer
+        description: "Number of replicas"
+        required: false
+        default: 2
+      - name: health_check
+        type: string
+        description: "Health check endpoint"
+        required: false
+        default: "/health"
+      - name: timeout
+        type: integer
+        description: "Deployment timeout (seconds)"
+        required: false
+        default: 600
+    tags: ["devops", "deploy", "application", "release", "environment"]
+    test_prompts:
+      single:
+        - "Deploy the app to production"
+        - "Release version 2.0 to staging"
+        - "Deploy with blue-green strategy"
+        - "Roll out the new version"
+      single_clear:
+        - "I need to deploy an application. Deploy the app to production"
+        - "I need to deploy an application. Release version 2.0 to staging"
+        - "I need to deploy an application. Deploy with blue-green strategy"
+        - "I need to deploy an application. Roll out the new version"
+
+  - name: rollback_deployment
+    descriptions:
+      minimal: "Rollback"
+      short: "Rollback a deployment"
+      medium: "Rollback an application to a previous version."
+      long: "Rollback to a previous deployment version. Can target specific version or auto-rollback to last stable. Example: rollback_deployment(app='my-api', environment='production')."
+      verbose: "Rollback application deployments to previous versions. Modes: 'previous' (last version), 'specific' (target version), 'last_stable' (last healthy). Options: reason tracking, notification, automatic on failure. Example: rollback_deployment(app='user-service', environment='production', target='v1.9.0', reason='Memory leak in v2.0', notify='[\"oncall\"]'). Note: Rollback uses same strategy as deployment. Warning: Database migrations may not be reversible."
+    parameters:
+      - name: app
+        type: string
+        description: "Application name"
+        required: true
+      - name: environment
+        type: string
+        description: "Environment"
+        required: true
+      - name: target
+        type: string
+        description: "Target version (or 'previous')"
+        required: false
+        default: "previous"
+      - name: reason
+        type: string
+        description: "Rollback reason"
+        required: false
+      - name: notify
+        type: string
+        description: "JSON array of notification targets"
+        required: false
+    tags: ["devops", "rollback", "deployment", "revert", "recovery"]
+    test_prompts:
+      single:
+        - "Rollback the deployment"
+        - "Revert to the previous version"
+        - "Rollback production to v1.5"
+        - "Undo the last deployment"
+      single_clear:
+        - "Please rollback a deployment. Rollback the deployment"
+        - "Please rollback a deployment. Revert to the previous version"
+        - "Please rollback a deployment. Rollback production to v1.5"
+        - "Please rollback a deployment. Undo the last deployment"
+
+  - name: run_pipeline
+    descriptions:
+      minimal: "Run pipeline"
+      short: "Run a CI/CD pipeline"
+      medium: "Trigger a CI/CD pipeline run with specified parameters."
+      long: "Trigger CI/CD pipeline execution. Supports GitHub Actions, GitLab CI, Jenkins, etc. Example: run_pipeline(pipeline='build-and-test', branch='main')."
+      verbose: "Trigger CI/CD pipeline runs. Platforms: GitHub Actions, GitLab CI, Jenkins, CircleCI, Azure DevOps. Options: branch, tag, environment variables, pipeline parameters, wait for completion. Example: run_pipeline(pipeline='deploy-prod', branch='main', variables='{\"DEPLOY_ENV\": \"production\"}', wait=true, timeout=1800). Note: Some pipelines require approval for protected environments. Warning: Concurrent pipeline runs may cause resource contention."
+    parameters:
+      - name: pipeline
+        type: string
+        description: "Pipeline name/ID"
+        required: true
+      - name: branch
+        type: string
+        description: "Git branch"
+        required: false
+        default: "main"
+      - name: tag
+        type: string
+        description: "Git tag"
+        required: false
+      - name: variables
+        type: string
+        description: "JSON object of pipeline variables"
+        required: false
+      - name: wait
+        type: boolean
+        description: "Wait for completion"
+        required: false
+        default: false
+      - name: timeout
+        type: integer
+        description: "Timeout in seconds (if waiting)"
+        required: false
+        default: 3600
+    tags: ["devops", "pipeline", "ci", "cd", "build"]
+    test_prompts:
+      single:
+        - "Run the build pipeline"
+        - "Trigger CI for main branch"
+        - "Start the deployment pipeline"
+        - "Run the test pipeline"
+      single_clear:
+        - "I need to run a CI/CD pipeline. Run the build pipeline"
+        - "I need to run a CI/CD pipeline. Trigger CI for main branch"
+        - "I need to run a CI/CD pipeline. Start the deployment pipeline"
+        - "I need to run a CI/CD pipeline. Run the test pipeline"
+
+  - name: get_pipeline_status
+    descriptions:
+      minimal: "Pipeline status"
+      short: "Get pipeline run status"
+      medium: "Check the status of a CI/CD pipeline run."
+      long: "Get the status and details of a pipeline run. Returns stage status, logs, and artifacts. Example: get_pipeline_status(run_id='12345')."
+      verbose: "Retrieve CI/CD pipeline run status and details. Returns: overall status, stage/job statuses, duration, logs, test results, artifacts, failure reasons. Statuses: 'pending', 'running', 'success', 'failed', 'cancelled'. Example: get_pipeline_status(run_id='12345', include_logs=true, include_artifacts=true). Note: Logs may be truncated for large outputs. Warning: Accessing logs requires appropriate permissions."
+    parameters:
+      - name: run_id
+        type: string
+        description: "Pipeline run ID"
+        required: true
+      - name: include_logs
+        type: boolean
+        description: "Include job logs"
+        required: false
+        default: false
+      - name: include_artifacts
+        type: boolean
+        description: "Include artifact list"
+        required: false
+        default: false
+    tags: ["devops", "pipeline", "status", "check", "ci"]
+    test_prompts:
+      single:
+        - "Check the pipeline status"
+        - "Is the build finished?"
+        - "Get the CI run status"
+        - "Show pipeline logs"
+      single_clear:
+        - "I need to check the pipeline status. Check the pipeline status"
+        - "I need to check the pipeline status. Is the build finished?"
+        - "I need to check the pipeline status. Get the CI run status"
+        - "I need to check the pipeline status. Show pipeline logs"
+
+  - name: manage_container
+    descriptions:
+      minimal: "Manage container"
+      short: "Manage Docker containers"
+      medium: "Start, stop, restart, or manage Docker containers."
+      long: "Manage Docker containers. Perform lifecycle operations like start, stop, restart, logs, exec. Example: manage_container(container='my-app', action='restart')."
+      verbose: "Manage Docker container lifecycle and operations. Actions: 'start', 'stop', 'restart', 'pause', 'unpause', 'logs', 'exec', 'inspect', 'remove'. Options: force (for stop/remove), tail (for logs), command (for exec). Example: manage_container(container='redis-cache', action='logs', tail=100) or manage_container(container='web-app', action='exec', command='sh -c \"printenv\"'). Note: Some actions require the container to be running. Warning: Removing containers destroys their data unless using volumes."
+    parameters:
+      - name: container
+        type: string
+        description: "Container name or ID"
+        required: true
+      - name: action
+        type: string
+        description: "Action to perform"
+        required: true
+        enum: ["start", "stop", "restart", "pause", "unpause", "logs", "exec", "inspect", "remove"]
+      - name: force
+        type: boolean
+        description: "Force action"
+        required: false
+        default: false
+      - name: tail
+        type: integer
+        description: "Number of log lines"
+        required: false
+        default: 100
+      - name: command
+        type: string
+        description: "Command for exec action"
+        required: false
+    tags: ["devops", "container", "docker", "manage", "lifecycle"]
+    test_prompts:
+      single:
+        - "Restart the container"
+        - "Stop the Docker container"
+        - "Get container logs"
+        - "Remove the container"
+      single_clear:
+        - "I need to manage a Docker container. Restart the container"
+        - "I need to manage a Docker container. Stop the Docker container"
+        - "I need to manage a Docker container. Get container logs"
+        - "I need to manage a Docker container. Remove the container"
+
+  - name: scale_service
+    descriptions:
+      minimal: "Scale service"
+      short: "Scale a service up or down"
+      medium: "Scale the number of replicas for a service or deployment."
+      long: "Scale service replicas up or down. Supports Kubernetes, Docker Swarm, ECS, etc. Example: scale_service(service='web-app', replicas=5)."
+      verbose: "Scale service replicas for horizontal scaling. Platforms: Kubernetes Deployments, Docker Swarm services, ECS services, Cloud Run. Modes: 'absolute' (set exact count), 'relative' (add/remove replicas), 'auto' (based on metrics). Example: scale_service(service='api-gateway', replicas=10, namespace='production', wait=true, timeout=300). Note: Scaling up requires available resources. Warning: Scaling to zero stops all traffic to the service."
+    parameters:
+      - name: service
+        type: string
+        description: "Service name"
+        required: true
+      - name: replicas
+        type: integer
+        description: "Target replica count"
+        required: true
+      - name: namespace
+        type: string
+        description: "Kubernetes namespace"
+        required: false
+        default: "default"
+      - name: wait
+        type: boolean
+        description: "Wait for scaling to complete"
+        required: false
+        default: true
+      - name: timeout
+        type: integer
+        description: "Timeout in seconds"
+        required: false
+        default: 300
+    tags: ["devops", "scale", "replicas", "kubernetes", "horizontal"]
+    test_prompts:
+      single:
+        - "Scale the service to 5 replicas"
+        - "Add more instances"
+        - "Scale down to 2 pods"
+        - "Increase capacity"
+      single_clear:
+        - "I need to scale a service. Scale the service to 5 replicas"
+        - "I need to scale a service. Add more instances"
+        - "I need to scale a service. Scale down to 2 pods"
+        - "I need to scale a service. Increase capacity"
+
+  - name: create_infrastructure
+    descriptions:
+      minimal: "Create infra"
+      short: "Create infrastructure resources"
+      medium: "Provision infrastructure resources using Infrastructure as Code."
+      long: "Create infrastructure using Terraform, CloudFormation, or Pulumi. Example: create_infrastructure(template='main.tf', action='apply', environment='production')."
+      verbose: "Provision infrastructure using IaC tools. Platforms: Terraform, AWS CloudFormation, Azure ARM, Google Deployment Manager, Pulumi. Actions: 'plan' (preview changes), 'apply' (create resources), 'destroy' (remove resources). Example: create_infrastructure(template='./terraform', action='apply', variables='{\"region\": \"us-east-1\", \"instance_type\": \"t3.medium\"}', auto_approve=false). Note: Plan should always precede apply. Warning: Apply creates real resources with cost implications."
+    parameters:
+      - name: template
+        type: string
+        description: "Path to IaC template"
+        required: true
+      - name: action
+        type: string
+        description: "IaC action"
+        required: true
+        enum: ["plan", "apply", "destroy"]
+      - name: variables
+        type: string
+        description: "JSON object of variables"
+        required: false
+      - name: environment
+        type: string
+        description: "Target environment"
+        required: false
+        default: "development"
+      - name: auto_approve
+        type: boolean
+        description: "Skip confirmation"
+        required: false
+        default: false
+    tags: ["devops", "infrastructure", "iac", "terraform", "provision"]
+    test_prompts:
+      single:
+        - "Apply the Terraform changes"
+        - "Create the infrastructure"
+        - "Run terraform plan"
+        - "Provision the environment"
+      single_clear:
+        - "I need to create infrastructure resources. Apply the Terraform changes"
+        - "I need to create infrastructure resources. Create the infrastructure"
+        - "I need to create infrastructure resources. Run terraform plan"
+        - "I need to create infrastructure resources. Provision the environment"
+
+  - name: manage_secrets
+    descriptions:
+      minimal: "Manage secrets"
+      short: "Manage application secrets"
+      medium: "Create, update, or retrieve secrets from a secrets manager."
+      long: "Manage secrets in HashiCorp Vault, AWS Secrets Manager, or Kubernetes Secrets. Example: manage_secrets(action='get', key='database/credentials', vault='production')."
+      verbose: "Manage application secrets securely. Platforms: HashiCorp Vault, AWS Secrets Manager, Azure Key Vault, GCP Secret Manager, Kubernetes Secrets. Actions: 'get', 'set', 'delete', 'list', 'rotate'. Example: manage_secrets(action='set', key='api/stripe_key', value='sk_live_xxx', vault='production', expire='90d'). Note: Secrets are encrypted at rest. Warning: Deleting secrets may break dependent applications."
+    parameters:
+      - name: action
+        type: string
+        description: "Secret action"
+        required: true
+        enum: ["get", "set", "delete", "list", "rotate"]
+      - name: key
+        type: string
+        description: "Secret key/path"
+        required: true
+      - name: value
+        type: string
+        description: "Secret value (for set)"
+        required: false
+      - name: vault
+        type: string
+        description: "Vault/store name"
+        required: false
+        default: "default"
+      - name: expire
+        type: string
+        description: "Expiration period"
+        required: false
+    tags: ["devops", "secrets", "vault", "credentials", "security"]
+    test_prompts:
+      single:
+        - "Get the database password"
+        - "Store this API key"
+        - "Rotate the secrets"
+        - "List all secrets"
+      single_clear:
+        - "I need to manage application secrets. Get the database password"
+        - "I need to manage application secrets. Store this API key"
+        - "I need to manage application secrets. Rotate the secrets"
+        - "I need to manage application secrets. List all secrets"
+
+  - name: monitor_metrics
+    descriptions:
+      minimal: "Monitor metrics"
+      short: "Monitor application metrics"
+      medium: "Query and monitor application and infrastructure metrics."
+      long: "Query metrics from Prometheus, CloudWatch, Datadog, etc. Example: monitor_metrics(metric='cpu_usage', service='api-server', period='1h')."
+      verbose: "Query and analyze metrics from monitoring systems. Platforms: Prometheus, AWS CloudWatch, Datadog, New Relic, Grafana. Query types: instant, range, aggregations. Metrics: CPU, memory, latency, error rate, throughput, custom. Example: monitor_metrics(metric='http_request_duration_seconds', labels='{\"service\": \"api\"}', aggregation='p99', period='1h', step='1m'). Note: High-cardinality queries may be slow. Warning: Long periods with small steps generate large datasets."
+    parameters:
+      - name: metric
+        type: string
+        description: "Metric name"
+        required: true
+      - name: labels
+        type: string
+        description: "JSON object of label filters"
+        required: false
+      - name: aggregation
+        type: string
+        description: "Aggregation function"
+        required: false
+        default: "avg"
+        enum: ["avg", "sum", "min", "max", "p50", "p95", "p99"]
+      - name: period
+        type: string
+        description: "Time period (e.g., '1h', '24h')"
+        required: false
+        default: "1h"
+      - name: step
+        type: string
+        description: "Query step interval"
+        required: false
+        default: "1m"
+    tags: ["devops", "metrics", "monitor", "prometheus", "observability"]
+    test_prompts:
+      single:
+        - "Show CPU usage for the last hour"
+        - "Get the p99 latency"
+        - "Monitor error rates"
+        - "Check memory metrics"
+      single_clear:
+        - "I need to monitor application metrics. Show CPU usage for the last hour"
+        - "I need to monitor application metrics. Get the p99 latency"
+        - "I need to monitor application metrics. Monitor error rates"
+        - "I need to monitor application metrics. Check memory metrics"
+
+  - name: manage_logs
+    descriptions:
+      minimal: "Manage logs"
+      short: "Query and manage logs"
+      medium: "Query, search, and manage application logs."
+      long: "Query logs from centralized logging systems. Search, filter, and analyze log entries. Example: manage_logs(service='api-server', level='error', period='1h')."
+      verbose: "Query and manage centralized logs. Platforms: Elasticsearch/ELK, Loki, CloudWatch Logs, Splunk, Datadog Logs. Features: full-text search, structured queries, log tailing, export. Filters: service, level, time range, text pattern, JSON fields. Example: manage_logs(service='payment-api', level='error', pattern='timeout', period='24h', limit=1000, format='json'). Note: Log retention may limit available history. Warning: Large queries may timeout; use specific filters."
+    parameters:
+      - name: service
+        type: string
+        description: "Service/application name"
+        required: false
+      - name: level
+        type: string
+        description: "Log level filter"
+        required: false
+        enum: ["debug", "info", "warn", "error", "fatal"]
+      - name: pattern
+        type: string
+        description: "Search pattern"
+        required: false
+      - name: period
+        type: string
+        description: "Time period"
+        required: false
+        default: "1h"
+      - name: limit
+        type: integer
+        description: "Maximum entries"
+        required: false
+        default: 100
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "text"
+        enum: ["text", "json", "csv"]
+    tags: ["devops", "logs", "search", "elk", "observability"]
+    test_prompts:
+      single:
+        - "Show error logs from the last hour"
+        - "Search logs for 'connection refused'"
+        - "Get logs for the payment service"
+        - "Tail the application logs"
+      single_clear:
+        - "I need to manage application logs. Show error logs from the last hour"
+        - "I need to manage application logs. Search logs for 'connection refused'"
+        - "I need to manage application logs. Get logs for the payment service"
+        - "I need to manage application logs. Tail the application logs"
+  - name: create_kubernetes_resource
+    descriptions:
+      minimal: "Create K8s resource"
+      short: "Create a Kubernetes resource"
+      medium: "Create Kubernetes resources like deployments, services, or configmaps."
+      long: "Create Kubernetes resources from manifest or parameters. Supports deployments, services, configmaps, secrets. Example: create_kubernetes_resource(type='deployment', name='my-app', namespace='production', manifest='...')."
+      verbose: "Create Kubernetes cluster resources. Types: Deployment, Service, ConfigMap, Secret, Ingress, PersistentVolumeClaim, CronJob, HorizontalPodAutoscaler. Methods: from YAML manifest, from template, from parameters. Example: create_kubernetes_resource(type='deployment', name='api-server', namespace='production', image='myapp:v1.0', replicas=3, resources='{\"cpu\": \"500m\", \"memory\": \"512Mi\"}', env_from_secret='api-secrets'). Note: Namespace must exist. Warning: Secrets should be encrypted at rest."
+    parameters:
+      - name: type
+        type: string
+        description: "Resource type"
+        required: true
+        enum: ["deployment", "service", "configmap", "secret", "ingress", "pvc", "cronjob", "hpa"]
+      - name: name
+        type: string
+        description: "Resource name"
+        required: true
+      - name: namespace
+        type: string
+        description: "Kubernetes namespace"
+        required: false
+        default: "default"
+      - name: manifest
+        type: string
+        description: "YAML manifest content"
+        required: false
+      - name: image
+        type: string
+        description: "Container image (for deployments)"
+        required: false
+      - name: replicas
+        type: integer
+        description: "Replica count"
+        required: false
+        default: 1
+    tags: ["devops", "kubernetes", "k8s", "create", "resource"]
+    test_prompts:
+      single:
+        - "Create a Kubernetes deployment"
+        - "Add a new service to the cluster"
+        - "Create a configmap in Kubernetes"
+        - "Deploy a new pod to production namespace"
+      single_clear:
+        - "I need to create a Kubernetes resource. Create a Kubernetes deployment"
+        - "I need to create a Kubernetes resource. Add a new service to the cluster"
+        - "I need to create a Kubernetes resource. Create a configmap in Kubernetes"
+        - "I need to create a Kubernetes resource. Deploy a new pod to production namespace"
+
+  - name: manage_infrastructure
+    descriptions:
+      minimal: "Manage infrastructure"
+      short: "Provision or manage infrastructure"
+      medium: "Create, update, or destroy infrastructure resources using Infrastructure as Code."
+      long: "Manage infrastructure with Terraform, CloudFormation, or Pulumi. Plan, apply, or destroy resources. Example: manage_infrastructure(action='apply', stack='production-vpc', tool='terraform')."
+      verbose: "Infrastructure as Code management. Tools: Terraform, CloudFormation, Pulumi, Ansible, CDK. Actions: 'plan' (preview changes), 'apply' (execute changes), 'destroy' (tear down), 'refresh' (sync state), 'import' (adopt existing). Example: manage_infrastructure(tool='terraform', action='apply', stack='production', working_dir='/infra/prod', var_file='prod.tfvars', auto_approve=false). Note: Always run plan before apply. Warning: Destroy operations are irreversible; ensure backups exist."
+    parameters:
+      - name: tool
+        type: string
+        description: "IaC tool to use"
+        required: true
+        enum: ["terraform", "cloudformation", "pulumi", "ansible", "cdk"]
+      - name: action
+        type: string
+        description: "Infrastructure action"
+        required: true
+        enum: ["plan", "apply", "destroy", "refresh", "import", "validate"]
+      - name: stack
+        type: string
+        description: "Stack/workspace name"
+        required: true
+      - name: working_dir
+        type: string
+        description: "Working directory path"
+        required: false
+      - name: var_file
+        type: string
+        description: "Variables file"
+        required: false
+      - name: auto_approve
+        type: boolean
+        description: "Skip confirmation"
+        required: false
+        default: false
+    tags: ["devops", "infrastructure", "terraform", "iac", "provision"]
+    test_prompts:
+      single:
+        - "Apply Terraform changes"
+        - "Plan infrastructure updates"
+        - "Provision new resources"
+        - "Destroy the staging environment"
+      single_clear:
+        - "I need to manage infrastructure resources. Apply Terraform changes"
+        - "I need to manage infrastructure resources. Plan infrastructure updates"
+        - "I need to manage infrastructure resources. Provision new resources"
+        - "I need to manage infrastructure resources. Destroy the staging environment"
+
+  - name: manage_container_registry
+    descriptions:
+      minimal: "Manage registry"
+      short: "Manage container registry"
+      medium: "Push, pull, or manage container images in a registry."
+      long: "Manage container images in registries like Docker Hub, ECR, GCR, or ACR. Push, tag, or delete images. Example: manage_container_registry(action='push', image='myapp:latest', registry='docker.io/myorg')."
+      verbose: "Container registry operations. Registries: Docker Hub, AWS ECR, Google GCR, Azure ACR, GitHub Container Registry, private registries. Actions: 'push', 'pull', 'tag', 'delete', 'list', 'scan' (vulnerabilities). Example: manage_container_registry(action='push', registry='123456789.dkr.ecr.us-east-1.amazonaws.com', image='myapp', tag='v1.2.3', scan=true). Note: Registry authentication may be required. Warning: Deleting images may break deployments referencing them."
+    parameters:
+      - name: action
+        type: string
+        description: "Registry action"
+        required: true
+        enum: ["push", "pull", "tag", "delete", "list", "scan"]
+      - name: registry
+        type: string
+        description: "Registry URL"
+        required: true
+      - name: image
+        type: string
+        description: "Image name"
+        required: true
+      - name: tag
+        type: string
+        description: "Image tag"
+        required: false
+        default: "latest"
+      - name: scan
+        type: boolean
+        description: "Run vulnerability scan"
+        required: false
+        default: false
+    tags: ["devops", "container", "registry", "docker", "image"]
+    test_prompts:
+      single:
+        - "Push Docker image to registry"
+        - "Scan container for vulnerabilities"
+        - "List images in the registry"
+        - "Tag and push new version"
+      single_clear:
+        - "I need to manage container images. Push Docker image to registry"
+        - "I need to manage container images. Scan container for vulnerabilities"
+        - "I need to manage container images. List images in the registry"
+        - "I need to manage container images. Tag and push new version"
+
+  - name: configure_load_balancer
+    descriptions:
+      minimal: "Configure load balancer"
+      short: "Configure a load balancer"
+      medium: "Create or update load balancer configuration for traffic distribution."
+      long: "Configure load balancers for application traffic. Set up listeners, target groups, health checks, and SSL. Example: configure_load_balancer(name='api-lb', type='application', targets='[\"instance-1\", \"instance-2\"]')."
+      verbose: "Load balancer configuration and management. Types: Application (L7), Network (L4), Classic, Gateway. Configuration: listeners (ports, protocols), target groups, health checks, SSL certificates, routing rules, sticky sessions. Example: configure_load_balancer(name='web-alb', type='application', listeners='[{\"port\": 443, \"protocol\": \"HTTPS\", \"certificate\": \"arn:aws:...\"}]', targets='[\"i-abc123\", \"i-def456\"]', health_check='{\"path\": \"/health\", \"interval\": 30}'). Note: SSL termination at LB reduces backend load. Warning: Misconfiguration can cause outages."
+    parameters:
+      - name: name
+        type: string
+        description: "Load balancer name"
+        required: true
+      - name: type
+        type: string
+        description: "Load balancer type"
+        required: true
+        enum: ["application", "network", "classic", "gateway"]
+      - name: listeners
+        type: string
+        description: "JSON listener configurations"
+        required: true
+      - name: targets
+        type: string
+        description: "JSON array of target instances"
+        required: true
+      - name: health_check
+        type: string
+        description: "JSON health check config"
+        required: false
+      - name: ssl_certificate
+        type: string
+        description: "SSL certificate ARN"
+        required: false
+    tags: ["devops", "loadbalancer", "traffic", "networking", "alb"]
+    test_prompts:
+      single:
+        - "Set up a load balancer"
+        - "Configure HTTPS listener"
+        - "Add servers to load balancer"
+        - "Update load balancer health checks"
+      single_clear:
+        - "I need to configure a load balancer. Set up a load balancer"
+        - "I need to configure a load balancer. Configure HTTPS listener"
+        - "I need to configure a load balancer. Add servers to load balancer"
+        - "I need to configure a load balancer. Update load balancer health checks"
+
+  - name: manage_dns
+    descriptions:
+      minimal: "Manage DNS"
+      short: "Manage DNS records"
+      medium: "Create, update, or delete DNS records for domains."
+      long: "Manage DNS records in Route53, Cloudflare, or other DNS providers. Add A, CNAME, MX, TXT records. Example: manage_dns(action='create', domain='example.com', type='A', name='api', value='1.2.3.4')."
+      verbose: "DNS record management across providers. Providers: Route53, Cloudflare, Google Cloud DNS, Azure DNS, GoDaddy, Namecheap. Record types: A, AAAA, CNAME, MX, TXT, NS, SRV, CAA. Actions: create, update, delete, list. Example: manage_dns(provider='cloudflare', action='create', zone='example.com', type='CNAME', name='www', value='example.com', ttl=300, proxied=true). Note: DNS propagation may take minutes to hours. Warning: Incorrect MX/NS records can break email or domain."
+    parameters:
+      - name: provider
+        type: string
+        description: "DNS provider"
+        required: false
+        enum: ["route53", "cloudflare", "google", "azure", "godaddy"]
+      - name: action
+        type: string
+        description: "DNS action"
+        required: true
+        enum: ["create", "update", "delete", "list"]
+      - name: zone
+        type: string
+        description: "DNS zone (domain)"
+        required: true
+      - name: type
+        type: string
+        description: "Record type"
+        required: false
+        enum: ["A", "AAAA", "CNAME", "MX", "TXT", "NS", "SRV"]
+      - name: name
+        type: string
+        description: "Record name"
+        required: false
+      - name: value
+        type: string
+        description: "Record value"
+        required: false
+      - name: ttl
+        type: integer
+        description: "Time to live (seconds)"
+        required: false
+        default: 300
+    tags: ["devops", "dns", "domain", "routing", "records"]
+    test_prompts:
+      single:
+        - "Add DNS record for subdomain"
+        - "Update A record to new IP"
+        - "Create CNAME for www"
+        - "Set up MX records for email"
+      single_clear:
+        - "I need to manage DNS records. Add DNS record for subdomain"
+        - "I need to manage DNS records. Update A record to new IP"
+        - "I need to manage DNS records. Create CNAME for www"
+        - "I need to manage DNS records. Set up MX records for email"
+
+  - name: setup_monitoring_alert
+    descriptions:
+      minimal: "Setup alert"
+      short: "Configure monitoring alerts"
+      medium: "Set up alerts for metrics, logs, or service health."
+      long: "Configure alerting rules for monitoring. Define thresholds, conditions, and notification channels. Example: setup_monitoring_alert(name='High CPU', metric='cpu_usage', threshold=90, operator='greater_than')."
+      verbose: "Configure monitoring and alerting rules. Platforms: Prometheus/Alertmanager, CloudWatch, Datadog, PagerDuty, Grafana, New Relic. Alert types: metric threshold, anomaly detection, log pattern, uptime, SLO breach. Notifications: email, Slack, PagerDuty, SMS, webhook. Example: setup_monitoring_alert(name='API Error Rate', metric='http_5xx_count', threshold=100, window='5m', operator='greater_than', severity='critical', channels='[\"pagerduty\", \"slack-oncall\"]'). Note: Set appropriate severity to avoid alert fatigue. Warning: Too many alerts can cause important ones to be ignored."
+    parameters:
+      - name: name
+        type: string
+        description: "Alert name"
+        required: true
+      - name: metric
+        type: string
+        description: "Metric to monitor"
+        required: true
+      - name: threshold
+        type: number
+        description: "Alert threshold"
+        required: true
+      - name: operator
+        type: string
+        description: "Comparison operator"
+        required: true
+        enum: ["greater_than", "less_than", "equals", "not_equals"]
+      - name: window
+        type: string
+        description: "Evaluation window"
+        required: false
+        default: "5m"
+      - name: severity
+        type: string
+        description: "Alert severity"
+        required: false
+        default: "warning"
+        enum: ["info", "warning", "critical"]
+      - name: channels
+        type: string
+        description: "JSON notification channels"
+        required: true
+    tags: ["devops", "monitoring", "alert", "notification", "observability"]
+    test_prompts:
+      single:
+        - "Create alert for high CPU usage"
+        - "Set up error rate monitoring"
+        - "Configure disk space alert"
+        - "Alert when service is down"
+      single_clear:
+        - "I need to set up a monitoring alert. Create alert for high CPU usage"
+        - "I need to set up a monitoring alert. Set up error rate monitoring"
+        - "I need to set up a monitoring alert. Configure disk space alert"
+        - "I need to set up a monitoring alert. Alert when service is down"
+
+  - name: run_database_migration
+    descriptions:
+      minimal: "Run migration"
+      short: "Run database migrations"
+      medium: "Execute database schema migrations for version control."
+      long: "Run database migrations to update schema. Supports Flyway, Liquibase, Django, Rails, and raw SQL. Example: run_database_migration(database='production', direction='up', version='V2024.01.15')."
+      verbose: "Database migration management. Tools: Flyway, Liquibase, Alembic, Django migrations, Rails migrations, Knex, Prisma. Actions: 'up' (apply pending), 'down' (rollback), 'status' (check state), 'repair' (fix checksums), 'validate'. Example: run_database_migration(tool='flyway', database='jdbc:postgresql://prod-db/myapp', direction='up', target='V2024.01.15__add_users_table.sql', dry_run=true). Note: Always backup before production migrations. Warning: Down migrations may cause data loss."
+    parameters:
+      - name: tool
+        type: string
+        description: "Migration tool"
+        required: false
+        default: "flyway"
+        enum: ["flyway", "liquibase", "alembic", "django", "rails", "prisma"]
+      - name: database
+        type: string
+        description: "Database connection string"
+        required: true
+      - name: direction
+        type: string
+        description: "Migration direction"
+        required: true
+        enum: ["up", "down", "status", "repair", "validate"]
+      - name: target
+        type: string
+        description: "Target version"
+        required: false
+      - name: dry_run
+        type: boolean
+        description: "Preview without executing"
+        required: false
+        default: false
+    tags: ["devops", "database", "migration", "schema", "versioning"]
+    test_prompts:
+      single:
+        - "Run pending database migrations"
+        - "Rollback last migration"
+        - "Check migration status"
+        - "Apply schema changes"
+      single_clear:
+        - "I need to run database migrations. Run pending database migrations"
+        - "I need to run database migrations. Rollback last migration"
+        - "I need to run database migrations. Check migration status"
+        - "I need to run database migrations. Apply schema changes"
+
+  - name: manage_ssl_certificate
+    descriptions:
+      minimal: "Manage SSL"
+      short: "Manage SSL certificates"
+      medium: "Generate, renew, or manage SSL/TLS certificates."
+      long: "Manage SSL certificates for domains. Generate with Let's Encrypt, import existing, or request from CA. Example: manage_ssl_certificate(action='generate', domain='api.example.com', provider='letsencrypt')."
+      verbose: "SSL/TLS certificate lifecycle management. Actions: 'generate' (new cert), 'renew' (extend expiry), 'import' (upload existing), 'revoke', 'list', 'check' (expiry status). Providers: Let's Encrypt, ACM, DigiCert, Comodo, self-signed. Example: manage_ssl_certificate(action='generate', domains='[\"example.com\", \"www.example.com\"]', provider='letsencrypt', challenge='dns', auto_renew=true). Note: Let's Encrypt certs expire in 90 days. Warning: Expired certificates cause browser security warnings."
+    parameters:
+      - name: action
+        type: string
+        description: "Certificate action"
+        required: true
+        enum: ["generate", "renew", "import", "revoke", "list", "check"]
+      - name: domains
+        type: string
+        description: "JSON array of domain names"
+        required: false
+      - name: provider
+        type: string
+        description: "Certificate provider"
+        required: false
+        default: "letsencrypt"
+        enum: ["letsencrypt", "acm", "digicert", "selfsigned"]
+      - name: challenge
+        type: string
+        description: "Verification challenge type"
+        required: false
+        default: "http"
+        enum: ["http", "dns", "tls-alpn"]
+      - name: auto_renew
+        type: boolean
+        description: "Enable auto-renewal"
+        required: false
+        default: true
+    tags: ["devops", "ssl", "certificate", "https", "security"]
+    test_prompts:
+      single:
+        - "Generate SSL certificate for domain"
+        - "Renew expiring certificates"
+        - "Check certificate expiration"
+        - "Import SSL certificate"
+      single_clear:
+        - "I need to manage SSL certificates. Generate SSL certificate for domain"
+        - "I need to manage SSL certificates. Renew expiring certificates"
+        - "I need to manage SSL certificates. Check certificate expiration"
+        - "I need to manage SSL certificates. Import SSL certificate"
+
+  - name: backup_service
+    descriptions:
+      minimal: "Backup service"
+      short: "Create service backups"
+      medium: "Create backups of databases, filesystems, or application data."
+      long: "Create and manage backups. Supports databases, file systems, and cloud resources. Configure schedule and retention. Example: backup_service(type='database', source='production-db', destination='s3://backups/')."
+      verbose: "Comprehensive backup management. Types: database (full, incremental, WAL), filesystem, volume snapshots, application data. Targets: S3, GCS, Azure Blob, local, NFS. Features: encryption, compression, scheduling, retention policies, verification. Example: backup_service(type='database', source='postgresql://prod-db/myapp', destination='s3://backups/db/', encryption_key='alias/backup-key', compression='gzip', retention_days=30, schedule='0 2 * * *'). Note: Regularly test restore procedures. Warning: Unencrypted backups pose security risks."
+    parameters:
+      - name: type
+        type: string
+        description: "Backup type"
+        required: true
+        enum: ["database", "filesystem", "volume", "application"]
+      - name: source
+        type: string
+        description: "Source to backup"
+        required: true
+      - name: destination
+        type: string
+        description: "Backup destination"
+        required: true
+      - name: encryption_key
+        type: string
+        description: "Encryption key ID"
+        required: false
+      - name: compression
+        type: string
+        description: "Compression type"
+        required: false
+        enum: ["none", "gzip", "zstd", "lz4"]
+      - name: retention_days
+        type: integer
+        description: "Days to retain backup"
+        required: false
+        default: 30
+    tags: ["devops", "backup", "disaster recovery", "database", "storage"]
+    test_prompts:
+      single:
+        - "Backup the production database"
+        - "Create filesystem backup"
+        - "Schedule daily backups"
+        - "Backup to S3"
+      single_clear:
+        - "I need to create a backup. Backup the production database"
+        - "I need to create a backup. Create filesystem backup"
+        - "I need to create a backup. Schedule daily backups"
+        - "I need to create a backup. Backup to S3"
+
+  - name: manage_kubernetes_deployment
+    descriptions:
+      minimal: "Manage k8s deployment"
+      short: "Manage Kubernetes deployment"
+      medium: "Deploy, scale, and manage applications on Kubernetes clusters."
+      long: "Manage Kubernetes deployments with scaling, rolling updates, and rollbacks. Example: manage_kubernetes_deployment(action='deploy', name='web-app', image='app:v2.0', replicas=3)."
+      verbose: "Kubernetes deployment management. Actions: deploy, scale, rollback, restart, delete, status. Features: rolling updates, blue-green, canary, resource limits, health checks. Example: manage_kubernetes_deployment(action='deploy', namespace='production', name='api-server', image='gcr.io/project/api:v2.0.1', replicas=5, cpu_limit='500m', memory_limit='512Mi', strategy='rolling', max_surge=1, max_unavailable=0). Rollback: manage_kubernetes_deployment(action='rollback', name='api-server', revision=3). Note: Always test in staging first. Warning: Deployment changes affect live traffic."
+    parameters:
+      - name: action
+        type: string
+        description: "Deployment action"
+        required: true
+        enum: ["deploy", "scale", "rollback", "restart", "delete", "status"]
+      - name: namespace
+        type: string
+        description: "Kubernetes namespace"
+        required: false
+        default: "default"
+      - name: name
+        type: string
+        description: "Deployment name"
+        required: true
+      - name: image
+        type: string
+        description: "Container image"
+        required: false
+      - name: replicas
+        type: integer
+        description: "Number of replicas"
+        required: false
+      - name: cpu_limit
+        type: string
+        description: "CPU limit"
+        required: false
+      - name: memory_limit
+        type: string
+        description: "Memory limit"
+        required: false
+      - name: strategy
+        type: string
+        description: "Deployment strategy"
+        required: false
+        default: "rolling"
+        enum: ["rolling", "recreate"]
+      - name: revision
+        type: integer
+        description: "Revision for rollback"
+        required: false
+    tags: ["devops", "kubernetes", "k8s", "deployment", "container"]
+    test_prompts:
+      single:
+        - "Deploy to Kubernetes"
+        - "Scale up the deployment"
+        - "Rollback to previous version"
+        - "Check deployment status"
+      single_clear:
+        - "I need to manage a Kubernetes deployment. Deploy to Kubernetes"
+        - "I need to manage a Kubernetes deployment. Scale up the deployment"
+        - "I need to manage a Kubernetes deployment. Rollback to previous version"
+        - "I need to manage a Kubernetes deployment. Check deployment status"
+
+  - name: configure_load_balancer
+    descriptions:
+      minimal: "Configure load balancer"
+      short: "Configure load balancer"
+      medium: "Configure load balancer settings for traffic distribution."
+      long: "Set up and manage load balancers for high availability. Example: configure_load_balancer(action='create', name='web-lb', targets='[\"server1\", \"server2\"]', algorithm='round_robin')."
+      verbose: "Load balancer configuration and management. Types: Application (L7), Network (L4), Classic. Algorithms: round robin, least connections, IP hash, weighted. Features: health checks, sticky sessions, SSL termination. Example: configure_load_balancer(action='create', name='api-lb', type='application', targets='[{\"id\": \"i-123\", \"port\": 8080}, {\"id\": \"i-456\", \"port\": 8080}]', health_check='{\"path\": \"/health\", \"interval\": 30}', ssl_cert='arn:aws:acm:...', sticky_sessions=true). Note: Allow time for health checks before traffic routing. Warning: Misconfigured health checks can cause outages."
+    parameters:
+      - name: action
+        type: string
+        description: "Load balancer action"
+        required: true
+        enum: ["create", "update", "delete", "add_target", "remove_target", "status"]
+      - name: name
+        type: string
+        description: "Load balancer name"
+        required: true
+      - name: type
+        type: string
+        description: "Load balancer type"
+        required: false
+        default: "application"
+        enum: ["application", "network", "classic"]
+      - name: targets
+        type: string
+        description: "JSON array of targets"
+        required: false
+      - name: algorithm
+        type: string
+        description: "Load balancing algorithm"
+        required: false
+        default: "round_robin"
+        enum: ["round_robin", "least_connections", "ip_hash", "weighted"]
+      - name: health_check
+        type: string
+        description: "JSON health check config"
+        required: false
+      - name: ssl_cert
+        type: string
+        description: "SSL certificate ARN"
+        required: false
+    tags: ["devops", "load_balancer", "networking", "ha", "traffic"]
+    test_prompts:
+      single:
+        - "Create load balancer"
+        - "Add server to load balancer"
+        - "Configure health checks"
+        - "Set up SSL termination"
+      single_clear:
+        - "I need to configure a load balancer. Create load balancer"
+        - "I need to configure a load balancer. Add server to load balancer"
+        - "I need to configure a load balancer. Configure health checks"
+        - "I need to configure a load balancer. Set up SSL termination"
+
+  - name: manage_infrastructure_as_code
+    descriptions:
+      minimal: "Manage IaC"
+      short: "Manage infrastructure as code"
+      medium: "Apply, plan, and manage infrastructure using Terraform or CloudFormation."
+      long: "Execute IaC operations for infrastructure provisioning. Example: manage_infrastructure_as_code(action='apply', tool='terraform', directory='./infra')."
+      verbose: "Infrastructure as Code management. Tools: Terraform, CloudFormation, Pulumi, Ansible. Actions: init, plan, apply, destroy, import, state. Features: state management, drift detection, cost estimation. Example: manage_infrastructure_as_code(action='plan', tool='terraform', directory='./infrastructure/production', variables='{\"instance_type\": \"t3.large\", \"region\": \"us-west-2\"}', auto_approve=false, output='plan.out'). State operations: manage_infrastructure_as_code(action='import', resource='aws_instance.web', id='i-1234567890'). Note: Always review plan before apply. Warning: Destroy operations are irreversible."
+    parameters:
+      - name: action
+        type: string
+        description: "IaC action"
+        required: true
+        enum: ["init", "plan", "apply", "destroy", "import", "output", "state"]
+      - name: tool
+        type: string
+        description: "IaC tool"
+        required: true
+        enum: ["terraform", "cloudformation", "pulumi", "ansible"]
+      - name: directory
+        type: string
+        description: "Configuration directory"
+        required: true
+      - name: variables
+        type: string
+        description: "JSON variables"
+        required: false
+      - name: auto_approve
+        type: boolean
+        description: "Auto-approve changes"
+        required: false
+        default: false
+      - name: target
+        type: string
+        description: "Specific resource to target"
+        required: false
+      - name: output
+        type: string
+        description: "Output file for plan"
+        required: false
+    tags: ["devops", "iac", "terraform", "cloudformation", "infrastructure"]
+    test_prompts:
+      single:
+        - "Run Terraform plan"
+        - "Apply infrastructure changes"
+        - "Initialize Terraform"
+        - "Destroy test environment"
+      single_clear:
+        - "I need to manage infrastructure as code. Run Terraform plan"
+        - "I need to manage infrastructure as code. Apply infrastructure changes"
+        - "I need to manage infrastructure as code. Initialize Terraform"
+        - "I need to manage infrastructure as code. Destroy test environment"
+
+  - name: configure_auto_scaling
+    descriptions:
+      minimal: "Configure auto scaling"
+      short: "Configure auto scaling"
+      medium: "Set up auto scaling policies for compute resources."
+      long: "Configure auto scaling based on metrics and schedules. Example: configure_auto_scaling(group='web-asg', min=2, max=10, target_cpu=70)."
+      verbose: "Auto scaling configuration for compute resources. Scaling types: target tracking, step scaling, scheduled. Metrics: CPU, memory, request count, custom. Features: cooldown periods, warm-up time, predictive scaling. Example: configure_auto_scaling(group='api-servers', min_capacity=2, max_capacity=20, target_tracking='{\"metric\": \"cpu\", \"target\": 60}', scale_in_cooldown=300, scale_out_cooldown=60, warmup=120). Scheduled: configure_auto_scaling(group='batch-workers', scheduled='{\"scale_up\": \"0 8 * * 1-5\", \"scale_down\": \"0 20 * * 1-5\"}'). Note: Set appropriate cooldown to avoid thrashing. Warning: Max capacity limits unexpected cost spikes."
+    parameters:
+      - name: group
+        type: string
+        description: "Auto scaling group name"
+        required: true
+      - name: min_capacity
+        type: integer
+        description: "Minimum instances"
+        required: false
+      - name: max_capacity
+        type: integer
+        description: "Maximum instances"
+        required: false
+      - name: desired_capacity
+        type: integer
+        description: "Desired instances"
+        required: false
+      - name: target_tracking
+        type: string
+        description: "JSON target tracking config"
+        required: false
+      - name: scheduled
+        type: string
+        description: "JSON scheduled scaling"
+        required: false
+      - name: scale_in_cooldown
+        type: integer
+        description: "Scale-in cooldown seconds"
+        required: false
+        default: 300
+      - name: scale_out_cooldown
+        type: integer
+        description: "Scale-out cooldown seconds"
+        required: false
+        default: 60
+    tags: ["devops", "autoscaling", "scaling", "capacity", "compute"]
+    test_prompts:
+      single:
+        - "Set up auto scaling"
+        - "Configure scale based on CPU"
+        - "Set min and max instances"
+        - "Schedule scaling for business hours"
+      single_clear:
+        - "I need to configure auto scaling. Set up auto scaling"
+        - "I need to configure auto scaling. Configure scale based on CPU"
+        - "I need to configure auto scaling. Set min and max instances"
+        - "I need to configure auto scaling. Schedule scaling for business hours"
+
+  - name: manage_secrets
+    descriptions:
+      minimal: "Manage secrets"
+      short: "Manage secrets and credentials"
+      medium: "Store and retrieve secrets securely using a secrets manager."
+      long: "Manage application secrets with encryption and access control. Example: manage_secrets(action='create', name='db-password', value='secret123', path='/prod/database')."
+      verbose: "Secrets management for applications. Stores: AWS Secrets Manager, HashiCorp Vault, Azure Key Vault, GCP Secret Manager. Actions: create, read, update, delete, rotate, list. Features: versioning, automatic rotation, access policies, audit logging. Example: manage_secrets(action='create', store='vault', path='secret/prod/api-keys', data='{\"stripe_key\": \"sk_live_...\", \"sendgrid_key\": \"SG...\"}', ttl='90d', auto_rotate=true). Rotation: manage_secrets(action='rotate', path='secret/prod/db-password', rotation_lambda='rotate-db-creds'). Note: Use least-privilege access policies. Warning: Deleted secrets may affect running applications."
+    parameters:
+      - name: action
+        type: string
+        description: "Secrets action"
+        required: true
+        enum: ["create", "read", "update", "delete", "rotate", "list", "history"]
+      - name: store
+        type: string
+        description: "Secrets store"
+        required: false
+        default: "vault"
+        enum: ["vault", "aws", "azure", "gcp"]
+      - name: path
+        type: string
+        description: "Secret path"
+        required: true
+      - name: data
+        type: string
+        description: "JSON secret data"
+        required: false
+      - name: ttl
+        type: string
+        description: "Time to live"
+        required: false
+      - name: auto_rotate
+        type: boolean
+        description: "Enable auto rotation"
+        required: false
+        default: false
+      - name: version
+        type: integer
+        description: "Secret version"
+        required: false
+    tags: ["devops", "secrets", "vault", "credentials", "security"]
+    test_prompts:
+      single:
+        - "Store API key securely"
+        - "Retrieve database password"
+        - "Rotate secret"
+        - "List all secrets"
+      single_clear:
+        - "I need to manage application secrets. Store API key securely"
+        - "I need to manage application secrets. Retrieve database password"
+        - "I need to manage application secrets. Rotate secret"
+        - "I need to manage application secrets. List all secrets"
+
+  - name: configure_service_mesh
+    descriptions:
+      minimal: "Configure service mesh"
+      short: "Configure service mesh"
+      medium: "Configure service mesh for microservices communication."
+      long: "Set up service mesh with traffic management and observability. Example: configure_service_mesh(action='create_route', service='api', route='{\"canary\": 10}')."
+      verbose: "Service mesh configuration for microservices. Tools: Istio, Linkerd, Consul Connect. Features: traffic routing, load balancing, mTLS, observability. Actions: create_route, configure_retry, set_timeout, enable_mtls, create_circuit_breaker. Example: configure_service_mesh(mesh='istio', action='create_route', service='frontend', destination='{\"stable\": 90, \"canary\": 10}', match='{\"headers\": {\"x-canary\": \"true\"}}'). Circuit breaker: configure_service_mesh(action='create_circuit_breaker', service='payment', max_connections=100, consecutive_errors=5). Note: Service mesh adds latency overhead. Warning: Misconfigured routes can cause service outages."
+    parameters:
+      - name: mesh
+        type: string
+        description: "Service mesh platform"
+        required: false
+        default: "istio"
+        enum: ["istio", "linkerd", "consul"]
+      - name: action
+        type: string
+        description: "Mesh action"
+        required: true
+        enum: ["create_route", "configure_retry", "set_timeout", "enable_mtls", "create_circuit_breaker", "status"]
+      - name: service
+        type: string
+        description: "Service name"
+        required: true
+      - name: destination
+        type: string
+        description: "JSON routing destination"
+        required: false
+      - name: match
+        type: string
+        description: "JSON match conditions"
+        required: false
+      - name: max_connections
+        type: integer
+        description: "Max connections for circuit breaker"
+        required: false
+      - name: timeout
+        type: string
+        description: "Request timeout"
+        required: false
+    tags: ["devops", "service_mesh", "istio", "microservices", "networking"]
+    test_prompts:
+      single:
+        - "Set up canary routing"
+        - "Configure circuit breaker"
+        - "Enable mTLS for service"
+        - "Create retry policy"
+      single_clear:
+        - "I need to configure a service mesh. Set up canary routing"
+        - "I need to configure a service mesh. Configure circuit breaker"
+        - "I need to configure a service mesh. Enable mTLS for service"
+        - "I need to configure a service mesh. Create retry policy"
+
+  - name: manage_container_registry
+    descriptions:
+      minimal: "Manage registry"
+      short: "Manage container registry"
+      medium: "Manage container images in a container registry."
+      long: "Push, pull, and manage container images in registries. Example: manage_container_registry(action='push', image='myapp:latest', registry='gcr.io/project')."
+      verbose: "Container registry management. Registries: Docker Hub, ECR, GCR, ACR, Harbor. Actions: push, pull, list, delete, tag, scan, replicate. Features: vulnerability scanning, image signing, retention policies. Example: manage_container_registry(action='push', registry='ecr', repository='api-server', image='api:v1.2.3', scan=true, sign=true). Cleanup: manage_container_registry(action='delete', registry='gcr', repository='web-app', tags='[\"v1.0.0\", \"v1.0.1\"]', keep_latest=5). Note: Scan images before deployment. Warning: Deleting images may break deployments."
+    parameters:
+      - name: action
+        type: string
+        description: "Registry action"
+        required: true
+        enum: ["push", "pull", "list", "delete", "tag", "scan", "replicate"]
+      - name: registry
+        type: string
+        description: "Registry name/URL"
+        required: true
+      - name: repository
+        type: string
+        description: "Repository name"
+        required: true
+      - name: image
+        type: string
+        description: "Image with tag"
+        required: false
+      - name: tags
+        type: string
+        description: "JSON array of tags"
+        required: false
+      - name: scan
+        type: boolean
+        description: "Run vulnerability scan"
+        required: false
+        default: false
+      - name: sign
+        type: boolean
+        description: "Sign the image"
+        required: false
+        default: false
+    tags: ["devops", "container", "registry", "docker", "images"]
+    test_prompts:
+      single:
+        - "Push image to ECR"
+        - "List container images"
+        - "Scan image for vulnerabilities"
+        - "Delete old images"
+      single_clear:
+        - "I need to manage container images. Push image to ECR"
+        - "I need to manage container images. List container images"
+        - "I need to manage container images. Scan image for vulnerabilities"
+        - "I need to manage container images. Delete old images"
+
+  - name: manage_feature_flags
+    descriptions:
+      minimal: "Manage feature flags"
+      short: "Manage feature flags"
+      medium: "Create and manage feature flags for controlled rollouts."
+      long: "Toggle features on/off with targeting rules. Example: manage_feature_flags(action='create', flag='new-checkout', enabled=false, rollout=10)."
+      verbose: "Feature flag management for controlled releases. Actions: create, toggle, update, delete, list, evaluate. Features: percentage rollout, user targeting, A/B testing, kill switches. Targeting: user ID, email, location, custom attributes. Example: manage_feature_flags(action='create', flag='dark-mode', enabled=true, rollout=25, targeting='{\"rules\": [{\"attribute\": \"email\", \"operator\": \"endsWith\", \"value\": \"@company.com\", \"variation\": true}]}', fallback=false). Note: Start with small rollout percentages. Warning: Ensure fallback behavior is tested."
+    parameters:
+      - name: action
+        type: string
+        description: "Feature flag action"
+        required: true
+        enum: ["create", "toggle", "update", "delete", "list", "evaluate"]
+      - name: flag
+        type: string
+        description: "Flag name/key"
+        required: true
+      - name: enabled
+        type: boolean
+        description: "Flag enabled state"
+        required: false
+      - name: rollout
+        type: integer
+        description: "Rollout percentage"
+        required: false
+        default: 100
+      - name: targeting
+        type: string
+        description: "JSON targeting rules"
+        required: false
+      - name: fallback
+        type: boolean
+        description: "Fallback value"
+        required: false
+        default: false
+      - name: environment
+        type: string
+        description: "Target environment"
+        required: false
+        default: "production"
+    tags: ["devops", "feature_flags", "rollout", "release", "toggle"]
+    test_prompts:
+      single:
+        - "Create feature flag"
+        - "Enable feature for 10%"
+        - "Toggle feature flag"
+        - "Set targeting rules"
+      single_clear:
+        - "I need to manage feature flags. Create feature flag"
+        - "I need to manage feature flags. Enable feature for 10%"
+        - "I need to manage feature flags. Toggle feature flag"
+        - "I need to manage feature flags. Set targeting rules"
+
+  - name: manage_ssl_certificates
+    descriptions:
+      minimal: "Manage SSL certs"
+      short: "Manage SSL certificates"
+      medium: "Provision and manage SSL/TLS certificates."
+      long: "Create, renew, and manage SSL certificates for domains. Example: manage_ssl_certificates(action='create', domains='[\"example.com\", \"*.example.com\"]', provider='letsencrypt')."
+      verbose: "SSL/TLS certificate management. Providers: Let's Encrypt, AWS ACM, Cloudflare, DigiCert. Actions: create, renew, revoke, list, install, verify. Features: wildcard certs, auto-renewal, multi-domain (SAN). Example: manage_ssl_certificates(action='create', domains='[\"api.example.com\", \"www.example.com\"]', provider='letsencrypt', challenge='dns', auto_renew=true, notify_before=30). Installation: manage_ssl_certificates(action='install', cert_id='cert-123', target='{\"type\": \"nginx\", \"path\": \"/etc/nginx/ssl\"}'). Note: Set up auto-renewal to avoid expiration. Warning: Certificate expiration causes service outages."
+    parameters:
+      - name: action
+        type: string
+        description: "Certificate action"
+        required: true
+        enum: ["create", "renew", "revoke", "list", "install", "verify", "delete"]
+      - name: domains
+        type: string
+        description: "JSON array of domains"
+        required: false
+      - name: provider
+        type: string
+        description: "Certificate provider"
+        required: false
+        default: "letsencrypt"
+        enum: ["letsencrypt", "acm", "cloudflare", "digicert", "custom"]
+      - name: challenge
+        type: string
+        description: "Validation challenge type"
+        required: false
+        default: "http"
+        enum: ["http", "dns", "email"]
+      - name: auto_renew
+        type: boolean
+        description: "Enable auto-renewal"
+        required: false
+        default: true
+      - name: cert_id
+        type: string
+        description: "Certificate ID"
+        required: false
+      - name: notify_before
+        type: integer
+        description: "Days before expiry to notify"
+        required: false
+        default: 30
+    tags: ["devops", "ssl", "tls", "certificates", "security"]
+    test_prompts:
+      single:
+        - "Create SSL certificate"
+        - "Renew expiring certificate"
+        - "Install certificate on server"
+        - "List all certificates"
+      single_clear:
+        - "I need to manage SSL certificates. Create SSL certificate"
+        - "I need to manage SSL certificates. Renew expiring certificate"
+        - "I need to manage SSL certificates. Install certificate on server"
+        - "I need to manage SSL certificates. List all certificates"

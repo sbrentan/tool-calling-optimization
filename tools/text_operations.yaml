@@ -1,0 +1,823 @@
+category: text_operations
+
+tools:
+  - name: format_text
+    descriptions:
+      minimal: "Format text"
+      short: "Format text with various styling options"
+      medium: "Format text by applying transformations like uppercase, lowercase, title case, or custom formatting."
+      long: "Format text by applying various transformations. Supports uppercase, lowercase, title case, sentence case, and slug format. Example: format_text(text='hello world', format='title') returns 'Hello World'."
+      verbose: "Format text by applying various case and style transformations. Supported formats include: 'upper' (HELLO WORLD), 'lower' (hello world), 'title' (Hello World), 'sentence' (Hello world), 'slug' (hello-world), 'snake' (hello_world), 'camel' (helloWorld), 'pascal' (HelloWorld). Example: format_text(text='hello world example', format='pascal') returns 'HelloWorldExample'. Note: Slug format removes special characters and replaces spaces with hyphens. Warning: Non-ASCII characters may behave differently in some formats."
+    parameters:
+      - name: text
+        type: string
+        description: "The text to format"
+        required: true
+      - name: format
+        type: string
+        description: "The format to apply"
+        required: true
+        enum: ["upper", "lower", "title", "sentence", "slug", "snake", "camel", "pascal"]
+    tags: ["text", "format", "string", "transform", "case"]
+    test_prompts:
+      single:
+        - "Convert 'hello world' to title case"
+        - "Make this text uppercase"
+        - "Convert the string to snake_case"
+        - "Format 'MY TITLE' as lowercase"
+      single_clear:
+        - "I need to format text with specific styling. Convert 'hello world' to title case"
+        - "I need to format text with specific styling. Make this text uppercase"
+        - "I need to format text with specific styling. Convert the string to snake_case"
+        - "I need to format text with specific styling. Format 'MY TITLE' as lowercase"
+
+  - name: search_text
+    descriptions:
+      minimal: "Search text"
+      short: "Search for a pattern in text"
+      medium: "Search for a pattern in text using plain text matching or regular expressions. Returns all matches."
+      long: "Search for a pattern in text. Supports both plain text and regex patterns. Returns all matches with their positions. Example: search_text(text='hello world hello', pattern='hello', regex=false)."
+      verbose: "Search for a pattern within text using plain text matching or regular expressions. Returns all matches with their start and end positions. Can perform case-insensitive matching. For regex, supports standard regex syntax including groups. Example: search_text(text='Contact: john@example.com and jane@test.org', pattern='[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}', regex=true) finds all email addresses. Note: Returns empty list if no matches found. Warning: Complex regex patterns may be slow on large texts."
+    parameters:
+      - name: text
+        type: string
+        description: "The text to search in"
+        required: true
+      - name: pattern
+        type: string
+        description: "The pattern to search for"
+        required: true
+      - name: regex
+        type: boolean
+        description: "If true, treat pattern as regex"
+        required: false
+        default: false
+      - name: case_sensitive
+        type: boolean
+        description: "If true, match case exactly"
+        required: false
+        default: true
+    tags: ["text", "search", "find", "pattern", "regex", "string"]
+    test_prompts:
+      single:
+        - "Find all occurrences of 'error' in the log text"
+        - "Search for email addresses in the text"
+        - "Find all numbers in the string"
+        - "Search for the word 'hello' in the document"
+      single_clear:
+        - "I need to search for patterns in text. Find all occurrences of 'error' in the log text"
+        - "I need to search for patterns in text. Search for email addresses in the text"
+        - "I need to search for patterns in text. Find all numbers in the string"
+        - "I need to search for patterns in text. Search for the word 'hello' in the document"
+
+  - name: replace_text
+    descriptions:
+      minimal: "Replace text"
+      short: "Replace occurrences of a pattern in text"
+      medium: "Replace occurrences of a pattern in text with a replacement string. Supports plain text and regex."
+      long: "Replace all occurrences of a pattern in text with a replacement string. Supports both plain text and regex patterns. Example: replace_text(text='hello world', pattern='world', replacement='universe')."
+      verbose: "Replace occurrences of a pattern in text with a replacement string. Supports plain text matching and regular expressions. For regex, supports backreferences in the replacement string (\\1, \\2, etc.). Can limit the number of replacements. Example: replace_text(text='Date: 2024-01-15', pattern='(\\d{4})-(\\d{2})-(\\d{2})', replacement='\\2/\\3/\\1', regex=true) converts to '01/15/2024'. Note: Without max_replacements, all occurrences are replaced. Warning: Regex replacement with backreferences requires proper escaping."
+    parameters:
+      - name: text
+        type: string
+        description: "The text to modify"
+        required: true
+      - name: pattern
+        type: string
+        description: "The pattern to replace"
+        required: true
+      - name: replacement
+        type: string
+        description: "The replacement string"
+        required: true
+      - name: regex
+        type: boolean
+        description: "If true, treat pattern as regex"
+        required: false
+        default: false
+      - name: max_replacements
+        type: integer
+        description: "Maximum number of replacements (0 = unlimited)"
+        required: false
+        default: 0
+    tags: ["text", "replace", "pattern", "regex", "string", "substitute"]
+    test_prompts:
+      single:
+        - "Replace all spaces with underscores in the text"
+        - "Change 'old' to 'new' in the string"
+        - "Remove all digits from the text"
+        - "Replace email domains with [REDACTED]"
+      single_clear:
+        - "Please search and replace text patterns. Replace all spaces with underscores in the text"
+        - "Please search and replace text patterns. Change 'old' to 'new' in the string"
+        - "Please search and replace text patterns. Remove all digits from the text"
+        - "Please search and replace text patterns. Replace email domains with [REDACTED]"
+
+  - name: split_text
+    descriptions:
+      minimal: "Split text"
+      short: "Split text into parts by a delimiter"
+      medium: "Split text into a list of parts using a specified delimiter or pattern."
+      long: "Split text into an array of substrings using a delimiter. Can split by plain text or regex pattern. Example: split_text(text='a,b,c', delimiter=',') returns ['a', 'b', 'c']."
+      verbose: "Split text into an array of substrings using a delimiter or regex pattern. Can limit the number of splits and optionally remove empty parts. Example: split_text(text='apple, banana,  cherry', delimiter=',\\s*', regex=true, remove_empty=true) returns ['apple', 'banana', 'cherry'] with whitespace handled. Note: By default keeps empty strings from consecutive delimiters. Warning: Splitting with a regex that can match empty strings may cause unexpected results."
+    parameters:
+      - name: text
+        type: string
+        description: "The text to split"
+        required: true
+      - name: delimiter
+        type: string
+        description: "The delimiter to split on"
+        required: true
+      - name: regex
+        type: boolean
+        description: "If true, treat delimiter as regex"
+        required: false
+        default: false
+      - name: max_splits
+        type: integer
+        description: "Maximum number of splits (0 = unlimited)"
+        required: false
+        default: 0
+      - name: remove_empty
+        type: boolean
+        description: "If true, remove empty strings from result"
+        required: false
+        default: false
+    tags: ["text", "split", "delimiter", "string", "parse", "tokenize"]
+    test_prompts:
+      single:
+        - "Split the CSV line by commas"
+        - "Break the text into lines"
+        - "Split the sentence into words"
+        - "Parse the path by forward slashes"
+      single_clear:
+        - "I need to split text into parts. Split the CSV line by commas"
+        - "I need to split text into parts. Break the text into lines"
+        - "I need to split text into parts. Split the sentence into words"
+        - "I need to split text into parts. Parse the path by forward slashes"
+
+  - name: join_text
+    descriptions:
+      minimal: "Join text"
+      short: "Join multiple text parts with a separator"
+      medium: "Join a list of text parts into a single string using a specified separator."
+      long: "Join an array of strings into a single string with a separator between each part. Example: join_text(parts='[\"a\", \"b\", \"c\"]', separator=',') returns 'a,b,c'."
+      verbose: "Join multiple text strings into a single string with a separator between each element. The parts should be provided as a JSON array of strings. Can optionally filter out empty strings before joining. Example: join_text(parts='[\"line1\", \"line2\", \"line3\"]', separator='\\n', skip_empty=true) joins with newlines, skipping any empty entries. Note: Empty arrays return an empty string. Warning: Ensure proper JSON formatting for the parts array."
+    parameters:
+      - name: parts
+        type: string
+        description: "JSON array of strings to join"
+        required: true
+      - name: separator
+        type: string
+        description: "The separator to put between parts"
+        required: true
+      - name: skip_empty
+        type: boolean
+        description: "If true, skip empty strings"
+        required: false
+        default: false
+    tags: ["text", "join", "concatenate", "string", "merge", "combine"]
+    test_prompts:
+      single:
+        - "Join the words with spaces"
+        - "Combine the lines with newline characters"
+        - "Join the path parts with forward slashes"
+        - "Concatenate the names with commas"
+      single_clear:
+        - "I need to join text parts together. Join the words with spaces"
+        - "I need to join text parts together. Combine the lines with newline characters"
+        - "I need to join text parts together. Join the path parts with forward slashes"
+        - "I need to join text parts together. Concatenate the names with commas"
+
+  - name: count_text
+    descriptions:
+      minimal: "Count in text"
+      short: "Count characters, words, or lines in text"
+      medium: "Count the number of characters, words, lines, or pattern occurrences in text."
+      long: "Count various metrics in text: characters, words, lines, sentences, or occurrences of a pattern. Example: count_text(text='hello world', count_type='words') returns 2."
+      verbose: "Count various metrics in a text string. Available count types: 'characters' (total characters including spaces), 'characters_no_spaces' (excluding spaces), 'words' (space-separated tokens), 'lines' (newline-separated), 'sentences' (period/exclamation/question mark separated), 'pattern' (requires pattern parameter). Example: count_text(text='Hello! How are you? I am fine.', count_type='sentences') returns 3. Note: Word count uses whitespace splitting; complex languages may need specialized tokenization. Warning: Pattern counting with complex regex may be slow on large texts."
+    parameters:
+      - name: text
+        type: string
+        description: "The text to count in"
+        required: true
+      - name: count_type
+        type: string
+        description: "What to count"
+        required: true
+        enum: ["characters", "characters_no_spaces", "words", "lines", "sentences", "pattern"]
+      - name: pattern
+        type: string
+        description: "Pattern to count (only for count_type='pattern')"
+        required: false
+    tags: ["text", "count", "length", "words", "statistics", "analyze"]
+    test_prompts:
+      single:
+        - "Count the number of words in this text"
+        - "How many characters are in the string?"
+        - "Count the lines in the document"
+        - "How many times does 'the' appear in the text?"
+      single_clear:
+        - "I need to count elements in text. Count the number of words in this text"
+        - "I need to count elements in text. How many characters are in the string?"
+        - "I need to count elements in text. Count the lines in the document"
+        - "I need to count elements in text. How many times does 'the' appear in the text?"
+
+  - name: trim_text
+    descriptions:
+      minimal: "Trim text"
+      short: "Remove whitespace from text ends"
+      medium: "Remove leading and/or trailing whitespace from text. Can also trim specific characters."
+      long: "Remove whitespace or specified characters from the beginning and/or end of text. Example: trim_text(text='  hello world  ', side='both') returns 'hello world'."
+      verbose: "Remove whitespace or specified characters from text. Can trim from the start (left), end (right), or both sides. By default removes whitespace (spaces, tabs, newlines). Custom characters can be specified to trim. Example: trim_text(text='...hello...', side='both', characters='.') returns 'hello'. Note: Only removes characters from the edges, not from the middle of the text. Warning: Trimming custom characters removes ALL specified characters from that side, not just one."
+    parameters:
+      - name: text
+        type: string
+        description: "The text to trim"
+        required: true
+      - name: side
+        type: string
+        description: "Which side(s) to trim"
+        required: false
+        default: "both"
+        enum: ["left", "right", "both"]
+      - name: characters
+        type: string
+        description: "Characters to trim (default: whitespace)"
+        required: false
+    tags: ["text", "trim", "whitespace", "string", "clean", "strip"]
+    test_prompts:
+      single:
+        - "Remove the whitespace from both ends of the text"
+        - "Trim the leading spaces from the string"
+        - "Strip trailing newlines from the text"
+        - "Remove dots from the start and end"
+      single_clear:
+        - "I need to trim whitespace from text. Remove the whitespace from both ends of the text"
+        - "I need to trim whitespace from text. Trim the leading spaces from the string"
+        - "I need to trim whitespace from text. Strip trailing newlines from the text"
+        - "I need to trim whitespace from text. Remove dots from the start and end"
+
+  - name: extract_text
+    descriptions:
+      minimal: "Extract text"
+      short: "Extract a portion of text"
+      medium: "Extract a substring from text using start/end positions or pattern matching."
+      long: "Extract a portion of text using character positions or by matching a pattern. Returns the extracted substring. Example: extract_text(text='hello world', start=0, end=5) returns 'hello'."
+      verbose: "Extract a portion of text using character positions or pattern matching. Positions are zero-indexed. Negative positions count from the end. Can also extract using regex groups to capture specific parts. Example: extract_text(text='Order ID: 12345, Date: 2024-01-15', pattern='Order ID: (\\d+)', regex=true, group=1) returns '12345'. Note: End position is exclusive (like Python slicing). Warning: Out-of-range positions are clamped to text boundaries."
+    parameters:
+      - name: text
+        type: string
+        description: "The text to extract from"
+        required: true
+      - name: start
+        type: integer
+        description: "Start position (0-indexed)"
+        required: false
+        default: 0
+      - name: end
+        type: integer
+        description: "End position (exclusive, -1 for end)"
+        required: false
+        default: -1
+      - name: pattern
+        type: string
+        description: "Regex pattern (alternative to positions)"
+        required: false
+      - name: group
+        type: integer
+        description: "Regex group to extract (0 = full match)"
+        required: false
+        default: 0
+    tags: ["text", "extract", "substring", "slice", "string", "parse"]
+    test_prompts:
+      single:
+        - "Extract the first 10 characters from the text"
+        - "Get the last 5 characters of the string"
+        - "Extract the email address from the text"
+        - "Get the number from the order string"
+      single_clear:
+        - "I need to extract specific text from content. Extract the first 10 characters from the text"
+        - "I need to extract specific text from content. Get the last 5 characters of the string"
+        - "I need to extract specific text from content. Extract the email address from the text"
+        - "I need to extract specific text from content. Get the number from the order string"
+
+  - name: translate_text
+    descriptions:
+      minimal: "Translate text"
+      short: "Translate text between languages"
+      medium: "Translate text from one language to another. Supports automatic source language detection."
+      long: "Translate text from a source language to a target language. Can auto-detect the source language if not specified. Example: translate_text(text='Hello world', target_language='es') translates to Spanish."
+      verbose: "Translate text between languages using machine translation. Supports automatic source language detection. Preserves formatting where possible. Returns translated text along with detected source language. Example: translate_text(text='Good morning, how are you?', source_language='auto', target_language='fr') returns 'Bonjour, comment allez-vous?'. Supported languages include major world languages (en, es, fr, de, it, pt, zh, ja, ko, etc.). Note: Translation quality varies by language pair. Warning: Machine translation may not capture nuance or context perfectly."
+    parameters:
+      - name: text
+        type: string
+        description: "The text to translate"
+        required: true
+      - name: target_language
+        type: string
+        description: "Target language code (e.g., 'es', 'fr', 'de')"
+        required: true
+      - name: source_language
+        type: string
+        description: "Source language code ('auto' for detection)"
+        required: false
+        default: "auto"
+    tags: ["text", "translate", "language", "localization", "i18n"]
+    test_prompts:
+      single:
+        - "Translate 'Hello world' to Spanish"
+        - "Convert this text to French"
+        - "Translate the message to German"
+        - "Change the text from English to Japanese"
+      single_clear:
+        - "I need to translate text between languages. Translate 'Hello world' to Spanish"
+        - "I need to translate text between languages. Convert this text to French"
+        - "I need to translate text between languages. Translate the message to German"
+        - "I need to translate text between languages. Change the text from English to Japanese"
+
+  - name: summarize_text
+    descriptions:
+      minimal: "Summarize text"
+      short: "Create a summary of text"
+      medium: "Generate a concise summary of longer text, preserving key information."
+      long: "Generate a summary of text, reducing it to the essential points. Can specify target length as percentage or word count. Example: summarize_text(text='...long article...', max_length=100, length_type='words')."
+      verbose: "Generate a concise summary of longer text while preserving the most important information. Can specify target length as a percentage of original, word count, or sentence count. Supports extractive (selecting key sentences) and abstractive (generating new text) modes. Example: summarize_text(text='...article text...', max_length=30, length_type='percent', mode='extractive') returns ~30% of original length using extracted sentences. Note: Very short texts may not be summarizable. Warning: Abstractive summarization may occasionally introduce inaccuracies."
+    parameters:
+      - name: text
+        type: string
+        description: "The text to summarize"
+        required: true
+      - name: max_length
+        type: integer
+        description: "Target length (in units specified by length_type)"
+        required: false
+        default: 100
+      - name: length_type
+        type: string
+        description: "How to measure length"
+        required: false
+        default: "words"
+        enum: ["percent", "words", "sentences"]
+      - name: mode
+        type: string
+        description: "Summarization approach"
+        required: false
+        default: "extractive"
+        enum: ["extractive", "abstractive"]
+    tags: ["text", "summarize", "summary", "condense", "brief", "nlp"]
+    test_prompts:
+      single:
+        - "Summarize this article in 3 sentences"
+        - "Give me a brief summary of the document"
+        - "Condense this text to 50 words"
+        - "Create a short summary of the report"
+      single_clear:
+        - "I need to summarize text content. Summarize this article in 3 sentences"
+        - "I need to summarize text content. Give me a brief summary of the document"
+        - "I need to summarize text content. Condense this text to 50 words"
+        - "I need to summarize text content. Create a short summary of the report"
+
+  - name: detect_language
+    descriptions:
+      minimal: "Detect language"
+      short: "Detect the language of text"
+      medium: "Detect the language of the provided text and return the language code and confidence score."
+      long: "Analyze text to detect its language. Returns the language code (e.g., 'en', 'es', 'fr') along with a confidence score. Example: detect_language(text='Bonjour le monde') returns {'language': 'fr', 'confidence': 0.98}."
+      verbose: "Detect the language of text using statistical analysis and machine learning. Returns the most likely language code (ISO 639-1) along with a confidence score from 0 to 1. Can return multiple possible languages with their probabilities. Works best with 20+ characters of text. Example: detect_language(text='これは日本語のテキストです', return_all=false) returns {'language': 'ja', 'confidence': 0.99}. Note: Short texts or texts with many numbers may have lower confidence. Warning: Mixed-language texts may produce unpredictable results."
+    parameters:
+      - name: text
+        type: string
+        description: "The text to analyze"
+        required: true
+      - name: return_all
+        type: boolean
+        description: "If true, return all possible languages with probabilities"
+        required: false
+        default: false
+    tags: ["text", "language", "detect", "identify", "nlp", "locale"]
+    test_prompts:
+      single:
+        - "What language is 'Bonjour le monde'?"
+        - "Detect the language of this text"
+        - "Identify what language the string is written in"
+        - "Is this text in English or Spanish?"
+      single_clear:
+        - "I need to detect the language of text. What language is 'Bonjour le monde'?"
+        - "I need to detect the language of text. Detect the language of this text"
+        - "I need to detect the language of text. Identify what language the string is written in"
+        - "I need to detect the language of text. Is this text in English or Spanish?"
+
+  - name: validate_text
+    descriptions:
+      minimal: "Validate text"
+      short: "Validate text against rules or patterns"
+      medium: "Validate text against common patterns like email, phone, URL, or custom regex."
+      long: "Validate text against predefined patterns (email, phone, url, etc.) or custom regex. Returns whether the text matches and any validation errors. Example: validate_text(text='test@example.com', validation_type='email')."
+      verbose: "Validate text against various predefined patterns or custom regular expressions. Built-in validation types include: 'email' (RFC 5322 compliant), 'url' (http/https URLs), 'phone' (international phone formats), 'ip' (IPv4/IPv6), 'date' (ISO 8601), 'credit_card' (Luhn check), 'uuid', 'alphanumeric'. Returns a validation result with 'valid' boolean and 'errors' array. Example: validate_text(text='555-1234', validation_type='phone', strict=false) returns {'valid': true, 'errors': []}. Note: 'strict' mode enforces stricter format requirements. Warning: Validation is syntactic only; does not verify existence (e.g., email deliverability)."
+    parameters:
+      - name: text
+        type: string
+        description: "The text to validate"
+        required: true
+      - name: validation_type
+        type: string
+        description: "Type of validation to perform"
+        required: true
+        enum: ["email", "url", "phone", "ip", "date", "credit_card", "uuid", "alphanumeric", "custom"]
+      - name: pattern
+        type: string
+        description: "Custom regex pattern (only for validation_type='custom')"
+        required: false
+      - name: strict
+        type: boolean
+        description: "Enable strict validation rules"
+        required: false
+        default: false
+    tags: ["text", "validate", "check", "pattern", "verify", "format"]
+    test_prompts:
+      single:
+        - "Check if this is a valid email address"
+        - "Validate the phone number format"
+        - "Is this a valid URL?"
+        - "Check if the string is a valid UUID"
+      single_clear:
+        - "Please validate text against a pattern. Check if this is a valid email address"
+        - "Please validate text against a pattern. Validate the phone number format"
+        - "Please validate text against a pattern. Is this a valid URL?"
+        - "Please validate text against a pattern. Check if the string is a valid UUID"
+
+  - name: extract_entities
+    descriptions:
+      minimal: "Extract entities"
+      short: "Extract named entities from text"
+      medium: "Extract named entities like people, organizations, locations, and dates from text using NLP."
+      long: "Extract named entities from text. Identifies and categorizes entities like people, organizations, locations, dates, and more. Example: extract_entities(text='Apple CEO Tim Cook announced...')."
+      verbose: "Extract and classify named entities from text using natural language processing. Entity types: PERSON (names), ORG (organizations), LOC (locations), DATE, TIME, MONEY, PERCENT, PRODUCT, EVENT, WORK_OF_ART. Returns entities with text, type, and position. Example: extract_entities(text='Microsoft CEO Satya Nadella visited Paris on January 15th', entity_types=['PERSON', 'ORG', 'LOC', 'DATE']) returns [{\"text\": \"Microsoft\", \"type\": \"ORG\"}, {\"text\": \"Satya Nadella\", \"type\": \"PERSON\"}, ...]. Note: Accuracy depends on text quality and context. Warning: Ambiguous names may be misclassified without sufficient context."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to extract entities from"
+        required: true
+      - name: entity_types
+        type: array
+        description: "Types of entities to extract"
+        required: false
+      - name: include_positions
+        type: boolean
+        description: "Include character positions"
+        required: false
+        default: false
+    tags: ["text", "nlp", "entities", "ner", "extract", "recognition"]
+    test_prompts:
+      single:
+        - "Find all names mentioned in this article"
+        - "Extract organizations from the document"
+        - "Identify locations mentioned in the text"
+        - "What entities are in this paragraph?"
+      single_clear:
+        - "I need to extract named entities from text. Find all names mentioned in this article"
+        - "I need to extract named entities from text. Extract organizations from the document"
+        - "I need to extract named entities from text. Identify locations mentioned in the text"
+        - "I need to extract named entities from text. What entities are in this paragraph?"
+
+  - name: analyze_sentiment
+    descriptions:
+      minimal: "Analyze sentiment"
+      short: "Analyze the sentiment of text"
+      medium: "Analyze the emotional sentiment of text as positive, negative, or neutral with a confidence score."
+      long: "Perform sentiment analysis on text. Returns sentiment label and confidence score. Can analyze overall or per-sentence. Example: analyze_sentiment(text='I love this product!') returns {'sentiment': 'positive', 'score': 0.95}."
+      verbose: "Analyze the emotional sentiment of text using NLP. Returns: overall sentiment (positive, negative, neutral), confidence score (0-1), and optionally per-sentence breakdown. Advanced options include aspect-based sentiment for specific topics. Example: analyze_sentiment(text='The food was great but service was slow', granularity='sentence', aspects=['food', 'service']) returns [{\"sentence\": \"The food was great\", \"sentiment\": \"positive\", \"aspects\": {\"food\": \"positive\"}}...]. Note: Sarcasm and irony may be misinterpreted. Warning: Short texts may have lower confidence scores."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to analyze"
+        required: true
+      - name: granularity
+        type: string
+        description: "Analysis level"
+        required: false
+        default: "document"
+        enum: ["document", "sentence"]
+      - name: aspects
+        type: array
+        description: "Specific aspects to analyze"
+        required: false
+    tags: ["text", "nlp", "sentiment", "emotion", "analysis"]
+    test_prompts:
+      single:
+        - "What is the sentiment of this review?"
+        - "Analyze if the feedback is positive or negative"
+        - "Detect the emotion in this message"
+        - "Is this comment positive?"
+      single_clear:
+        - "I need to analyze the sentiment of text. What is the sentiment of this review?"
+        - "I need to analyze the sentiment of text. Analyze if the feedback is positive or negative"
+        - "I need to analyze the sentiment of text. Detect the emotion in this message"
+        - "I need to analyze the sentiment of text. Is this comment positive?"
+
+  - name: extract_keywords
+    descriptions:
+      minimal: "Extract keywords"
+      short: "Extract important keywords from text"
+      medium: "Extract the most important keywords and key phrases from text for indexing or summarization."
+      long: "Extract keywords and key phrases from text. Returns ranked list of important terms with their relevance scores. Example: extract_keywords(text='Machine learning is transforming...', max_keywords=10)."
+      verbose: "Extract and rank keywords and key phrases from text using various algorithms. Methods: 'tfidf' (term frequency-inverse document frequency), 'textrank' (graph-based), 'rake' (Rapid Automatic Keyword Extraction), 'yake' (Yet Another Keyword Extractor). Returns keywords with relevance scores. Example: extract_keywords(text='...article about artificial intelligence...', method='textrank', max_keywords=15, include_phrases=true, min_word_length=3) returns [{\"keyword\": \"artificial intelligence\", \"score\": 0.89}, ...]. Note: Method choice affects results; experiment for best fit. Warning: Very short texts may not yield meaningful keywords."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to extract keywords from"
+        required: true
+      - name: max_keywords
+        type: integer
+        description: "Maximum keywords to return"
+        required: false
+        default: 10
+      - name: method
+        type: string
+        description: "Extraction algorithm"
+        required: false
+        default: "tfidf"
+        enum: ["tfidf", "textrank", "rake", "yake"]
+      - name: include_phrases
+        type: boolean
+        description: "Include multi-word phrases"
+        required: false
+        default: true
+    tags: ["text", "keywords", "extract", "nlp", "seo", "indexing"]
+    test_prompts:
+      single:
+        - "Extract the main keywords from this article"
+        - "What are the key topics in this document?"
+        - "Find important terms in the text"
+        - "Get keywords for SEO"
+      single_clear:
+        - "I need to extract keywords from text. Extract the main keywords from this article"
+        - "I need to extract keywords from text. What are the key topics in this document?"
+        - "I need to extract keywords from text. Find important terms in the text"
+        - "I need to extract keywords from text. Get keywords for SEO"
+
+  - name: correct_spelling
+    descriptions:
+      minimal: "Correct spelling"
+      short: "Check and correct spelling errors"
+      medium: "Check text for spelling errors and provide corrected version with suggested changes."
+      long: "Check and correct spelling errors in text. Returns corrected text and list of corrections made. Example: correct_spelling(text='Teh quck brown fox') returns corrected text with list of changes."
+      verbose: "Check text for spelling errors and apply corrections. Supports multiple languages with appropriate dictionaries. Can operate in 'correct' mode (auto-fix) or 'suggest' mode (provide alternatives). Respects proper nouns and technical terms. Example: correct_spelling(text='I recieved your mesage yestarday', language='en', mode='correct', add_to_dictionary=['API', 'OAuth']) returns {\"corrected\": \"I received your message yesterday\", \"corrections\": [...]}. Note: Context-aware correction improves accuracy. Warning: May incorrectly 'fix' valid specialized terminology."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to check"
+        required: true
+      - name: language
+        type: string
+        description: "Language code"
+        required: false
+        default: "en"
+      - name: mode
+        type: string
+        description: "Correction mode"
+        required: false
+        default: "correct"
+        enum: ["correct", "suggest"]
+      - name: add_to_dictionary
+        type: array
+        description: "Words to ignore"
+        required: false
+    tags: ["text", "spelling", "correct", "grammar", "proofread"]
+    test_prompts:
+      single:
+        - "Fix the spelling errors in this text"
+        - "Check this paragraph for typos"
+        - "Correct any misspelled words"
+        - "Proofread the spelling"
+      single_clear:
+        - "I need to correct spelling errors. Fix the spelling errors in this text"
+        - "I need to correct spelling errors. Check this paragraph for typos"
+        - "I need to correct spelling errors. Correct any misspelled words"
+        - "I need to correct spelling errors. Proofread the spelling"
+
+  - name: check_grammar
+    descriptions:
+      minimal: "Check grammar"
+      short: "Check text for grammar errors"
+      medium: "Analyze text for grammatical errors and style issues with suggestions for improvement."
+      long: "Check text for grammar, punctuation, and style issues. Returns list of issues with suggestions. Example: check_grammar(text='Him go to store yesterday') returns grammar issues found."
+      verbose: "Comprehensive grammar and style checking. Checks: grammar rules, punctuation, subject-verb agreement, tense consistency, sentence structure, word choice, passive voice, and readability. Configurable strictness and style guides. Example: check_grammar(text='Their going too the store, me and him want too buy stuffs', style_guide='formal', check_passive=true) returns [{\"issue\": \"Their should be They're\", \"position\": 0, \"suggestion\": \"They're\"}...]. Note: Creative writing may flag intentional style choices. Warning: Context-dependent rules may produce false positives."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to check"
+        required: true
+      - name: language
+        type: string
+        description: "Language code"
+        required: false
+        default: "en"
+      - name: style_guide
+        type: string
+        description: "Style guide to follow"
+        required: false
+        enum: ["standard", "formal", "casual", "academic", "business"]
+      - name: check_passive
+        type: boolean
+        description: "Flag passive voice"
+        required: false
+        default: false
+    tags: ["text", "grammar", "proofread", "writing", "style"]
+    test_prompts:
+      single:
+        - "Check this text for grammar errors"
+        - "Find grammatical issues in the paragraph"
+        - "Proofread my writing"
+        - "Is this sentence grammatically correct?"
+      single_clear:
+        - "I need to check text for grammar errors. Check this text for grammar errors"
+        - "I need to check text for grammar errors. Find grammatical issues in the paragraph"
+        - "I need to check text for grammar errors. Proofread my writing"
+        - "I need to check text for grammar errors. Is this sentence grammatically correct?"
+
+  - name: generate_lorem_ipsum
+    descriptions:
+      minimal: "Generate lorem ipsum"
+      short: "Generate placeholder lorem ipsum text"
+      medium: "Generate lorem ipsum placeholder text of specified length in paragraphs, sentences, or words."
+      long: "Generate lorem ipsum dummy text. Specify amount in paragraphs, sentences, or words. Useful for mockups. Example: generate_lorem_ipsum(amount=3, unit='paragraphs')."
+      verbose: "Generate lorem ipsum placeholder text for design mockups and testing. Options: standard lorem ipsum, random Latin-like text, or themed placeholder (tech, business, hipster). Units: paragraphs, sentences, or words. Example: generate_lorem_ipsum(amount=5, unit='paragraphs', style='standard', start_with_lorem=true) generates 5 paragraphs starting with 'Lorem ipsum dolor sit amet...'. Note: HTML wrapper tags can be optionally added. Warning: Lorem ipsum is not real Latin and should not be used in production content."
+    parameters:
+      - name: amount
+        type: integer
+        description: "Amount of text units"
+        required: true
+      - name: unit
+        type: string
+        description: "Type of unit"
+        required: false
+        default: "paragraphs"
+        enum: ["paragraphs", "sentences", "words"]
+      - name: style
+        type: string
+        description: "Lorem ipsum style"
+        required: false
+        default: "standard"
+        enum: ["standard", "tech", "business", "hipster"]
+      - name: start_with_lorem
+        type: boolean
+        description: "Start with 'Lorem ipsum'"
+        required: false
+        default: true
+    tags: ["text", "lorem", "placeholder", "dummy", "generate"]
+    test_prompts:
+      single:
+        - "Generate 3 paragraphs of lorem ipsum"
+        - "Create placeholder text for the mockup"
+        - "Generate 100 words of dummy text"
+        - "Give me some lorem ipsum"
+      single_clear:
+        - "I need to generate placeholder text. Generate 3 paragraphs of lorem ipsum"
+        - "I need to generate placeholder text. Create placeholder text for the mockup"
+        - "I need to generate placeholder text. Generate 100 words of dummy text"
+        - "I need to generate placeholder text. Give me some lorem ipsum"
+
+  - name: compare_texts
+    descriptions:
+      minimal: "Compare texts"
+      short: "Compare two texts and find differences"
+      medium: "Compare two text versions and highlight additions, deletions, and modifications."
+      long: "Compare two texts and produce a diff showing changes. Returns line-by-line or word-by-word comparison. Example: compare_texts(text1='Hello world', text2='Hello there world')."
+      verbose: "Compare two text versions and identify differences. Modes: 'line' (line-by-line diff), 'word' (word-level changes), 'character' (character-by-character). Output formats: 'unified' (git-style), 'side_by_side', 'inline' (highlighted changes). Returns changes with type (added, removed, modified). Example: compare_texts(text1='The quick brown fox', text2='The slow brown dog', mode='word', output_format='inline', ignore_whitespace=true) highlights changed words. Note: Large texts may produce extensive diffs. Warning: Binary files are not supported."
+    parameters:
+      - name: text1
+        type: string
+        description: "Original text"
+        required: true
+      - name: text2
+        type: string
+        description: "Modified text"
+        required: true
+      - name: mode
+        type: string
+        description: "Comparison mode"
+        required: false
+        default: "line"
+        enum: ["line", "word", "character"]
+      - name: output_format
+        type: string
+        description: "Diff output format"
+        required: false
+        default: "unified"
+        enum: ["unified", "side_by_side", "inline"]
+      - name: ignore_whitespace
+        type: boolean
+        description: "Ignore whitespace changes"
+        required: false
+        default: false
+    tags: ["text", "compare", "diff", "changes", "version"]
+    test_prompts:
+      single:
+        - "Compare these two versions of the document"
+        - "Show the differences between the texts"
+        - "What changed between version 1 and 2?"
+        - "Find the differences in these paragraphs"
+      single_clear:
+        - "I need to compare two texts and find differences. Compare these two versions of the document"
+        - "I need to compare two texts and find differences. Show the differences between the texts"
+        - "I need to compare two texts and find differences. What changed between version 1 and 2?"
+        - "I need to compare two texts and find differences. Find the differences in these paragraphs"
+
+  - name: encode_text
+    descriptions:
+      minimal: "Encode text"
+      short: "Encode text to various formats"
+      medium: "Encode text to Base64, URL encoding, HTML entities, or other formats."
+      long: "Encode text to various formats like Base64, URL encoding, or HTML entities. Example: encode_text(text='Hello World!', encoding='base64') returns 'SGVsbG8gV29ybGQh'."
+      verbose: "Encode text using various encoding schemes. Encodings: 'base64' (binary-to-text), 'url' (percent-encoding for URLs), 'html' (HTML entities), 'unicode_escape' (\\uXXXX format), 'hex' (hexadecimal), 'rot13' (Caesar cipher). Example: encode_text(text='Hello <World> & Friends', encoding='html') returns 'Hello &lt;World&gt; &amp; Friends'. Note: Some encodings increase text length. Warning: Encoding is not encryption; do not use for sensitive data."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to encode"
+        required: true
+      - name: encoding
+        type: string
+        description: "Encoding format"
+        required: true
+        enum: ["base64", "url", "html", "unicode_escape", "hex", "rot13"]
+    tags: ["text", "encode", "base64", "url", "convert"]
+    test_prompts:
+      single:
+        - "Encode this text as Base64"
+        - "URL encode the string"
+        - "Convert to HTML entities"
+        - "Encode special characters for the URL"
+      single_clear:
+        - "I need to encode text to a specific format. Encode this text as Base64"
+        - "I need to encode text to a specific format. URL encode the string"
+        - "I need to encode text to a specific format. Convert to HTML entities"
+        - "I need to encode text to a specific format. Encode special characters for the URL"
+
+  - name: decode_text
+    descriptions:
+      minimal: "Decode text"
+      short: "Decode text from various formats"
+      medium: "Decode text from Base64, URL encoding, HTML entities, or other encoded formats."
+      long: "Decode text from various encodings back to plain text. Example: decode_text(text='SGVsbG8gV29ybGQh', encoding='base64') returns 'Hello World!'."
+      verbose: "Decode encoded text back to its original form. Supported encodings: 'base64', 'url' (percent-decoding), 'html' (HTML entities like &amp;), 'unicode_escape' (\\uXXXX sequences), 'hex' (hexadecimal), 'rot13'. Example: decode_text(text='Hello%20World%21', encoding='url') returns 'Hello World!'. Note: Invalid encoded strings will produce errors. Warning: Malformed input may produce unexpected results."
+    parameters:
+      - name: text
+        type: string
+        description: "Encoded text to decode"
+        required: true
+      - name: encoding
+        type: string
+        description: "Source encoding format"
+        required: true
+        enum: ["base64", "url", "html", "unicode_escape", "hex", "rot13"]
+    tags: ["text", "decode", "base64", "url", "convert"]
+    test_prompts:
+      single:
+        - "Decode this Base64 string"
+        - "URL decode the text"
+        - "Convert HTML entities back to text"
+        - "Decode the encoded string"
+      single_clear:
+        - "I need to decode encoded text. Decode this Base64 string"
+        - "I need to decode encoded text. URL decode the text"
+        - "I need to decode encoded text. Convert HTML entities back to text"
+        - "I need to decode encoded text. Decode the encoded string"
+
+  - name: word_count
+    descriptions:
+      minimal: "Count words"
+      short: "Count words, characters, and sentences"
+      medium: "Count words, characters, sentences, and paragraphs in text with reading time estimate."
+      long: "Analyze text to count words, characters, sentences, and paragraphs. Also estimates reading time. Example: word_count(text='Hello world. This is a test.') returns counts and statistics."
+      verbose: "Comprehensive text statistics including: word count, character count (with/without spaces), sentence count, paragraph count, average word length, average sentence length, reading time (at 200-250 WPM), speaking time (at 150 WPM), and unique word count. Example: word_count(text='...article text...', reading_wpm=200, include_unique=true) returns {\"words\": 500, \"characters\": 2800, \"sentences\": 25, \"reading_time_minutes\": 2.5, \"unique_words\": 320}. Note: Reading time varies by content complexity. Warning: Sentence detection may be inaccurate for texts with unusual punctuation."
+    parameters:
+      - name: text
+        type: string
+        description: "Text to analyze"
+        required: true
+      - name: reading_wpm
+        type: integer
+        description: "Reading speed for time estimate"
+        required: false
+        default: 200
+      - name: include_unique
+        type: boolean
+        description: "Count unique words"
+        required: false
+        default: false
+    tags: ["text", "count", "words", "statistics", "reading"]
+    test_prompts:
+      single:
+        - "How many words are in this text?"
+        - "Count the characters in the string"
+        - "What is the reading time for this article?"
+        - "Give me word count statistics"
+      single_clear:
+        - "I need to count words and get text statistics. How many words are in this text?"
+        - "I need to count words and get text statistics. Count the characters in the string"
+        - "I need to count words and get text statistics. What is the reading time for this article?"
+        - "I need to count words and get text statistics. Give me word count statistics"

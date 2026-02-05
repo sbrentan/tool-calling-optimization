@@ -1,0 +1,1577 @@
+category: healthcare_operations
+description: Healthcare and medical record operations
+
+tools:
+  - name: create_patient_record
+    descriptions:
+      minimal: "Create patient record"
+      short: "Create a new patient record"
+      medium: "Create a new patient record in the electronic health records system."
+      long: "Create a patient record with demographics, contact information, and medical history. Example: create_patient_record(first_name='John', last_name='Doe', dob='1985-03-15', ssn='***-**-1234')."
+      verbose: "Create a new patient record in the EHR system. Fields: demographics (name, DOB, gender, SSN), contact (address, phone, email, emergency contact), insurance, medical history, allergies, primary care physician. Example: create_patient_record(first_name='Jane', last_name='Smith', dob='1990-07-22', gender='F', address='{\"street\": \"123 Main St\", \"city\": \"Boston\", \"state\": \"MA\", \"zip\": \"02101\"}', insurance_id='INS-12345', allergies='[\"penicillin\", \"shellfish\"]'). Note: HIPAA compliance required for all PHI. Warning: Verify patient identity to prevent duplicate records."
+    parameters:
+      - name: first_name
+        type: string
+        description: "Patient first name"
+        required: true
+      - name: last_name
+        type: string
+        description: "Patient last name"
+        required: true
+      - name: dob
+        type: string
+        description: "Date of birth (YYYY-MM-DD)"
+        required: true
+      - name: gender
+        type: string
+        description: "Patient gender"
+        required: false
+        enum: ["M", "F", "O", "U"]
+      - name: ssn
+        type: string
+        description: "Social security number"
+        required: false
+      - name: address
+        type: string
+        description: "JSON address object"
+        required: false
+      - name: insurance_id
+        type: string
+        description: "Insurance policy ID"
+        required: false
+      - name: allergies
+        type: string
+        description: "JSON array of allergies"
+        required: false
+    tags: ["healthcare", "patient", "record", "create", "ehr"]
+    test_prompts:
+      single:
+        - "Create a new patient record"
+        - "Register a new patient"
+        - "Add patient to the system"
+        - "Set up new patient file"
+      single_clear:
+        - "I need to create a new patient record in the EHR system. Create a new patient record"
+        - "I need to create a new patient record in the EHR system. Register a new patient"
+        - "I need to create a new patient record in the EHR system. Add patient to the system"
+        - "I need to create a new patient record in the EHR system. Set up new patient file"
+
+  - name: schedule_appointment
+    descriptions:
+      minimal: "Schedule appointment"
+      short: "Schedule a medical appointment"
+      medium: "Schedule a medical appointment for a patient with a healthcare provider."
+      long: "Schedule an appointment with a doctor, specialist, or facility. Check availability and book time slots. Example: schedule_appointment(patient_id='P12345', provider_id='DR-001', date='2024-02-15', time='10:30', type='follow-up')."
+      verbose: "Schedule medical appointments in the practice management system. Features: provider availability, patient preferences, appointment types, recurring visits, reminders. Types: new patient, follow-up, annual physical, specialist referral, procedure, telehealth. Example: schedule_appointment(patient_id='P-789', provider_id='DR-Smith', date='2024-02-20', time='14:00', type='follow_up', duration=30, reason='Blood pressure check', send_reminder=true, reminder_method='sms'). Note: Some appointment types require referrals. Warning: Check patient insurance coverage for specialist visits."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: provider_id
+        type: string
+        description: "Healthcare provider ID"
+        required: true
+      - name: date
+        type: string
+        description: "Appointment date"
+        required: true
+      - name: time
+        type: string
+        description: "Appointment time"
+        required: true
+      - name: type
+        type: string
+        description: "Appointment type"
+        required: true
+        enum: ["new_patient", "follow_up", "annual_physical", "specialist", "procedure", "telehealth", "urgent"]
+      - name: duration
+        type: integer
+        description: "Duration in minutes"
+        required: false
+        default: 30
+      - name: reason
+        type: string
+        description: "Reason for visit"
+        required: false
+      - name: send_reminder
+        type: boolean
+        description: "Send appointment reminder"
+        required: false
+        default: true
+    tags: ["healthcare", "appointment", "schedule", "booking", "provider"]
+    test_prompts:
+      single:
+        - "Schedule a doctor's appointment"
+        - "Book a follow-up visit"
+        - "Set up telehealth appointment"
+        - "Schedule patient with specialist"
+      single_clear:
+        - "Please schedule a patient appointment. Schedule a doctor's appointment"
+        - "Please schedule a patient appointment. Book a follow-up visit"
+        - "Please schedule a patient appointment. Set up telehealth appointment"
+        - "Please schedule a patient appointment. Schedule patient with specialist"
+
+  - name: record_vital_signs
+    descriptions:
+      minimal: "Record vitals"
+      short: "Record patient vital signs"
+      medium: "Record vital signs measurements for a patient encounter."
+      long: "Record patient vital signs including blood pressure, heart rate, temperature, and more. Example: record_vital_signs(patient_id='P12345', encounter_id='ENC-001', blood_pressure='120/80', heart_rate=72)."
+      verbose: "Record vital signs during patient encounters. Measurements: blood pressure (systolic/diastolic), heart rate (BPM), temperature (F/C), respiratory rate, oxygen saturation (SpO2), weight, height, BMI (calculated), pain level (0-10). Example: record_vital_signs(patient_id='P-789', encounter_id='ENC-456', blood_pressure='135/88', heart_rate=78, temperature=98.6, temp_unit='F', respiratory_rate=16, spo2=98, weight=175, weight_unit='lb', pain_level=2). Note: Abnormal values may trigger clinical alerts. Warning: Verify measurements before saving to permanent record."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: encounter_id
+        type: string
+        description: "Encounter/visit ID"
+        required: true
+      - name: blood_pressure
+        type: string
+        description: "Blood pressure (systolic/diastolic)"
+        required: false
+      - name: heart_rate
+        type: integer
+        description: "Heart rate (BPM)"
+        required: false
+      - name: temperature
+        type: number
+        description: "Body temperature"
+        required: false
+      - name: temp_unit
+        type: string
+        description: "Temperature unit"
+        required: false
+        default: "F"
+        enum: ["F", "C"]
+      - name: respiratory_rate
+        type: integer
+        description: "Breaths per minute"
+        required: false
+      - name: spo2
+        type: integer
+        description: "Oxygen saturation %"
+        required: false
+      - name: weight
+        type: number
+        description: "Patient weight"
+        required: false
+      - name: pain_level
+        type: integer
+        description: "Pain level (0-10)"
+        required: false
+    tags: ["healthcare", "vitals", "record", "encounter", "measurement"]
+    test_prompts:
+      single:
+        - "Record patient vital signs"
+        - "Enter blood pressure reading"
+        - "Log patient vitals"
+        - "Add vital signs to chart"
+      single_clear:
+        - "I need to document patient vital sign measurements. Record patient vital signs"
+        - "I need to document patient vital sign measurements. Enter blood pressure reading"
+        - "I need to document patient vital sign measurements. Log patient vitals"
+        - "I need to document patient vital sign measurements. Add vital signs to chart"
+
+  - name: prescribe_medication
+    descriptions:
+      minimal: "Prescribe medication"
+      short: "Create a prescription"
+      medium: "Prescribe medication for a patient with dosage and instructions."
+      long: "Create a prescription for a patient. Includes drug interaction checking and pharmacy routing. Example: prescribe_medication(patient_id='P12345', medication='Lisinopril', dosage='10mg', frequency='once daily')."
+      verbose: "Create electronic prescriptions with clinical decision support. Features: drug interaction alerts, allergy checking, formulary verification, electronic transmission to pharmacy. Fields: medication, strength, dosage, frequency, duration, quantity, refills, instructions, pharmacy. Example: prescribe_medication(patient_id='P-789', medication='Metformin', strength='500mg', dosage='1 tablet', frequency='twice daily', duration=90, quantity=180, refills=3, instructions='Take with meals', pharmacy_id='CVS-12345', check_interactions=true). Note: Controlled substances require DEA number. Warning: Always review drug interactions and patient allergies."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: medication
+        type: string
+        description: "Medication name"
+        required: true
+      - name: strength
+        type: string
+        description: "Medication strength"
+        required: true
+      - name: dosage
+        type: string
+        description: "Dosage instructions"
+        required: true
+      - name: frequency
+        type: string
+        description: "Dosing frequency"
+        required: true
+      - name: duration
+        type: integer
+        description: "Duration in days"
+        required: false
+      - name: quantity
+        type: integer
+        description: "Quantity to dispense"
+        required: true
+      - name: refills
+        type: integer
+        description: "Number of refills"
+        required: false
+        default: 0
+      - name: pharmacy_id
+        type: string
+        description: "Pharmacy ID for e-prescribing"
+        required: false
+      - name: check_interactions
+        type: boolean
+        description: "Check drug interactions"
+        required: false
+        default: true
+    tags: ["healthcare", "prescription", "medication", "pharmacy", "rx"]
+    test_prompts:
+      single:
+        - "Prescribe medication for patient"
+        - "Create a new prescription"
+        - "Write Rx for blood pressure medication"
+        - "Send prescription to pharmacy"
+      single_clear:
+        - "I need to prescribe medication for a patient. Prescribe medication for patient"
+        - "I need to prescribe medication for a patient. Create a new prescription"
+        - "I need to prescribe medication for a patient. Write Rx for blood pressure medication"
+        - "I need to prescribe medication for a patient. Send prescription to pharmacy"
+
+  - name: order_lab_test
+    descriptions:
+      minimal: "Order lab test"
+      short: "Order a laboratory test"
+      medium: "Order laboratory tests for a patient with collection instructions."
+      long: "Order lab tests with specimen collection instructions. Track orders and receive results. Example: order_lab_test(patient_id='P12345', tests='[\"CBC\", \"BMP\"]', priority='routine')."
+      verbose: "Order laboratory tests through lab information system integration. Features: test catalog search, standing orders, ABN generation, specimen collection instructions, result routing. Test categories: chemistry, hematology, microbiology, pathology, genetics. Example: order_lab_test(patient_id='P-789', tests='[\"CBC\", \"CMP\", \"Lipid Panel\", \"HbA1c\"]', priority='routine', fasting_required=true, diagnosis_codes='[\"E11.9\", \"I10\"]', lab_id='LabCorp', special_instructions='Patient prefers morning draw'). Note: Some tests require fasting or special preparation. Warning: Verify insurance coverage for specialized tests."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: tests
+        type: string
+        description: "JSON array of test codes/names"
+        required: true
+      - name: priority
+        type: string
+        description: "Order priority"
+        required: false
+        default: "routine"
+        enum: ["stat", "urgent", "routine"]
+      - name: fasting_required
+        type: boolean
+        description: "Fasting required"
+        required: false
+        default: false
+      - name: diagnosis_codes
+        type: string
+        description: "JSON array of ICD-10 codes"
+        required: false
+      - name: lab_id
+        type: string
+        description: "Destination laboratory"
+        required: false
+      - name: special_instructions
+        type: string
+        description: "Special collection instructions"
+        required: false
+    tags: ["healthcare", "lab", "test", "order", "diagnostic"]
+    test_prompts:
+      single:
+        - "Order blood work for patient"
+        - "Request lab tests"
+        - "Order CBC and metabolic panel"
+        - "Send lab order to LabCorp"
+      single_clear:
+        - "I need to order laboratory tests for a patient. Order blood work for patient"
+        - "I need to order laboratory tests for a patient. Request lab tests"
+        - "I need to order laboratory tests for a patient. Order CBC and metabolic panel"
+        - "I need to order laboratory tests for a patient. Send lab order to LabCorp"
+
+  - name: document_clinical_note
+    descriptions:
+      minimal: "Document note"
+      short: "Document a clinical note"
+      medium: "Document clinical notes for a patient encounter."
+      long: "Create clinical documentation including progress notes, history, and assessments. Example: document_clinical_note(patient_id='P12345', encounter_id='ENC-001', type='progress', content='...')."
+      verbose: "Create clinical documentation in the EHR. Note types: progress note, H&P (history and physical), consultation, procedure note, discharge summary, telephone encounter. Templates: SOAP (Subjective, Objective, Assessment, Plan), narrative, problem-focused. Example: document_clinical_note(patient_id='P-789', encounter_id='ENC-456', type='progress', template='soap', subjective='Patient reports improved energy...', objective='BP 128/82, HR 72...', assessment='Type 2 DM - well controlled', plan='Continue current medications...', sign=true). Note: Notes become part of legal medical record. Warning: Ensure documentation is complete before signing."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: encounter_id
+        type: string
+        description: "Encounter ID"
+        required: true
+      - name: type
+        type: string
+        description: "Note type"
+        required: true
+        enum: ["progress", "hp", "consultation", "procedure", "discharge", "telephone"]
+      - name: template
+        type: string
+        description: "Documentation template"
+        required: false
+        default: "soap"
+        enum: ["soap", "narrative", "problem_focused"]
+      - name: subjective
+        type: string
+        description: "Subjective findings"
+        required: false
+      - name: objective
+        type: string
+        description: "Objective findings"
+        required: false
+      - name: assessment
+        type: string
+        description: "Clinical assessment"
+        required: false
+      - name: plan
+        type: string
+        description: "Treatment plan"
+        required: false
+      - name: content
+        type: string
+        description: "Free-text content"
+        required: false
+      - name: sign
+        type: boolean
+        description: "Electronically sign note"
+        required: false
+        default: false
+    tags: ["healthcare", "documentation", "note", "clinical", "encounter"]
+    test_prompts:
+      single:
+        - "Document the patient visit"
+        - "Write a progress note"
+        - "Create clinical documentation"
+        - "Add SOAP note to chart"
+      single_clear:
+        - "I need to document clinical notes for a patient encounter. Document the patient visit"
+        - "I need to document clinical notes for a patient encounter. Write a progress note"
+        - "I need to document clinical notes for a patient encounter. Create clinical documentation"
+        - "I need to document clinical notes for a patient encounter. Add SOAP note to chart"
+
+  - name: submit_insurance_claim
+    descriptions:
+      minimal: "Submit claim"
+      short: "Submit an insurance claim"
+      medium: "Submit a medical insurance claim for services rendered."
+      long: "Submit insurance claims electronically. Include diagnosis codes, procedure codes, and charges. Example: submit_insurance_claim(patient_id='P12345', encounter_id='ENC-001', insurance_id='INS-789')."
+      verbose: "Submit electronic medical claims (837P/837I). Components: patient demographics, insurance info, provider NPI, diagnosis codes (ICD-10), procedure codes (CPT/HCPCS), charges, modifiers, place of service. Features: eligibility verification, claim scrubbing, ERA processing. Example: submit_insurance_claim(patient_id='P-789', encounter_id='ENC-456', payer_id='BCBS', diagnosis_codes='[\"E11.9\", \"I10\"]', procedures='[{\"code\": \"99213\", \"charge\": 150.00}, {\"code\": \"36415\", \"charge\": 25.00}]', verify_eligibility=true). Note: Claims must be submitted within payer deadlines. Warning: Incorrect coding may result in denials or audits."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: encounter_id
+        type: string
+        description: "Encounter ID"
+        required: true
+      - name: payer_id
+        type: string
+        description: "Insurance payer ID"
+        required: true
+      - name: diagnosis_codes
+        type: string
+        description: "JSON array of ICD-10 codes"
+        required: true
+      - name: procedures
+        type: string
+        description: "JSON array of procedure codes and charges"
+        required: true
+      - name: place_of_service
+        type: string
+        description: "Place of service code"
+        required: false
+        default: "11"
+      - name: verify_eligibility
+        type: boolean
+        description: "Verify insurance eligibility first"
+        required: false
+        default: true
+    tags: ["healthcare", "claim", "insurance", "billing", "revenue"]
+    test_prompts:
+      single:
+        - "Submit insurance claim"
+        - "Bill the patient's insurance"
+        - "Process medical claim"
+        - "Send claim to payer"
+      single_clear:
+        - "I need to submit a medical insurance claim for services rendered. Submit insurance claim"
+        - "I need to submit a medical insurance claim for services rendered. Bill the patient's insurance"
+        - "I need to submit a medical insurance claim for services rendered. Process medical claim"
+        - "I need to submit a medical insurance claim for services rendered. Send claim to payer"
+
+  - name: request_referral
+    descriptions:
+      minimal: "Request referral"
+      short: "Request a patient referral"
+      medium: "Request a referral to a specialist or facility for a patient."
+      long: "Create a referral request to a specialist or healthcare facility. Include clinical reason and relevant records. Example: request_referral(patient_id='P12345', to_provider='DR-CARDIO-001', reason='Chest pain evaluation')."
+      verbose: "Create and manage patient referrals. Referral types: specialist consultation, diagnostic procedure, therapy, second opinion. Components: referring provider, receiving provider, clinical indication, urgency, relevant documents/records, authorization requirements. Example: request_referral(patient_id='P-789', to_provider_id='DR-JONES', specialty='Cardiology', reason='Evaluate chest pain and dyspnea on exertion', urgency='urgent', include_records='[\"recent_labs\", \"ecg\", \"progress_notes\"]', obtain_auth=true). Note: Some insurances require pre-authorization. Warning: Include all relevant clinical information for appropriate triage."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: to_provider_id
+        type: string
+        description: "Receiving provider ID"
+        required: true
+      - name: specialty
+        type: string
+        description: "Specialist type"
+        required: true
+      - name: reason
+        type: string
+        description: "Clinical reason for referral"
+        required: true
+      - name: urgency
+        type: string
+        description: "Referral urgency"
+        required: false
+        default: "routine"
+        enum: ["routine", "urgent", "emergent"]
+      - name: include_records
+        type: string
+        description: "JSON array of records to include"
+        required: false
+      - name: obtain_auth
+        type: boolean
+        description: "Request insurance authorization"
+        required: false
+        default: false
+    tags: ["healthcare", "referral", "specialist", "coordination", "care"]
+    test_prompts:
+      single:
+        - "Refer patient to cardiologist"
+        - "Request specialist consultation"
+        - "Create a referral for the patient"
+        - "Send patient to orthopedics"
+      single_clear:
+        - "I need to request a referral to a specialist. Refer patient to cardiologist"
+        - "I need to request a referral to a specialist. Request specialist consultation"
+        - "I need to request a referral to a specialist. Create a referral for the patient"
+        - "I need to request a referral to a specialist. Send patient to orthopedics"
+
+  - name: retrieve_medical_history
+    descriptions:
+      minimal: "Get medical history"
+      short: "Retrieve patient medical history"
+      medium: "Retrieve comprehensive medical history for a patient."
+      long: "Retrieve patient's complete or filtered medical history. Include conditions, surgeries, medications, and allergies. Example: retrieve_medical_history(patient_id='P12345', sections='[\"conditions\", \"medications\"]')."
+      verbose: "Retrieve patient medical history from EHR. Sections: conditions (problem list), medications (active/historical), allergies, surgical history, family history, social history, immunizations, lab results, vital trends. Filters: date range, section, category. Example: retrieve_medical_history(patient_id='P-789', sections='[\"conditions\", \"medications\", \"allergies\", \"labs\"]', date_from='2023-01-01', include_resolved=false, format='summary'). Note: Access logged for HIPAA compliance. Warning: Verify patient identity before disclosing PHI."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: sections
+        type: string
+        description: "JSON array of sections to retrieve"
+        required: false
+      - name: date_from
+        type: string
+        description: "Start date filter"
+        required: false
+      - name: date_to
+        type: string
+        description: "End date filter"
+        required: false
+      - name: include_resolved
+        type: boolean
+        description: "Include resolved conditions"
+        required: false
+        default: false
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "full"
+        enum: ["full", "summary", "ccd"]
+    tags: ["healthcare", "history", "medical", "patient", "records"]
+    test_prompts:
+      single:
+        - "Get patient's medical history"
+        - "Show medication history"
+        - "Retrieve patient records"
+        - "Pull up the patient's chart"
+      single_clear:
+        - "I need to retrieve a patient's medical record. Get patient's medical history"
+        - "I need to retrieve a patient's medical record. Show medication history"
+        - "I need to retrieve a patient's medical record. Retrieve patient records"
+        - "I need to retrieve a patient's medical record. Pull up the patient's chart"
+
+  - name: check_drug_interaction
+    descriptions:
+      minimal: "Check drug interactions"
+      short: "Check for drug interactions"
+      medium: "Check for potential drug interactions between medications."
+      long: "Check drug-drug interactions between a list of medications. Returns severity and recommendations. Example: check_drug_interaction(medications='[\"Warfarin\", \"Aspirin\", \"Lisinopril\"]')."
+      verbose: "Comprehensive drug interaction checking. Interaction types: drug-drug, drug-food, drug-condition, drug-allergy. Severity levels: contraindicated, severe, moderate, mild. Returns: interacting pairs, mechanism, clinical effects, recommendations, references. Example: check_drug_interaction(medications='[\"Warfarin 5mg\", \"Aspirin 81mg\", \"Metoprolol 25mg\"]', patient_id='P-789', include_allergies=true, include_conditions=true). Note: Clinical judgment should guide final decisions. Warning: Not all interactions are in databases; monitor patients clinically."
+    parameters:
+      - name: medications
+        type: string
+        description: "JSON array of medication names"
+        required: true
+      - name: patient_id
+        type: string
+        description: "Patient ID (for allergy/condition check)"
+        required: false
+      - name: include_allergies
+        type: boolean
+        description: "Check against patient allergies"
+        required: false
+        default: true
+      - name: include_conditions
+        type: boolean
+        description: "Check against patient conditions"
+        required: false
+        default: true
+      - name: severity_filter
+        type: string
+        description: "Minimum severity to report"
+        required: false
+        default: "moderate"
+        enum: ["mild", "moderate", "severe", "contraindicated"]
+    tags: ["healthcare", "drug", "interaction", "medication", "safety"]
+    test_prompts:
+      single:
+        - "Check for drug interactions"
+        - "Are these medications safe together?"
+        - "Screen medications for interactions"
+        - "Check if Warfarin interacts with other meds"
+      single_clear:
+        - "I need to check for potential drug interactions. Check for drug interactions"
+        - "I need to check for potential drug interactions. Are these medications safe together?"
+        - "I need to check for potential drug interactions. Screen medications for interactions"
+        - "I need to check for potential drug interactions. Check if Warfarin interacts with other meds"
+
+  - name: order_imaging_study
+    descriptions:
+      minimal: "Order imaging"
+      short: "Order a diagnostic imaging study"
+      medium: "Order diagnostic imaging studies such as X-ray, CT, MRI, or ultrasound."
+      long: "Order diagnostic imaging studies with clinical indication and protocol specifications. Example: order_imaging_study(patient_id='P12345', modality='MRI', body_part='brain', indication='Headache evaluation')."
+      verbose: "Order diagnostic imaging through radiology information system. Modalities: X-ray, CT, MRI, ultrasound, PET, mammography, fluoroscopy, nuclear medicine. Features: clinical decision support, protocol selection, contrast requirements, scheduling integration. Example: order_imaging_study(patient_id='P-789', modality='CT', body_part='abdomen_pelvis', indication='Abdominal pain, rule out appendicitis', contrast=true, priority='urgent', pregnancy_status='negative', diagnosis_codes='[\"R10.9\"]'). Note: Some studies require pre-authorization. Warning: Verify pregnancy status before ordering studies with radiation."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: modality
+        type: string
+        description: "Imaging modality"
+        required: true
+        enum: ["xray", "ct", "mri", "ultrasound", "pet", "mammography", "fluoroscopy", "nuclear"]
+      - name: body_part
+        type: string
+        description: "Body part to image"
+        required: true
+      - name: indication
+        type: string
+        description: "Clinical indication"
+        required: true
+      - name: contrast
+        type: boolean
+        description: "Contrast required"
+        required: false
+        default: false
+      - name: priority
+        type: string
+        description: "Order priority"
+        required: false
+        default: "routine"
+        enum: ["stat", "urgent", "routine"]
+      - name: pregnancy_status
+        type: string
+        description: "Pregnancy status for radiation studies"
+        required: false
+        enum: ["positive", "negative", "unknown", "na"]
+      - name: diagnosis_codes
+        type: string
+        description: "JSON array of ICD-10 codes"
+        required: false
+    tags: ["healthcare", "imaging", "radiology", "diagnostic", "order"]
+    test_prompts:
+      single:
+        - "Order an MRI for the patient"
+        - "Schedule a CT scan"
+        - "Request chest X-ray"
+        - "Order diagnostic imaging"
+      single_clear:
+        - "I need to order a diagnostic imaging study. Order an MRI for the patient"
+        - "I need to order a diagnostic imaging study. Schedule a CT scan"
+        - "I need to order a diagnostic imaging study. Request chest X-ray"
+        - "I need to order a diagnostic imaging study. Order diagnostic imaging"
+
+  - name: update_allergy_list
+    descriptions:
+      minimal: "Update allergies"
+      short: "Update patient allergy list"
+      medium: "Add, modify, or remove allergies from a patient's allergy list."
+      long: "Manage patient allergy documentation including drug, food, and environmental allergies. Example: update_allergy_list(patient_id='P12345', action='add', allergen='Penicillin', reaction='Hives')."
+      verbose: "Maintain accurate allergy documentation in the EHR. Allergy types: drug, food, environmental, latex. Reaction types: anaphylaxis, hives, rash, GI upset, angioedema. Severity: mild, moderate, severe, life-threatening. Example: update_allergy_list(patient_id='P-789', action='add', allergen='Penicillin', allergy_type='drug', reaction='Anaphylaxis', severity='life_threatening', onset_date='2020-03-15', verified=true). Note: Drug allergies trigger prescribing alerts. Warning: Verify allergy history; document source of information."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: action
+        type: string
+        description: "Action to perform"
+        required: true
+        enum: ["add", "update", "remove", "verify"]
+      - name: allergen
+        type: string
+        description: "Allergen name"
+        required: true
+      - name: allergy_type
+        type: string
+        description: "Type of allergy"
+        required: false
+        enum: ["drug", "food", "environmental", "latex", "other"]
+      - name: reaction
+        type: string
+        description: "Reaction description"
+        required: false
+      - name: severity
+        type: string
+        description: "Reaction severity"
+        required: false
+        enum: ["mild", "moderate", "severe", "life_threatening"]
+      - name: onset_date
+        type: string
+        description: "Date allergy was discovered"
+        required: false
+      - name: verified
+        type: boolean
+        description: "Allergy verified with patient"
+        required: false
+        default: false
+    tags: ["healthcare", "allergy", "patient", "safety", "medication"]
+    test_prompts:
+      single:
+        - "Add allergy to patient chart"
+        - "Update patient allergies"
+        - "Document drug allergy"
+        - "Remove allergy from record"
+      single_clear:
+        - "I need to update a patient's allergy list. Add allergy to patient chart"
+        - "I need to update a patient's allergy list. Update patient allergies"
+        - "I need to update a patient's allergy list. Document drug allergy"
+        - "I need to update a patient's allergy list. Remove allergy from record"
+
+  - name: generate_discharge_summary
+    descriptions:
+      minimal: "Generate discharge summary"
+      short: "Generate a patient discharge summary"
+      medium: "Generate a comprehensive discharge summary for a hospitalized patient."
+      long: "Create discharge documentation including diagnosis, treatment summary, and follow-up instructions. Example: generate_discharge_summary(patient_id='P12345', admission_id='ADM-001', discharge_date='2024-02-15')."
+      verbose: "Generate comprehensive discharge summaries for transitions of care. Components: admission diagnosis, hospital course, procedures performed, discharge diagnosis, medications (reconciled), follow-up appointments, activity restrictions, diet instructions, warning signs. Example: generate_discharge_summary(patient_id='P-789', admission_id='ADM-456', discharge_date='2024-02-15', discharge_disposition='home', primary_diagnosis='Pneumonia', discharge_medications='[...]', follow_up='PCP in 1 week', patient_instructions='Rest, increase fluids...', include_test_results=true). Note: Must be completed before discharge. Warning: Ensure medication reconciliation is complete."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: admission_id
+        type: string
+        description: "Admission/encounter ID"
+        required: true
+      - name: discharge_date
+        type: string
+        description: "Discharge date"
+        required: true
+      - name: discharge_disposition
+        type: string
+        description: "Discharge destination"
+        required: true
+        enum: ["home", "snf", "rehab", "ltac", "hospice", "ama", "deceased"]
+      - name: primary_diagnosis
+        type: string
+        description: "Primary discharge diagnosis"
+        required: true
+      - name: discharge_medications
+        type: string
+        description: "JSON array of discharge medications"
+        required: false
+      - name: follow_up
+        type: string
+        description: "Follow-up instructions"
+        required: false
+      - name: patient_instructions
+        type: string
+        description: "Patient discharge instructions"
+        required: false
+      - name: include_test_results
+        type: boolean
+        description: "Include pending test results"
+        required: false
+        default: true
+    tags: ["healthcare", "discharge", "summary", "hospital", "transition"]
+    test_prompts:
+      single:
+        - "Create discharge summary"
+        - "Generate discharge paperwork"
+        - "Prepare patient for discharge"
+        - "Complete discharge documentation"
+      single_clear:
+        - "I need to generate a patient discharge summary. Create discharge summary"
+        - "I need to generate a patient discharge summary. Generate discharge paperwork"
+        - "I need to generate a patient discharge summary. Prepare patient for discharge"
+        - "I need to generate a patient discharge summary. Complete discharge documentation"
+
+  - name: record_immunization
+    descriptions:
+      minimal: "Record immunization"
+      short: "Record a patient immunization"
+      medium: "Record an administered immunization or vaccination for a patient."
+      long: "Document vaccine administration with lot number, site, and any reactions. Example: record_immunization(patient_id='P12345', vaccine='Influenza', lot_number='FL2024-001', administered_date='2024-10-15')."
+      verbose: "Record immunization administration in the immunization registry. Data: vaccine name, CVX code, manufacturer, lot number, expiration, dose number, administration site, route, administering provider, VIS date. Example: record_immunization(patient_id='P-789', vaccine='COVID-19 Pfizer', cvx_code='208', manufacturer='Pfizer', lot_number='EW0150', expiration='2024-06-30', dose_number=3, site='left_deltoid', route='IM', vis_date='2024-01-01', provider_id='RN-Smith'). Note: Report to state immunization registry. Warning: Check for contraindications before administration."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: vaccine
+        type: string
+        description: "Vaccine name"
+        required: true
+      - name: cvx_code
+        type: string
+        description: "CVX vaccine code"
+        required: false
+      - name: manufacturer
+        type: string
+        description: "Vaccine manufacturer"
+        required: false
+      - name: lot_number
+        type: string
+        description: "Vaccine lot number"
+        required: true
+      - name: expiration
+        type: string
+        description: "Vaccine expiration date"
+        required: false
+      - name: dose_number
+        type: integer
+        description: "Dose number in series"
+        required: false
+      - name: site
+        type: string
+        description: "Administration site"
+        required: false
+        enum: ["left_deltoid", "right_deltoid", "left_thigh", "right_thigh", "other"]
+      - name: route
+        type: string
+        description: "Administration route"
+        required: false
+        enum: ["IM", "SC", "ID", "PO", "nasal"]
+      - name: administered_date
+        type: string
+        description: "Date of administration"
+        required: true
+    tags: ["healthcare", "immunization", "vaccine", "preventive", "record"]
+    test_prompts:
+      single:
+        - "Record flu shot"
+        - "Document vaccination"
+        - "Add immunization to record"
+        - "Enter vaccine administration"
+      single_clear:
+        - "I need to record a patient immunization. Record flu shot"
+        - "I need to record a patient immunization. Document vaccination"
+        - "I need to record a patient immunization. Add immunization to record"
+        - "I need to record a patient immunization. Enter vaccine administration"
+
+  - name: create_care_plan
+    descriptions:
+      minimal: "Create care plan"
+      short: "Create a patient care plan"
+      medium: "Create a comprehensive care plan with goals and interventions for a patient."
+      long: "Develop a care plan with diagnoses, goals, interventions, and outcomes. Example: create_care_plan(patient_id='P12345', diagnosis='Type 2 Diabetes', goals='[\"HbA1c < 7%\"]')."
+      verbose: "Create structured care plans for chronic disease management. Components: problem/diagnosis, patient goals (SMART format), interventions, responsible parties, target dates, barriers, outcomes measures. Care plan types: chronic disease, post-surgical, behavioral health, palliative. Example: create_care_plan(patient_id='P-789', diagnosis='Heart Failure', goals='[\"Reduce readmissions\", \"Improve functional status\"]', interventions='[\"Daily weights\", \"Medication adherence\", \"Low sodium diet\"]', care_team='[\"PCP\", \"Cardiologist\", \"Dietitian\"]', review_date='2024-03-15'). Note: Review and update regularly. Warning: Ensure patient/family involvement in goal setting."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: diagnosis
+        type: string
+        description: "Primary diagnosis/problem"
+        required: true
+      - name: goals
+        type: string
+        description: "JSON array of care goals"
+        required: true
+      - name: interventions
+        type: string
+        description: "JSON array of interventions"
+        required: false
+      - name: care_team
+        type: string
+        description: "JSON array of care team members"
+        required: false
+      - name: start_date
+        type: string
+        description: "Care plan start date"
+        required: false
+      - name: review_date
+        type: string
+        description: "Next review date"
+        required: false
+      - name: patient_preferences
+        type: string
+        description: "Patient preferences and values"
+        required: false
+    tags: ["healthcare", "care_plan", "chronic", "management", "goals"]
+    test_prompts:
+      single:
+        - "Create a care plan for diabetes"
+        - "Set up chronic disease management"
+        - "Develop patient care plan"
+        - "Build treatment plan"
+      single_clear:
+        - "I need to create a patient care plan with goals and interventions. Create a care plan for diabetes"
+        - "I need to create a patient care plan with goals and interventions. Set up chronic disease management"
+        - "I need to create a patient care plan with goals and interventions. Develop patient care plan"
+        - "I need to create a patient care plan with goals and interventions. Build treatment plan"
+
+  - name: send_patient_message
+    descriptions:
+      minimal: "Send patient message"
+      short: "Send a message to a patient"
+      medium: "Send a secure message to a patient through the patient portal."
+      long: "Send secure messages to patients via the patient portal. Includes attachments and read receipts. Example: send_patient_message(patient_id='P12345', subject='Lab Results', message='Your recent lab results are available...')."
+      verbose: "Send HIPAA-compliant messages through patient portal. Features: templates, attachments (results, documents, forms), read receipts, message threading, auto-translation. Message types: general, lab results, appointment reminder, medication refill, billing. Example: send_patient_message(patient_id='P-789', subject='Your Lab Results', message='Your recent blood work shows improvement...', attachments='[\"lab_result_123\"]', template='lab_results', require_acknowledgment=true, translate_to='es'). Note: PHI must only be sent through secure portal. Warning: Verify patient portal access before sending sensitive information."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: subject
+        type: string
+        description: "Message subject"
+        required: true
+      - name: message
+        type: string
+        description: "Message content"
+        required: true
+      - name: template
+        type: string
+        description: "Message template to use"
+        required: false
+        enum: ["general", "lab_results", "appointment", "refill", "billing", "custom"]
+      - name: attachments
+        type: string
+        description: "JSON array of attachment IDs"
+        required: false
+      - name: require_acknowledgment
+        type: boolean
+        description: "Require patient acknowledgment"
+        required: false
+        default: false
+      - name: translate_to
+        type: string
+        description: "Language code for translation"
+        required: false
+    tags: ["healthcare", "message", "patient", "portal", "communication"]
+    test_prompts:
+      single:
+        - "Send message to patient"
+        - "Notify patient about lab results"
+        - "Message patient through portal"
+        - "Contact patient securely"
+      single_clear:
+        - "I need to send a secure message to a patient. Send message to patient"
+        - "I need to send a secure message to a patient. Notify patient about lab results"
+        - "I need to send a secure message to a patient. Message patient through portal"
+        - "I need to send a secure message to a patient. Contact patient securely"
+
+  - name: verify_insurance_eligibility
+    descriptions:
+      minimal: "Verify insurance"
+      short: "Verify patient insurance eligibility"
+      medium: "Verify a patient's insurance coverage and eligibility for services."
+      long: "Check real-time insurance eligibility and benefits. Returns coverage details and copay information. Example: verify_insurance_eligibility(patient_id='P12345', service_type='office_visit')."
+      verbose: "Real-time insurance eligibility verification (270/271 transaction). Returns: coverage status, effective dates, copay/coinsurance, deductible status, out-of-pocket max, specific service coverage, prior auth requirements. Example: verify_insurance_eligibility(patient_id='P-789', payer_id='BCBS', member_id='XYZ123', service_type='specialist_visit', service_date='2024-02-20', provider_npi='1234567890'). Note: Eligibility is point-in-time; coverage may change. Warning: Eligibility does not guarantee payment; verify benefits for specific services."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: payer_id
+        type: string
+        description: "Insurance payer ID"
+        required: false
+      - name: member_id
+        type: string
+        description: "Insurance member ID"
+        required: false
+      - name: service_type
+        type: string
+        description: "Type of service"
+        required: true
+        enum: ["office_visit", "specialist_visit", "hospital", "lab", "imaging", "surgery", "therapy", "dme"]
+      - name: service_date
+        type: string
+        description: "Planned date of service"
+        required: false
+      - name: provider_npi
+        type: string
+        description: "Provider NPI number"
+        required: false
+    tags: ["healthcare", "insurance", "eligibility", "verification", "billing"]
+    test_prompts:
+      single:
+        - "Check insurance eligibility"
+        - "Verify patient coverage"
+        - "Confirm insurance benefits"
+        - "Check if patient is covered"
+      single_clear:
+        - "I need to verify a patient's insurance eligibility. Check insurance eligibility"
+        - "I need to verify a patient's insurance eligibility. Verify patient coverage"
+        - "I need to verify a patient's insurance eligibility. Confirm insurance benefits"
+        - "I need to verify a patient's insurance eligibility. Check if patient is covered"
+
+  - name: reconcile_medications
+    descriptions:
+      minimal: "Reconcile medications"
+      short: "Perform medication reconciliation"
+      medium: "Reconcile patient medications across care settings and sources."
+      long: "Compare and reconcile medication lists from multiple sources. Identify discrepancies and update active list. Example: reconcile_medications(patient_id='P12345', sources='[\"ehr\", \"pharmacy\", \"patient_reported\"]')."
+      verbose: "Perform comprehensive medication reconciliation for patient safety. Sources: EHR active list, pharmacy claims, patient/family reported, hospital discharge, specialist records. Process: compare lists, identify discrepancies (new, discontinued, changed doses), verify with patient, update EHR. Example: reconcile_medications(patient_id='P-789', sources='[\"ehr\", \"pharmacy\", \"hospital_discharge\"]', encounter_type='admission', verify_with_patient=true, include_otc=true, include_supplements=true). Note: Required at transitions of care (TJC NPSG). Warning: Reconciliation errors are a leading cause of adverse drug events."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: sources
+        type: string
+        description: "JSON array of medication sources"
+        required: true
+      - name: encounter_type
+        type: string
+        description: "Type of care transition"
+        required: false
+        enum: ["admission", "discharge", "transfer", "office_visit"]
+      - name: verify_with_patient
+        type: boolean
+        description: "Verify list with patient/family"
+        required: false
+        default: true
+      - name: include_otc
+        type: boolean
+        description: "Include OTC medications"
+        required: false
+        default: true
+      - name: include_supplements
+        type: boolean
+        description: "Include vitamins/supplements"
+        required: false
+        default: true
+    tags: ["healthcare", "medication", "reconciliation", "safety", "transition"]
+    test_prompts:
+      single:
+        - "Reconcile patient medications"
+        - "Compare medication lists"
+        - "Update medication list"
+        - "Perform med rec"
+      single_clear:
+        - "I need to perform medication reconciliation for a patient. Reconcile patient medications"
+        - "I need to perform medication reconciliation for a patient. Compare medication lists"
+        - "I need to perform medication reconciliation for a patient. Update medication list"
+        - "I need to perform medication reconciliation for a patient. Perform med rec"
+
+  - name: calculate_clinical_score
+    descriptions:
+      minimal: "Calculate clinical score"
+      short: "Calculate a clinical risk score"
+      medium: "Calculate clinical risk scores and assessment tools for a patient."
+      long: "Calculate standardized clinical scores like CHADS2-VASc, Wells, MELD, etc. Example: calculate_clinical_score(patient_id='P12345', score_type='chads2_vasc')."
+      verbose: "Calculate evidence-based clinical risk scores. Scores supported: cardiovascular (CHADS2-VASc, HEART, Framingham), bleeding (HAS-BLED), hepatic (MELD, Child-Pugh), pulmonary (Wells PE/DVT, CURB-65), renal (CKD-EPI eGFR), surgical (ASA, Caprini), psychiatric (PHQ-9, GAD-7). Example: calculate_clinical_score(patient_id='P-789', score_type='chads2_vasc', parameters='{\"age\": 72, \"sex\": \"F\", \"chf\": true, \"hypertension\": true, \"diabetes\": false, \"stroke_tia\": false, \"vascular\": true}'). Note: Scores guide but don't replace clinical judgment. Warning: Ensure all required parameters are accurate for valid calculation."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: score_type
+        type: string
+        description: "Clinical score to calculate"
+        required: true
+        enum: ["chads2_vasc", "has_bled", "heart", "wells_pe", "wells_dvt", "meld", "child_pugh", "curb65", "ckd_epi", "phq9", "gad7", "framingham", "ascvd"]
+      - name: parameters
+        type: string
+        description: "JSON object of score parameters"
+        required: false
+      - name: use_patient_data
+        type: boolean
+        description: "Auto-populate from patient record"
+        required: false
+        default: true
+    tags: ["healthcare", "clinical", "score", "risk", "assessment"]
+    test_prompts:
+      single:
+        - "Calculate stroke risk score"
+        - "Compute CHADS2-VASc"
+        - "Get patient PHQ-9 score"
+        - "Calculate clinical risk assessment"
+      single_clear:
+        - "I need to calculate a clinical risk score for a patient. Calculate stroke risk score"
+        - "I need to calculate a clinical risk score for a patient. Compute CHADS2-VASc"
+        - "I need to calculate a clinical risk score for a patient. Get patient PHQ-9 score"
+        - "I need to calculate a clinical risk score for a patient. Calculate clinical risk assessment"
+
+  - name: manage_prior_authorization
+    descriptions:
+      minimal: "Manage prior auth"
+      short: "Manage prior authorization request"
+      medium: "Submit and track prior authorization requests for medications or procedures."
+      long: "Handle prior authorization workflow including submission, status tracking, and appeals. Example: manage_prior_authorization(patient_id='P12345', action='submit', service_type='medication', service_name='Humira')."
+      verbose: "Complete prior authorization management. Actions: submit new request, check status, submit additional info, appeal denial. Service types: medications, imaging, procedures, DME, specialty referrals. Required info: clinical documentation, diagnosis codes, prior treatments tried. Example: manage_prior_authorization(patient_id='P-789', action='submit', service_type='medication', service_name='Ozempic', payer_id='UHC', diagnosis_codes='[\"E11.9\"]', clinical_notes='Failed metformin monotherapy...', urgency='urgent'). Note: Authorization timeframes vary by payer and urgency. Warning: Services performed without authorization may not be covered."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: action
+        type: string
+        description: "Authorization action"
+        required: true
+        enum: ["submit", "check_status", "add_info", "appeal"]
+      - name: service_type
+        type: string
+        description: "Type of service"
+        required: true
+        enum: ["medication", "imaging", "procedure", "dme", "referral", "admission"]
+      - name: service_name
+        type: string
+        description: "Specific service/medication name"
+        required: true
+      - name: payer_id
+        type: string
+        description: "Insurance payer ID"
+        required: false
+      - name: diagnosis_codes
+        type: string
+        description: "JSON array of diagnosis codes"
+        required: false
+      - name: clinical_notes
+        type: string
+        description: "Supporting clinical documentation"
+        required: false
+      - name: urgency
+        type: string
+        description: "Request urgency"
+        required: false
+        default: "standard"
+        enum: ["standard", "urgent", "emergent"]
+      - name: auth_number
+        type: string
+        description: "Existing authorization number for status/appeal"
+        required: false
+    tags: ["healthcare", "authorization", "prior_auth", "insurance", "approval"]
+    test_prompts:
+      single:
+        - "Submit prior authorization"
+        - "Check prior auth status"
+        - "Request medication approval"
+        - "Appeal denied authorization"
+      single_clear:
+        - "I need to manage a prior authorization request. Submit prior authorization"
+        - "I need to manage a prior authorization request. Check prior auth status"
+        - "I need to manage a prior authorization request. Request medication approval"
+        - "I need to manage a prior authorization request. Appeal denied authorization"
+  - name: create_clinical_note
+    descriptions:
+      minimal: "Create note"
+      short: "Create clinical note"
+      medium: "Create a clinical documentation note for a patient encounter."
+      long: "Document clinical encounter. Example: create_clinical_note(patient_id='P12345', type='progress', chief_complaint='Follow-up for diabetes')."
+      verbose: "Create structured clinical notes. Note types: H&P, progress, procedure, consult, discharge, addendum. SOAP format: Subjective, Objective, Assessment, Plan. Example: create_clinical_note(patient_id='P-789', type='progress', encounter_id='E12345', template='soap', chief_complaint='DM follow-up', subjective='Patient reports improved glucose control...', objective='{\"vitals\": {...}, \"exam\": {...}}', assessment='T2DM well-controlled', plan='Continue current regimen...'). Note: Complete documentation within timeframe. Warning: Late entries require addendum with timestamp."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: type
+        type: string
+        description: "Note type"
+        required: true
+        enum: ["hp", "progress", "procedure", "consult", "discharge", "addendum"]
+      - name: encounter_id
+        type: string
+        description: "Encounter ID"
+        required: false
+      - name: template
+        type: string
+        description: "Note template"
+        required: false
+        default: "soap"
+        enum: ["soap", "free_text", "specialty", "structured"]
+      - name: chief_complaint
+        type: string
+        description: "Chief complaint"
+        required: false
+      - name: subjective
+        type: string
+        description: "Subjective findings"
+        required: false
+      - name: objective
+        type: string
+        description: "Objective findings (JSON)"
+        required: false
+      - name: assessment
+        type: string
+        description: "Clinical assessment"
+        required: false
+      - name: plan
+        type: string
+        description: "Treatment plan"
+        required: false
+    tags: ["healthcare", "clinical", "note", "documentation", "encounter"]
+    test_prompts:
+      single:
+        - "Create progress note"
+        - "Document patient visit"
+        - "Write clinical note"
+        - "Create SOAP note"
+      single_clear:
+        - "I need to create a clinical documentation note. Create progress note"
+        - "I need to create a clinical documentation note. Document patient visit"
+        - "I need to create a clinical documentation note. Write clinical note"
+        - "I need to create a clinical documentation note. Create SOAP note"
+
+  - name: order_imaging
+    descriptions:
+      minimal: "Order imaging"
+      short: "Order imaging study"
+      medium: "Place an order for an imaging study."
+      long: "Order diagnostic imaging. Example: order_imaging(patient_id='P12345', modality='CT', body_part='chest', indication='Rule out PE')."
+      verbose: "Order imaging studies with clinical decision support. Modalities: X-ray, CT, MRI, Ultrasound, Nuclear Medicine, PET. Features: appropriateness checks, contrast protocols, prior auth integration. Example: order_imaging(patient_id='P-789', modality='CT', body_part='chest', indication='Shortness of breath r/o PE', priority='stat', contrast='with', clinical_history='Recent surgery, sudden dyspnea', pregnancy_status='not_pregnant'). Note: Appropriateness criteria may apply. Warning: Check renal function and allergies before contrast."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: modality
+        type: string
+        description: "Imaging modality"
+        required: true
+        enum: ["xray", "ct", "mri", "ultrasound", "nuclear", "pet", "mammogram", "dexa"]
+      - name: body_part
+        type: string
+        description: "Body part to image"
+        required: true
+      - name: indication
+        type: string
+        description: "Clinical indication"
+        required: true
+      - name: priority
+        type: string
+        description: "Order priority"
+        required: false
+        default: "routine"
+        enum: ["routine", "urgent", "stat"]
+      - name: contrast
+        type: string
+        description: "Contrast preference"
+        required: false
+        default: "without"
+        enum: ["without", "with", "with_and_without"]
+      - name: clinical_history
+        type: string
+        description: "Relevant history"
+        required: false
+      - name: pregnancy_status
+        type: string
+        description: "Pregnancy status"
+        required: false
+        enum: ["not_pregnant", "pregnant", "unknown"]
+    tags: ["healthcare", "imaging", "order", "radiology", "diagnostic"]
+    test_prompts:
+      single:
+        - "Order CT scan"
+        - "Request chest X-ray"
+        - "Order MRI"
+        - "Schedule imaging study"
+      single_clear:
+        - "I need to order an imaging study for a patient. Order CT scan"
+        - "I need to order an imaging study for a patient. Request chest X-ray"
+        - "I need to order an imaging study for a patient. Order MRI"
+        - "I need to order an imaging study for a patient. Schedule imaging study"
+
+  - name: refer_patient
+    descriptions:
+      minimal: "Refer patient"
+      short: "Create patient referral"
+      medium: "Create a referral to another provider or specialist."
+      long: "Generate referral to specialist. Example: refer_patient(patient_id='P12345', specialty='cardiology', reason='Chest pain evaluation')."
+      verbose: "Create and track patient referrals. Features: in-network provider search, prior auth integration, document sharing, bidirectional communication. Example: refer_patient(patient_id='P-789', specialty='cardiology', reason='Syncope evaluation', urgency='urgent', preferred_provider='Dr. Smith', documents='[\"ecg_123\", \"note_456\"]', special_instructions='Patient prefers afternoon appointments'). Note: Include relevant clinical documents. Warning: Verify referral requirements with payer."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: specialty
+        type: string
+        description: "Referral specialty"
+        required: true
+      - name: reason
+        type: string
+        description: "Referral reason"
+        required: true
+      - name: urgency
+        type: string
+        description: "Referral urgency"
+        required: false
+        default: "routine"
+        enum: ["routine", "urgent", "emergent"]
+      - name: preferred_provider
+        type: string
+        description: "Preferred provider name"
+        required: false
+      - name: documents
+        type: string
+        description: "Documents to share (JSON array)"
+        required: false
+      - name: special_instructions
+        type: string
+        description: "Special instructions"
+        required: false
+    tags: ["healthcare", "referral", "specialist", "coordination", "order"]
+    test_prompts:
+      single:
+        - "Refer to cardiologist"
+        - "Create specialist referral"
+        - "Send patient to specialist"
+        - "Generate referral"
+      single_clear:
+        - "I need to create a patient referral to another provider. Refer to cardiologist"
+        - "I need to create a patient referral to another provider. Create specialist referral"
+        - "I need to create a patient referral to another provider. Send patient to specialist"
+        - "I need to create a patient referral to another provider. Generate referral"
+
+  - name: document_procedure
+    descriptions:
+      minimal: "Document procedure"
+      short: "Document performed procedure"
+      medium: "Document a medical procedure performed on a patient."
+      long: "Record procedure details. Example: document_procedure(patient_id='P12345', procedure='Skin biopsy', cpt='11102', findings='2mm lesion removed')."
+      verbose: "Complete procedure documentation. Elements: procedure name, CPT/ICD codes, indication, technique, findings, specimens, complications, post-procedure orders. Example: document_procedure(patient_id='P-789', procedure='Punch biopsy', cpt_codes='[\"11104\"]', diagnosis_codes='[\"L82.1\"]', indication='Suspicious skin lesion', technique='3mm punch biopsy performed...', specimens='[{\"type\": \"skin\", \"site\": \"left arm\", \"pathology_order\": true}]', complications='none', post_instructions='Keep wound dry for 24 hours...'). Note: Complete before end of day. Warning: Accurate coding required for billing."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: procedure
+        type: string
+        description: "Procedure name"
+        required: true
+      - name: cpt_codes
+        type: string
+        description: "CPT codes (JSON array)"
+        required: true
+      - name: diagnosis_codes
+        type: string
+        description: "Diagnosis codes (JSON array)"
+        required: false
+      - name: indication
+        type: string
+        description: "Procedure indication"
+        required: false
+      - name: technique
+        type: string
+        description: "Technique description"
+        required: false
+      - name: findings
+        type: string
+        description: "Procedure findings"
+        required: false
+      - name: specimens
+        type: string
+        description: "Specimens collected (JSON)"
+        required: false
+      - name: complications
+        type: string
+        description: "Complications"
+        required: false
+        default: "none"
+      - name: post_instructions
+        type: string
+        description: "Post-procedure instructions"
+        required: false
+    tags: ["healthcare", "procedure", "documentation", "cpt", "clinical"]
+    test_prompts:
+      single:
+        - "Document procedure"
+        - "Record biopsy"
+        - "Log procedure details"
+        - "Enter procedure note"
+      single_clear:
+        - "I need to document a medical procedure performed on a patient. Document procedure"
+        - "I need to document a medical procedure performed on a patient. Record biopsy"
+        - "I need to document a medical procedure performed on a patient. Log procedure details"
+        - "I need to document a medical procedure performed on a patient. Enter procedure note"
+
+  - name: check_drug_interactions
+    descriptions:
+      minimal: "Check interactions"
+      short: "Check drug interactions"
+      medium: "Check for drug-drug interactions in a patient's medications."
+      long: "Screen for interactions. Example: check_drug_interactions(patient_id='P12345', new_medication='Warfarin')."
+      verbose: "Comprehensive drug interaction screening. Checks: drug-drug, drug-food, drug-disease, drug-allergy, therapeutic duplication. Severity levels: contraindicated, major, moderate, minor. Example: check_drug_interactions(patient_id='P-789', new_medication='Amiodarone', include_otc=true, include_supplements=true, check_allergies=true). Returns: interactions list with severity, clinical significance, management recommendations. Note: Review all major interactions before prescribing. Warning: Clinical judgment required; not all interactions are clinically significant."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: new_medication
+        type: string
+        description: "New medication to check"
+        required: true
+      - name: include_otc
+        type: boolean
+        description: "Include OTC medications"
+        required: false
+        default: true
+      - name: include_supplements
+        type: boolean
+        description: "Include supplements"
+        required: false
+        default: true
+      - name: check_allergies
+        type: boolean
+        description: "Check drug allergies"
+        required: false
+        default: true
+      - name: check_conditions
+        type: boolean
+        description: "Check drug-disease interactions"
+        required: false
+        default: true
+    tags: ["healthcare", "drug", "interaction", "safety", "pharmacy"]
+    test_prompts:
+      single:
+        - "Check drug interactions"
+        - "Screen for interactions"
+        - "Is this medication safe"
+        - "Check medication conflicts"
+      single_clear:
+        - "I need to check for drug-drug interactions in a patient's medications. Check drug interactions"
+        - "I need to check for drug-drug interactions in a patient's medications. Screen for interactions"
+        - "I need to check for drug-drug interactions in a patient's medications. Is this medication safe"
+        - "I need to check for drug-drug interactions in a patient's medications. Check medication conflicts"
+
+  - name: schedule_follow_up
+    descriptions:
+      minimal: "Schedule follow-up"
+      short: "Schedule follow-up appointment"
+      medium: "Schedule a follow-up appointment for a patient."
+      long: "Book follow-up visit. Example: schedule_follow_up(patient_id='P12345', reason='Post-op check', days_out=14, provider='Dr. Smith')."
+      verbose: "Schedule follow-up appointments with smart scheduling. Features: provider availability, appointment type duration, patient preferences, care gap integration. Example: schedule_follow_up(patient_id='P-789', reason='Diabetes follow-up', appointment_type='diabetes_management', days_out=90, preferred_times='[\"morning\", \"tuesday\", \"thursday\"]', provider='PCP', reminders=true). Note: Patient portal for self-scheduling available. Warning: Verify appointment fits clinical guidelines."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: reason
+        type: string
+        description: "Visit reason"
+        required: true
+      - name: appointment_type
+        type: string
+        description: "Appointment type"
+        required: false
+        default: "follow_up"
+      - name: days_out
+        type: integer
+        description: "Days until appointment"
+        required: true
+      - name: preferred_times
+        type: string
+        description: "Preferred times (JSON array)"
+        required: false
+      - name: provider
+        type: string
+        description: "Provider preference"
+        required: false
+      - name: reminders
+        type: boolean
+        description: "Enable reminders"
+        required: false
+        default: true
+    tags: ["healthcare", "appointment", "follow-up", "schedule", "coordination"]
+    test_prompts:
+      single:
+        - "Schedule follow-up"
+        - "Book return appointment"
+        - "Set up next visit"
+        - "Schedule 2 week follow-up"
+      single_clear:
+        - "I need to schedule a follow-up appointment for a patient. Schedule follow-up"
+        - "I need to schedule a follow-up appointment for a patient. Book return appointment"
+        - "I need to schedule a follow-up appointment for a patient. Set up next visit"
+        - "I need to schedule a follow-up appointment for a patient. Schedule 2 week follow-up"
+
+  - name: generate_patient_summary
+    descriptions:
+      minimal: "Generate summary"
+      short: "Generate patient summary"
+      medium: "Generate a comprehensive patient summary document."
+      long: "Create patient summary. Example: generate_patient_summary(patient_id='P12345', format='ccd', purpose='referral')."
+      verbose: "Generate patient summary documents. Formats: CCD (Continuity of Care Document), C-CDA, PDF, custom. Content: demographics, problems, medications, allergies, immunizations, procedures, results, care plan. Example: generate_patient_summary(patient_id='P-789', format='ccd', purpose='referral', date_range='last_year', sections='[\"problems\", \"medications\", \"allergies\", \"recent_labs\"]', recipient='Dr. Specialist'). Note: CCD for interoperability. Warning: Review PHI content before sharing."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: format
+        type: string
+        description: "Output format"
+        required: true
+        enum: ["ccd", "ccda", "pdf", "json", "custom"]
+      - name: purpose
+        type: string
+        description: "Summary purpose"
+        required: false
+        default: "general"
+        enum: ["general", "referral", "transfer", "patient_request", "discharge"]
+      - name: date_range
+        type: string
+        description: "Date range"
+        required: false
+        default: "all"
+      - name: sections
+        type: string
+        description: "Sections to include (JSON array)"
+        required: false
+      - name: recipient
+        type: string
+        description: "Intended recipient"
+        required: false
+    tags: ["healthcare", "summary", "ccd", "patient", "document"]
+    test_prompts:
+      single:
+        - "Generate patient summary"
+        - "Create CCD document"
+        - "Export patient record"
+        - "Prepare referral summary"
+      single_clear:
+        - "I need to generate a comprehensive patient summary document. Generate patient summary"
+        - "I need to generate a comprehensive patient summary document. Create CCD document"
+        - "I need to generate a comprehensive patient summary document. Export patient record"
+        - "I need to generate a comprehensive patient summary document. Prepare referral summary"
+
+  - name: record_vital_signs
+    descriptions:
+      minimal: "Record vitals"
+      short: "Record vital signs"
+      medium: "Record patient vital signs measurements."
+      long: "Enter vital signs. Example: record_vital_signs(patient_id='P12345', bp_systolic=120, bp_diastolic=80, pulse=72, temp=98.6)."
+      verbose: "Record comprehensive vital signs. Measurements: blood pressure (with position, arm), pulse (rate, rhythm), temperature (site, method), respiratory rate, oxygen saturation, height, weight, BMI, pain score. Example: record_vital_signs(patient_id='P-789', bp_systolic=128, bp_diastolic=82, bp_position='sitting', bp_arm='left', pulse=76, pulse_rhythm='regular', temp=98.4, temp_site='oral', resp_rate=16, spo2=98, spo2_on_o2=false, weight=175, weight_unit='lbs', pain_score=2). Note: Document measurement context. Warning: Abnormal vitals require clinical review."
+    parameters:
+      - name: patient_id
+        type: string
+        description: "Patient ID"
+        required: true
+      - name: bp_systolic
+        type: integer
+        description: "Systolic BP (mmHg)"
+        required: false
+      - name: bp_diastolic
+        type: integer
+        description: "Diastolic BP (mmHg)"
+        required: false
+      - name: pulse
+        type: integer
+        description: "Pulse rate (bpm)"
+        required: false
+      - name: temp
+        type: number
+        description: "Temperature"
+        required: false
+      - name: resp_rate
+        type: integer
+        description: "Respiratory rate"
+        required: false
+      - name: spo2
+        type: integer
+        description: "Oxygen saturation (%)"
+        required: false
+      - name: weight
+        type: number
+        description: "Weight"
+        required: false
+      - name: pain_score
+        type: integer
+        description: "Pain score (0-10)"
+        required: false
+    tags: ["healthcare", "vitals", "measurements", "clinical", "nursing"]
+    test_prompts:
+      single:
+        - "Record vital signs"
+        - "Enter blood pressure"
+        - "Log patient vitals"
+        - "Document temperature"
+      single_clear:
+        - "I need to record patient vital signs measurements. Record vital signs"
+        - "I need to record patient vital signs measurements. Enter blood pressure"
+        - "I need to record patient vital signs measurements. Log patient vitals"
+        - "I need to record patient vital signs measurements. Document temperature"
+
+  - name: close_encounter
+    descriptions:
+      minimal: "Close encounter"
+      short: "Close patient encounter"
+      medium: "Close and finalize a patient encounter."
+      long: "Complete encounter. Example: close_encounter(encounter_id='E12345', disposition='home', follow_up_days=14)."
+      verbose: "Close and finalize patient encounters. Steps: verify documentation complete, reconcile medications, finalize diagnoses, set disposition, schedule follow-up, generate after-visit summary. Example: close_encounter(encounter_id='E-789', disposition='home', diagnoses_final='[{\"code\": \"E11.9\", \"description\": \"Type 2 diabetes\"}]', medications_reconciled=true, follow_up_days=90, avs_generated=true, patient_instructions='Continue current medications...'). Note: All orders must be signed. Warning: Closed encounters require addendum for changes."
+    parameters:
+      - name: encounter_id
+        type: string
+        description: "Encounter ID"
+        required: true
+      - name: disposition
+        type: string
+        description: "Patient disposition"
+        required: true
+        enum: ["home", "admitted", "transferred", "ama", "expired", "other"]
+      - name: diagnoses_final
+        type: string
+        description: "Final diagnoses (JSON array)"
+        required: false
+      - name: medications_reconciled
+        type: boolean
+        description: "Medications reconciled"
+        required: false
+        default: false
+      - name: follow_up_days
+        type: integer
+        description: "Days until follow-up"
+        required: false
+      - name: avs_generated
+        type: boolean
+        description: "Generate after-visit summary"
+        required: false
+        default: true
+      - name: patient_instructions
+        type: string
+        description: "Patient instructions"
+        required: false
+    tags: ["healthcare", "encounter", "close", "finalize", "documentation"]
+    test_prompts:
+      single:
+        - "Close encounter"
+        - "Finalize visit"
+        - "Complete patient encounter"
+        - "End appointment"
+      single_clear:
+        - "I need to close and finalize a patient encounter. Close encounter"
+        - "I need to close and finalize a patient encounter. Finalize visit"
+        - "I need to close and finalize a patient encounter. Complete patient encounter"
+        - "I need to close and finalize a patient encounter. End appointment"

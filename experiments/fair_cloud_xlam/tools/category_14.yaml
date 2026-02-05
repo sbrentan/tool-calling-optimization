@@ -1,0 +1,750 @@
+category: category_14
+tools:
+- name: get_anime_detail
+  descriptions:
+    minimal: Fetches detailed information about a specific...
+    short: Fetches detailed information about a specific anime using its ID via the RapidAPI service.
+    medium: Fetches detailed information about a specific anime using its ID via the RapidAPI service.
+    long: Fetches detailed information about a specific anime using its ID via the RapidAPI service.
+    verbose: Fetches detailed information about a specific anime using its ID via the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: string
+    description: The MyAnimeList ID of the anime.
+    required: true
+    default: '5114'
+  - name: fields
+    type: string
+    description: Comma-separated list of specific fields to retrieve data for. Available fields include '*', 'id', 'title',
+      'main_picture', 'start_date', 'end_data', 'synopsis', 'mean', 'rank', 'popularity', 'num_list_users', 'num_scoring_users',
+      'status', 'genres', 'num_episodes', 'source', 'studios', 'volume', 'chapter', 'light_novel', 'media_type', 'mal_id',
+      'broadcast', 'statistics', 'related_manga', 'related_anime', 'season', 'year', 'title_english', 'title_japanese', and
+      'synonyms'. Defaults to None.
+    required: false
+  tags:
+  - get
+  - anime
+  - detail
+  test_prompts:
+    single:
+    - Get detailed stats for the anime with ID '54321', including its title, start date, and popularity.
+    single_clear:
+    - Get detailed stats for the anime with ID '54321', including its title, start date, and popularity.
+- name: originals_genres_list
+  descriptions:
+    minimal: Retrieves a list of genres in the originals...
+    short: Retrieves a list of genres in the originals category from the Webtoon API.
+    medium: Retrieves a list of genres in the originals category from the Webtoon API.
+    long: Retrieves a list of genres in the originals category from the Webtoon API.
+    verbose: Retrieves a list of genres in the originals category from the Webtoon API.
+  parameters:
+  - name: language
+    type: string
+    description: 'The language of the genre names to be retrieved. Must be one of the following: ''en'', ''zh-hant'', ''de'',
+      ''fr'', ''es'', ''th'', ''id''. Default is ''en''.'
+    required: true
+    default: en
+  tags:
+  - originals
+  - genres
+  - list
+  test_prompts:
+    single:
+    - Fetch the genres of the originals in French, please.
+    - What are the genres in the originals section when viewed in traditional Chinese?
+    single_clear:
+    - Fetch the genres of the originals in French, please.
+    - What are the genres in the originals section when viewed in traditional Chinese?
+- name: get_1_obter_c_digo_do_chat_code_to_chat
+  descriptions:
+    minimal: This function retrieves the chat code by querying...
+    short: This function retrieves the chat code by querying the "compras-net" API using the provided UASG code and process
+      number.
+    medium: This function retrieves the chat code by querying the "compras-net" API using the provided UASG code and process
+      number.
+    long: This function retrieves the chat code by querying the "compras-net" API using the provided UASG code and process
+      number.
+    verbose: This function retrieves the chat code by querying the "compras-net" API using the provided UASG code and process
+      number.
+  parameters:
+  - name: co_uasg
+    type: integer
+    description: Code of the UASG (Unified System of General Services Code) of the organization.
+    required: true
+    default: '980369'
+  - name: numprp
+    type: integer
+    description: Number of the process to be consulted.
+    required: true
+    default: '632021'
+  tags:
+  - get
+  - '1'
+  - obter
+  test_prompts:
+    single:
+    - Can you get the chat code for UASG 123456 and process number 7890?
+    single_clear:
+    - Can you get the chat code for UASG 123456 and process number 7890?
+- name: is_armstrong_number
+  descriptions:
+    minimal: Checks if a number is an Armstrong number.
+    short: Checks if a number is an Armstrong number.
+    medium: Checks if a number is an Armstrong number.
+    long: Checks if a number is an Armstrong number.
+    verbose: Checks if a number is an Armstrong number.
+  parameters:
+  - name: num
+    type: integer
+    description: The number to check.
+    required: true
+  tags:
+  - is
+  - armstrong
+  - number
+  test_prompts:
+    single:
+    - Is the number 153 an Armstrong number?
+    - Check if the number 371 is an Armstrong number.
+    single_clear:
+    - Is the number 153 an Armstrong number?
+    - Check if the number 371 is an Armstrong number.
+- name: get_movies_by_cast_name
+  descriptions:
+    minimal: Fetches movies associated with a given cast...
+    short: Fetches movies associated with a given cast member's name from the IMDB API.
+    medium: Fetches movies associated with a given cast member's name from the IMDB API.
+    long: Fetches movies associated with a given cast member's name from the IMDB API.
+    verbose: Fetches movies associated with a given cast member's name from the IMDB API.
+  parameters:
+  - name: cast_name
+    type: string
+    description: Name of the cast member to search for. Defaults to None.
+    required: false
+  tags:
+  - get
+  - movies
+  - by
+  test_prompts:
+    single:
+    - Retrieve films starring Meryl Streep.
+    single_clear:
+    - Retrieve films starring Meryl Streep.
+- name: getlocationinfobyzipcode
+  descriptions:
+    minimal: Fetches location information based on the...
+    short: Fetches location information based on the provided zip code using the Zillow API.
+    medium: Fetches location information based on the provided zip code using the Zillow API.
+    long: Fetches location information based on the provided zip code using the Zillow API.
+    verbose: Fetches location information based on the provided zip code using the Zillow API.
+  parameters:
+  - name: zipcode
+    type: string
+    description: The zip code to retrieve location information for.
+    required: true
+    default: '01003'
+  tags:
+  - getlocationinfobyzipcode
+  test_prompts:
+    single:
+    - I need information about the area around zip code 10001 in New York.
+    single_clear:
+    - I need information about the area around zip code 10001 in New York.
+- name: fibonacci_numbers
+  descriptions:
+    minimal: Generates the first n Fibonacci numbers.
+    short: Generates the first n Fibonacci numbers.
+    medium: Generates the first n Fibonacci numbers.
+    long: Generates the first n Fibonacci numbers.
+    verbose: Generates the first n Fibonacci numbers.
+  parameters:
+  - name: n
+    type: integer
+    description: The number of Fibonacci numbers to generate.
+    required: true
+  tags:
+  - fibonacci
+  - numbers
+  test_prompts:
+    single:
+    - Generate the first 15 Fibonacci numbers.
+    - Generate the first 10 Fibonacci numbers.
+    - Compute the first 15 Fibonacci numbers.
+    - Generate the first 5 Fibonacci numbers.
+    - Generate the first 10 Fibonacci numbers.
+    single_clear:
+    - Generate the first 15 Fibonacci numbers.
+    - Generate the first 10 Fibonacci numbers.
+    - Compute the first 15 Fibonacci numbers.
+    - Generate the first 5 Fibonacci numbers.
+    - Generate the first 10 Fibonacci numbers.
+- name: songs_v2_get_details
+  descriptions:
+    minimal: Gets detailed information about a specific song...
+    short: Gets detailed information about a specific song using the given song ID.
+    medium: Gets detailed information about a specific song using the given song ID.
+    long: Gets detailed information about a specific song using the given song ID.
+    verbose: Gets detailed information about a specific song using the given song ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the song to retrieve details for.
+    required: true
+    default: '1217912247'
+  - name: l
+    type: string
+    description: The language code for the response (default is 'en-US').
+    required: false
+    default: en-US
+  tags:
+  - songs
+  - v2
+  - get
+  test_prompts:
+    single:
+    - Retrieve detailed information about the song with ID '12345' in English.
+    single_clear:
+    - Retrieve detailed information about the song with ID '12345' in English.
+- name: get_emails
+  descriptions:
+    minimal: Retrieve emails from a given URL using the...
+    short: Retrieve emails from a given URL using the Toolbench RapidAPI service.
+    medium: Retrieve emails from a given URL using the Toolbench RapidAPI service.
+    long: Retrieve emails from a given URL using the Toolbench RapidAPI service.
+    verbose: Retrieve emails from a given URL using the Toolbench RapidAPI service.
+  parameters:
+  - name: url
+    type: string
+    description: The URL from which to extract email addresses.
+    required: true
+    default: https://google.com
+  tags:
+  - get
+  - emails
+  test_prompts:
+    single:
+    - Get email addresses from 'https://www.educationhub.com'.
+    - Extract email addresses from 'https://www.techblog.com'.
+    single_clear:
+    - Get email addresses from 'https://www.educationhub.com'.
+    - Extract email addresses from 'https://www.techblog.com'.
+- name: search_searchterm
+  descriptions:
+    minimal: Search for a term using the Uncovered Treasure...
+    short: Search for a term using the Uncovered Treasure API and return the results.
+    medium: Search for a term using the Uncovered Treasure API and return the results.
+    long: Search for a term using the Uncovered Treasure API and return the results.
+    verbose: Search for a term using the Uncovered Treasure API and return the results.
+  parameters:
+  - name: searchterm
+    type: string
+    description: The term to search for, e.g., "God's plan".
+    required: true
+  - name: callback
+    type: string
+    description: An optional JSONP callback parameter for the API request.
+    required: false
+  tags:
+  - search
+  - searchterm
+  test_prompts:
+    single:
+    - I need to search for 'quantum physics' using a callback named 'myCallback'
+    - I need to search for 'artificial intelligence' without a callback.
+    - Find details about 'COVID-19 vaccine' with a callback named 'jsonpCallback'
+    - Search for information on 'quantum computing' using the Uncovered Treasure API.
+    single_clear:
+    - I need to search for 'quantum physics' using a callback named 'myCallback'
+    - I need to search for 'artificial intelligence' without a callback.
+    - Find details about 'COVID-19 vaccine' with a callback named 'jsonpCallback'
+    - Search for information on 'quantum computing' using the Uncovered Treasure API.
+- name: get_device_asset_by_identifier
+  descriptions:
+    minimal: Fetches device asset information using a...
+    short: Fetches device asset information using a specified identifier from an external system via RapidAPI.
+    medium: Fetches device asset information using a specified identifier from an external system via RapidAPI.
+    long: Fetches device asset information using a specified identifier from an external system via RapidAPI.
+    verbose: Fetches device asset information using a specified identifier from an external system via RapidAPI.
+  parameters:
+  - name: identifier
+    type: string
+    description: The unique identifier for the device asset.
+    required: true
+    default: 71491234-A
+  tags:
+  - get
+  - device
+  - asset
+  test_prompts:
+    single:
+    - Fetch asset details for device with identifier 'ASD9876543'.
+    - Retrieve the device asset information for identifier 'XYZ123'.
+    single_clear:
+    - Fetch asset details for device with identifier 'ASD9876543'.
+    - Retrieve the device asset information for identifier 'XYZ123'.
+- name: find_majority_element
+  descriptions:
+    minimal: Finds the majority element in a list, which...
+    short: Finds the majority element in a list, which appears more than ⌊n / 2⌋ times.
+    medium: Finds the majority element in a list, which appears more than ⌊n / 2⌋ times.
+    long: Finds the majority element in a list, which appears more than ⌊n / 2⌋ times.
+    verbose: Finds the majority element in a list, which appears more than ⌊n / 2⌋ times.
+  parameters:
+  - name: nums
+    type: string
+    description: The input list of integers.
+    required: true
+  tags:
+  - find
+  - majority
+  - element
+  test_prompts:
+    single:
+    - Find the majority element in the list [2, 2, 1, 1, 1, 2, 2]
+    - Identify the majority element in a list where no element appears more than half the times, like [1, 2, 3, 4, 5, 6, 7,
+      8].
+    - Identify the majority element in the list [5, 5, 5, 2, 2, 2, 2]
+    - Find the majority element in the list [2, 2, 1, 1, 1, 2, 2].
+    - Find the majority element in the list [2, 2, 1, 1, 1, 2, 2].
+    - Find the majority element in the list [2, 2, 1, 1, 1, 2, 2].
+    single_clear:
+    - Find the majority element in the list [2, 2, 1, 1, 1, 2, 2]
+    - Identify the majority element in a list where no element appears more than half the times, like [1, 2, 3, 4, 5, 6, 7,
+      8].
+    - Identify the majority element in the list [5, 5, 5, 2, 2, 2, 2]
+    - Find the majority element in the list [2, 2, 1, 1, 1, 2, 2].
+    - Find the majority element in the list [2, 2, 1, 1, 1, 2, 2].
+    - Find the majority element in the list [2, 2, 1, 1, 1, 2, 2].
+- name: basic_search
+  descriptions:
+    minimal: Performs a basic search for movie news articles...
+    short: Performs a basic search for movie news articles using the `/news/basic/search` endpoint.
+    medium: Performs a basic search for movie news articles using the `/news/basic/search` endpoint.
+    long: Performs a basic search for movie news articles using the `/news/basic/search` endpoint.
+    verbose: Performs a basic search for movie news articles using the `/news/basic/search` endpoint.
+  parameters:
+  - name: q
+    type: string
+    description: The query term for the search, typically a keyword related to movie news.
+    required: true
+    default: superman
+  - name: limit
+    type: integer
+    description: The maximum number of results to return. Default is 10.
+    required: false
+    default: '10'
+  - name: offset
+    type: integer
+    description: The number of results to skip before returning results. Default is 0.
+    required: false
+    default: '0'
+  tags:
+  - basic
+  - search
+  test_prompts:
+    single:
+    - Search for articles related to 'Star Wars' in movie news with a limit of 15
+    - Search for movie news articles about 'Oscar nominations' starting from the 11th result.
+    - Find articles related to the upcoming release of 'Avatar 2' with a limit of 15 and an offset of 10.
+    single_clear:
+    - Search for articles related to 'Star Wars' in movie news with a limit of 15
+    - Search for movie news articles about 'Oscar nominations' starting from the 11th result.
+    - Find articles related to the upcoming release of 'Avatar 2' with a limit of 15 and an offset of 10.
+- name: v1_mortgagecalculator
+  descriptions:
+    minimal: Calculates mortgage-related information using the...
+    short: Calculates mortgage-related information using the API Ninjas Mortgage Calculator API endpoint.
+    medium: Calculates mortgage-related information using the API Ninjas Mortgage Calculator API endpoint.
+    long: Calculates mortgage-related information using the API Ninjas Mortgage Calculator API endpoint.
+    verbose: Calculates mortgage-related information using the API Ninjas Mortgage Calculator API endpoint.
+  parameters:
+  - name: interest_rate
+    type: integer
+    description: Annual interest rate (in %). For example, a 3.5% interest rate would be 3.5. Cannot exceed 10000.
+    required: true
+    default: '3.5'
+  - name: downpayment
+    type: integer
+    description: Downpayment on the home or asset. Cannot exceed home_value.
+    required: false
+  - name: home_value
+    type: integer
+    description: Total value of the home or asset. Must be greater than downpayment.
+    required: false
+  - name: monthly_hoa
+    type: integer
+    description: Monthly homeowner association fees.
+    required: false
+  - name: annual_property_tax
+    type: string
+    description: Annual property tax owed.
+    required: false
+  - name: duration_years
+    type: integer
+    description: Duration of the loan in years. Must be between 1 and 10000. If not set, default value is 30 years.
+    required: false
+  - name: loan_amount
+    type: integer
+    description: Principal loan amount. Default is 200000.
+    required: false
+    default: '200000'
+  - name: annual_home_insurance
+    type: integer
+    description: Annual homeowner's insurance bill.
+    required: false
+  tags:
+  - v1
+  - mortgagecalculator
+  test_prompts:
+    single:
+    - I need to calculate the mortgage details for a house worth $300,000 with a 20% down payment, an annual interest rate
+      of 4.5%, and a loan duration of 25 years. Also, there are monthly HOA fees of $200 and an annual property tax of $3,500.
+      Can you provide the monthly payment and total interest?
+    - Calculate the mortgage details for a home worth $300,000 with a 20% down payment, 3.5% interest rate, and 15-year duration.
+    single_clear:
+    - I need to calculate the mortgage details for a house worth $300,000 with a 20% down payment, an annual interest rate
+      of 4.5%, and a loan duration of 25 years. Also, there are monthly HOA fees of $200 and an annual property tax of $3,500.
+      Can you provide the monthly payment and total interest?
+    - Calculate the mortgage details for a home worth $300,000 with a 20% down payment, 3.5% interest rate, and 15-year duration.
+- name: daily
+  descriptions:
+    minimal: Fetches the daily weather forecast for the next...
+    short: Fetches the daily weather forecast for the next 21 days using Meteosource's AI technology.
+    medium: Fetches the daily weather forecast for the next 21 days using Meteosource's AI technology.
+    long: Fetches the daily weather forecast for the next 21 days using Meteosource's AI technology.
+    verbose: Fetches the daily weather forecast for the next 21 days using Meteosource's AI technology.
+  parameters:
+  - name: language
+    type: string
+    description: 'The language of text summaries. Available options are:'
+    required: true
+    default: en
+  - name: units
+    type: string
+    description: 'The unit system for the forecast data. Available options are:'
+    required: true
+    default: auto
+  - name: lon
+    type: string
+    description: Longitude in various formats like 12E, 12.3E, 12.3, or 13W, 13.2W, -13.4. Alternatively, use the `place_id`
+      parameter. Defaults to '-122.42282'.
+    required: true
+    default: '-122.42282'
+  - name: place_id
+    type: string
+    description: Identifier of a place obtained from Location endpoints. Alternatively, use `lat` and `lon` parameters. Defaults
+      to None.
+    required: true
+  - name: lat
+    type: string
+    description: Latitude in various formats like 12N, 12.3N, 12.3, or 13S, 13.2S, -13.4. Alternatively, use the `place_id`
+      parameter. Defaults to '37.81021'.
+    required: true
+    default: '37.81021'
+  tags:
+  - daily
+  test_prompts:
+    single:
+    - What's the daily weather forecast for the next 21 days in San Francisco, CA, using GPS coordinates?
+    single_clear:
+    - What's the daily weather forecast for the next 21 days in San Francisco, CA, using GPS coordinates?
+- name: structural_analysis
+  descriptions:
+    minimal: Performs structural analysis on a building based...
+    short: Performs structural analysis on a building based on its ID, floor numbers, and analysis mode.
+    medium: Performs structural analysis on a building based on its ID, floor numbers, and analysis mode.
+    long: Performs structural analysis on a building based on its ID, floor numbers, and analysis mode.
+    verbose: Performs structural analysis on a building based on its ID, floor numbers, and analysis mode.
+  parameters:
+  - name: building_id
+    type: string
+    description: The unique identifier of the building.
+    required: true
+    default: static
+  - name: floor_numbers
+    type: string
+    description: The list of floor numbers to be analyzed.
+    required: true
+    default: static
+  - name: analysis_mode
+    type: string
+    description: The mode of analysis, either "static" or "dynamic". Defaults to "static".
+    required: false
+  tags:
+  - structural
+  - analysis
+  test_prompts:
+    single:
+    - Can you perform a dynamic analysis on building 123 with floors 5, 10, and 15?
+    - Perform a dynamic structural analysis on a building with ID 'B12345' for floors 5, 10, and 15.
+    - Conduct a dynamic structural analysis on building 1234 for floors 5, 6, and 7.
+    - Perform dynamic structural analysis on building 5678 for floors 10, 11, and 12.
+    - Perform a dynamic structural analysis on building 1234 for floors 5, 10, and 15.
+    - Perform a static structural analysis on building 5678 for floors 3, 7, and 11.
+    - Perform static structural analysis on building 9012 for floors 5 to 10.
+    - Perform a static structural analysis on building 'B123' for floors 5, 10, and 15.
+    - Perform a dynamic structural analysis on a building with ID 'B1234' for floors 5, 10, and 15.
+    single_clear:
+    - Can you perform a dynamic analysis on building 123 with floors 5, 10, and 15?
+    - Perform a dynamic structural analysis on a building with ID 'B12345' for floors 5, 10, and 15.
+    - Conduct a dynamic structural analysis on building 1234 for floors 5, 6, and 7.
+    - Perform dynamic structural analysis on building 5678 for floors 10, 11, and 12.
+    - Perform a dynamic structural analysis on building 1234 for floors 5, 10, and 15.
+    - Perform a static structural analysis on building 5678 for floors 3, 7, and 11.
+    - Perform static structural analysis on building 9012 for floors 5 to 10.
+    - Perform a static structural analysis on building 'B123' for floors 5, 10, and 15.
+    - Perform a dynamic structural analysis on a building with ID 'B1234' for floors 5, 10, and 15.
+- name: similar
+  descriptions:
+    minimal: Search for visually similar images to a given...
+    short: Search for visually similar images to a given image ID from a previous search result.
+    medium: Search for visually similar images to a given image ID from a previous search result.
+    long: Search for visually similar images to a given image ID from a previous search result.
+    verbose: Search for visually similar images to a given image ID from a previous search result.
+  parameters:
+  - name: image_id
+    type: string
+    description: The image ID of the image from the search results for which to find visually similar images.
+    required: true
+    default: 7TJ6HT2DAUMDFITP4LSIJLWICKWRCQOE
+  - name: number
+    type: integer
+    description: The number of similar images to retrieve. Defaults to 10.
+    required: false
+    default: '10'
+  tags:
+  - similar
+  test_prompts:
+    single:
+    - Retrieve 12 similar images to the image ID 'IMG8765432109'.
+    single_clear:
+    - Retrieve 12 similar images to the image ID 'IMG8765432109'.
+- name: get_math_fact
+  descriptions:
+    minimal: Fetch a mathematical property or fact about a...
+    short: Fetch a mathematical property or fact about a given number.
+    medium: Fetch a mathematical property or fact about a given number.
+    long: Fetch a mathematical property or fact about a given number.
+    verbose: Fetch a mathematical property or fact about a given number.
+  parameters:
+  - name: number
+    type: string
+    description: The number for which the mathematical fact is to be retrieved.
+    required: true
+    default: '1729'
+  - name: fragment
+    type: string
+    description: If set to 'True', returns the fact as a sentence fragment that can be easily included in a larger sentence.
+      Defaults to 'True'.
+    required: false
+    default: true
+  - name: json
+    type: string
+    description: If set to 'True', returns the result in JSON format instead of plaintext. Defaults to 'True'.
+    required: false
+    default: true
+  tags:
+  - get
+  - math
+  - fact
+  test_prompts:
+    single:
+    - Get a sentence fragment about a mathematical property of 55.
+    - What is a mathematical fact about the number 37 in JSON format?
+    - What is the mathematical fact about the number 66 in JSON format?
+    - Can you provide a sentence fragment about a mathematical property of 13?
+    - Retrieve a sentence fragment describing a mathematical fact about 31.
+    single_clear:
+    - Get a sentence fragment about a mathematical property of 55.
+    - What is a mathematical fact about the number 37 in JSON format?
+    - What is the mathematical fact about the number 66 in JSON format?
+    - Can you provide a sentence fragment about a mathematical property of 13?
+    - Retrieve a sentence fragment describing a mathematical fact about 31.
+- name: sign_info
+  descriptions:
+    minimal: Fetches and returns the sign information from the...
+    short: Fetches and returns the sign information from the OnlyFans API using the provided user agent and RapidAPI key.
+    medium: Fetches and returns the sign information from the OnlyFans API using the provided user agent and RapidAPI key.
+    long: Fetches and returns the sign information from the OnlyFans API using the provided user agent and RapidAPI key.
+    verbose: Fetches and returns the sign information from the OnlyFans API using the provided user agent and RapidAPI key.
+  parameters:
+  - name: useragent
+    type: string
+    description: The user agent string to be used in the API request.
+    required: true
+  tags:
+  - sign
+  - info
+  test_prompts:
+    single:
+    - Fetch the sign information for a user agent 'Mozilla/5.0' from OnlyFans.
+    - Retrieve sign info using user agent 'Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0)'.
+    single_clear:
+    - Fetch the sign information for a user agent 'Mozilla/5.0' from OnlyFans.
+    - Retrieve sign info using user agent 'Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0)'.
+- name: hsl_to_hex
+  descriptions:
+    minimal: Converts an HSL color code to its HEX color code...
+    short: Converts an HSL color code to its HEX color code using the Convexity RapidAPI service.
+    medium: Converts an HSL color code to its HEX color code using the Convexity RapidAPI service.
+    long: Converts an HSL color code to its HEX color code using the Convexity RapidAPI service.
+    verbose: Converts an HSL color code to its HEX color code using the Convexity RapidAPI service.
+  parameters:
+  - name: s
+    type: integer
+    description: The saturation component of the HSL color code.
+    required: true
+    default: '78'
+  - name: h
+    type: integer
+    description: The hue component of the HSL color code.
+    required: true
+    default: '250'
+  - name: l
+    type: integer
+    description: The lightness component of the HSL color code.
+    required: true
+    default: '45'
+  tags:
+  - hsl
+  - to
+  - hex
+  test_prompts:
+    single:
+    - Determine the HEX representation of an HSL color with a saturation of 20%, hue of 300 degrees, and lightness of 90%.
+    single_clear:
+    - Determine the HEX representation of an HSL color with a saturation of 20%, hue of 300 degrees, and lightness of 90%.
+- name: get_all_companies_paginated
+  descriptions:
+    minimal: Fetches a paginated list of all companies from...
+    short: Fetches a paginated list of all companies from the CAC database using the provided API key.
+    medium: Fetches a paginated list of all companies from the CAC database using the provided API key.
+    long: Fetches a paginated list of all companies from the CAC database using the provided API key.
+    verbose: Fetches a paginated list of all companies from the CAC database using the provided API key.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number to fetch.
+    required: true
+    default: '1'
+  - name: limit
+    type: integer
+    description: The number of companies to retrieve per page.
+    required: true
+    default: '10'
+  tags:
+  - get
+  - all
+  - companies
+  test_prompts:
+    single:
+    - Fetch the first page of companies with a limit of 20 per page.
+    - Fetch the first page of companies with a limit of 10 per page.
+    single_clear:
+    - Fetch the first page of companies with a limit of 20 per page.
+    - Fetch the first page of companies with a limit of 10 per page.
+- name: hashtag_info
+  descriptions:
+    minimal: Fetches information about a specific TikTok...
+    short: Fetches information about a specific TikTok hashtag using the Toolbench RapidAPI.
+    medium: Fetches information about a specific TikTok hashtag using the Toolbench RapidAPI.
+    long: Fetches information about a specific TikTok hashtag using the Toolbench RapidAPI.
+    verbose: Fetches information about a specific TikTok hashtag using the Toolbench RapidAPI.
+  parameters:
+  - name: hashtag
+    type: string
+    description: The TikTok hashtag for which to retrieve information.
+    required: true
+    default: bts
+  tags:
+  - hashtag
+  - info
+  test_prompts:
+    single:
+    - Get details about the '#technology' hashtag on TikTok.
+    - What information is available about the '#travel' hashtag on TikTok?
+    single_clear:
+    - Get details about the '#technology' hashtag on TikTok.
+    - What information is available about the '#travel' hashtag on TikTok?
+- name: tokens
+  descriptions:
+    minimal: Retrieves a list of tokens and their contract...
+    short: Retrieves a list of tokens and their contract information based on the specified blockchain network.
+    medium: Retrieves a list of tokens and their contract information based on the specified blockchain network.
+    long: Retrieves a list of tokens and their contract information based on the specified blockchain network.
+    verbose: Retrieves a list of tokens and their contract information based on the specified blockchain network.
+  parameters:
+  - name: network
+    type: string
+    description: The name of the blockchain network. Supported networks include arbitrum, aurora, avalanche, bsc, cronos,
+      ethereum, fantom, harmony, heco, kcc, metis, moonriver, oasisemerald, optimism, polygon, and telos.
+    required: true
+  tags:
+  - tokens
+  test_prompts:
+    single:
+    - List all tokens on the Ethereum network.
+    - List all tokens on the Binance Smart Chain.
+    single_clear:
+    - List all tokens on the Ethereum network.
+    - List all tokens on the Binance Smart Chain.
+- name: final_velocity
+  descriptions:
+    minimal: Calculates the final velocity of an object given...
+    short: Calculates the final velocity of an object given its initial velocity, acceleration, and time.
+    medium: Calculates the final velocity of an object given its initial velocity, acceleration, and time.
+    long: Calculates the final velocity of an object given its initial velocity, acceleration, and time.
+    verbose: Calculates the final velocity of an object given its initial velocity, acceleration, and time.
+  parameters:
+  - name: initial_velocity
+    type: number
+    description: The initial velocity of the object.
+    required: true
+  - name: acceleration
+    type: number
+    description: The acceleration of the object.
+    required: true
+  - name: time
+    type: number
+    description: The time elapsed.
+    required: true
+  tags:
+  - final
+  - velocity
+  test_prompts:
+    single:
+    - If an object starts with an initial velocity of 5 m/s and accelerates at 2 m/s² for 10 seconds, what is its final velocity?
+    - What will be the final velocity of a car that starts at 30 m/s and accelerates at 5 m/s² for 10 seconds?
+    - An object is moving with an initial velocity of 5 m/s and accelerates at 2 m/s² for 10 seconds. What is its final velocity?
+    - What is the final velocity of a car that starts at 30 km/h and accelerates at 5 km/h² for 10 seconds?
+    - Calculate the final velocity of an object starting at 10 m/s with an acceleration of 2 m/s² over 5 seconds.
+    - An object with an initial velocity of 5 m/s accelerates at 3 m/s² for 10 seconds, what is its final velocity?
+    - What is the final velocity of a car that initially moves at 20 m/s, accelerates at 5 m/s^2 for 10 seconds?
+    single_clear:
+    - If an object starts with an initial velocity of 5 m/s and accelerates at 2 m/s² for 10 seconds, what is its final velocity?
+    - What will be the final velocity of a car that starts at 30 m/s and accelerates at 5 m/s² for 10 seconds?
+    - An object is moving with an initial velocity of 5 m/s and accelerates at 2 m/s² for 10 seconds. What is its final velocity?
+    - What is the final velocity of a car that starts at 30 km/h and accelerates at 5 km/h² for 10 seconds?
+    - Calculate the final velocity of an object starting at 10 m/s with an acceleration of 2 m/s² over 5 seconds.
+    - An object with an initial velocity of 5 m/s accelerates at 3 m/s² for 10 seconds, what is its final velocity?
+    - What is the final velocity of a car that initially moves at 20 m/s, accelerates at 5 m/s^2 for 10 seconds?
+- name: events
+  descriptions:
+    minimal: Retrieves events from Linz, Austria using the...
+    short: Retrieves events from Linz, Austria using the specified page size and RapidAPI key.
+    medium: Retrieves events from Linz, Austria using the specified page size and RapidAPI key.
+    long: Retrieves events from Linz, Austria using the specified page size and RapidAPI key.
+    verbose: Retrieves events from Linz, Austria using the specified page size and RapidAPI key.
+  parameters:
+  - name: pagesize
+    type: integer
+    description: The number of events to retrieve per page. Defaults to 150.
+    required: false
+    default: '150'
+  tags:
+  - events
+  test_prompts:
+    single:
+    - Retrieve all available events in Linz, using the default page size.
+    single_clear:
+    - Retrieve all available events in Linz, using the default page size.

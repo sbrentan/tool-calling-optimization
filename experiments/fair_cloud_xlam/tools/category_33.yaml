@@ -1,0 +1,677 @@
+category: category_33
+tools:
+- name: stock_get_total_revenue
+  descriptions:
+    minimal: Fetches the total revenue for a given stock...
+    short: Fetches the total revenue for a given stock symbol from the specified region using the Toolbench RapidAPI service.
+    medium: Fetches the total revenue for a given stock symbol from the specified region using the Toolbench RapidAPI service.
+    long: Fetches the total revenue for a given stock symbol from the specified region using the Toolbench RapidAPI service.
+    verbose: Fetches the total revenue for a given stock symbol from the specified region using the Toolbench RapidAPI service.
+  parameters:
+  - name: symbol
+    type: string
+    description: The ticker symbol of the stock (e.g., "AAPL" for Apple Inc.).
+    required: true
+  - name: region
+    type: string
+    description: The region code to fetch the stock data from. Allowed values are 'US', 'BR', 'AU', 'CA', 'FR', 'DE', 'HK',
+      'IN', 'IT', 'ES', 'GB', 'S'. Defaults to None.
+    required: false
+  tags:
+  - stock
+  - get
+  - total
+  test_prompts:
+    single:
+    - What is the total revenue of Amazon (AMZN) in the global market?
+    single_clear:
+    - What is the total revenue of Amazon (AMZN) in the global market?
+- name: get_country_details
+  descriptions:
+    minimal: Fetch details for a country based on the given...
+    short: Fetch details for a country based on the given ISO-3166 country code.
+    medium: Fetch details for a country based on the given ISO-3166 country code.
+    long: Fetch details for a country based on the given ISO-3166 country code.
+    verbose: Fetch details for a country based on the given ISO-3166 country code.
+  parameters:
+  - name: code
+    type: string
+    description: The ISO-3166 country code to fetch details for.
+    required: true
+    default: US
+  tags:
+  - get
+  - country
+  - details
+  test_prompts:
+    single:
+    - What are the details of the country with the ISO code 'DE'?
+    single_clear:
+    - What are the details of the country with the ISO code 'DE'?
+- name: web_exchanges
+  descriptions:
+    minimal: Retrieve and sort exchanges based on specified...
+    short: Retrieve and sort exchanges based on specified criteria.
+    medium: Retrieve and sort exchanges based on specified criteria.
+    long: Retrieve and sort exchanges based on specified criteria.
+    verbose: Retrieve and sort exchanges based on specified criteria.
+  parameters:
+  - name: sort
+    type: string
+    description: The sorting criteria for the output. Defaults to 'usd_volume_30d', which sorts the exchanges based on their
+      monthly volume.
+    required: true
+    default: usd_volume_30d
+  - name: direction
+    type: string
+    description: The sort order. Can be 'asc' for ascending or 'desc' for descending. Defaults to 'desc'.
+    required: true
+    default: desc
+  - name: filter_zero_volume
+    type: boolean
+    description: If set to True, excludes exchanges with no volume in the last 30 days. Defaults to None.
+    required: true
+    default: false
+  - name: chain_slug
+    type: string
+    description: The blockchain slug (e.g., 'ethereum' for Ethereum mainnet). If provided, the function lists exchanges only
+      for this chain. Defaults to None.
+    required: true
+  tags:
+  - web
+  - exchanges
+  test_prompts:
+    single:
+    - List all exchanges on the Ethereum blockchain sorted by their 30-day USD volume in ascending order.
+    single_clear:
+    - List all exchanges on the Ethereum blockchain sorted by their 30-day USD volume in ascending order.
+- name: retrieve_compensation
+  descriptions:
+    minimal: Fetches the full compensation details associated...
+    short: Fetches the full compensation details associated with a given ID using the specified RapidAPI key.
+    medium: Fetches the full compensation details associated with a given ID using the specified RapidAPI key.
+    long: Fetches the full compensation details associated with a given ID using the specified RapidAPI key.
+    verbose: Fetches the full compensation details associated with a given ID using the specified RapidAPI key.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID for which to retrieve the compensation details.
+    required: true
+    default: '0xF0F2e446EeD32236EA0c78a6E4a91Ed712654799'
+  tags:
+  - retrieve
+  - compensation
+  test_prompts:
+    single:
+    - Retrieve the compensation details for ID '12345'.
+    single_clear:
+    - Retrieve the compensation details for ID '12345'.
+- name: get_district_capital_by_name
+  descriptions:
+    minimal: Retrieves the capital of a district in Ghana...
+    short: Retrieves the capital of a district in Ghana given the district name.
+    medium: Retrieves the capital of a district in Ghana given the district name.
+    long: Retrieves the capital of a district in Ghana given the district name.
+    verbose: Retrieves the capital of a district in Ghana given the district name.
+  parameters:
+  - name: name
+    type: string
+    description: The name of the district whose capital is to be retrieved.
+    required: true
+    default: accra
+  tags:
+  - get
+  - district
+  - capital
+  test_prompts:
+    single:
+    - Can you find the capital of Kumasi district in Ghana?
+    - Which city is the capital of the district named Bolgatanga in Ghana?
+    single_clear:
+    - Can you find the capital of Kumasi district in Ghana?
+    - Which city is the capital of the district named Bolgatanga in Ghana?
+- name: type_parent_get_highest_rated_investments
+  descriptions:
+    minimal: Retrieve the highest rated investments as...
+    short: Retrieve the highest rated investments as displayed in the Parent tab.
+    medium: Retrieve the highest rated investments as displayed in the Parent tab.
+    long: Retrieve the highest rated investments as displayed in the Parent tab.
+    verbose: Retrieve the highest rated investments as displayed in the Parent tab.
+  parameters:
+  - name: type
+    type: string
+    description: 'The type of investment, one of the following values: ''etf'' or ''fund''.'
+    required: true
+    default: etf
+  - name: securityid
+    type: string
+    description: The security ID for which to retrieve the highest rated investments.
+    required: true
+    default: F00000O2CG
+  tags:
+  - type
+  - parent
+  - get
+  test_prompts:
+    single:
+    - Fetch the highest rated investments for ETF with security ID 'ETF12345'.
+    single_clear:
+    - Fetch the highest rated investments for ETF with security ID 'ETF12345'.
+- name: school_detail
+  descriptions:
+    minimal: Fetch detailed information about a school using...
+    short: Fetch detailed information about a school using the encrypted school ID (sekolah_id_enkrip).
+    medium: Fetch detailed information about a school using the encrypted school ID (sekolah_id_enkrip).
+    long: Fetch detailed information about a school using the encrypted school ID (sekolah_id_enkrip).
+    verbose: Fetch detailed information about a school using the encrypted school ID (sekolah_id_enkrip).
+  parameters:
+  - name: sekolah_id_enkrip
+    type: string
+    description: The encrypted ID of the school for which details are to be fetched. Default is '5DB43D89E6BFB0F76FBC'.
+    required: true
+    default: 5DB43D89E6BFB0F76FBC
+  tags:
+  - school
+  - detail
+  test_prompts:
+    single:
+    - I need the details of the school with encrypted ID 'F1G2H3I4J5K6L7M8N9O'
+    - Retrieve information about the school with encrypted ID 'A1B2C3D4E5F6G7H8I9J0K'
+    single_clear:
+    - I need the details of the school with encrypted ID 'F1G2H3I4J5K6L7M8N9O'
+    - Retrieve information about the school with encrypted ID 'A1B2C3D4E5F6G7H8I9J0K'
+- name: poor_backlinks
+  descriptions:
+    minimal: Fetch poor quality backlinks for a given domain...
+    short: Fetch poor quality backlinks for a given domain using the Best Backlink Checker API.
+    medium: Fetch poor quality backlinks for a given domain using the Best Backlink Checker API.
+    long: Fetch poor quality backlinks for a given domain using the Best Backlink Checker API.
+    verbose: Fetch poor quality backlinks for a given domain using the Best Backlink Checker API.
+  parameters:
+  - name: domain
+    type: string
+    description: The domain for which to fetch the poor quality backlinks.
+    required: true
+    default: getecz.com
+  tags:
+  - poor
+  - backlinks
+  test_prompts:
+    single:
+    - I need to find poor quality backlinks for the domain 'example.com'.
+    single_clear:
+    - I need to find poor quality backlinks for the domain 'example.com'.
+- name: reverse_geocode
+  descriptions:
+    minimal: This function takes longitude and latitude...
+    short: This function takes longitude and latitude coordinates and returns the corresponding address by making a reverse
+      geocoding API request.
+    medium: This function takes longitude and latitude coordinates and returns the corresponding address by making a reverse
+      geocoding API request.
+    long: This function takes longitude and latitude coordinates and returns the corresponding address by making a reverse
+      geocoding API request.
+    verbose: This function takes longitude and latitude coordinates and returns the corresponding address by making a reverse
+      geocoding API request.
+  parameters:
+  - name: lng
+    type: integer
+    description: The longitude coordinate.
+    required: true
+    default: '-123.0470199'
+  - name: lat
+    type: integer
+    description: The latitude coordinate.
+    required: true
+    default: '49.2813458'
+  tags:
+  - reverse
+  - geocode
+  test_prompts:
+    single:
+    - What is the address corresponding to the coordinates 40.7128° N, 74.0060° W?
+    - What city is located at longitude -0.1278 and latitude 51.5074 in Uganda?
+    single_clear:
+    - What is the address corresponding to the coordinates 40.7128° N, 74.0060° W?
+    - What city is located at longitude -0.1278 and latitude 51.5074 in Uganda?
+- name: ideal_body_weight
+  descriptions:
+    minimal: Calculates the ideal body weight based on height...
+    short: Calculates the ideal body weight based on height, body frame size, gender, and optional formula.
+    medium: Calculates the ideal body weight based on height, body frame size, gender, and optional formula.
+    long: Calculates the ideal body weight based on height, body frame size, gender, and optional formula.
+    verbose: Calculates the ideal body weight based on height, body frame size, gender, and optional formula.
+  parameters:
+  - name: body_frame
+    type: string
+    description: 'The body frame size of the person. It can be one of the following values: "small", "medium", or "large".'
+    required: true
+    default: medium
+  - name: height
+    type: integer
+    description: The height in centimeters (cm) of the person.
+    required: true
+    default: '175'
+  - name: gender
+    type: string
+    description: The gender of the person. It can be either "male" or "female".
+    required: true
+    default: male
+  - name: formula
+    type: string
+    description: The formula for ideal weight estimation. It can be either "hamwi" (default) or "devine".
+    required: false
+    default: hamwi
+  tags:
+  - ideal
+  - body
+  - weight
+  test_prompts:
+    single:
+    - What is the ideal body weight for a medium-framed female who is 165 cm tall, using the Hamwi method?
+    single_clear:
+    - What is the ideal body weight for a medium-framed female who is 165 cm tall, using the Hamwi method?
+- name: extract
+  descriptions:
+    minimal: Extract and validate phone or cell numbers from...
+    short: Extract and validate phone or cell numbers from the given text.
+    medium: Extract and validate phone or cell numbers from the given text.
+    long: Extract and validate phone or cell numbers from the given text.
+    verbose: Extract and validate phone or cell numbers from the given text.
+  parameters:
+  - name: text
+    type: string
+    description: The text containing phone or cell numbers to be extracted and validated.
+    required: true
+  - name: country
+    type: string
+    description: The country name or ISO2/ISO3 code to be used for identifying the number format. Defaults to None.
+    required: false
+  - name: country_auto
+    type: integer
+    description: Flag to auto-detect the country if not provided. Accepts values 0 (false), 1 (fast mode), and 2 (slow mode).
+      Defaults to 0.
+    required: false
+    default: 0
+  tags:
+  - extract
+  test_prompts:
+    single:
+    - 'Extract phone numbers from a text with auto-detection: ''Call us at 04 78 90 12 34 or +33 6 12 34 56 78.'''
+    - Extract phone numbers from the text 'Contact us at +44 1234 567890 and +1 555 123 4567.' and auto-detect the country
+      in fast mode.
+    single_clear:
+    - 'Extract phone numbers from a text with auto-detection: ''Call us at 04 78 90 12 34 or +33 6 12 34 56 78.'''
+    - Extract phone numbers from the text 'Contact us at +44 1234 567890 and +1 555 123 4567.' and auto-detect the country
+      in fast mode.
+- name: get_ecoindex_analysis_list_version_ecoindexes_get
+  descriptions:
+    minimal: Fetches a list of ecoindex analysis based on the...
+    short: Fetches a list of ecoindex analysis based on the specified version and query filters.
+    medium: Fetches a list of ecoindex analysis based on the specified version and query filters. The results are ordered
+      by ascending date.
+    long: Fetches a list of ecoindex analysis based on the specified version and query filters. The results are ordered by
+      ascending date.
+    verbose: Fetches a list of ecoindex analysis based on the specified version and query filters. The results are ordered
+      by ascending date.
+  parameters:
+  - name: version
+    type: string
+    description: Engine version used to run the analysis (e.g., 'v0' or 'v1').
+    required: true
+    default: v1
+  - name: size
+    type: integer
+    description: Number of elements per page. Defaults to 50.
+    required: false
+    default: 50
+  - name: host
+    type: string
+    description: Host name to filter the results by.
+    required: false
+  - name: date_from
+    type: string
+    description: 'Start date for filtering results (format: ''YYYY-MM-DD'').'
+    required: false
+  - name: page
+    type: integer
+    description: Page number to retrieve. Defaults to 1.
+    required: false
+    default: 1
+  - name: date_to
+    type: string
+    description: 'End date for filtering results (format: ''YYYY-MM-DD'').'
+    required: false
+  tags:
+  - get
+  - ecoindex
+  - analysis
+  test_prompts:
+    single:
+    - What are the ecoindex results for the host 'test.com' from the beginning of this year to March 31, 2023, for version
+      v1?
+    - I want to see the latest ecoindex analysis for version 'v1'. Can you fetch that?
+    - Fetch ecoindex data for version v0 from 'example.org' for the entire year of 2022.
+    single_clear:
+    - What are the ecoindex results for the host 'test.com' from the beginning of this year to March 31, 2023, for version
+      v1?
+    - I want to see the latest ecoindex analysis for version 'v1'. Can you fetch that?
+    - Fetch ecoindex data for version v0 from 'example.org' for the entire year of 2022.
+- name: get_the_mx_records
+  descriptions:
+    minimal: Fetches the MX (Mail Exchange) records for a...
+    short: Fetches the MX (Mail Exchange) records for a given email address using the RapidAPI service.
+    medium: Fetches the MX (Mail Exchange) records for a given email address using the RapidAPI service.
+    long: Fetches the MX (Mail Exchange) records for a given email address using the RapidAPI service.
+    verbose: Fetches the MX (Mail Exchange) records for a given email address using the RapidAPI service.
+  parameters:
+  - name: email
+    type: string
+    description: The email address for which to retrieve MX records.
+    required: true
+    default: example@gmail.com
+  tags:
+  - get
+  - the
+  - mx
+  test_prompts:
+    single:
+    - What are the MX records for the email 'info@company.org'?
+    single_clear:
+    - What are the MX records for the email 'info@company.org'?
+- name: get_host_list_version_hosts_get
+  descriptions:
+    minimal: Fetch a list of hosts that ran an EcoIndex...
+    short: Fetch a list of hosts that ran an EcoIndex analysis, ordered by the number of requests made.
+    medium: Fetch a list of hosts that ran an EcoIndex analysis, ordered by the number of requests made.
+    long: Fetch a list of hosts that ran an EcoIndex analysis, ordered by the number of requests made.
+    verbose: Fetch a list of hosts that ran an EcoIndex analysis, ordered by the number of requests made.
+  parameters:
+  - name: version
+    type: string
+    description: Engine version used to run the analysis (v0 or v1).
+    required: true
+    default: v1
+  - name: q
+    type: string
+    description: Filter for partial host name. Defaults to None.
+    required: false
+  - name: date_from
+    type: string
+    description: 'Start date for filtering elements (format: YYYY-MM-DD). Defaults to None.'
+    required: false
+  - name: size
+    type: integer
+    description: Number of elements per page. Defaults to 50.
+    required: false
+    default: 50
+  - name: date_to
+    type: string
+    description: 'End date for filtering elements (format: YYYY-MM-DD). Defaults to None.'
+    required: false
+  - name: page
+    type: integer
+    description: Page number to retrieve. Defaults to 1.
+    required: false
+    default: 1
+  tags:
+  - get
+  - host
+  - list
+  test_prompts:
+    single:
+    - A web developer is interested in the hosts that performed EcoIndex analysis between January 1, 2023, and March 31, 2023,
+      using version v0. They want to see the first 50 results on the first page. Can you help with the 'get_host_list_version_hosts_get'
+      function?
+    single_clear:
+    - A web developer is interested in the hosts that performed EcoIndex analysis between January 1, 2023, and March 31, 2023,
+      using version v0. They want to see the first 50 results on the first page. Can you help with the 'get_host_list_version_hosts_get'
+      function?
+- name: provider2_live_match_id
+  descriptions:
+    minimal: Fetches live match details from the provider2 API...
+    short: Fetches live match details from the provider2 API for a given match ID.
+    medium: Fetches live match details from the provider2 API for a given match ID.
+    long: Fetches live match details from the provider2 API for a given match ID.
+    verbose: Fetches live match details from the provider2 API for a given match ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The match ID for which to fetch the live details.
+    required: true
+  tags:
+  - provider2
+  - live
+  - match
+  test_prompts:
+    single:
+    - What are the live betting odds for the match with ID 'G357913'?
+    single_clear:
+    - What are the live betting odds for the match with ID 'G357913'?
+- name: get_tamil_calendar_date
+  descriptions:
+    minimal: Fetches the Tamil calendar date corresponding to...
+    short: Fetches the Tamil calendar date corresponding to the given English calendar date using the Yawin Indian Astrology
+      API.
+    medium: Fetches the Tamil calendar date corresponding to the given English calendar date using the Yawin Indian Astrology
+      API.
+    long: Fetches the Tamil calendar date corresponding to the given English calendar date using the Yawin Indian Astrology
+      API.
+    verbose: Fetches the Tamil calendar date corresponding to the given English calendar date using the Yawin Indian Astrology
+      API.
+  parameters:
+  - name: date
+    type: string
+    description: The English calendar date in the format 'YYYY-MM-DD'.
+    required: true
+    default: '2023-04-14'
+  tags:
+  - get
+  - tamil
+  - calendar
+  test_prompts:
+    single:
+    - What is the Tamil date for December 25, 2023?
+    single_clear:
+    - What is the Tamil date for December 25, 2023?
+- name: card
+  descriptions:
+    minimal: Draw a card from a regular 52-card playing deck...
+    short: Draw a card from a regular 52-card playing deck using the RapidAPI card draw simulator.
+    medium: Draw a card from a regular 52-card playing deck using the RapidAPI card draw simulator.
+    long: Draw a card from a regular 52-card playing deck using the RapidAPI card draw simulator.
+    verbose: Draw a card from a regular 52-card playing deck using the RapidAPI card draw simulator.
+  parameters:
+  - name: suit
+    type: string
+    description: The suit of the card to draw (e.g., 'hearts', 'diamonds', 'clubs', 'spades'). Default is 'all' to allow any
+      suit.
+    required: true
+    default: all
+  - name: value
+    type: string
+    description: The value of the card to draw (e.g., 'A', '2', 'K'). Default is 'A'.
+    required: true
+    default: A
+  tags:
+  - card
+  test_prompts:
+    single:
+    - Draw a card from any suit but it should be a 'Queen'.
+    single_clear:
+    - Draw a card from any suit but it should be a 'Queen'.
+- name: items
+  descriptions:
+    minimal: Fetches item details from the Codester API using...
+    short: Fetches item details from the Codester API using the specified item ID.
+    medium: Fetches item details from the Codester API using the specified item ID.
+    long: Fetches item details from the Codester API using the specified item ID.
+    verbose: Fetches item details from the Codester API using the specified item ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The item ID for which details are to be fetched.
+    required: true
+    default: '40946'
+  tags:
+  - items
+  test_prompts:
+    single:
+    - I need details about an item with ID 'item007' from the Codester API. What function should I use?
+    single_clear:
+    - I need details about an item with ID 'item007' from the Codester API. What function should I use?
+- name: search_keto_recipe
+  descriptions:
+    minimal: Search for keto recipes based on a given search...
+    short: Search for keto recipes based on a given search term using the Keto Diet API.
+    medium: Search for keto recipes based on a given search term using the Keto Diet API.
+    long: Search for keto recipes based on a given search term using the Keto Diet API.
+    verbose: Search for keto recipes based on a given search term using the Keto Diet API.
+  parameters:
+  - name: search
+    type: string
+    description: The search term to find keto recipes.
+    required: true
+    default: beef
+  tags:
+  - search
+  - keto
+  - recipe
+  test_prompts:
+    single:
+    - Can you provide keto recipes that include 'avocado'?
+    - I need a keto recipe for a hearty soup that is also dairy-free.
+    single_clear:
+    - Can you provide keto recipes that include 'avocado'?
+    - I need a keto recipe for a hearty soup that is also dairy-free.
+- name: get_referral_domains
+  descriptions:
+    minimal: Retrieves a list of referral domains for a given...
+    short: Retrieves a list of referral domains for a given domain using the Toolbench RapidAPI.
+    medium: Retrieves a list of referral domains for a given domain using the Toolbench RapidAPI.
+    long: Retrieves a list of referral domains for a given domain using the Toolbench RapidAPI.
+    verbose: Retrieves a list of referral domains for a given domain using the Toolbench RapidAPI.
+  parameters:
+  - name: domain
+    type: string
+    description: The domain to retrieve referral domains for.
+    required: true
+    default: getecz.com
+  tags:
+  - get
+  - referral
+  - domains
+  test_prompts:
+    single:
+    - Find referral domains for 'wikipedia.org'.
+    single_clear:
+    - Find referral domains for 'wikipedia.org'.
+- name: get_3_summary
+  descriptions:
+    minimal: Fetches a summary of stock performance and...
+    short: Fetches a summary of stock performance and related metrics from the Stocky API.
+    medium: Fetches a summary of stock performance and related metrics from the Stocky API.
+    long: Fetches a summary of stock performance and related metrics from the Stocky API.
+    verbose: Fetches a summary of stock performance and related metrics from the Stocky API.
+  parameters:
+  - name: keyword
+    type: string
+    description: The stock keyword to search for. Default is 'GOOG'.
+    required: true
+    default: GOOG
+  tags:
+  - get
+  - '3'
+  - summary
+  test_prompts:
+    single:
+    - What is the current summary of Apple's stock performance?
+    single_clear:
+    - What is the current summary of Apple's stock performance?
+- name: autocomplete_zipcodes_zip4
+  descriptions:
+    minimal: Fetches autocomplete suggestions for USA Zip+4...
+    short: Fetches autocomplete suggestions for USA Zip+4 zip codes using the provided zipcode and API key.
+    medium: Fetches autocomplete suggestions for USA Zip+4 zip codes using the provided zipcode and API key.
+    long: Fetches autocomplete suggestions for USA Zip+4 zip codes using the provided zipcode and API key.
+    verbose: Fetches autocomplete suggestions for USA Zip+4 zip codes using the provided zipcode and API key.
+  parameters:
+  - name: zipcode
+    type: string
+    description: The base ZIP code for which to fetch autocomplete suggestions.
+    required: true
+    default: '110'
+  tags:
+  - autocomplete
+  - zipcodes
+  - zip4
+  test_prompts:
+    single:
+    - Get autocomplete suggestions for the ZIP+4 code starting with 10001.
+    - What are the autocomplete suggestions for a ZIP+4 code starting with 10001?
+    - What are the autocomplete options for ZIP+4 codes starting with 10001?
+    single_clear:
+    - Get autocomplete suggestions for the ZIP+4 code starting with 10001.
+    - What are the autocomplete suggestions for a ZIP+4 code starting with 10001?
+    - What are the autocomplete options for ZIP+4 codes starting with 10001?
+- name: addresses
+  descriptions:
+    minimal: Fetches a list of addresses matching the search...
+    short: Fetches a list of addresses matching the search query using the RapidAPI AddressR service.
+    medium: Fetches a list of addresses matching the search query using the RapidAPI AddressR service.
+    long: Fetches a list of addresses matching the search query using the RapidAPI AddressR service.
+    verbose: Fetches a list of addresses matching the search query using the RapidAPI AddressR service.
+  parameters:
+  - name: q
+    type: string
+    description: The search string used to query addresses.
+    required: true
+  tags:
+  - addresses
+  test_prompts:
+    single:
+    - Locate addresses on Baker Street in London.
+    - Find addresses on 5th Avenue in New York City.
+    single_clear:
+    - Locate addresses on Baker Street in London.
+    - Find addresses on 5th Avenue in New York City.
+- name: city_details
+  descriptions:
+    minimal: Fetch detailed information about a specific city...
+    short: Fetch detailed information about a specific city using its ID from the RapidAPI service.
+    medium: Fetch detailed information about a specific city using its ID from the RapidAPI service.
+    long: Fetch detailed information about a specific city using its ID from the RapidAPI service.
+    verbose: Fetch detailed information about a specific city using its ID from the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the city for which detailed information is to be retrieved.
+    required: true
+    default: '132782'
+  tags:
+  - city
+  - details
+  test_prompts:
+    single:
+    - What are the details of the city with ID 'NYC123'?
+    single_clear:
+    - What are the details of the city with ID 'NYC123'?
+- name: getcommunities
+  descriptions:
+    minimal: Fetches Power BI communities data for a given...
+    short: Fetches Power BI communities data for a given page using the RapidAPI service.
+    medium: Fetches Power BI communities data for a given page using the RapidAPI service.
+    long: Fetches Power BI communities data for a given page using the RapidAPI service.
+    verbose: Fetches Power BI communities data for a given page using the RapidAPI service.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number of communities to retrieve.
+    required: true
+    default: '1'
+  tags:
+  - getcommunities
+  test_prompts:
+    single:
+    - Could you retrieve the first page of Power BI communities?
+    single_clear:
+    - Could you retrieve the first page of Power BI communities?

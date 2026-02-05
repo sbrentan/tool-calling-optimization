@@ -1,0 +1,1519 @@
+category: data_operations
+
+tools:
+  - name: query_database
+    descriptions:
+      minimal: "Query a database"
+      short: "Execute a SQL query on a database"
+      medium: "Execute a SQL SELECT query on a database and return the results. Specify the database name and the query to run."
+      long: "Execute a SQL SELECT query on a database and return the results as a list of records. Supports standard SQL syntax. Use the limit parameter to restrict the number of returned rows. Example: query_database(database='users_db', query='SELECT * FROM users WHERE active=true', limit=100)."
+      verbose: "Execute a SQL SELECT query on a database. Returns results as a list of dictionaries, where each dictionary represents a row with column names as keys. Supports parameterized queries to prevent SQL injection. Use limit to cap results. The query should be a valid SELECT statement. Example: query_database(database='analytics', query='SELECT user_id, COUNT(*) as visits FROM page_views GROUP BY user_id', limit=1000). Note: Only SELECT queries are allowed; use other tools for INSERT/UPDATE/DELETE. Warning: Large result sets may impact performance; always use LIMIT for large tables."
+    parameters:
+      - name: database
+        type: string
+        description: "The name of the database to query"
+        required: true
+      - name: query
+        type: string
+        description: "The SQL SELECT query to execute"
+        required: true
+      - name: limit
+        type: integer
+        description: "Maximum number of rows to return"
+        required: false
+        default: 100
+    tags: ["database", "query", "sql", "select", "read"]
+    test_prompts:
+      single:
+        - "Get all users from the database"
+        - "Query the orders table for orders from last month"
+        - "Find all products with price greater than 100"
+        - "Select the top 10 customers by total purchases"
+      single_clear:
+        - "I need to query the database. Get all users from the database"
+        - "I need to query the database. Query the orders table for orders from last month"
+        - "I need to query the database. Find all products with price greater than 100"
+        - "I need to query the database. Select the top 10 customers by total purchases"
+      multi:
+        - prompt: "Get all inactive users and then delete them from the database"
+          required_tools: ["query_database", "delete_records"]
+
+  - name: insert_record
+    descriptions:
+      minimal: "Insert a database record"
+      short: "Insert a new record into a database table"
+      medium: "Insert a new record into a database table. Provide the table name and the data as key-value pairs."
+      long: "Insert a new record into a database table. The data should be provided as a JSON object with column names as keys. Returns the ID of the inserted record. Example: insert_record(table='users', data='{\"name\": \"John\", \"email\": \"john@example.com\"}')."
+      verbose: "Insert a new record into a database table. Provide data as a JSON object where keys match column names. The database will validate data types and constraints. Returns the auto-generated ID of the new record if applicable. Example: insert_record(database='main', table='customers', data='{\"name\": \"Acme Corp\", \"industry\": \"Technology\", \"employees\": 500}'). Note: Required columns must be provided or have default values. Warning: Inserting duplicate keys will fail if unique constraints exist."
+    parameters:
+      - name: table
+        type: string
+        description: "The name of the table to insert into"
+        required: true
+      - name: data
+        type: string
+        description: "JSON object with column names and values"
+        required: true
+      - name: database
+        type: string
+        description: "The database name (uses default if not specified)"
+        required: false
+    tags: ["database", "insert", "sql", "create", "write"]
+    test_prompts:
+      single:
+        - "Add a new user named John with email john@test.com to the users table"
+        - "Insert a new product called 'Widget' with price 29.99"
+        - "Create a new order record for customer ID 123"
+        - "Add an entry to the logs table with message 'System started'"
+      single_clear:
+        - "I need to insert a record into the database. Add a new user named John with email john@test.com to the users table"
+        - "I need to insert a record into the database. Insert a new product called 'Widget' with price 29.99"
+        - "I need to insert a record into the database. Create a new order record for customer ID 123"
+        - "I need to insert a record into the database. Add an entry to the logs table with message 'System started'"
+
+  - name: update_records
+    descriptions:
+      minimal: "Update database records"
+      short: "Update existing records in a database table"
+      medium: "Update existing records in a database table that match a condition. Specify the new values and the WHERE condition."
+      long: "Update existing records in a database table. Provide the new values as a JSON object and a WHERE condition to select which records to update. Example: update_records(table='users', data='{\"status\": \"active\"}', condition='last_login > 2024-01-01')."
+      verbose: "Update existing records in a database table that match a specified condition. The data parameter contains the new values as a JSON object. The condition parameter is a SQL WHERE clause (without the WHERE keyword). Returns the number of affected rows. Example: update_records(table='products', data='{\"price\": 19.99, \"updated_at\": \"2024-01-15\"}', condition='category = \"electronics\" AND stock > 0'). Note: Without a condition, ALL records will be updated. Warning: Always double-check your condition to avoid unintended mass updates."
+    parameters:
+      - name: table
+        type: string
+        description: "The name of the table to update"
+        required: true
+      - name: data
+        type: string
+        description: "JSON object with columns and new values"
+        required: true
+      - name: condition
+        type: string
+        description: "SQL WHERE condition (without WHERE keyword)"
+        required: true
+      - name: database
+        type: string
+        description: "The database name (uses default if not specified)"
+        required: false
+    tags: ["database", "update", "sql", "modify", "write"]
+    test_prompts:
+      single:
+        - "Update the email of user with ID 5 to newemail@test.com"
+        - "Set all products in category 'electronics' to have a 10% discount"
+        - "Mark all orders from yesterday as processed"
+        - "Change the status of user john@test.com to inactive"
+      single_clear:
+        - "I need to update records in the database. Update the email of user with ID 5 to newemail@test.com"
+        - "I need to update records in the database. Set all products in category 'electronics' to have a 10% discount"
+        - "I need to update records in the database. Mark all orders from yesterday as processed"
+        - "I need to update records in the database. Change the status of user john@test.com to inactive"
+
+  - name: delete_records
+    descriptions:
+      minimal: "Delete database records"
+      short: "Delete records from a database table"
+      medium: "Delete records from a database table that match a condition. Use with caution as this is permanent."
+      long: "Delete records from a database table that match the specified condition. This operation is permanent and cannot be undone. Returns the number of deleted records. Example: delete_records(table='sessions', condition='expires_at < NOW()')."
+      verbose: "Delete records from a database table that match a specified condition. The condition is a SQL WHERE clause (without the WHERE keyword). This operation permanently removes data and cannot be undone. Returns the count of deleted rows. Example: delete_records(table='temp_data', condition='created_at < \"2024-01-01\"', database='analytics'). Note: Consider using soft deletes (updating a deleted flag) for important data. Warning: This operation is irreversible. Always backup data before bulk deletions."
+    parameters:
+      - name: table
+        type: string
+        description: "The name of the table to delete from"
+        required: true
+      - name: condition
+        type: string
+        description: "SQL WHERE condition (without WHERE keyword)"
+        required: true
+      - name: database
+        type: string
+        description: "The database name (uses default if not specified)"
+        required: false
+    tags: ["database", "delete", "sql", "remove", "write", "destructive"]
+    test_prompts:
+      single:
+        - "Delete all expired sessions from the sessions table"
+        - "Remove all users who haven't logged in for a year"
+        - "Delete the order with ID 12345"
+        - "Remove all test records from the database"
+      single_clear:
+        - "I need to delete records from the database. Delete all expired sessions from the sessions table"
+        - "I need to delete records from the database. Remove all users who haven't logged in for a year"
+        - "I need to delete records from the database. Delete the order with ID 12345"
+        - "I need to delete records from the database. Remove all test records from the database"
+
+  - name: create_table
+    descriptions:
+      minimal: "Create a database table"
+      short: "Create a new table in the database"
+      medium: "Create a new table in the database with the specified columns and data types."
+      long: "Create a new table in the database. Define columns with their names, types, and constraints. Supports common SQL types like VARCHAR, INTEGER, BOOLEAN, TIMESTAMP. Example: create_table(table='products', schema='id INTEGER PRIMARY KEY, name VARCHAR(255), price DECIMAL(10,2)')."
+      verbose: "Create a new table in the database with a specified schema. The schema defines columns, data types, and constraints using SQL syntax. Supports primary keys, foreign keys, NOT NULL, UNIQUE, and DEFAULT constraints. Example: create_table(table='orders', schema='id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id), total DECIMAL(10,2) NOT NULL, status VARCHAR(50) DEFAULT \"pending\", created_at TIMESTAMP DEFAULT NOW()'). Note: Table creation is idempotent if if_not_exists=true. Warning: Dropping and recreating tables will lose all data."
+    parameters:
+      - name: table
+        type: string
+        description: "The name of the table to create"
+        required: true
+      - name: schema
+        type: string
+        description: "SQL column definitions"
+        required: true
+      - name: database
+        type: string
+        description: "The database name"
+        required: false
+      - name: if_not_exists
+        type: boolean
+        description: "If true, don't error if table exists"
+        required: false
+        default: true
+    tags: ["database", "table", "create", "sql", "schema"]
+    test_prompts:
+      single:
+        - "Create a new table called 'customers' with id, name, and email columns"
+        - "Make a products table with columns for id, name, price, and stock"
+        - "Create an orders table with foreign key to users"
+      single_clear:
+        - "I need to create a database table. Create a new table called 'customers' with id, name, and email columns"
+        - "I need to create a database table. Make a products table with columns for id, name, price, and stock"
+        - "I need to create a database table. Create an orders table with foreign key to users"
+
+  - name: list_tables
+    descriptions:
+      minimal: "List database tables"
+      short: "List all tables in a database"
+      medium: "List all tables in the specified database. Returns table names and basic information."
+      long: "List all tables in a database. Returns a list of table names along with basic metadata like row counts and creation dates. Example: list_tables(database='production')."
+      verbose: "List all tables in the specified database. Returns comprehensive information including table names, estimated row counts, creation timestamps, and storage size. Can filter by schema if the database supports multiple schemas. Example: list_tables(database='analytics', schema='public'). Note: Row counts are estimates and may not be exact for large tables. Warning: Access may be restricted based on user permissions."
+    parameters:
+      - name: database
+        type: string
+        description: "The database to list tables from"
+        required: true
+      - name: schema
+        type: string
+        description: "Filter by schema name"
+        required: false
+    tags: ["database", "table", "list", "sql", "schema", "metadata"]
+    test_prompts:
+      single:
+        - "Show me all tables in the production database"
+        - "List the tables in the analytics database"
+        - "What tables exist in the main database?"
+      single_clear:
+        - "I need to list database tables. Show me all tables in the production database"
+        - "I need to list database tables. List the tables in the analytics database"
+        - "I need to list database tables. What tables exist in the main database?"
+
+  - name: describe_table
+    descriptions:
+      minimal: "Describe a table"
+      short: "Get the schema of a database table"
+      medium: "Get detailed schema information for a database table including column names, types, and constraints."
+      long: "Get the complete schema definition of a database table. Returns column names, data types, nullability, default values, and constraints. Example: describe_table(table='users', database='main')."
+      verbose: "Get comprehensive schema information for a database table. Returns detailed metadata for each column including: name, data type, maximum length, precision, nullability, default value, and any constraints (PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK). Also includes index information. Example: describe_table(table='orders', database='ecommerce'). Note: Output format may vary slightly between database systems. Warning: Schema information may expose sensitive database structure."
+    parameters:
+      - name: table
+        type: string
+        description: "The name of the table to describe"
+        required: true
+      - name: database
+        type: string
+        description: "The database containing the table"
+        required: false
+    tags: ["database", "table", "describe", "sql", "schema", "metadata"]
+    test_prompts:
+      single:
+        - "Describe the structure of the users table"
+        - "What columns does the orders table have?"
+        - "Show me the schema of the products table"
+        - "Get the column definitions for the customers table"
+      single_clear:
+        - "I need to describe a database table. Describe the structure of the users table"
+        - "I need to describe a database table. What columns does the orders table have?"
+        - "I need to describe a database table. Show me the schema of the products table"
+        - "I need to describe a database table. Get the column definitions for the customers table"
+
+  - name: count_records
+    descriptions:
+      minimal: "Count records"
+      short: "Count records in a database table"
+      medium: "Count the number of records in a database table, optionally filtered by a condition."
+      long: "Count the number of records in a database table. Can filter results using a WHERE condition. Example: count_records(table='orders', condition='status = \"pending\"')."
+      verbose: "Count the number of records in a database table. Optionally provide a condition to count only matching records. This is more efficient than fetching all records when you only need the count. Example: count_records(table='users', condition='created_at > \"2024-01-01\" AND status = \"active\"', database='main'). Note: For large tables, this uses an optimized COUNT query. Warning: Complex conditions may still require full table scans."
+    parameters:
+      - name: table
+        type: string
+        description: "The table to count records from"
+        required: true
+      - name: condition
+        type: string
+        description: "Optional WHERE condition"
+        required: false
+      - name: database
+        type: string
+        description: "The database name"
+        required: false
+    tags: ["database", "count", "sql", "aggregate", "read"]
+    test_prompts:
+      single:
+        - "How many users are in the database?"
+        - "Count the number of pending orders"
+        - "How many products have stock greater than zero?"
+        - "Count active subscriptions in the subscriptions table"
+      single_clear:
+        - "I need to count records in the database. How many users are in the database?"
+        - "I need to count records in the database. Count the number of pending orders"
+        - "I need to count records in the database. How many products have stock greater than zero?"
+        - "I need to count records in the database. Count active subscriptions in the subscriptions table"
+
+  - name: export_data
+    descriptions:
+      minimal: "Export data"
+      short: "Export database query results to a file"
+      medium: "Export the results of a database query to a file in CSV or JSON format."
+      long: "Export database query results to a file. Supports CSV and JSON output formats. Useful for data backups and analysis. Example: export_data(query='SELECT * FROM users', output_file='users_backup.csv', format='csv')."
+      verbose: "Export the results of a database query to a file. Supports multiple output formats including CSV, JSON, and Parquet. For large datasets, results are streamed to avoid memory issues. Can include or exclude headers in CSV output. Example: export_data(query='SELECT id, email, created_at FROM users WHERE active=true', output_file='active_users.json', format='json', database='production'). Note: Large exports may take significant time. Warning: Ensure sufficient disk space for the output file."
+    parameters:
+      - name: query
+        type: string
+        description: "SQL query to export results from"
+        required: true
+      - name: output_file
+        type: string
+        description: "Path to the output file"
+        required: true
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "csv"
+        enum: ["csv", "json", "parquet"]
+      - name: database
+        type: string
+        description: "The database to query"
+        required: false
+    tags: ["database", "export", "backup", "csv", "json", "file"]
+    test_prompts:
+      single:
+        - "Export all users to a CSV file"
+        - "Save the orders data to orders_backup.json"
+        - "Export the products table to a CSV file named products.csv"
+      single_clear:
+        - "I need to export data from the database. Export all users to a CSV file"
+        - "I need to export data from the database. Save the orders data to orders_backup.json"
+        - "I need to export data from the database. Export the products table to a CSV file named products.csv"
+
+  - name: import_data
+    descriptions:
+      minimal: "Import data"
+      short: "Import data from a file into a database table"
+      medium: "Import data from a CSV or JSON file into a database table. Maps file columns to table columns."
+      long: "Import data from a file into a database table. Supports CSV and JSON input formats. Automatically maps file columns/keys to table columns. Example: import_data(input_file='data.csv', table='products', format='csv')."
+      verbose: "Import data from a file into a database table. Supports CSV, JSON, and Parquet input formats. Can handle large files through streaming. Options include: truncating the table before import, skipping errors, and specifying column mappings. Example: import_data(input_file='customers.json', table='customers', format='json', truncate_first=false, on_error='skip'). Note: Ensure column types in the file match the table schema. Warning: truncate_first=true will delete all existing data before importing."
+    parameters:
+      - name: input_file
+        type: string
+        description: "Path to the input file"
+        required: true
+      - name: table
+        type: string
+        description: "Target table name"
+        required: true
+      - name: format
+        type: string
+        description: "Input file format"
+        required: false
+        default: "csv"
+        enum: ["csv", "json", "parquet"]
+      - name: database
+        type: string
+        description: "The target database"
+        required: false
+      - name: truncate_first
+        type: boolean
+        description: "If true, clear table before importing"
+        required: false
+        default: false
+    tags: ["database", "import", "csv", "json", "file", "load"]
+    test_prompts:
+      single:
+        - "Import users.csv into the users table"
+        - "Load data from products.json into the products table"
+        - "Import the backup file into the orders table"
+      single_clear:
+        - "I need to import data into the database. Import users.csv into the users table"
+        - "I need to import data into the database. Load data from products.json into the products table"
+        - "I need to import data into the database. Import the backup file into the orders table"
+
+  - name: execute_transaction
+    descriptions:
+      minimal: "Execute transaction"
+      short: "Execute multiple queries in a transaction"
+      medium: "Execute multiple SQL queries as a single atomic transaction. All succeed or all fail."
+      long: "Execute a series of SQL queries as an atomic transaction. If any query fails, all changes are rolled back. Example: execute_transaction(queries='[\"UPDATE accounts SET balance = balance - 100 WHERE id = 1\", \"UPDATE accounts SET balance = balance + 100 WHERE id = 2\"]')."
+      verbose: "Execute multiple SQL statements as a single atomic transaction. Uses ACID properties: all queries succeed together or all fail together (rolled back). Useful for maintaining data consistency across related operations. Example: execute_transaction(queries='[\"INSERT INTO orders (...) VALUES (...)\", \"UPDATE inventory SET stock = stock - 1 WHERE product_id = 123\"]', isolation_level='serializable'). Isolation levels: 'read_committed', 'repeatable_read', 'serializable'. Note: Long transactions may lock resources. Warning: Deadlocks are possible with concurrent transactions."
+    parameters:
+      - name: queries
+        type: string
+        description: "JSON array of SQL queries to execute"
+        required: true
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+      - name: isolation_level
+        type: string
+        description: "Transaction isolation level"
+        required: false
+        default: "read_committed"
+        enum: ["read_committed", "repeatable_read", "serializable"]
+    tags: ["database", "transaction", "sql", "atomic", "commit"]
+    test_prompts:
+      single:
+        - "Transfer money between accounts atomically"
+        - "Execute these queries as a single transaction"
+        - "Run the order creation and inventory update together"
+        - "Perform a transactional update on multiple tables"
+      single_clear:
+        - "I need to execute a database transaction. Transfer money between accounts atomically"
+        - "I need to execute a database transaction. Execute these queries as a single transaction"
+        - "I need to execute a database transaction. Run the order creation and inventory update together"
+        - "I need to execute a database transaction. Perform a transactional update on multiple tables"
+
+  - name: backup_database
+    descriptions:
+      minimal: "Backup database"
+      short: "Create a database backup"
+      medium: "Create a backup of a database to a file. Supports full and incremental backups."
+      long: "Create a backup of a database. Supports full database dumps or incremental backups. Can compress the output. Example: backup_database(database='production', output_file='backup_2024.sql', compress=true)."
+      verbose: "Create a backup of a database for disaster recovery or migration. Backup types: 'full' (complete database dump), 'incremental' (changes since last backup), 'schema_only' (structure without data). Output formats include SQL dump and custom binary format. Example: backup_database(database='myapp', output_file='/backups/myapp_20240115.sql.gz', type='full', compress=true, include_schema=true). Note: Large databases may take significant time to backup. Warning: Ensure sufficient disk space for the backup file."
+    parameters:
+      - name: database
+        type: string
+        description: "Database to backup"
+        required: true
+      - name: output_file
+        type: string
+        description: "Path for backup file"
+        required: true
+      - name: type
+        type: string
+        description: "Backup type"
+        required: false
+        default: "full"
+        enum: ["full", "incremental", "schema_only"]
+      - name: compress
+        type: boolean
+        description: "Compress the backup file"
+        required: false
+        default: true
+      - name: include_schema
+        type: boolean
+        description: "Include table schemas"
+        required: false
+        default: true
+    tags: ["database", "backup", "dump", "export", "recovery"]
+    test_prompts:
+      single:
+        - "Create a backup of the production database"
+        - "Dump the database to a backup file"
+        - "Make a compressed backup of the users database"
+        - "Create a schema-only backup"
+      single_clear:
+        - "I need to backup the database. Create a backup of the production database"
+        - "I need to backup the database. Dump the database to a backup file"
+        - "I need to backup the database. Make a compressed backup of the users database"
+        - "I need to backup the database. Create a schema-only backup"
+
+  - name: restore_database
+    descriptions:
+      minimal: "Restore database"
+      short: "Restore a database from backup"
+      medium: "Restore a database from a backup file. Can restore to the original or a new database."
+      long: "Restore a database from a backup file. Can restore to the same database or a different one. Example: restore_database(backup_file='backup_2024.sql', database='production_restored')."
+      verbose: "Restore a database from a previously created backup file. Can restore to the original database (overwriting) or create a new database. Options for partial restore (specific tables only). Example: restore_database(backup_file='/backups/myapp_20240115.sql.gz', database='myapp_staging', drop_existing=false, tables='[\"users\", \"orders\"]'). Note: Compressed backups are automatically decompressed. Warning: drop_existing=true will delete all current data before restoring."
+    parameters:
+      - name: backup_file
+        type: string
+        description: "Path to backup file"
+        required: true
+      - name: database
+        type: string
+        description: "Target database name"
+        required: true
+      - name: drop_existing
+        type: boolean
+        description: "Drop existing database before restore"
+        required: false
+        default: false
+      - name: tables
+        type: string
+        description: "JSON array of specific tables to restore"
+        required: false
+    tags: ["database", "restore", "import", "recovery", "backup"]
+    test_prompts:
+      single:
+        - "Restore the database from the backup file"
+        - "Load the backup into a new database"
+        - "Restore only the users table from backup"
+        - "Recover the production database from backup"
+      single_clear:
+        - "I need to restore a database from backup. Restore the database from the backup file"
+        - "I need to restore a database from backup. Load the backup into a new database"
+        - "I need to restore a database from backup. Restore only the users table from backup"
+        - "I need to restore a database from backup. Recover the production database from backup"
+
+  - name: create_index
+    descriptions:
+      minimal: "Create index"
+      short: "Create a database index"
+      medium: "Create an index on a database table to improve query performance."
+      long: "Create an index on one or more columns of a table. Indexes speed up SELECT queries but slow down INSERT/UPDATE. Example: create_index(table='users', columns='[\"email\"]', unique=true)."
+      verbose: "Create an index on table columns to optimize query performance. Index types: 'btree' (default, good for ranges), 'hash' (exact matches only), 'gin' (full-text search), 'gist' (geometric data). Options for unique constraints and partial indexes. Example: create_index(table='orders', columns='[\"user_id\", \"created_at\"]', name='idx_orders_user_date', type='btree', unique=false). Note: Index creation may lock the table briefly. Warning: Too many indexes slow down write operations."
+    parameters:
+      - name: table
+        type: string
+        description: "Table to index"
+        required: true
+      - name: columns
+        type: string
+        description: "JSON array of column names"
+        required: true
+      - name: name
+        type: string
+        description: "Index name (auto-generated if not provided)"
+        required: false
+      - name: unique
+        type: boolean
+        description: "Create unique index"
+        required: false
+        default: false
+      - name: type
+        type: string
+        description: "Index type"
+        required: false
+        default: "btree"
+        enum: ["btree", "hash", "gin", "gist"]
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "index", "performance", "optimize", "query"]
+    test_prompts:
+      single:
+        - "Create an index on the email column"
+        - "Add a unique index to the users table"
+        - "Create a composite index on user_id and created_at"
+        - "Index the orders table for faster lookups"
+      single_clear:
+        - "I need to create a database index. Create an index on the email column"
+        - "I need to create a database index. Add a unique index to the users table"
+        - "I need to create a database index. Create a composite index on user_id and created_at"
+        - "I need to create a database index. Index the orders table for faster lookups"
+
+  - name: drop_index
+    descriptions:
+      minimal: "Drop index"
+      short: "Remove a database index"
+      medium: "Remove an existing index from a database table."
+      long: "Drop an existing index from a table. Removes the index to reduce storage or before recreating it. Example: drop_index(name='idx_users_email', table='users')."
+      verbose: "Remove an existing index from a database table. Useful for removing unused indexes that slow down writes or before recreating an index with different settings. Example: drop_index(name='idx_orders_status', table='orders', if_exists=true, database='main'). Note: Dropping an index is typically fast. Warning: Queries relying on the index will become slower."
+    parameters:
+      - name: name
+        type: string
+        description: "Name of the index to drop"
+        required: true
+      - name: table
+        type: string
+        description: "Table containing the index"
+        required: true
+      - name: if_exists
+        type: boolean
+        description: "Don't error if index doesn't exist"
+        required: false
+        default: true
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "index", "drop", "remove", "schema"]
+    test_prompts:
+      single:
+        - "Drop the index on the email column"
+        - "Remove the old index from the users table"
+        - "Delete the unused index"
+      single_clear:
+        - "I need to drop a database index. Drop the index on the email column"
+        - "I need to drop a database index. Remove the old index from the users table"
+        - "I need to drop a database index. Delete the unused index"
+
+  - name: aggregate_query
+    descriptions:
+      minimal: "Aggregate data"
+      short: "Run aggregate functions on data"
+      medium: "Execute aggregate queries like SUM, AVG, COUNT, MIN, MAX with optional grouping."
+      long: "Execute aggregate functions on table data. Supports SUM, AVG, COUNT, MIN, MAX with GROUP BY and HAVING clauses. Example: aggregate_query(table='orders', aggregate='SUM', column='total', group_by='customer_id')."
+      verbose: "Execute aggregate queries on database tables. Functions: SUM, AVG, COUNT, MIN, MAX, STDDEV, VARIANCE. Can group results and filter groups with HAVING. Example: aggregate_query(table='sales', aggregate='SUM', column='amount', group_by='product_category', having='SUM(amount) > 1000', order_by='SUM(amount) DESC'). Note: COUNT(*) counts all rows, COUNT(column) counts non-null values. Warning: Aggregating large tables without proper indexes may be slow."
+    parameters:
+      - name: table
+        type: string
+        description: "Table to query"
+        required: true
+      - name: aggregate
+        type: string
+        description: "Aggregate function"
+        required: true
+        enum: ["SUM", "AVG", "COUNT", "MIN", "MAX", "STDDEV", "VARIANCE"]
+      - name: column
+        type: string
+        description: "Column to aggregate (or * for COUNT)"
+        required: true
+      - name: group_by
+        type: string
+        description: "Column(s) to group by"
+        required: false
+      - name: having
+        type: string
+        description: "HAVING clause condition"
+        required: false
+      - name: condition
+        type: string
+        description: "WHERE clause condition"
+        required: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "aggregate", "sql", "sum", "count", "analytics"]
+    test_prompts:
+      single:
+        - "Calculate the total sales amount"
+        - "Count users by country"
+        - "Get the average order value per customer"
+        - "Find the maximum and minimum prices"
+      single_clear:
+        - "I need to run an aggregate query. Calculate the total sales amount"
+        - "I need to run an aggregate query. Count users by country"
+        - "I need to run an aggregate query. Get the average order value per customer"
+        - "I need to run an aggregate query. Find the maximum and minimum prices"
+
+  - name: join_tables
+    descriptions:
+      minimal: "Join tables"
+      short: "Query data by joining multiple tables"
+      medium: "Execute a query joining two or more tables. Supports INNER, LEFT, RIGHT, and FULL joins."
+      long: "Join multiple tables in a query. Specify tables, join type, and join conditions. Example: join_tables(tables='[\"orders\", \"customers\"]', join_type='LEFT', on='orders.customer_id = customers.id', select='orders.id, customers.name')."
+      verbose: "Execute a query joining multiple tables together. Join types: 'INNER' (matching rows only), 'LEFT' (all from left + matching right), 'RIGHT' (all from right + matching left), 'FULL' (all rows from both). Supports multiple join conditions. Example: join_tables(tables='[\"orders\", \"customers\", \"products\"]', join_type='INNER', on='orders.customer_id = customers.id AND orders.product_id = products.id', select='orders.id, customers.name, products.title', condition='orders.status = \"completed\"'). Note: Complex joins on large tables benefit from proper indexing. Warning: FULL OUTER JOIN may not be supported by all databases."
+    parameters:
+      - name: tables
+        type: string
+        description: "JSON array of table names"
+        required: true
+      - name: join_type
+        type: string
+        description: "Type of join"
+        required: true
+        enum: ["INNER", "LEFT", "RIGHT", "FULL"]
+      - name: "on"
+        type: string
+        description: "Join condition(s)"
+        required: true
+      - name: select
+        type: string
+        description: "Columns to select"
+        required: false
+        default: "*"
+      - name: condition
+        type: string
+        description: "WHERE clause condition"
+        required: false
+      - name: limit
+        type: integer
+        description: "Maximum rows to return"
+        required: false
+        default: 100
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "join", "sql", "query", "tables"]
+    test_prompts:
+      single:
+        - "Join orders with customers table"
+        - "Get order details with product names"
+        - "Left join users with their orders"
+        - "Combine the invoices and payments tables"
+      single_clear:
+        - "I need to join database tables. Join orders with customers table"
+        - "I need to join database tables. Get order details with product names"
+        - "I need to join database tables. Left join users with their orders"
+        - "I need to join database tables. Combine the invoices and payments tables"
+
+  - name: upsert_record
+    descriptions:
+      minimal: "Upsert record"
+      short: "Insert or update a record"
+      medium: "Insert a new record or update if it already exists (based on unique key)."
+      long: "Insert a record if it doesn't exist, or update it if it does. Uses a unique key column(s) to determine existence. Example: upsert_record(table='users', data='{\"email\": \"john@test.com\", \"name\": \"John\"}', conflict_column='email')."
+      verbose: "Perform an upsert (INSERT ... ON CONFLICT UPDATE) operation. If a record with the same key exists, it's updated; otherwise, a new record is inserted. Specify which columns to update on conflict. Example: upsert_record(table='products', data='{\"sku\": \"ABC123\", \"price\": 29.99, \"stock\": 100}', conflict_column='sku', update_columns='[\"price\", \"stock\"]'). Note: Conflict column must have a unique constraint. Warning: Without proper conflict handling, duplicate key errors may occur."
+    parameters:
+      - name: table
+        type: string
+        description: "Target table"
+        required: true
+      - name: data
+        type: string
+        description: "JSON object with record data"
+        required: true
+      - name: conflict_column
+        type: string
+        description: "Column to check for conflicts"
+        required: true
+      - name: update_columns
+        type: string
+        description: "JSON array of columns to update on conflict"
+        required: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "upsert", "insert", "update", "merge", "sql"]
+    test_prompts:
+      single:
+        - "Insert the user or update if email exists"
+        - "Upsert the product record by SKU"
+        - "Add or update the configuration entry"
+        - "Merge the new data with existing records"
+      single_clear:
+        - "I need to upsert a database record. Insert the user or update if email exists"
+        - "I need to upsert a database record. Upsert the product record by SKU"
+        - "I need to upsert a database record. Add or update the configuration entry"
+        - "I need to upsert a database record. Merge the new data with existing records"
+
+  - name: clone_table
+    descriptions:
+      minimal: "Clone table"
+      short: "Create a copy of a table"
+      medium: "Create a copy of an existing table, optionally with or without data."
+      long: "Clone an existing table to a new table. Can copy structure only or include all data. Example: clone_table(source='users', destination='users_backup', include_data=true)."
+      verbose: "Create a copy of an existing table with optional data. Options to copy structure only (schema), include data, copy indexes and constraints. Useful for creating test environments or backups. Example: clone_table(source='production_orders', destination='staging_orders', include_data=true, include_indexes=true, database='main'). Note: Large tables may take time to clone with data. Warning: Destination table must not already exist."
+    parameters:
+      - name: source
+        type: string
+        description: "Source table name"
+        required: true
+      - name: destination
+        type: string
+        description: "New table name"
+        required: true
+      - name: include_data
+        type: boolean
+        description: "Copy data as well as structure"
+        required: false
+        default: true
+      - name: include_indexes
+        type: boolean
+        description: "Copy indexes"
+        required: false
+        default: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "clone", "copy", "table", "backup", "schema"]
+    test_prompts:
+      single:
+        - "Create a copy of the users table"
+        - "Clone the orders table for testing"
+        - "Make a backup of the products table"
+        - "Copy the table structure without data"
+      single_clear:
+        - "I need to clone a database table. Create a copy of the users table"
+        - "I need to clone a database table. Clone the orders table for testing"
+        - "I need to clone a database table. Make a backup of the products table"
+        - "I need to clone a database table. Copy the table structure without data"
+
+  - name: truncate_table
+    descriptions:
+      minimal: "Truncate table"
+      short: "Remove all rows from a table"
+      medium: "Delete all data from a table quickly, resetting auto-increment counters."
+      long: "Remove all rows from a table efficiently. Faster than DELETE for clearing all data. Resets auto-increment counters. Example: truncate_table(table='logs', reset_identity=true)."
+      verbose: "Remove all rows from a table using TRUNCATE. Much faster than DELETE for removing all data because it doesn't log individual row deletions. Resets auto-increment/serial counters by default. Cannot be used if table is referenced by foreign keys. Example: truncate_table(table='session_cache', reset_identity=true, cascade=false, database='main'). Note: TRUNCATE cannot be rolled back in some databases. Warning: CASCADE option will truncate related tables too."
+    parameters:
+      - name: table
+        type: string
+        description: "Table to truncate"
+        required: true
+      - name: reset_identity
+        type: boolean
+        description: "Reset auto-increment counter"
+        required: false
+        default: true
+      - name: cascade
+        type: boolean
+        description: "Also truncate referencing tables"
+        required: false
+        default: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "truncate", "delete", "clear", "table"]
+    test_prompts:
+      single:
+        - "Clear all data from the logs table"
+        - "Truncate the sessions table"
+        - "Remove all rows from the cache table"
+        - "Empty the temporary data table"
+      single_clear:
+        - "I need to truncate a database table. Clear all data from the logs table"
+        - "I need to truncate a database table. Truncate the sessions table"
+        - "I need to truncate a database table. Remove all rows from the cache table"
+        - "I need to truncate a database table. Empty the temporary data table"
+
+  - name: add_column
+    descriptions:
+      minimal: "Add column"
+      short: "Add a column to a table"
+      medium: "Add a new column to an existing table with specified type and constraints."
+      long: "Add a new column to an existing table. Specify data type, nullable, and default value. Example: add_column(table='users', column='phone', type='VARCHAR(20)', nullable=true)."
+      verbose: "Add a new column to an existing database table. Specify the column name, data type, nullability, and default value. Common types: VARCHAR(n), INTEGER, BOOLEAN, TIMESTAMP, TEXT, DECIMAL(p,s). Example: add_column(table='products', column='discontinued', type='BOOLEAN', nullable=false, default='false', database='main'). Note: Adding a NOT NULL column requires a default value for existing rows. Warning: Adding columns to large tables may lock the table briefly."
+    parameters:
+      - name: table
+        type: string
+        description: "Table to modify"
+        required: true
+      - name: column
+        type: string
+        description: "New column name"
+        required: true
+      - name: type
+        type: string
+        description: "Column data type"
+        required: true
+      - name: nullable
+        type: boolean
+        description: "Allow NULL values"
+        required: false
+        default: true
+      - name: default
+        type: string
+        description: "Default value"
+        required: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "column", "add", "alter", "schema"]
+    test_prompts:
+      single:
+        - "Add a phone column to the users table"
+        - "Create a new status column in orders"
+        - "Add an updated_at timestamp column"
+        - "Add a boolean active column to products"
+      single_clear:
+        - "I need to add a column to a table. Add a phone column to the users table"
+        - "I need to add a column to a table. Create a new status column in orders"
+        - "I need to add a column to a table. Add an updated_at timestamp column"
+        - "I need to add a column to a table. Add a boolean active column to products"
+
+  - name: drop_column
+    descriptions:
+      minimal: "Drop column"
+      short: "Remove a column from a table"
+      medium: "Remove an existing column from a database table."
+      long: "Remove a column from a table. The column data will be permanently deleted. Example: drop_column(table='users', column='legacy_field')."
+      verbose: "Remove an existing column from a database table. This permanently deletes all data in that column. Cannot drop columns that are part of primary keys or have dependent foreign keys without removing those constraints first. Example: drop_column(table='users', column='deprecated_field', if_exists=true, database='main'). Note: Some databases require recreating the table. Warning: This operation is irreversible; backup data before dropping columns."
+    parameters:
+      - name: table
+        type: string
+        description: "Table containing the column"
+        required: true
+      - name: column
+        type: string
+        description: "Column to drop"
+        required: true
+      - name: if_exists
+        type: boolean
+        description: "Don't error if column doesn't exist"
+        required: false
+        default: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "column", "drop", "remove", "alter", "schema"]
+    test_prompts:
+      single:
+        - "Remove the deprecated column from users"
+        - "Drop the old_status column"
+        - "Delete the unused field from the table"
+      single_clear:
+        - "I need to drop a column from a table. Remove the deprecated column from users"
+        - "I need to drop a column from a table. Drop the old_status column"
+        - "I need to drop a column from a table. Delete the unused field from the table"
+
+  - name: rename_column
+    descriptions:
+      minimal: "Rename column"
+      short: "Rename a column in a table"
+      medium: "Rename an existing column in a database table."
+      long: "Rename a column in a table. Does not modify the data type or constraints. Example: rename_column(table='users', old_name='user_name', new_name='username')."
+      verbose: "Rename an existing column in a database table. The column's data type, constraints, and data are preserved. Example: rename_column(table='products', old_name='product_name', new_name='title', database='main'). Note: Rename may require updating application code and queries. Warning: Foreign keys and indexes referencing the column may need updating."
+    parameters:
+      - name: table
+        type: string
+        description: "Table containing the column"
+        required: true
+      - name: old_name
+        type: string
+        description: "Current column name"
+        required: true
+      - name: new_name
+        type: string
+        description: "New column name"
+        required: true
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "column", "rename", "alter", "schema"]
+    test_prompts:
+      single:
+        - "Rename the user_name column to username"
+        - "Change the column name from old to new"
+        - "Rename product_name to title"
+      single_clear:
+        - "I need to rename a column in a table. Rename the user_name column to username"
+        - "I need to rename a column in a table. Change the column name from old to new"
+        - "I need to rename a column in a table. Rename product_name to title"
+
+  - name: get_database_stats
+    descriptions:
+      minimal: "Get database stats"
+      short: "Get database statistics and metrics"
+      medium: "Retrieve statistics about a database including size, table counts, and connection info."
+      long: "Get comprehensive statistics about a database. Includes size, table count, row counts, index usage, and connection stats. Example: get_database_stats(database='production')."
+      verbose: "Retrieve detailed statistics and metrics for a database. Includes: total size on disk, number of tables, total row count, largest tables, index statistics, active connections, slow query log, cache hit ratio. Useful for monitoring and capacity planning. Example: get_database_stats(database='production', include_slow_queries=true, slow_query_threshold=1000). Note: Some statistics may require elevated privileges. Warning: Gathering stats on large databases may impact performance."
+    parameters:
+      - name: database
+        type: string
+        description: "Database to analyze"
+        required: true
+      - name: include_slow_queries
+        type: boolean
+        description: "Include slow query analysis"
+        required: false
+        default: false
+      - name: slow_query_threshold
+        type: integer
+        description: "Threshold in ms for slow queries"
+        required: false
+        default: 1000
+    tags: ["database", "statistics", "metrics", "monitoring", "performance"]
+    test_prompts:
+      single:
+        - "Get statistics for the production database"
+        - "Show me the database size and table counts"
+        - "Get performance metrics for the database"
+        - "Analyze the database statistics"
+      single_clear:
+        - "I need to get database statistics. Get statistics for the production database"
+        - "I need to get database statistics. Show me the database size and table counts"
+        - "I need to get database statistics. Get performance metrics for the database"
+        - "I need to get database statistics. Analyze the database statistics"
+
+  - name: optimize_table
+    descriptions:
+      minimal: "Optimize table"
+      short: "Optimize a table for better performance"
+      medium: "Optimize a table by reclaiming space, rebuilding indexes, and updating statistics."
+      long: "Optimize a database table. Reclaims storage space, defragments data, rebuilds indexes, and updates query optimizer statistics. Example: optimize_table(table='orders')."
+      verbose: "Optimize a database table for better performance. Operations include: reclaiming space from deleted rows, defragmenting table data, rebuilding indexes, updating query planner statistics. Useful after large batch deletions or updates. Example: optimize_table(table='audit_logs', analyze=true, reindex=true, database='main'). Note: Optimization may lock the table temporarily. Warning: On large tables, optimization can take significant time and resources."
+    parameters:
+      - name: table
+        type: string
+        description: "Table to optimize"
+        required: true
+      - name: analyze
+        type: boolean
+        description: "Update statistics for query optimizer"
+        required: false
+        default: true
+      - name: reindex
+        type: boolean
+        description: "Rebuild table indexes"
+        required: false
+        default: true
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "optimize", "vacuum", "performance", "maintenance"]
+    test_prompts:
+      single:
+        - "Optimize the orders table"
+        - "Rebuild indexes on the users table"
+        - "Run maintenance on the large table"
+        - "Vacuum and analyze the logs table"
+      single_clear:
+        - "I need to optimize a database table. Optimize the orders table"
+        - "I need to optimize a database table. Rebuild indexes on the users table"
+        - "I need to optimize a database table. Run maintenance on the large table"
+        - "I need to optimize a database table. Vacuum and analyze the logs table"
+
+  - name: create_view
+    descriptions:
+      minimal: "Create view"
+      short: "Create a database view"
+      medium: "Create a virtual table (view) based on a SELECT query."
+      long: "Create a database view that acts as a virtual table. Views encapsulate complex queries for reuse. Example: create_view(name='active_users', query='SELECT * FROM users WHERE status = \"active\"')."
+      verbose: "Create a database view (virtual table) based on a SELECT query. Views simplify complex queries, provide security by limiting column access, and abstract underlying table structure. Options for materialized views (cached results) in supported databases. Example: create_view(name='monthly_sales', query='SELECT product_id, SUM(quantity) as total FROM sales GROUP BY product_id', replace=true, materialized=false). Note: Views don't store data (except materialized views). Warning: Views on complex queries may have performance overhead."
+    parameters:
+      - name: name
+        type: string
+        description: "View name"
+        required: true
+      - name: query
+        type: string
+        description: "SELECT query for the view"
+        required: true
+      - name: replace
+        type: boolean
+        description: "Replace if view exists"
+        required: false
+        default: false
+      - name: materialized
+        type: boolean
+        description: "Create materialized view (if supported)"
+        required: false
+        default: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "view", "virtual", "table", "query", "schema"]
+    test_prompts:
+      single:
+        - "Create a view for active users"
+        - "Make a view combining orders and products"
+        - "Create a summary view for reporting"
+        - "Set up a view for the dashboard data"
+      single_clear:
+        - "I need to create a database view. Create a view for active users"
+        - "I need to create a database view. Make a view combining orders and products"
+        - "I need to create a database view. Create a summary view for reporting"
+        - "I need to create a database view. Set up a view for the dashboard data"
+
+  - name: drop_table
+    descriptions:
+      minimal: "Drop table"
+      short: "Delete a database table"
+      medium: "Permanently delete a table and all its data from the database."
+      long: "Drop (delete) a table from the database. All data in the table is permanently lost. Example: drop_table(table='temp_data', if_exists=true)."
+      verbose: "Permanently delete a table and all its data from the database. Cannot be undone. Options for cascade deletion (also drop dependent objects like views, foreign keys). Example: drop_table(table='deprecated_table', if_exists=true, cascade=false, database='main'). Note: if_exists=true prevents errors if table doesn't exist. Warning: This operation is irreversible; always backup data first."
+    parameters:
+      - name: table
+        type: string
+        description: "Table to drop"
+        required: true
+      - name: if_exists
+        type: boolean
+        description: "Don't error if table doesn't exist"
+        required: false
+        default: true
+      - name: cascade
+        type: boolean
+        description: "Also drop dependent objects"
+        required: false
+        default: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["database", "drop", "delete", "table", "schema", "destructive"]
+    test_prompts:
+      single:
+        - "Delete the temporary table"
+        - "Drop the old backup table"
+        - "Remove the deprecated table from the database"
+        - "Delete the test table and its data"
+      single_clear:
+        - "I need to drop a database table. Delete the temporary table"
+        - "I need to drop a database table. Drop the old backup table"
+        - "I need to drop a database table. Remove the deprecated table from the database"
+        - "I need to drop a database table. Delete the test table and its data"
+
+  - name: import_csv
+    descriptions:
+      minimal: "Import CSV"
+      short: "Import data from a CSV file"
+      medium: "Import data from a CSV file into a database table or data structure."
+      long: "Import CSV file data into a database table. Auto-detects columns or uses specified mapping. Example: import_csv(file='data.csv', table='users', has_header=true)."
+      verbose: "Import data from a CSV file into a database table. Features: auto-detect or specify delimiter, header row handling, column mapping, data type inference, skip rows, handle missing values. Example: import_csv(file='sales_2024.csv', table='sales', has_header=true, delimiter=',', column_mapping='{\"Date\": \"sale_date\", \"Amount\": \"total\"}', skip_rows=1, null_values=['', 'NULL', 'N/A']). Note: Large files are processed in chunks. Warning: Ensure CSV encoding matches (UTF-8 recommended)."
+    parameters:
+      - name: file
+        type: string
+        description: "Path to CSV file"
+        required: true
+      - name: table
+        type: string
+        description: "Target table name"
+        required: true
+      - name: has_header
+        type: boolean
+        description: "CSV has header row"
+        required: false
+        default: true
+      - name: delimiter
+        type: string
+        description: "Field delimiter"
+        required: false
+        default: ","
+      - name: column_mapping
+        type: string
+        description: "JSON mapping of CSV to table columns"
+        required: false
+      - name: skip_rows
+        type: integer
+        description: "Rows to skip at start"
+        required: false
+        default: 0
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["data", "import", "csv", "file", "load"]
+    test_prompts:
+      single:
+        - "Import the CSV file into the database"
+        - "Load data from users.csv into the users table"
+        - "Import the sales data from the CSV"
+        - "Upload the CSV to the database"
+      single_clear:
+        - "I need to import a CSV file. Import the CSV file into the database"
+        - "I need to import a CSV file. Load data from users.csv into the users table"
+        - "I need to import a CSV file. Import the sales data from the CSV"
+        - "I need to import a CSV file. Upload the CSV to the database"
+
+  - name: export_csv
+    descriptions:
+      minimal: "Export CSV"
+      short: "Export data to a CSV file"
+      medium: "Export data from a database table or query results to a CSV file."
+      long: "Export data to a CSV file from a table or query. Specify columns and formatting options. Example: export_csv(query='SELECT * FROM users', file='users_export.csv')."
+      verbose: "Export data from a database to a CSV file. Options: export entire table or custom query results, select specific columns, add headers, configure delimiter, handle NULL values, compress output. Example: export_csv(query='SELECT id, name, email FROM users WHERE active = true', file='active_users.csv', include_header=true, delimiter=',', null_as='', encoding='utf-8', compress=false). Note: Large exports are streamed to avoid memory issues. Warning: Sensitive data should be excluded or encrypted."
+    parameters:
+      - name: query
+        type: string
+        description: "SQL query or table name"
+        required: true
+      - name: file
+        type: string
+        description: "Output file path"
+        required: true
+      - name: include_header
+        type: boolean
+        description: "Include column headers"
+        required: false
+        default: true
+      - name: delimiter
+        type: string
+        description: "Field delimiter"
+        required: false
+        default: ","
+      - name: null_as
+        type: string
+        description: "String for NULL values"
+        required: false
+        default: ""
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["data", "export", "csv", "file", "download"]
+    test_prompts:
+      single:
+        - "Export the users table to a CSV"
+        - "Download query results as CSV"
+        - "Export the data to a CSV file"
+        - "Save the database table as CSV"
+      single_clear:
+        - "I need to export data to a CSV file. Export the users table to a CSV"
+        - "I need to export data to a CSV file. Download query results as CSV"
+        - "I need to export data to a CSV file. Export the data to a CSV file"
+        - "I need to export data to a CSV file. Save the database table as CSV"
+
+  - name: aggregate_data
+    descriptions:
+      minimal: "Aggregate data"
+      short: "Aggregate data with grouping and functions"
+      medium: "Perform aggregation operations like SUM, COUNT, AVG on data grouped by specified columns."
+      long: "Aggregate data using grouping and aggregate functions. Supports SUM, COUNT, AVG, MIN, MAX, and more. Example: aggregate_data(table='orders', group_by=['customer_id'], aggregations={'total': 'SUM(amount)'})."
+      verbose: "Perform data aggregation with grouping and aggregate functions. Functions: SUM, COUNT, AVG, MIN, MAX, STDDEV, VARIANCE, GROUP_CONCAT. Supports HAVING clause for filtering groups, multiple grouping levels. Example: aggregate_data(table='sales', group_by=['region', 'product_category'], aggregations={'revenue': 'SUM(amount)', 'orders': 'COUNT(*)', 'avg_order': 'AVG(amount)'}, having='SUM(amount) > 10000', order_by='revenue DESC'). Note: NULL values are typically excluded from aggregations. Warning: Large datasets with many groups may be slow."
+    parameters:
+      - name: table
+        type: string
+        description: "Source table or query"
+        required: true
+      - name: group_by
+        type: array
+        description: "Columns to group by"
+        required: true
+      - name: aggregations
+        type: string
+        description: "JSON of aggregation expressions"
+        required: true
+      - name: having
+        type: string
+        description: "HAVING clause condition"
+        required: false
+      - name: order_by
+        type: string
+        description: "Result ordering"
+        required: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["data", "aggregate", "group", "sum", "count", "analytics"]
+    test_prompts:
+      single:
+        - "Sum the sales by region"
+        - "Count users by country"
+        - "Calculate average order value by customer"
+        - "Aggregate the data by category"
+      single_clear:
+        - "I need to aggregate data. Sum the sales by region"
+        - "I need to aggregate data. Count users by country"
+        - "I need to aggregate data. Calculate average order value by customer"
+        - "I need to aggregate data. Aggregate the data by category"
+
+  - name: join_tables
+    descriptions:
+      minimal: "Join tables"
+      short: "Join two or more database tables"
+      medium: "Combine data from multiple tables using SQL join operations."
+      long: "Join multiple tables together on specified columns. Supports INNER, LEFT, RIGHT, and FULL joins. Example: join_tables(tables=['users', 'orders'], on='users.id = orders.user_id', type='left')."
+      verbose: "Combine data from multiple tables using various join operations. Join types: INNER (matching only), LEFT (all from first), RIGHT (all from second), FULL (all from both), CROSS (cartesian product). Multiple join conditions supported. Example: join_tables(tables=['orders', 'customers', 'products'], joins=[{\"table\": \"customers\", \"on\": \"orders.customer_id = customers.id\", \"type\": \"inner\"}, {\"table\": \"products\", \"on\": \"orders.product_id = products.id\", \"type\": \"left\"}], select=['orders.*', 'customers.name', 'products.title']). Note: Join order affects performance. Warning: Large table joins without proper indexes can be very slow."
+    parameters:
+      - name: tables
+        type: array
+        description: "Tables to join"
+        required: true
+      - name: "on"
+        type: string
+        description: "Join condition (for simple join)"
+        required: false
+      - name: joins
+        type: array
+        description: "Array of join specifications"
+        required: false
+      - name: type
+        type: string
+        description: "Join type (for simple join)"
+        required: false
+        default: "inner"
+        enum: ["inner", "left", "right", "full", "cross"]
+      - name: select
+        type: array
+        description: "Columns to select"
+        required: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["data", "join", "combine", "sql", "tables", "merge"]
+    test_prompts:
+      single:
+        - "Join users and orders tables"
+        - "Combine customer and sales data"
+        - "Left join products with inventory"
+        - "Merge the tables on customer ID"
+      single_clear:
+        - "I need to join tables together. Join users and orders tables"
+        - "I need to join tables together. Combine customer and sales data"
+        - "I need to join tables together. Left join products with inventory"
+        - "I need to join tables together. Merge the tables on customer ID"
+
+  - name: pivot_data
+    descriptions:
+      minimal: "Pivot data"
+      short: "Pivot data rows to columns"
+      medium: "Transform data by pivoting rows into columns for cross-tabulation analysis."
+      long: "Pivot data to transform rows into columns. Useful for cross-tabulation reports. Example: pivot_data(table='sales', rows='region', columns='quarter', values='SUM(amount)')."
+      verbose: "Transform data by pivoting row values into column headers. Essential for cross-tabulation, report generation, and data visualization prep. Supports multiple aggregation functions. Example: pivot_data(table='sales', rows=['region', 'product'], columns='month', values='SUM(amount)', fill_value=0) creates a matrix of region/product combinations vs months with summed sales. Note: Many column values may create wide tables. Warning: Pivot operations on large datasets can be memory-intensive."
+    parameters:
+      - name: table
+        type: string
+        description: "Source table or query"
+        required: true
+      - name: rows
+        type: string
+        description: "Column(s) for row grouping"
+        required: true
+      - name: columns
+        type: string
+        description: "Column to pivot to headers"
+        required: true
+      - name: values
+        type: string
+        description: "Aggregation expression for cells"
+        required: true
+      - name: fill_value
+        type: string
+        description: "Value for empty cells"
+        required: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["data", "pivot", "transform", "crosstab", "reshape"]
+    test_prompts:
+      single:
+        - "Pivot sales data by region and quarter"
+        - "Create a cross-tab of products vs months"
+        - "Transform rows to columns for the report"
+        - "Pivot the data for analysis"
+      single_clear:
+        - "I need to pivot data. Pivot sales data by region and quarter"
+        - "I need to pivot data. Create a cross-tab of products vs months"
+        - "I need to pivot data. Transform rows to columns for the report"
+        - "I need to pivot data. Pivot the data for analysis"
+
+  - name: deduplicate_data
+    descriptions:
+      minimal: "Deduplicate data"
+      short: "Remove duplicate records"
+      medium: "Find and remove duplicate records from a table based on specified columns."
+      long: "Identify and remove duplicate records based on key columns. Choose to keep first, last, or none. Example: deduplicate_data(table='contacts', key_columns=['email'], keep='first')."
+      verbose: "Find and remove duplicate records from a dataset. Options: specify key columns for uniqueness, choose which duplicate to keep (first, last, or remove all), preview before deleting, log removed records. Example: deduplicate_data(table='email_list', key_columns=['email', 'list_id'], keep='last', preview=true, log_removed=true) shows duplicates before removal. Note: 'first'/'last' depends on table ordering unless ORDER BY specified. Warning: Always preview duplicates before deletion on production data."
+    parameters:
+      - name: table
+        type: string
+        description: "Table to deduplicate"
+        required: true
+      - name: key_columns
+        type: array
+        description: "Columns defining uniqueness"
+        required: true
+      - name: keep
+        type: string
+        description: "Which duplicate to keep"
+        required: false
+        default: "first"
+        enum: ["first", "last", "none"]
+      - name: order_by
+        type: string
+        description: "Order for first/last determination"
+        required: false
+      - name: preview
+        type: boolean
+        description: "Preview without deleting"
+        required: false
+        default: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["data", "dedupe", "duplicate", "clean", "unique"]
+    test_prompts:
+      single:
+        - "Remove duplicate emails from the list"
+        - "Find and delete duplicate records"
+        - "Deduplicate the contacts table"
+        - "Clean up duplicate entries"
+      single_clear:
+        - "I need to deduplicate data. Remove duplicate emails from the list"
+        - "I need to deduplicate data. Find and delete duplicate records"
+        - "I need to deduplicate data. Deduplicate the contacts table"
+        - "I need to deduplicate data. Clean up duplicate entries"
+
+  - name: transform_data
+    descriptions:
+      minimal: "Transform data"
+      short: "Apply transformations to data columns"
+      medium: "Transform data by applying functions to columns like formatting, calculations, or type conversions."
+      long: "Apply transformations to data columns. Supports string operations, math, date formatting, and custom expressions. Example: transform_data(table='users', transforms={'full_name': 'CONCAT(first_name, \" \", last_name)'})."
+      verbose: "Apply various transformations to data columns. Operations: string functions (UPPER, LOWER, TRIM, SUBSTRING), math (arithmetic, ROUND, ABS), dates (FORMAT, EXTRACT, DATEADD), type casting, conditional (CASE/WHEN), null handling (COALESCE, IFNULL). Example: transform_data(table='orders', transforms={'order_date_formatted': 'DATE_FORMAT(order_date, \"%Y-%m\")', 'total_with_tax': 'amount * 1.08', 'status_label': 'CASE WHEN status=1 THEN \"Active\" ELSE \"Inactive\" END'}, update_in_place=false). Note: update_in_place=false creates new columns. Warning: Data type changes may cause loss of precision."
+    parameters:
+      - name: table
+        type: string
+        description: "Table to transform"
+        required: true
+      - name: transforms
+        type: string
+        description: "JSON of column transformations"
+        required: true
+      - name: update_in_place
+        type: boolean
+        description: "Update existing columns"
+        required: false
+        default: false
+      - name: condition
+        type: string
+        description: "WHERE condition for rows to transform"
+        required: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["data", "transform", "etl", "convert", "process"]
+    test_prompts:
+      single:
+        - "Convert names to uppercase"
+        - "Calculate total with tax"
+        - "Format the dates in the table"
+        - "Transform the data columns"
+      single_clear:
+        - "I need to transform data. Convert names to uppercase"
+        - "I need to transform data. Calculate total with tax"
+        - "I need to transform data. Format the dates in the table"
+        - "I need to transform data. Transform the data columns"
+
+  - name: validate_data
+    descriptions:
+      minimal: "Validate data"
+      short: "Validate data against rules"
+      medium: "Check data quality by validating records against defined rules and constraints."
+      long: "Validate data against rules like required fields, data types, ranges, and patterns. Returns validation errors. Example: validate_data(table='users', rules={'email': 'required|email', 'age': 'integer|min:18'})."
+      verbose: "Validate data quality by checking records against defined rules. Rule types: required, data type (string, integer, date), format (email, phone, regex), range (min, max, between), uniqueness, foreign key, custom SQL expression. Returns validation report with invalid records. Example: validate_data(table='products', rules={'name': 'required|max:100', 'price': 'required|numeric|min:0', 'sku': 'required|unique', 'category_id': 'exists:categories.id'}, stop_on_first=false) validates all products. Note: Validation is read-only; doesn't modify data. Warning: Validating large tables may be time-consuming."
+    parameters:
+      - name: table
+        type: string
+        description: "Table to validate"
+        required: true
+      - name: rules
+        type: string
+        description: "JSON of validation rules per column"
+        required: true
+      - name: stop_on_first
+        type: boolean
+        description: "Stop on first error per record"
+        required: false
+        default: false
+      - name: limit
+        type: integer
+        description: "Max records to validate"
+        required: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["data", "validate", "quality", "check", "rules"]
+    test_prompts:
+      single:
+        - "Validate the email format in users table"
+        - "Check data quality against the rules"
+        - "Validate required fields are not null"
+        - "Run validation on the imported data"
+      single_clear:
+        - "I need to validate data against rules. Validate the email format in users table"
+        - "I need to validate data against rules. Check data quality against the rules"
+        - "I need to validate data against rules. Validate required fields are not null"
+        - "I need to validate data against rules. Run validation on the imported data"
+
+  - name: sample_data
+    descriptions:
+      minimal: "Sample data"
+      short: "Get a random sample of data"
+      medium: "Retrieve a random sample of records from a table for testing or analysis."
+      long: "Get a random sample of records from a dataset. Specify sample size as count or percentage. Example: sample_data(table='users', size=100)."
+      verbose: "Extract a random sample of records from a table for analysis, testing, or preview. Methods: random (simple random), stratified (proportional by category), systematic (every nth row). Example: sample_data(table='transactions', size=1000, method='stratified', stratify_column='region', seed=42) returns 1000 transactions with proportional representation from each region. Note: Using a seed ensures reproducible samples. Warning: Random sampling on very large tables may be slow without proper indexing."
+    parameters:
+      - name: table
+        type: string
+        description: "Table to sample from"
+        required: true
+      - name: size
+        type: integer
+        description: "Sample size (count)"
+        required: false
+        default: 100
+      - name: percentage
+        type: number
+        description: "Sample size (percentage)"
+        required: false
+      - name: method
+        type: string
+        description: "Sampling method"
+        required: false
+        default: "random"
+        enum: ["random", "stratified", "systematic"]
+      - name: stratify_column
+        type: string
+        description: "Column for stratified sampling"
+        required: false
+      - name: seed
+        type: integer
+        description: "Random seed for reproducibility"
+        required: false
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["data", "sample", "random", "subset", "testing"]
+    test_prompts:
+      single:
+        - "Get a random sample of 100 users"
+        - "Sample 10% of the orders"
+        - "Get a representative sample of the data"
+        - "Extract random records for testing"
+      single_clear:
+        - "I need to sample data. Get a random sample of 100 users"
+        - "I need to sample data. Sample 10% of the orders"
+        - "I need to sample data. Get a representative sample of the data"
+        - "I need to sample data. Extract random records for testing"
+
+  - name: archive_data
+    descriptions:
+      minimal: "Archive data"
+      short: "Archive old records to history table"
+      medium: "Move old or inactive records from a table to an archive table for data lifecycle management."
+      long: "Archive records matching criteria to a separate archive table. Preserves data while cleaning main table. Example: archive_data(table='orders', condition='created_at < \"2023-01-01\"', archive_table='orders_archive')."
+      verbose: "Move old, inactive, or completed records to an archive table as part of data lifecycle management. Options: auto-create archive table with same schema, compress archived data, add archive timestamp, delete from source or keep. Example: archive_data(table='logs', condition='created_at < DATE_SUB(NOW(), INTERVAL 90 DAY)', archive_table='logs_archive', delete_source=true, add_archived_at=true, batch_size=10000). Note: Archiving in batches prevents locking issues. Warning: Always verify archive before deleting from source."
+    parameters:
+      - name: table
+        type: string
+        description: "Source table"
+        required: true
+      - name: condition
+        type: string
+        description: "WHERE condition for records to archive"
+        required: true
+      - name: archive_table
+        type: string
+        description: "Destination archive table"
+        required: true
+      - name: delete_source
+        type: boolean
+        description: "Delete from source after archiving"
+        required: false
+        default: true
+      - name: add_archived_at
+        type: boolean
+        description: "Add timestamp column"
+        required: false
+        default: true
+      - name: batch_size
+        type: integer
+        description: "Records per batch"
+        required: false
+        default: 1000
+      - name: database
+        type: string
+        description: "Database name"
+        required: false
+    tags: ["data", "archive", "cleanup", "lifecycle", "maintenance"]
+    test_prompts:
+      single:
+        - "Archive orders older than one year"
+        - "Move old logs to the archive table"
+        - "Archive completed records"
+        - "Clean up and archive old data"
+      single_clear:
+        - "I need to archive data. Archive orders older than one year"
+        - "I need to archive data. Move old logs to the archive table"
+        - "I need to archive data. Archive completed records"
+        - "I need to archive data. Clean up and archive old data"

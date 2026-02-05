@@ -1,0 +1,427 @@
+category: scheduling_operations
+description: "Scheduling, job management, and cron operations"
+
+tools:
+  - name: create_scheduled_job
+    descriptions:
+      minimal: "Create scheduled job"
+      short: "Create a scheduled job"
+      medium: "Create a scheduled job to run at specified times."
+      long: "Schedule recurring job. Example: create_scheduled_job(name='daily-cleanup', schedule='0 2 * * *', command='cleanup.sh')."
+      verbose: "Create scheduled jobs with cron or interval syntax. Features: cron expressions, timezone support, retry policies, dependencies. Example: create_scheduled_job(name='nightly-report', schedule='0 2 * * *', timezone='America/New_York', command='python generate_report.py', retry_count=3, retry_delay='5m', timeout='1h', on_failure='alert', enabled=true). Note: Use timezone-aware scheduling. Warning: Overlapping runs may cause issues; consider run concurrency."
+    parameters:
+      - name: name
+        type: string
+        description: "Job name"
+        required: true
+      - name: schedule
+        type: string
+        description: "Cron expression or interval"
+        required: true
+      - name: command
+        type: string
+        description: "Command to execute"
+        required: true
+      - name: timezone
+        type: string
+        description: "Schedule timezone"
+        required: false
+        default: "UTC"
+      - name: retry_count
+        type: integer
+        description: "Retry attempts on failure"
+        required: false
+        default: 0
+      - name: retry_delay
+        type: string
+        description: "Delay between retries"
+        required: false
+        default: "1m"
+      - name: timeout
+        type: string
+        description: "Job timeout"
+        required: false
+        default: "1h"
+      - name: on_failure
+        type: string
+        description: "Failure action"
+        required: false
+        default: "log"
+        enum: ["log", "alert", "retry", "escalate"]
+      - name: enabled
+        type: boolean
+        description: "Job enabled"
+        required: false
+        default: true
+    tags: ["scheduling", "job", "cron", "create", "automation"]
+    test_prompts:
+      single:
+        - "Create scheduled job"
+        - "Set up cron job"
+        - "Schedule nightly task"
+        - "Create recurring job"
+      single_clear:
+        - "I need to create a scheduled job. Create scheduled job"
+        - "I need to create a scheduled job. Set up cron job"
+        - "I need to create a scheduled job. Schedule nightly task"
+        - "I need to create a scheduled job. Create recurring job"
+
+  - name: list_scheduled_jobs
+    descriptions:
+      minimal: "List jobs"
+      short: "List scheduled jobs"
+      medium: "List all scheduled jobs with their status."
+      long: "Get all scheduled jobs. Example: list_scheduled_jobs(status='enabled', namespace='production')."
+      verbose: "List and filter scheduled jobs. Filters: status, namespace, schedule pattern, tags. Example: list_scheduled_jobs(status='enabled', namespace='production', search='report', include_next_run=true, include_last_run=true). Returns: job name, schedule, status, next/last run times. Note: Results are paginated for large lists. Warning: Disabled jobs won't show unless filtered."
+    parameters:
+      - name: status
+        type: string
+        description: "Filter by status"
+        required: false
+        enum: ["enabled", "disabled", "paused", "all"]
+      - name: namespace
+        type: string
+        description: "Filter by namespace"
+        required: false
+      - name: search
+        type: string
+        description: "Search job names"
+        required: false
+      - name: include_next_run
+        type: boolean
+        description: "Include next run time"
+        required: false
+        default: true
+      - name: include_last_run
+        type: boolean
+        description: "Include last run info"
+        required: false
+        default: true
+      - name: limit
+        type: integer
+        description: "Results limit"
+        required: false
+        default: 50
+    tags: ["scheduling", "job", "list", "status", "view"]
+    test_prompts:
+      single:
+        - "List scheduled jobs"
+        - "Show all cron jobs"
+        - "Get scheduled tasks"
+        - "View active jobs"
+      single_clear:
+        - "I want to list scheduled jobs. List scheduled jobs"
+        - "I want to list scheduled jobs. Show all cron jobs"
+        - "I want to list scheduled jobs. Get scheduled tasks"
+        - "I want to list scheduled jobs. View active jobs"
+
+  - name: run_job_now
+    descriptions:
+      minimal: "Run job now"
+      short: "Run scheduled job immediately"
+      medium: "Trigger a scheduled job to run immediately."
+      long: "Execute job now. Example: run_job_now(name='daily-report', parameters='{\"date\": \"yesterday\"}')."
+      verbose: "Manually trigger scheduled job execution. Options: parameter overrides, skip dependencies, notify on completion. Example: run_job_now(job_name='nightly-report', parameters='{\"report_date\": \"2024-01-14\"}', skip_dependencies=false, notify_on_complete=true, run_id='manual-20240115'). Returns run ID for tracking. Note: Manual runs don't affect schedule. Warning: Concurrent runs may conflict; check for running instances."
+    parameters:
+      - name: job_name
+        type: string
+        description: "Job name"
+        required: true
+      - name: parameters
+        type: string
+        description: "Override parameters (JSON)"
+        required: false
+      - name: skip_dependencies
+        type: boolean
+        description: "Skip dependency checks"
+        required: false
+        default: false
+      - name: notify_on_complete
+        type: boolean
+        description: "Notify on completion"
+        required: false
+        default: false
+      - name: run_id
+        type: string
+        description: "Custom run ID"
+        required: false
+    tags: ["scheduling", "job", "run", "trigger", "manual"]
+    test_prompts:
+      single:
+        - "Run job now"
+        - "Trigger scheduled job"
+        - "Execute job manually"
+        - "Start job immediately"
+      single_clear:
+        - "I need to run a job now. Run job now"
+        - "I need to run a job now. Trigger scheduled job"
+        - "I need to run a job now. Execute job manually"
+        - "I need to run a job now. Start job immediately"
+
+  - name: pause_scheduled_job
+    descriptions:
+      minimal: "Pause job"
+      short: "Pause scheduled job"
+      medium: "Pause a scheduled job without deleting it."
+      long: "Temporarily pause job. Example: pause_scheduled_job(name='daily-cleanup', reason='Maintenance window')."
+      verbose: "Pause job scheduling without deletion. Features: pause duration, auto-resume, reason tracking. Example: pause_scheduled_job(job_name='nightly-etl', reason='Database maintenance', resume_at='2024-01-16T06:00:00Z', notify_on_resume=true). Note: Paused jobs retain configuration. Warning: Set auto-resume to prevent forgotten paused jobs."
+    parameters:
+      - name: job_name
+        type: string
+        description: "Job name"
+        required: true
+      - name: reason
+        type: string
+        description: "Pause reason"
+        required: false
+      - name: resume_at
+        type: string
+        description: "Auto-resume time (ISO 8601)"
+        required: false
+      - name: notify_on_resume
+        type: boolean
+        description: "Notify on auto-resume"
+        required: false
+        default: false
+    tags: ["scheduling", "job", "pause", "suspend", "maintenance"]
+    test_prompts:
+      single:
+        - "Pause scheduled job"
+        - "Suspend cron job"
+        - "Stop job temporarily"
+        - "Pause task scheduling"
+      single_clear:
+        - "I want to pause a scheduled job. Pause scheduled job"
+        - "I want to pause a scheduled job. Suspend cron job"
+        - "I want to pause a scheduled job. Stop job temporarily"
+        - "I want to pause a scheduled job. Pause task scheduling"
+
+  - name: resume_scheduled_job
+    descriptions:
+      minimal: "Resume job"
+      short: "Resume paused job"
+      medium: "Resume a paused scheduled job."
+      long: "Resume paused job. Example: resume_scheduled_job(name='daily-cleanup')."
+      verbose: "Resume previously paused scheduled job. Example: resume_scheduled_job(job_name='nightly-etl', run_immediately=false). Job will resume on next scheduled time. Note: Check job dependencies before resuming. Warning: Resuming after long pause may cause data gaps."
+    parameters:
+      - name: job_name
+        type: string
+        description: "Job name"
+        required: true
+      - name: run_immediately
+        type: boolean
+        description: "Run job immediately on resume"
+        required: false
+        default: false
+    tags: ["scheduling", "job", "resume", "enable", "restart"]
+    test_prompts:
+      single:
+        - "Resume scheduled job"
+        - "Unpause cron job"
+        - "Restart paused task"
+        - "Enable paused job"
+      single_clear:
+        - "I need to resume a scheduled job. Resume scheduled job"
+        - "I need to resume a scheduled job. Unpause cron job"
+        - "I need to resume a scheduled job. Restart paused task"
+        - "I need to resume a scheduled job. Enable paused job"
+
+  - name: get_job_history
+    descriptions:
+      minimal: "Get job history"
+      short: "Get job run history"
+      medium: "Get the execution history of a scheduled job."
+      long: "View job run history. Example: get_job_history(name='daily-report', limit=20)."
+      verbose: "Retrieve job execution history. Details: run times, duration, status, errors, output. Example: get_job_history(job_name='nightly-etl', limit=50, status_filter='failed', start_date='2024-01-01', end_date='2024-01-15', include_output=true). Note: History retention depends on configuration. Warning: Large outputs may be truncated."
+    parameters:
+      - name: job_name
+        type: string
+        description: "Job name"
+        required: true
+      - name: limit
+        type: integer
+        description: "Number of runs"
+        required: false
+        default: 20
+      - name: status_filter
+        type: string
+        description: "Filter by status"
+        required: false
+        enum: ["success", "failed", "running", "cancelled", "all"]
+      - name: start_date
+        type: string
+        description: "Start date filter"
+        required: false
+      - name: end_date
+        type: string
+        description: "End date filter"
+        required: false
+      - name: include_output
+        type: boolean
+        description: "Include job output"
+        required: false
+        default: false
+    tags: ["scheduling", "job", "history", "logs", "runs"]
+    test_prompts:
+      single:
+        - "Get job history"
+        - "Show job run history"
+        - "View past executions"
+        - "Get failed runs"
+      single_clear:
+        - "I want to get job history. Get job history"
+        - "I want to get job history. Show job run history"
+        - "I want to get job history. View past executions"
+        - "I want to get job history. Get failed runs"
+
+  - name: update_job_schedule
+    descriptions:
+      minimal: "Update schedule"
+      short: "Update job schedule"
+      medium: "Update the schedule for an existing job."
+      long: "Modify job schedule. Example: update_job_schedule(name='daily-report', schedule='0 3 * * *')."
+      verbose: "Update scheduled job timing. Changes: cron expression, timezone, next run. Example: update_job_schedule(job_name='nightly-report', schedule='0 3 * * *', timezone='America/Los_Angeles', effective_date='2024-02-01'). Note: Changes take effect on next scheduled run. Warning: Changing timezone may cause unexpected run times."
+    parameters:
+      - name: job_name
+        type: string
+        description: "Job name"
+        required: true
+      - name: schedule
+        type: string
+        description: "New cron expression"
+        required: true
+      - name: timezone
+        type: string
+        description: "New timezone"
+        required: false
+      - name: effective_date
+        type: string
+        description: "When changes take effect"
+        required: false
+    tags: ["scheduling", "job", "update", "cron", "modify"]
+    test_prompts:
+      single:
+        - "Update job schedule"
+        - "Change cron time"
+        - "Reschedule job"
+        - "Modify job timing"
+      single_clear:
+        - "I need to update a job schedule. Update job schedule"
+        - "I need to update a job schedule. Change cron time"
+        - "I need to update a job schedule. Reschedule job"
+        - "I need to update a job schedule. Modify job timing"
+
+  - name: delete_scheduled_job
+    descriptions:
+      minimal: "Delete job"
+      short: "Delete scheduled job"
+      medium: "Delete a scheduled job permanently."
+      long: "Remove scheduled job. Example: delete_scheduled_job(name='old-cleanup', keep_history=true)."
+      verbose: "Permanently delete scheduled job. Options: keep run history, force delete running job. Example: delete_scheduled_job(job_name='deprecated-task', keep_history=true, force=false). Note: Use pause for temporary stop. Warning: Deletion is permanent; cannot be undone."
+    parameters:
+      - name: job_name
+        type: string
+        description: "Job name"
+        required: true
+      - name: keep_history
+        type: boolean
+        description: "Keep run history"
+        required: false
+        default: true
+      - name: force
+        type: boolean
+        description: "Force delete if running"
+        required: false
+        default: false
+    tags: ["scheduling", "job", "delete", "remove", "cleanup"]
+    test_prompts:
+      single:
+        - "Delete scheduled job"
+        - "Remove cron job"
+        - "Delete task"
+        - "Remove scheduled task"
+      single_clear:
+        - "I want to delete a scheduled job. Delete scheduled job"
+        - "I want to delete a scheduled job. Remove cron job"
+        - "I want to delete a scheduled job. Delete task"
+        - "I want to delete a scheduled job. Remove scheduled task"
+
+  - name: create_job_dependency
+    descriptions:
+      minimal: "Create dependency"
+      short: "Create job dependency"
+      medium: "Create a dependency between scheduled jobs."
+      long: "Set job dependency. Example: create_job_dependency(job='etl-transform', depends_on='etl-extract', condition='success')."
+      verbose: "Create job dependencies for workflow orchestration. Conditions: success, completion (any status), specific exit code. Example: create_job_dependency(job_name='load-warehouse', depends_on='transform-data', condition='success', timeout='2h', on_dependency_failure='skip'). Note: Circular dependencies are prevented. Warning: Long dependency chains increase failure risk."
+    parameters:
+      - name: job_name
+        type: string
+        description: "Dependent job name"
+        required: true
+      - name: depends_on
+        type: string
+        description: "Job to depend on"
+        required: true
+      - name: condition
+        type: string
+        description: "Dependency condition"
+        required: false
+        default: "success"
+        enum: ["success", "completion", "failure"]
+      - name: timeout
+        type: string
+        description: "Wait timeout"
+        required: false
+        default: "1h"
+      - name: on_dependency_failure
+        type: string
+        description: "Action if dependency fails"
+        required: false
+        default: "fail"
+        enum: ["fail", "skip", "run_anyway"]
+    tags: ["scheduling", "job", "dependency", "workflow", "chain"]
+    test_prompts:
+      single:
+        - "Create job dependency"
+        - "Set job to run after another"
+        - "Chain scheduled jobs"
+        - "Make job dependent on another"
+      single_clear:
+        - "I need to create a job dependency. Create job dependency"
+        - "I need to create a job dependency. Set job to run after another"
+        - "I need to create a job dependency. Chain scheduled jobs"
+        - "I need to create a job dependency. Make job dependent on another"
+
+  - name: get_next_run_times
+    descriptions:
+      minimal: "Get next runs"
+      short: "Get next run times"
+      medium: "Get the next scheduled run times for a job."
+      long: "Preview upcoming runs. Example: get_next_run_times(name='daily-report', count=5)."
+      verbose: "Preview next scheduled execution times. Useful for schedule validation. Example: get_next_run_times(job_name='weekly-report', count=10, from_date='2024-01-15T00:00:00Z'). Returns list of upcoming run times. Note: Accounts for timezone and DST. Warning: Paused jobs won't have next runs."
+    parameters:
+      - name: job_name
+        type: string
+        description: "Job name"
+        required: true
+      - name: count
+        type: integer
+        description: "Number of future runs"
+        required: false
+        default: 5
+      - name: from_date
+        type: string
+        description: "Start calculation from"
+        required: false
+    tags: ["scheduling", "job", "next", "preview", "times"]
+    test_prompts:
+      single:
+        - "When will job run next"
+        - "Get next run times"
+        - "Show upcoming runs"
+        - "Preview job schedule"
+      single_clear:
+        - "I want to get the next run times. When will job run next"
+        - "I want to get the next run times. Get next run times"
+        - "I want to get the next run times. Show upcoming runs"
+        - "I want to get the next run times. Preview job schedule"

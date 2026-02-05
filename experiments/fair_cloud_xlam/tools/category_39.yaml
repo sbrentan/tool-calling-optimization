@@ -1,0 +1,823 @@
+category: category_39
+tools:
+- name: get_game_lineup
+  descriptions:
+    minimal: Fetches the full lineup for a specific game...
+    short: Fetches the full lineup for a specific game, along with its confirmation status or forecast.
+    medium: Fetches the full lineup for a specific game, along with its confirmation status or forecast.
+    long: Fetches the full lineup for a specific game, along with its confirmation status or forecast.
+    verbose: Fetches the full lineup for a specific game, along with its confirmation status or forecast.
+  parameters:
+  - name: gameid
+    type: string
+    description: The unique identifier for the game.
+    required: true
+    default: '9576185'
+  tags:
+  - get
+  - game
+  - lineup
+  test_prompts:
+    single:
+    - Retrieve the lineup details for a basketball game with ID '54321'.
+    single_clear:
+    - Retrieve the lineup details for a basketball game with ID '54321'.
+- name: v1_aircraft
+  descriptions:
+    minimal: Queries the API Ninjas Aircraft API to return a...
+    short: Queries the API Ninjas Aircraft API to return a list of aircraft that match the given parameters.
+    medium: Queries the API Ninjas Aircraft API to return a list of aircraft that match the given parameters.
+    long: Queries the API Ninjas Aircraft API to return a list of aircraft that match the given parameters.
+    verbose: Queries the API Ninjas Aircraft API to return a list of aircraft that match the given parameters.
+  parameters:
+  - name: min_height
+    type: integer
+    description: Minimum height of the aircraft in feet.
+    required: false
+  - name: min_wingspan
+    type: integer
+    description: Minimum wingspan of the aircraft in feet.
+    required: false
+  - name: limit
+    type: integer
+    description: How many results to return. Must be between 1 and 30.
+    required: false
+  - name: max_height
+    type: integer
+    description: Maximum height of the aircraft in feet.
+    required: false
+  - name: max_length
+    type: integer
+    description: Maximum length of the aircraft in feet.
+    required: false
+  - name: min_length
+    type: integer
+    description: Minimum length of the aircraft in feet.
+    required: false
+  - name: max_range
+    type: integer
+    description: Maximum range of the aircraft in nautical miles.
+    required: false
+  - name: min_range
+    type: integer
+    description: Minimum range of the aircraft in nautical miles.
+    required: false
+  - name: max_speed
+    type: integer
+    description: Maximum air speed in knots.
+    required: false
+  - name: max_wingspan
+    type: integer
+    description: Maximum wingspan of the aircraft in feet.
+    required: false
+  - name: engine_type
+    type: string
+    description: 'Type of engine. Must be one of: piston, propjet, jet.'
+    required: false
+  - name: min_speed
+    type: integer
+    description: Minimum air speed in knots.
+    required: false
+  - name: model
+    type: string
+    description: Aircraft model name. Defaults to 'G550'.
+    required: false
+    default: G550
+  - name: manufacturer
+    type: string
+    description: Company that designed and built the aircraft. Defaults to 'Gulfstream'.
+    required: false
+    default: Gulfstream
+  tags:
+  - v1
+  - aircraft
+  test_prompts:
+    single:
+    - Can you help me find aircraft with a minimum height of 15 feet, a maximum wingspan of 100 feet, and an engine type of
+      jet? Also, limit the results to 20.
+    single_clear:
+    - Can you help me find aircraft with a minimum height of 15 feet, a maximum wingspan of 100 feet, and an engine type of
+      jet? Also, limit the results to 20.
+- name: models_by_make_id
+  descriptions:
+    minimal: Fetch the list of motorcycle models by make ID...
+    short: Fetch the list of motorcycle models by make ID from the Motorcycle Specs Database.
+    medium: Fetch the list of motorcycle models by make ID from the Motorcycle Specs Database.
+    long: Fetch the list of motorcycle models by make ID from the Motorcycle Specs Database.
+    verbose: Fetch the list of motorcycle models by make ID from the Motorcycle Specs Database.
+  parameters:
+  - name: is_id
+    type: string
+    description: The make ID for which to fetch the model list.
+    required: true
+    default: '485'
+  tags:
+  - models
+  - by
+  - make
+  test_prompts:
+    single:
+    - List all motorcycle models for the make ID 'YAMAHA'.
+    single_clear:
+    - List all motorcycle models for the make ID 'YAMAHA'.
+- name: daily_match_list_live
+  descriptions:
+    minimal: Fetches the list of daily live matches for a...
+    short: Fetches the list of daily live matches for a specific date within a ±7 days period.
+    medium: Fetches the list of daily live matches for a specific date within a ±7 days period.
+    long: Fetches the list of daily live matches for a specific date within a ±7 days period.
+    verbose: Fetches the list of daily live matches for a specific date within a ±7 days period.
+  parameters:
+  - name: date
+    type: string
+    description: The date for which to retrieve the match list. Format should be {dd/MM/yyyy}.
+    required: true
+    default: 28/01/2021
+  tags:
+  - daily
+  - match
+  - list
+  test_prompts:
+    single:
+    - List all live ice hockey matches for the date February 28, 2023.
+    single_clear:
+    - List all live ice hockey matches for the date February 28, 2023.
+- name: get_5_latest_endpoint
+  descriptions:
+    minimal: Fetch the latest exchange rates for the specified...
+    short: Fetch the latest exchange rates for the specified currencies.
+    medium: Fetch the latest exchange rates for the specified currencies.
+    long: Fetch the latest exchange rates for the specified currencies.
+    verbose: Fetch the latest exchange rates for the specified currencies.
+  parameters:
+  - name: symbols
+    type: string
+    description: Comma-separated list of currency codes to fetch rates for.
+    required: true
+    default: EUR
+  - name: base
+    type: string
+    description: The base currency code against which exchange rates are calculated.
+    required: true
+    default: usd
+  tags:
+  - get
+  - '5'
+  - latest
+  test_prompts:
+    single:
+    - Can you provide the latest exchange rates for EUR, JPY, and GBP against the USD as of today?
+    single_clear:
+    - Can you provide the latest exchange rates for EUR, JPY, and GBP against the USD as of today?
+- name: ufc_fight_night_song_vs_simon_april_28_2023
+  descriptions:
+    minimal: 'Fetches fight details for UFC Fight Night: Song...'
+    short: 'Fetches fight details for UFC Fight Night: Song vs.'
+    medium: 'Fetches fight details for UFC Fight Night: Song vs. Simon held on April 28, 2023.'
+    long: 'Fetches fight details for UFC Fight Night: Song vs. Simon held on April 28, 2023.'
+    verbose: 'Fetches fight details for UFC Fight Night: Song vs. Simon held on April 28, 2023.'
+  parameters:
+  - name: offset
+    type: integer
+    description: The number of records to skip before starting to collect the result set. Defaults to None.
+    required: false
+  - name: limit
+    type: integer
+    description: The maximum number of records to return. Defaults to None.
+    required: false
+  tags:
+  - ufc
+  - fight
+  - night
+  test_prompts:
+    single:
+    - 'Fetch detailed fight information for UFC Fight Night: Song vs. Simon on April 28, 2023, including fighters'' records
+      and physical stats.'
+    single_clear:
+    - 'Fetch detailed fight information for UFC Fight Night: Song vs. Simon on April 28, 2023, including fighters'' records
+      and physical stats.'
+- name: get_hsn_tsn
+  descriptions:
+    minimal: Fetch HSN/TSN data for a specified car query from...
+    short: Fetch HSN/TSN data for a specified car query from the HSN-TSN API.
+    medium: Fetch HSN/TSN data for a specified car query from the HSN-TSN API.
+    long: Fetch HSN/TSN data for a specified car query from the HSN-TSN API.
+    verbose: Fetch HSN/TSN data for a specified car query from the HSN-TSN API.
+  parameters:
+  - name: query
+    type: string
+    description: The search query for the car.
+    required: true
+    default: Audi A6
+  - name: year
+    type: integer
+    description: The year of the car. Defaults to 2018.
+    required: false
+    default: '2018'
+  tags:
+  - get
+  - hsn
+  - tsn
+  test_prompts:
+    single:
+    - What is the HSN/TSN for a 2020 Toyota Corolla?
+    single_clear:
+    - What is the HSN/TSN for a 2020 Toyota Corolla?
+- name: get_comments_from_product_id
+  descriptions:
+    minimal: Retrieve comments for a given product ID using...
+    short: Retrieve comments for a given product ID using the Hepsiburada API.
+    medium: Retrieve comments for a given product ID using the Hepsiburada API.
+    long: Retrieve comments for a given product ID using the Hepsiburada API.
+    verbose: Retrieve comments for a given product ID using the Hepsiburada API.
+  parameters:
+  - name: product_id
+    type: string
+    description: Unique identifier of the product for which to retrieve comments.
+    required: true
+    default: hbcv00000c2fqc
+  tags:
+  - get
+  - comments
+  - from
+  test_prompts:
+    single:
+    - What are the comments for product ID '123456789' on Hepsiburada?
+    single_clear:
+    - What are the comments for product ID '123456789' on Hepsiburada?
+- name: specific_giveaway_details
+  descriptions:
+    minimal: Fetch details from a specific giveaway using the...
+    short: Fetch details from a specific giveaway using the giveaway ID.
+    medium: Fetch details from a specific giveaway using the giveaway ID.
+    long: Fetch details from a specific giveaway using the giveaway ID.
+    verbose: Fetch details from a specific giveaway using the giveaway ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the giveaway to fetch details for.
+    required: true
+    default: '525'
+  tags:
+  - specific
+  - giveaway
+  - details
+  test_prompts:
+    single:
+    - I need to fetch details about a giveaway with ID '12345'. Can you provide that?
+    single_clear:
+    - I need to fetch details about a giveaway with ID '12345'. Can you provide that?
+- name: ip_geolocation_lookup
+  descriptions:
+    minimal: Fetch geolocation data for a given IPv4 address...
+    short: Fetch geolocation data for a given IPv4 address using the RapidAPI IP geolocation lookup service.
+    medium: Fetch geolocation data for a given IPv4 address using the RapidAPI IP geolocation lookup service.
+    long: Fetch geolocation data for a given IPv4 address using the RapidAPI IP geolocation lookup service.
+    verbose: Fetch geolocation data for a given IPv4 address using the RapidAPI IP geolocation lookup service.
+  parameters:
+  - name: ip
+    type: string
+    description: The IPv4 address for which geolocation data is to be retrieved.
+    required: true
+    default: 193.114.112.1
+  tags:
+  - ip
+  - geolocation
+  - lookup
+  test_prompts:
+    single:
+    - What is the geolocation of IP address 1.1.1.1?
+    single_clear:
+    - What is the geolocation of IP address 1.1.1.1?
+- name: live_giveaways_by_type
+  descriptions:
+    minimal: Retrieve live giveaways from the GamerPower API...
+    short: Retrieve live giveaways from the GamerPower API based on the specified type.
+    medium: Retrieve live giveaways from the GamerPower API based on the specified type.
+    long: Retrieve live giveaways from the GamerPower API based on the specified type.
+    verbose: Retrieve live giveaways from the GamerPower API based on the specified type.
+  parameters:
+  - name: type
+    type: string
+    description: The type of giveaways to retrieve (e.g., game, loot, beta).
+    required: true
+    default: game
+  tags:
+  - live
+  - giveaways
+  - by
+  test_prompts:
+    single:
+    - List all beta giveaways available on GamerPower.
+    single_clear:
+    - List all beta giveaways available on GamerPower.
+- name: currencies
+  descriptions:
+    minimal: Retrieves a list of currencies from the...
+    short: Retrieves a list of currencies from the Booking.
+    medium: Retrieves a list of currencies from the Booking.com API.
+    long: Retrieves a list of currencies from the Booking.com API.
+    verbose: Retrieves a list of currencies from the Booking.com API.
+  parameters:
+  - name: language_code
+    type: string
+    description: The language code to use for the response. Defaults to 'en-us'.
+    required: true
+    default: en-us
+  tags:
+  - currencies
+  test_prompts:
+    single:
+    - What are the available currencies in the Booking.com API, and can you provide the response in French?
+    single_clear:
+    - What are the available currencies in the Booking.com API, and can you provide the response in French?
+- name: list_of_hotel_chains
+  descriptions:
+    minimal: Fetches a list of hotel chains from the...
+    short: Fetches a list of hotel chains from the Booking.
+    medium: Fetches a list of hotel chains from the Booking.com API.
+    long: Fetches a list of hotel chains from the Booking.com API.
+    verbose: Fetches a list of hotel chains from the Booking.com API.
+  parameters:
+  - name: name
+    type: string
+    description: Hotel chain name to filter results by.
+    required: false
+  - name: chain_id
+    type: string
+    description: Chain ID to filter results by.
+    required: false
+  tags:
+  - list
+  - of
+  - hotel
+  test_prompts:
+    single:
+    - List all hotel chains available on Booking.com.
+    single_clear:
+    - List all hotel chains available on Booking.com.
+- name: xyz_map_tiles_for_ocean_conditions
+  descriptions:
+    minimal: Fetches ocean condition tiles based on the...
+    short: Fetches ocean condition tiles based on the specified variable and datetime using Wavebase API.
+    medium: Fetches ocean condition tiles based on the specified variable and datetime using Wavebase API.
+    long: Fetches ocean condition tiles based on the specified variable and datetime using Wavebase API.
+    verbose: Fetches ocean condition tiles based on the specified variable and datetime using Wavebase API.
+  parameters:
+  - name: variable
+    type: string
+    description: The ocean variable to fetch (e.g., 'VHM0' for wave significant height).
+    required: true
+    default: VHM0
+  - name: datetime
+    type: string
+    description: The datetime for the desired observation, in the format 'YYYYMMDDHH'.
+    required: true
+  tags:
+  - xyz
+  - map
+  - tiles
+  test_prompts:
+    single:
+    - What's the ocean condition for wave height at 0/0/0 on 20230101?
+    single_clear:
+    - What's the ocean condition for wave height at 0/0/0 on 20230101?
+- name: performance_stats_for_past_predictions
+  descriptions:
+    minimal: Returns the accuracy statistics of past...
+    short: Returns the accuracy statistics of past predictions over various time frames and allows optional filtering by federation
+      and market.
+    medium: Returns the accuracy statistics of past predictions over various time frames and allows optional filtering by
+      federation and market.
+    long: Returns the accuracy statistics of past predictions over various time frames and allows optional filtering by federation
+      and market.
+    verbose: Returns the accuracy statistics of past predictions over various time frames and allows optional filtering by
+      federation and market.
+  parameters:
+  - name: federation
+    type: string
+    description: Filter statistics by a specific federation. Defaults to None.
+    required: false
+  - name: market
+    type: string
+    description: Filter statistics based on the prediction market. Defaults to 'classic'.
+    required: false
+    default: classic
+  tags:
+  - performance
+  - stats
+  - for
+  test_prompts:
+    single:
+    - What are the performance stats for past predictions in the 'premium' market and for the UEFA federation?
+    single_clear:
+    - What are the performance stats for past predictions in the 'premium' market and for the UEFA federation?
+- name: choice_endpoint
+  descriptions:
+    minimal: Sends a GET request to the Rock-Paper-Scissors...
+    short: Sends a GET request to the Rock-Paper-Scissors API with the user's choice and returns the API's response.
+    medium: Sends a GET request to the Rock-Paper-Scissors API with the user's choice and returns the API's response.
+    long: Sends a GET request to the Rock-Paper-Scissors API with the user's choice and returns the API's response.
+    verbose: Sends a GET request to the Rock-Paper-Scissors API with the user's choice and returns the API's response.
+  parameters:
+  - name: choice
+    type: string
+    description: The user's selection, either "rock", "paper", or "scissors".
+    required: true
+    default: rock
+  tags:
+  - choice
+  - endpoint
+  test_prompts:
+    single:
+    - What is the response when playing rock against the API?
+    single_clear:
+    - What is the response when playing rock against the API?
+- name: get_calculate_investment
+  descriptions:
+    minimal: Calculates various investment returns based on...
+    short: Calculates various investment returns based on given parameters using an external API.
+    medium: Calculates various investment returns based on given parameters using an external API.
+    long: Calculates various investment returns based on given parameters using an external API.
+    verbose: Calculates various investment returns based on given parameters using an external API.
+  parameters:
+  - name: rate
+    type: integer
+    description: The annual interest rate of the investment in percentage.
+    required: true
+    default: '6.5'
+  - name: principal
+    type: integer
+    description: The initial amount of money invested.
+    required: true
+    default: '50000.00'
+  - name: time
+    type: integer
+    description: The duration of the investment in months.
+    required: true
+    default: '36'
+  - name: compounding
+    type: string
+    description: The frequency of compounding interest. Valid options are 'yearly', 'semi-annually', 'quarterly', and 'monthly'.
+      Default is 'yearly'.
+    required: false
+    default: yearly
+  - name: in_currency
+    type: string
+    description: The currency of the investment. Default is 'USD'.
+    required: false
+    default: USD
+  - name: format
+    type: string
+    description: Whether to format the result. Valid options are 'yes' and 'no'. Default is 'yes'.
+    required: false
+    default: 'yes'
+  - name: to_currency
+    type: string
+    description: The currency to convert the result into. Default is 'USD'.
+    required: false
+    default: USD
+  tags:
+  - get
+  - calculate
+  - investment
+  test_prompts:
+    single:
+    - If I invest $5,000 at 3% annual interest for 5 years, what will be the total amount in Euros?
+    single_clear:
+    - If I invest $5,000 at 3% annual interest for 5 years, what will be the total amount in Euros?
+- name: search_image
+  descriptions:
+    minimal: Performs an image search using the Google Search...
+    short: Performs an image search using the Google Search JSON API and returns a JSON response containing information about
+      images that match the search query.
+    medium: Performs an image search using the Google Search JSON API and returns a JSON response containing information about
+      images that match the search query.
+    long: Performs an image search using the Google Search JSON API and returns a JSON response containing information about
+      images that match the search query.
+    verbose: Performs an image search using the Google Search JSON API and returns a JSON response containing information
+      about images that match the search query.
+  parameters:
+  - name: q
+    type: string
+    description: The search query for finding images.
+    required: true
+    default: Newyork City
+  - name: num
+    type: integer
+    description: Number of search results to return. Valid values are between 1 and 20, inclusive. Default is 10.
+    required: false
+    default: '10'
+  - name: lr
+    type: string
+    description: Restricts the search to documents written in a particular language. Default is 'lang_en'.
+    required: false
+    default: lang_en
+  - name: start
+    type: integer
+    description: The index of the first result to return. Default is 0.
+    required: false
+    default: '0'
+  - name: gl
+    type: string
+    description: A two-letter country code that boosts search results whose country of origin matches the parameter value.
+      Default is 'US'.
+    required: false
+    default: US
+  tags:
+  - search
+  - image
+  test_prompts:
+    single:
+    - How can I search for images of 'penguins' in the US, starting from the 11th result?
+    single_clear:
+    - How can I search for images of 'penguins' in the US, starting from the 11th result?
+- name: update
+  descriptions:
+    minimal: Updates data on a specified endpoint using the...
+    short: Updates data on a specified endpoint using the provided information and RapidAPI key.
+    medium: Updates data on a specified endpoint using the provided information and RapidAPI key.
+    long: Updates data on a specified endpoint using the provided information and RapidAPI key.
+    verbose: Updates data on a specified endpoint using the provided information and RapidAPI key.
+  parameters:
+  - name: info3
+    type: string
+    description: The third piece of information to be sent as a query parameter.
+    required: true
+    default: '333'
+  - name: info1
+    type: string
+    description: The first piece of information to be sent as a query parameter.
+    required: true
+    default: '111'
+  - name: info2
+    type: string
+    description: The second piece of information to be sent as a query parameter.
+    required: true
+    default: '222'
+  tags:
+  - update
+  test_prompts:
+    single:
+    - 'Update the employee records with the following information: employee ID ''E7890'', name ''Emily Johnson'', and position
+      ''Senior Engineer''.'
+    single_clear:
+    - 'Update the employee records with the following information: employee ID ''E7890'', name ''Emily Johnson'', and position
+      ''Senior Engineer''.'
+- name: stock_get_stock_historical_price_data
+  descriptions:
+    minimal: Fetch historical pricing data for a given stock...
+    short: Fetch historical pricing data for a given stock symbol over a specified date range and interval.
+    medium: Fetch historical pricing data for a given stock symbol over a specified date range and interval.
+    long: Fetch historical pricing data for a given stock symbol over a specified date range and interval.
+    verbose: Fetch historical pricing data for a given stock symbol over a specified date range and interval.
+  parameters:
+  - name: symbol
+    type: string
+    description: Ticker symbol for the stock (e.g., "AAPL" for Apple Inc.).
+    required: true
+    default: AAPL
+  - name: start_date
+    type: string
+    description: The start date for fetching historical data in 'YYYY-MM-DD' format.
+    required: true
+    default: '2022-03-02'
+  - name: time_interval
+    type: string
+    description: The time interval for the data; can be 'daily', 'weekly', or 'monthly'.
+    required: true
+    default: daily
+  - name: end_date
+    type: string
+    description: The end date for fetching historical data in 'YYYY-MM-DD' format.
+    required: true
+    default: '2022-03-03'
+  - name: region
+    type: string
+    description: The region for the stock market. Default is 'US'.
+    required: false
+    default: US
+  tags:
+  - stock
+  - get
+  - stock
+  test_prompts:
+    single:
+    - Fetch historical price data for Apple Inc. (AAPL) from January 1, 2020, to December 31, 2020, with daily intervals.
+    single_clear:
+    - Fetch historical price data for Apple Inc. (AAPL) from January 1, 2020, to December 31, 2020, with daily intervals.
+- name: autocomplete_places
+  descriptions:
+    minimal: Returns a list of places that match a given...
+    short: Returns a list of places that match a given prefix and specified filter properties, useful for creating "search
+      as you type" inputs.
+    medium: Returns a list of places that match a given prefix and specified filter properties, useful for creating "search
+      as you type" inputs.
+    long: Returns a list of places that match a given prefix and specified filter properties, useful for creating "search
+      as you type" inputs.
+    verbose: Returns a list of places that match a given prefix and specified filter properties, useful for creating "search
+      as you type" inputs.
+  parameters:
+  - name: limit
+    type: integer
+    description: Maximum number of places to return. Used with `skip` to paginate results. Defaults to 10, maximum is 100.
+    required: false
+    default: '10'
+  - name: skip
+    type: integer
+    description: Number of places to ignore before beginning to return results. Used with `limit` to paginate results. Defaults
+      to 0.
+    required: false
+    default: '0'
+  - name: language
+    type: string
+    description: Specifies a language (ISO 639-1) for the localized name of the place. If unavailable, `localizedName` property
+      will be null.
+    required: false
+  - name: country
+    type: string
+    description: Filters places by their country ID. Multiple values can be specified, separated by commas (e.g., 'US,CA,MX').
+      Defaults to 'US,CA'.
+    required: false
+    default: US,CA
+  - name: admindivision1
+    type: string
+    description: Filters places by their adminDivision1 ID. Multiple values can be specified, separated by commas (e.g., 'US.CA,US.DE').
+    required: false
+  - name: accuracyradiuskm
+    type: integer
+    description: Maximum radius in kilometers from the specified coordinates (`latitude` and `longitude`) to filter places.
+      Defaults to 100km.
+    required: false
+  - name: latitude
+    type: integer
+    description: Latitude to filter places by their location. Ignored if `longitude` is not specified.
+    required: false
+  - name: admindivision2
+    type: string
+    description: Filters places by their adminDivision2 ID. Multiple values can be specified, separated by commas.
+    required: false
+  - name: q
+    type: string
+    description: Query string to find places whose names start with this prefix. Defaults to 'Sea'.
+    required: false
+    default: Sea
+  - name: longitude
+    type: integer
+    description: Longitude to filter places by their location. Ignored if `latitude` is not specified.
+    required: false
+  - name: type
+    type: string
+    description: Filters places by their type. Multiple values can be specified, separated by commas. Valid types are 'CITY',
+      'ADMIN_DIVISION_1', 'ADMIN_DIVISION_2', and 'COUNTRY'. Defaults to 'CITY'.
+    required: false
+    default: CITY
+  tags:
+  - autocomplete
+  - places
+  test_prompts:
+    single:
+    - Find all cities named 'Greenville' in the US and Canada, with results limited to 15.
+    single_clear:
+    - Find all cities named 'Greenville' in the US and Canada, with results limited to 15.
+- name: temp_upload_urls
+  descriptions:
+    minimal: Generates temporary upload URLs for a given video...
+    short: Generates temporary upload URLs for a given video on a specific account using the provided source name.
+    medium: Generates temporary upload URLs for a given video on a specific account using the provided source name.
+    long: Generates temporary upload URLs for a given video on a specific account using the provided source name.
+    verbose: Generates temporary upload URLs for a given video on a specific account using the provided source name.
+  parameters:
+  - name: source_name
+    type: string
+    description: The name of the source.
+    required: true
+  - name: video_id
+    type: string
+    description: The unique identifier for the video.
+    required: true
+  - name: account_id
+    type: string
+    description: The unique identifier for the account.
+    required: true
+  tags:
+  - temp
+  - upload
+  - urls
+  test_prompts:
+    single:
+    - Provide temporary upload URLs for a video 'V0002' on 'ACCT456' using 'source2'.
+    single_clear:
+    - Provide temporary upload URLs for a video 'V0002' on 'ACCT456' using 'source2'.
+- name: staticmaps
+  descriptions:
+    minimal: Generates a static map image URL based on the...
+    short: Generates a static map image URL based on the given parameters.
+    medium: Generates a static map image URL based on the given parameters.
+    long: Generates a static map image URL based on the given parameters.
+    verbose: Generates a static map image URL based on the given parameters.
+  parameters:
+  - name: size
+    type: string
+    description: Size of the map. Format is usually `{width}x{height}`.
+    required: true
+    default: 640x480
+  - name: center
+    type: string
+    description: Center coordinates of the map. Format is `{latitude},{longitude}`.
+    required: true
+    default: 48.20835,16.3725
+  - name: zoom
+    type: integer
+    description: Zoom level of the map.
+    required: true
+    default: '11'
+  - name: bounds
+    type: string
+    description: Bounding box to define the map area instead of `center` and `zoom`. Format is `{north},{east},{south},{west}`.
+    required: false
+  - name: geojson
+    type: string
+    description: GeoJSON geometry to include on the map. Format is `{attribute}:{value}[|{attribute}:{value} ...]`.
+    required: false
+  - name: maptype
+    type: string
+    description: Type of the map, defining its appearance. Default is 'toursprung-terrain'.
+    required: false
+    default: toursprung-terrain
+  - name: path
+    type: string
+    description: Path to include on the map. Format is `{attribute}:{value}[|{attribute}:{value} ...]`.
+    required: false
+  - name: delta_zoom
+    type: integer
+    description: Zoom level adjustment if zoom is calculated automatically.
+    required: false
+  - name: kml
+    type: string
+    description: KML data to include on the map. Format is `{kml}?{attribute}={value}[&{attribute}={value} ...]`.
+    required: false
+  - name: format
+    type: string
+    description: File format of the map image. Default is 'png'.
+    required: false
+    default: png
+  - name: marker
+    type: string
+    description: Marker to include on the map. Format is `{attribute}:{value}[|{attribute}:{value} ...]`.
+    required: false
+  - name: factor
+    type: string
+    description: Image scaling factor.
+    required: false
+  tags:
+  - staticmaps
+  test_prompts:
+    single:
+    - Generate a static map of New York City with a size of 800x600 pixels, centered at latitude 40.7128, longitude -74.0060,
+      and zoom level 10.
+    single_clear:
+    - Generate a static map of New York City with a size of 800x600 pixels, centered at latitude 40.7128, longitude -74.0060,
+      and zoom level 10.
+- name: extract_info
+  descriptions:
+    minimal: Retrieve detailed information about a book using...
+    short: Retrieve detailed information about a book using its ID from the Project Gutenberg API.
+    medium: Retrieve detailed information about a book using its ID from the Project Gutenberg API.
+    long: Retrieve detailed information about a book using its ID from the Project Gutenberg API.
+    verbose: Retrieve detailed information about a book using its ID from the Project Gutenberg API.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the book to retrieve information for.
+    required: true
+  tags:
+  - extract
+  - info
+  test_prompts:
+    single:
+    - Get information about the book with ID '67890' from Project Gutenberg.
+    single_clear:
+    - Get information about the book with ID '67890' from Project Gutenberg.
+- name: expiry_date_enquiry
+  descriptions:
+    minimal: Queries the expiry date of a vehicle's license...
+    short: Queries the expiry date of a vehicle's license registration using the given registration number.
+    medium: Queries the expiry date of a vehicle's license registration using the given registration number.
+    long: Queries the expiry date of a vehicle's license registration using the given registration number.
+    verbose: Queries the expiry date of a vehicle's license registration using the given registration number.
+  parameters:
+  - name: rego
+    type: string
+    description: The vehicle's registration number.
+    required: true
+    default: 1HNT923
+  tags:
+  - expiry
+  - date
+  - enquiry
+  test_prompts:
+    single:
+    - What is the expiry date of the vehicle with registration number XYZ789?
+    single_clear:
+    - What is the expiry date of the vehicle with registration number XYZ789?

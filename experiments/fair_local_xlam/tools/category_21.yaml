@@ -1,0 +1,839 @@
+category: category_21
+tools:
+- name: chi_square_independence_test
+  descriptions:
+    minimal: Performs a Chi-Square test for independence on a...
+    short: Performs a Chi-Square test for independence on a 2x2 contingency table.
+    medium: Performs a Chi-Square test for independence on a 2x2 contingency table.
+    long: Performs a Chi-Square test for independence on a 2x2 contingency table.
+    verbose: Performs a Chi-Square test for independence on a 2x2 contingency table.
+  parameters:
+  - name: contingency_table
+    type: string
+    description: A 2x2 contingency table represented as a list of lists.
+    required: true
+    default: 0.05
+  - name: significance_level
+    type: number
+    description: The significance level for the Chi-Square test. Defaults to 0.05.
+    required: false
+    default: 0.05
+  tags:
+  - chi
+  - square
+  - independence
+  test_prompts:
+    single:
+    - Perform a Chi-Square test for independence on a contingency table [[30, 20], [15, 35]] with a significance level of
+      0.01.
+    - Perform a Chi-Square test for independence on a contingency table [[10, 20], [30, 40]] with a significance level of
+      0.01.
+    - Perform a Chi-Square test for independence on a contingency table [[10, 20], [30, 40]] with a significance level of
+      0.01.
+    - Perform a Chi-Square test for independence on a contingency table [[10, 20], [30, 40]] with a significance level of
+      0.01.
+    - Perform a Chi-Square test for independence on a contingency table [[30, 20], [15, 35]], with a significance level of
+      0.01.
+    - Perform a Chi-Square test on a contingency table [[10, 20], [30, 40]] with a significance level of 0.01.
+    single_clear:
+    - Perform a Chi-Square test for independence on a contingency table [[30, 20], [15, 35]] with a significance level of
+      0.01.
+    - Perform a Chi-Square test for independence on a contingency table [[10, 20], [30, 40]] with a significance level of
+      0.01.
+    - Perform a Chi-Square test for independence on a contingency table [[10, 20], [30, 40]] with a significance level of
+      0.01.
+    - Perform a Chi-Square test for independence on a contingency table [[10, 20], [30, 40]] with a significance level of
+      0.01.
+    - Perform a Chi-Square test for independence on a contingency table [[30, 20], [15, 35]], with a significance level of
+      0.01.
+    - Perform a Chi-Square test on a contingency table [[10, 20], [30, 40]] with a significance level of 0.01.
+- name: find_equilibrium_index
+  descriptions:
+    minimal: Finds the equilibrium index of a list, where the...
+    short: Finds the equilibrium index of a list, where the sum of elements on the left is equal to the sum of elements on
+      the right.
+    medium: Finds the equilibrium index of a list, where the sum of elements on the left is equal to the sum of elements on
+      the right.
+    long: Finds the equilibrium index of a list, where the sum of elements on the left is equal to the sum of elements on
+      the right.
+    verbose: Finds the equilibrium index of a list, where the sum of elements on the left is equal to the sum of elements
+      on the right.
+  parameters:
+  - name: arr
+    type: string
+    description: The input list of integers.
+    required: true
+  tags:
+  - find
+  - equilibrium
+  - index
+  test_prompts:
+    single:
+    - 'What is the equilibrium index for the array: 1, -1, 1, -1, 1, -1, 1?'
+    - Is there an equilibrium index for the list [2, 4, 6, 8, 10]?
+    - Find the equilibrium index of the list [3, 6, 9, 12, 15].
+    - 'Can you locate the equilibrium index for the array: 5, -2, 3, 1, 2, -3, 2?'
+    single_clear:
+    - 'What is the equilibrium index for the array: 1, -1, 1, -1, 1, -1, 1?'
+    - Is there an equilibrium index for the list [2, 4, 6, 8, 10]?
+    - Find the equilibrium index of the list [3, 6, 9, 12, 15].
+    - 'Can you locate the equilibrium index for the array: 5, -2, 3, 1, 2, -3, 2?'
+- name: postcodes_postcode
+  descriptions:
+    minimal: Fetches addresses for a given UK postcode using...
+    short: Fetches addresses for a given UK postcode using the RapidAPI UK Postcode API.
+    medium: Fetches addresses for a given UK postcode using the RapidAPI UK Postcode API.
+    long: Fetches addresses for a given UK postcode using the RapidAPI UK Postcode API.
+    verbose: Fetches addresses for a given UK postcode using the RapidAPI UK Postcode API.
+  parameters:
+  - name: postcode
+    type: string
+    description: The UK postcode to look up addresses for.
+    required: true
+    default: PL11DN
+  tags:
+  - postcodes
+  - postcode
+  test_prompts:
+    single:
+    - What are the details for the postcode WC2N 5DU in the UK?
+    single_clear:
+    - What are the details for the postcode WC2N 5DU in the UK?
+- name: girl_groups
+  descriptions:
+    minimal: Fetch information about K-pop girl groups based...
+    short: Fetch information about K-pop girl groups based on various query parameters.
+    medium: Fetch information about K-pop girl groups based on various query parameters.
+    long: Fetch information about K-pop girl groups based on various query parameters.
+    verbose: Fetch information about K-pop girl groups based on various query parameters.
+  parameters:
+  - name: q
+    type: string
+    description: The search query to find specific girl groups.
+    required: true
+    default: Twice
+  - name: by
+    type: string
+    description: 'The field by which to search for girl groups. Default is ''Group Name''. Possible values include:'
+    required: false
+    default: Group Name
+  - name: limit
+    type: integer
+    description: The maximum number of results to return. Default is to return all available results.
+    required: false
+  - name: offset
+    type: integer
+    description: The number of results to skip before starting to return results. Default is 0.
+    required: false
+  tags:
+  - girl
+  - groups
+  test_prompts:
+    single:
+    - Retrieve information about the K-pop girl group 'Blackpink' by their Korean name, and limit the results to the top 5.
+    single_clear:
+    - Retrieve information about the K-pop girl group 'Blackpink' by their Korean name, and limit the results to the top 5.
+- name: house_prices_get_market_activity
+  descriptions:
+    minimal: Fetches the market activity for a specified area...
+    short: Fetches the market activity for a specified area using the Zoopla API.
+    medium: Fetches the market activity for a specified area using the Zoopla API.
+    long: Fetches the market activity for a specified area using the Zoopla API.
+    verbose: Fetches the market activity for a specified area using the Zoopla API.
+  parameters:
+  - name: area
+    type: string
+    description: The value of suggestions/value JSON object returned from the .../auto-complete endpoint. This value must
+      be used exactly as returned by the endpoint.
+    required: true
+    default: Greenwich Close, Crawley RH11
+  - name: identifier
+    type: string
+    description: The value of suggestions/identifier JSON object returned from the .../auto-complete endpoint. This value
+      must also be used exactly as returned by the endpoint. Defaults to 'west-sussex/crawley/greenwich-close'.
+    required: false
+    default: west-sussex/crawley/greenwich-close
+  tags:
+  - house
+  - prices
+  - get
+  test_prompts:
+    single:
+    - What are the market activities for the area identified as 'west-sussex/crawley/greenwich-close'?
+    single_clear:
+    - What are the market activities for the area identified as 'west-sussex/crawley/greenwich-close'?
+- name: hotel_details
+  descriptions:
+    minimal: Fetches detailed information about a specified...
+    short: Fetches detailed information about a specified hotel from the Priceline API.
+    medium: Fetches detailed information about a specified hotel from the Priceline API.
+    long: Fetches detailed information about a specified hotel from the Priceline API.
+    verbose: Fetches detailed information about a specified hotel from the Priceline API.
+  parameters:
+  - name: hotel_id
+    type: string
+    description: The PPN Hotel ID identifying the desired property.
+    required: true
+    default: '700008849'
+  - name: airport_limit
+    type: integer
+    description: Limit the number of nearby airports included in the response.
+    required: false
+  - name: check_in
+    type: string
+    description: Check-in date in 'YYYY-MM-DD' or 'MM/DD/YYYY' format.
+    required: false
+  - name: promo
+    type: boolean
+    description: Flag to include promotional data. Default is False.
+    required: false
+    default: true
+  - name: photos
+    type: boolean
+    description: Flag to include photo data. Default is False.
+    required: false
+    default: '1'
+  - name: videos
+    type: boolean
+    description: Flag to include video data. Default is False.
+    required: false
+    default: true
+  - name: guest_score_breakdown
+    type: boolean
+    description: Flag to include guest score breakdown data. Default is False.
+    required: false
+    default: true
+  - name: reviews
+    type: boolean
+    description: Flag to include hotel review data. Default is False.
+    required: false
+    default: '1'
+  - name: city_limit
+    type: integer
+    description: Limit the number of cities included in the response.
+    required: false
+  - name: sid
+    type: string
+    description: Session ID. Default is 'iSiX639'.
+    required: false
+    default: iSiX639
+  - name: important_info
+    type: boolean
+    description: Flag to include extra details about the hotel. Default is False.
+    required: false
+    default: true
+  - name: recent
+    type: boolean
+    description: Flag to include recent sales data. Default is False.
+    required: false
+    default: true
+  - name: poi_limit
+    type: integer
+    description: Limit the number of points of interest included in the response.
+    required: false
+  - name: plugins
+    type: boolean
+    description: Flag to include plugin information. Default is False.
+    required: false
+    default: true
+  - name: image_size
+    type: string
+    description: The size of the images returned. Options are 'small', 'medium', or 'large'.
+    required: false
+  - name: id_lookup
+    type: boolean
+    description: Flag to search non-PPN Hotel IDs. Default is False.
+    required: false
+    default: true
+  - name: check_out
+    type: string
+    description: Check-out date in 'YYYY-MM-DD' or 'MM/DD/YYYY' format.
+    required: false
+  - name: currency
+    type: string
+    description: The currency format for the results, in ISO 4217 format.
+    required: false
+  - name: nearby
+    type: boolean
+    description: Flag to include nearby location data such as city, airport, and points of interest. Default is False.
+    required: false
+    default: true
+  tags:
+  - hotel
+  - details
+  test_prompts:
+    single:
+    - Fetch detailed information about hotel with ID '12345' including photos and reviews.
+    single_clear:
+    - Fetch detailed information about hotel with ID '12345' including photos and reviews.
+- name: options_prices
+  descriptions:
+    minimal: Fetch current options data given the input...
+    short: Fetch current options data given the input parameters.
+    medium: Fetch current options data given the input parameters.
+    long: Fetch current options data given the input parameters.
+    verbose: Fetch current options data given the input parameters.
+  parameters:
+  - name: type
+    type: string
+    description: The type of option contract ('Call' or 'Put').
+    required: true
+    default: Call
+  - name: symbol
+    type: string
+    description: The symbol of the asset to look for, e.g., 'AAPL' (Apple Inc), 'MSFT' (Microsoft).
+    required: true
+    default: AAPL
+  - name: min_strike
+    type: integer
+    description: A lower bound for the strike price. Default is 50. If provided, the strike range [min_strike, max_strike]
+      takes priority over the strike parameter.
+    required: false
+    default: '50'
+  - name: min_expiry
+    type: string
+    description: A lower bound for the expiration date in the format 'YYYY-MM-DD'. Default is '2021-05-21'. If provided, the
+      expiry range [min_expiry, max_expiry] takes priority over the expiration parameter.
+    required: false
+    default: '2021-05-21'
+  - name: max_expiry
+    type: string
+    description: An upper bound for the expiration date in the format 'YYYY-MM-DD'. Default is '2023-12-14'. If provided,
+      the expiry range [min_expiry, max_expiry] takes priority over the expiration parameter.
+    required: false
+    default: '2023-12-14'
+  - name: max_strike
+    type: integer
+    description: An upper bound for the strike price. Default is 90. If provided, the strike range [min_strike, max_strike]
+      takes priority over the strike parameter.
+    required: false
+    default: '90'
+  - name: strike
+    type: integer
+    description: A lower bound for the strike price. Default is 50. If provided, the strike range [min_strike, max_strike]
+      takes priority over the strike parameter.
+    required: false
+    default: '122.00'
+  - name: expiration
+    type: string
+    description: The expiration date of the option in the format 'YYYY-MM-DD'. Default is '2023-12-14'.
+    required: false
+    default: '2023-12-14'
+  tags:
+  - options
+  - prices
+  test_prompts:
+    single:
+    - Fetch the prices for put options of AMZN with a minimum strike of 1800 and maximum expiration of 2023-10-31.
+    single_clear:
+    - Fetch the prices for put options of AMZN with a minimum strike of 1800 and maximum expiration of 2023-10-31.
+- name: is_perfect_square
+  descriptions:
+    minimal: Checks if a number is a perfect square.
+    short: Checks if a number is a perfect square.
+    medium: Checks if a number is a perfect square.
+    long: Checks if a number is a perfect square.
+    verbose: Checks if a number is a perfect square.
+  parameters:
+  - name: num
+    type: integer
+    description: The number to check.
+    required: true
+  tags:
+  - is
+  - perfect
+  - square
+  test_prompts:
+    single:
+    - Check if 225 is a perfect square.
+    - Determine if the number 144 is a perfect square.
+    - Is 144 a perfect square?
+    single_clear:
+    - Check if 225 is a perfect square.
+    - Determine if the number 144 is a perfect square.
+    - Is 144 a perfect square?
+- name: properties_get_running_costs
+  descriptions:
+    minimal: Fetch the running costs associated with a given...
+    short: Fetch the running costs associated with a given property listing from Zoopla API.
+    medium: Fetch the running costs associated with a given property listing from Zoopla API.
+    long: Fetch the running costs associated with a given property listing from Zoopla API.
+    verbose: Fetch the running costs associated with a given property listing from Zoopla API.
+  parameters:
+  - name: listing_id
+    type: integer
+    description: The ID of the property listing returned from the /properties/list endpoint.
+    required: true
+    default: '56354192'
+  - name: category
+    type: string
+    description: The category of the property. Either 'residential' or 'commercial'. Default is 'residential'.
+    required: false
+    default: residential
+  - name: section
+    type: string
+    description: The section of the property. Either 'for-sale' or 'to-rent'. Default is 'to-rent'.
+    required: false
+    default: to-rent
+  tags:
+  - properties
+  - get
+  - running
+  test_prompts:
+    single:
+    - Fetch the running costs for a residential property listed under ID 987654, categorized as 'to-rent'.
+    - Can you find the running costs for a residential property listed under ID 123456 in the to-rent section?
+    single_clear:
+    - Fetch the running costs for a residential property listed under ID 987654, categorized as 'to-rent'.
+    - Can you find the running costs for a residential property listed under ID 123456 in the to-rent section?
+- name: fights
+  descriptions:
+    minimal: Fetches fights for either upcoming or previous...
+    short: Fetches fights for either upcoming or previous events from the Spectation Sports Events API.
+    medium: Fetches fights for either upcoming or previous events from the Spectation Sports Events API.
+    long: Fetches fights for either upcoming or previous events from the Spectation Sports Events API.
+    verbose: Fetches fights for either upcoming or previous events from the Spectation Sports Events API.
+  parameters:
+  - name: outcome
+    type: string
+    description: The outcome of the fights to filter by. Defaults to None.
+    required: false
+  - name: sport
+    type: string
+    description: The type of sport to filter the fights by. Defaults to None.
+    required: false
+  - name: type
+    type: string
+    description: The type of fights to fetch (e.g., 'upcoming' or 'previous'). Defaults to 'upcoming'.
+    required: false
+    default: upcoming
+  - name: category
+    type: string
+    description: The category or weight division of the fights. Defaults to None.
+    required: false
+  - name: event
+    type: integer
+    description: The ID of the event to fetch fights for. Defaults to None.
+    required: false
+  - name: page
+    type: integer
+    description: The page number of results to retrieve. Defaults to 1.
+    required: false
+    default: '1'
+  - name: fighter
+    type: integer
+    description: The ID of the fighter to fetch fights for. Defaults to None.
+    required: false
+  tags:
+  - fights
+  test_prompts:
+    single:
+    - Retrieve all previous MMA fights involving fighter with ID 1234.
+    single_clear:
+    - Retrieve all previous MMA fights involving fighter with ID 1234.
+- name: get_information_of_a_particular_post
+  descriptions:
+    minimal: Fetch information about a specific post using its...
+    short: Fetch information about a specific post using its post ID.
+    medium: Fetch information about a specific post using its post ID.
+    long: Fetch information about a specific post using its post ID.
+    verbose: Fetch information about a specific post using its post ID.
+  parameters:
+  - name: postid
+    type: string
+    description: The unique identifier of the post for which information is to be retrieved.
+    required: true
+    default: '2796025'
+  tags:
+  - get
+  - information
+  - of
+  test_prompts:
+    single:
+    - Can you get the information for the post '98765'?
+    - Retrieve information about the LeetCode post with ID '12345'.
+    single_clear:
+    - Can you get the information for the post '98765'?
+    - Retrieve information about the LeetCode post with ID '12345'.
+- name: getrandomarray
+  descriptions:
+    minimal: Generate a random array with specified data type...
+    short: Generate a random array with specified data type and size using the Toolbench RapidAPI service.
+    medium: Generate a random array with specified data type and size using the Toolbench RapidAPI service.
+    long: Generate a random array with specified data type and size using the Toolbench RapidAPI service.
+    verbose: Generate a random array with specified data type and size using the Toolbench RapidAPI service.
+  parameters:
+  - name: data_type
+    type: string
+    description: The type of data to include in the array. Options are 'string', 'number', 'mixed', etc. Default is 'string'.
+    required: true
+    default: string
+  - name: size
+    type: integer
+    description: The number of elements in the array. Default is 5.
+    required: true
+    default: '5'
+  tags:
+  - getrandomarray
+  test_prompts:
+    single:
+    - Generate a random array of 10 numbers.
+    - Create a random array of numbers with a size of 15.
+    - Generate a random array of 10 numbers.
+    single_clear:
+    - Generate a random array of 10 numbers.
+    - Create a random array of numbers with a size of 15.
+    - Generate a random array of 10 numbers.
+- name: current_block_number
+  descriptions:
+    minimal: Fetch the current block number of the Optimism...
+    short: Fetch the current block number of the Optimism blockchain.
+    medium: Fetch the current block number of the Optimism blockchain.
+    long: Fetch the current block number of the Optimism blockchain.
+    verbose: Fetch the current block number of the Optimism blockchain.
+  parameters:
+  - name: network
+    type: string
+    description: The network to query, either "mainnet" or "testnet". Defaults to None.
+    required: false
+  tags:
+  - current
+  - block
+  - number
+  test_prompts:
+    single:
+    - What is the current block number on the Optimism testnet?
+    single_clear:
+    - What is the current block number on the Optimism testnet?
+- name: camelizer_get_prices
+  descriptions:
+    minimal: Retrieves the latest prices, and the historical...
+    short: Retrieves the latest prices, and the historical highest and lowest prices of a product from Amazon using its ASIN
+      code.
+    medium: Retrieves the latest prices, and the historical highest and lowest prices of a product from Amazon using its ASIN
+      code.
+    long: Retrieves the latest prices, and the historical highest and lowest prices of a product from Amazon using its ASIN
+      code.
+    verbose: Retrieves the latest prices, and the historical highest and lowest prices of a product from Amazon using its
+      ASIN code.
+  parameters:
+  - name: asin
+    type: string
+    description: The ASIN number of a product from Amazon, formatted as a string (e.g., 'B08QB93S6R').
+    required: true
+  - name: locale
+    type: string
+    description: The locale code to specify the Amazon region. Defaults to 'us'. Options include 'au', 'ca', 'fr', 'de', 'it',
+      'es', 'uk', 'us'.
+    required: false
+    default: us
+  tags:
+  - camelizer
+  - get
+  - prices
+  test_prompts:
+    single:
+    - Retrieve the historical price data for the product with ASIN B01M87FBSN in the UK.
+    single_clear:
+    - Retrieve the historical price data for the product with ASIN B01M87FBSN in the UK.
+- name: drawing_by_date
+  descriptions:
+    minimal: Fetches the winning Cash4Life number set from a...
+    short: Fetches the winning Cash4Life number set from a specific drawing date using the Toolbench RapidAPI.
+    medium: Fetches the winning Cash4Life number set from a specific drawing date using the Toolbench RapidAPI.
+    long: Fetches the winning Cash4Life number set from a specific drawing date using the Toolbench RapidAPI.
+    verbose: Fetches the winning Cash4Life number set from a specific drawing date using the Toolbench RapidAPI.
+  parameters:
+  - name: date
+    type: string
+    description: The specific drawing date in the format 'YYYY-MM-DD'.
+    required: true
+    default: '2023-01-05'
+  tags:
+  - drawing
+  - by
+  - date
+  test_prompts:
+    single:
+    - What were the winning numbers in the Cash4Life drawing on December 31st, 2022?
+    - What were the winning numbers for the Lotto America drawing on January 1st, 2021?
+    single_clear:
+    - What were the winning numbers in the Cash4Life drawing on December 31st, 2022?
+    - What were the winning numbers for the Lotto America drawing on January 1st, 2021?
+- name: concerts
+  descriptions:
+    minimal: Fetches concert information using the Spotify API...
+    short: Fetches concert information using the Spotify API through RapidAPI, filtered by the specified geographical location.
+    medium: Fetches concert information using the Spotify API through RapidAPI, filtered by the specified geographical location.
+    long: Fetches concert information using the Spotify API through RapidAPI, filtered by the specified geographical location.
+    verbose: Fetches concert information using the Spotify API through RapidAPI, filtered by the specified geographical location.
+  parameters:
+  - name: gl
+    type: string
+    description: The geographical location filter to apply when fetching concert information.
+    required: true
+    default: US
+  tags:
+  - concerts
+  test_prompts:
+    single:
+    - Get concert information for events happening in New York.
+    single_clear:
+    - Get concert information for events happening in New York.
+- name: v1_vinlookup
+  descriptions:
+    minimal: Retrieves key vehicle information including...
+    short: Retrieves key vehicle information including manufacturer, country of origin, and model year for a given VIN using
+      the API Ninjas VIN Lookup API.
+    medium: Retrieves key vehicle information including manufacturer, country of origin, and model year for a given VIN using
+      the API Ninjas VIN Lookup API.
+    long: Retrieves key vehicle information including manufacturer, country of origin, and model year for a given VIN using
+      the API Ninjas VIN Lookup API.
+    verbose: Retrieves key vehicle information including manufacturer, country of origin, and model year for a given VIN using
+      the API Ninjas VIN Lookup API.
+  parameters:
+  - name: vin
+    type: string
+    description: A valid Vehicle Identification Number (VIN), which must be a 17-character string.
+    required: true
+    default: JH4KA7561PC008269
+  tags:
+  - v1
+  - vinlookup
+  test_prompts:
+    single:
+    - Retrieve information for a vehicle with VIN 5XYZU3LA3DG123456.
+    single_clear:
+    - Retrieve information for a vehicle with VIN 5XYZU3LA3DG123456.
+- name: getscreen
+  descriptions:
+    minimal: Fetches a screenshot of the screen in the current...
+    short: Fetches a screenshot of the screen in the current session for the given phone ID.
+    medium: Fetches a screenshot of the screen in the current session for the given phone ID.
+    long: Fetches a screenshot of the screen in the current session for the given phone ID.
+    verbose: Fetches a screenshot of the screen in the current session for the given phone ID.
+  parameters:
+  - name: phone_id
+    type: string
+    description: The unique identifier of the phone whose screen session is to be captured.
+    required: true
+  tags:
+  - getscreen
+  test_prompts:
+    single:
+    - Capture a screenshot of the current session for phone ID '1234567890'.
+    - Take a screenshot of the current session for phone ID '9876543210'.
+    single_clear:
+    - Capture a screenshot of the current session for phone ID '1234567890'.
+    - Take a screenshot of the current session for phone ID '9876543210'.
+- name: review
+  descriptions:
+    minimal: Fetches reviews for a given recipe from the...
+    short: Fetches reviews for a given recipe from the Worldwide Recipes API.
+    medium: Fetches reviews for a given recipe from the Worldwide Recipes API.
+    long: Fetches reviews for a given recipe from the Worldwide Recipes API.
+    verbose: Fetches reviews for a given recipe from the Worldwide Recipes API.
+  parameters:
+  - name: recipe_id
+    type: string
+    description: The unique identifier of the recipe.
+    required: true
+    default: 8282fe1d-1222-4da0-9d12-cfb97f50944e
+  - name: offset
+    type: integer
+    description: The offset for pagination of reviews. Defaults to None.
+    required: false
+  tags:
+  - review
+  test_prompts:
+    single:
+    - Fetch reviews for '54321' recipe ID, starting from the 5th review.
+    single_clear:
+    - Fetch reviews for '54321' recipe ID, starting from the 5th review.
+- name: convert_date
+  descriptions:
+    minimal: Convert a date to a specified calendar format...
+    short: Convert a date to a specified calendar format using the Calendar Converter API.
+    medium: Convert a date to a specified calendar format using the Calendar Converter API.
+    long: Convert a date to a specified calendar format using the Calendar Converter API.
+    verbose: Convert a date to a specified calendar format using the Calendar Converter API.
+  parameters:
+  - name: to
+    type: string
+    description: 'The target calendar format to which the date will be converted. Possible values are:'
+    required: true
+  - name: date
+    type: string
+    description: The date to be converted, in "yyyy-mm-dd" format. Default is '1986-09-03'.
+    required: false
+    default: '1986-09-03'
+  - name: is_from
+    type: string
+    description: The calendar format of the input date. If not specified, the input date is assumed to be in Gregorian format.
+    required: false
+  tags:
+  - convert
+  - date
+  test_prompts:
+    single:
+    - How would January 1, 2025 be represented in the Maya calendar?
+    single_clear:
+    - How would January 1, 2025 be represented in the Maya calendar?
+- name: auto_complete_deprecated
+  descriptions:
+    minimal: Fetches suggestions for a given term or phrase...
+    short: Fetches suggestions for a given term or phrase from the Trading View API.
+    medium: Fetches suggestions for a given term or phrase from the Trading View API.
+    long: Fetches suggestions for a given term or phrase from the Trading View API.
+    verbose: Fetches suggestions for a given term or phrase from the Trading View API.
+  parameters:
+  - name: text
+    type: string
+    description: Any term or phrase for which to get suggestions.
+    required: true
+    default: tesla
+  - name: type
+    type: string
+    description: 'The category of suggestions to retrieve, one of the following:'
+    required: false
+  - name: lang
+    type: string
+    description: The language code for the suggestions. Defaults to 'en'.
+    required: false
+    default: en
+  - name: exchange
+    type: string
+    description: The exchange code as provided by the Trading View API's exchanges list endpoint.
+    required: false
+  tags:
+  - auto
+  - complete
+  - deprecated
+  test_prompts:
+    single:
+    - Find futures related to 'Oil' in English.
+    single_clear:
+    - Find futures related to 'Oil' in English.
+- name: find_duplicate_number
+  descriptions:
+    minimal: Finds the duplicate number in a list of integers.
+    short: Finds the duplicate number in a list of integers.
+    medium: Finds the duplicate number in a list of integers.
+    long: Finds the duplicate number in a list of integers.
+    verbose: Finds the duplicate number in a list of integers.
+  parameters:
+  - name: nums
+    type: string
+    description: The list of integers.
+    required: true
+  tags:
+  - find
+  - duplicate
+  - number
+  test_prompts:
+    single:
+    - Locate the duplicate number in the sequence [1, 2, 3, 4, 4].
+    - Can you find the duplicate number in the list [1, 3, 4, 2, 2]?
+    - Find the duplicate number in the list [1, 3, 4, 2, 2]
+    - I suspect there is a duplicate in the list [1, 3, 5, 7, 9, 2, 4, 6, 8, 10, 10]. Can you confirm this?
+    - I have a list of numbers [3, 1, 3, 4, 2]. What is the duplicate number here?
+    - Find the duplicate number in the list [1, 3, 4, 2, 2].
+    - Find the duplicate number in the list [1, 3, 4, 2, 2].
+    single_clear:
+    - Locate the duplicate number in the sequence [1, 2, 3, 4, 4].
+    - Can you find the duplicate number in the list [1, 3, 4, 2, 2]?
+    - Find the duplicate number in the list [1, 3, 4, 2, 2]
+    - I suspect there is a duplicate in the list [1, 3, 5, 7, 9, 2, 4, 6, 8, 10, 10]. Can you confirm this?
+    - I have a list of numbers [3, 1, 3, 4, 2]. What is the duplicate number here?
+    - Find the duplicate number in the list [1, 3, 4, 2, 2].
+    - Find the duplicate number in the list [1, 3, 4, 2, 2].
+- name: custom_dice
+  descriptions:
+    minimal: Roll a specified number of dice with a specified...
+    short: Roll a specified number of dice with a specified number of sides using the RapidAPI Dice Roll Simulator.
+    medium: Roll a specified number of dice with a specified number of sides using the RapidAPI Dice Roll Simulator.
+    long: Roll a specified number of dice with a specified number of sides using the RapidAPI Dice Roll Simulator.
+    verbose: Roll a specified number of dice with a specified number of sides using the RapidAPI Dice Roll Simulator.
+  parameters:
+  - name: dice
+    type: integer
+    description: The number of dice to roll. Defaults to 3.
+    required: false
+    default: '3'
+  - name: sides
+    type: integer
+    description: The number of sides on each die. Defaults to 8.
+    required: false
+    default: '8'
+  tags:
+  - custom
+  - dice
+  test_prompts:
+    single:
+    - Perform a roll with 4 dice, each having 12 sides.
+    - Roll 2 ten-sided dice.
+    single_clear:
+    - Perform a roll with 4 dice, each having 12 sides.
+    - Roll 2 ten-sided dice.
+- name: artist_singles
+  descriptions:
+    minimal: Fetches singles of an artist from the Spotify API...
+    short: Fetches singles of an artist from the Spotify API using the provided artist ID.
+    medium: Fetches singles of an artist from the Spotify API using the provided artist ID.
+    long: Fetches singles of an artist from the Spotify API using the provided artist ID.
+    verbose: Fetches singles of an artist from the Spotify API using the provided artist ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The Spotify artist ID. Default is '2w9zwq3AktTeYYMuhMjju8'.
+    required: true
+    default: 2w9zwq3AktTeYYMuhMjju8
+  - name: offset
+    type: string
+    description: The index of the first single to return. Default is '0'.
+    required: true
+    default: '0'
+  - name: limit
+    type: string
+    description: The maximum number of singles to return. Default is '20'.
+    required: true
+    default: '20'
+  tags:
+  - artist
+  - singles
+  test_prompts:
+    single:
+    - I need to see the singles of the artist with ID '1uNFoZAHBGtllmzznpZ9Z' from the 15th to the 25th. Can you do that?
+    single_clear:
+    - I need to see the singles of the artist with ID '1uNFoZAHBGtllmzznpZ9Z' from the 15th to the 25th. Can you do that?
+- name: prematch_event
+  descriptions:
+    minimal: Fetches pre-match event data from a sports...
+    short: Fetches pre-match event data from a sports betting API.
+    medium: Fetches pre-match event data from a sports betting API.
+    long: Fetches pre-match event data from a sports betting API.
+    verbose: Fetches pre-match event data from a sports betting API.
+  parameters:
+  - name: lang
+    type: string
+    description: The language code for the API response.
+    required: true
+    default: en
+  - name: evt
+    type: integer
+    description: The event ID to fetch information for.
+    required: true
+  tags:
+  - prematch
+  - event
+  test_prompts:
+    single:
+    - What is the pre-match information for a volleyball game in Portuguese with event ID 24681?
+    - Get pre-match event data for a soccer match with event ID 54321 in English.
+    - Fetch pre-match event data for a handball match in Chinese with event ID 48123.
+    - Provide pre-match information for a tennis match in French with event ID 24680.
+    single_clear:
+    - What is the pre-match information for a volleyball game in Portuguese with event ID 24681?
+    - Get pre-match event data for a soccer match with event ID 54321 in English.
+    - Fetch pre-match event data for a handball match in Chinese with event ID 48123.
+    - Provide pre-match information for a tennis match in French with event ID 24680.

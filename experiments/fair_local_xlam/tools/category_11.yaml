@@ -1,0 +1,760 @@
+category: category_11
+tools:
+- name: get_open_profile_status
+  descriptions:
+    minimal: Check if a given LinkedIn profile URL has an open...
+    short: Check if a given LinkedIn profile URL has an open profile using the RapidAPI service.
+    medium: Check if a given LinkedIn profile URL has an open profile using the RapidAPI service.
+    long: Check if a given LinkedIn profile URL has an open profile using the RapidAPI service.
+    verbose: Check if a given LinkedIn profile URL has an open profile using the RapidAPI service.
+  parameters:
+  - name: linkedin_url
+    type: string
+    description: The URL of the LinkedIn profile to check.
+    required: true
+    default: https://www.linkedin.com/in/williamhgates/
+  tags:
+  - get
+  - open
+  - profile
+  test_prompts:
+    single:
+    - Can you tell me the open profile status for the LinkedIn page https://www.linkedin.com/in/janedoe456?
+    single_clear:
+    - Can you tell me the open profile status for the LinkedIn page https://www.linkedin.com/in/janedoe456?
+- name: get_all_latest_nba_articles
+  descriptions:
+    minimal: Fetches the latest NBA articles with optional...
+    short: Fetches the latest NBA articles with optional filters for source, team, player, and limit.
+    medium: Fetches the latest NBA articles with optional filters for source, team, player, and limit.
+    long: Fetches the latest NBA articles with optional filters for source, team, player, and limit.
+    verbose: Fetches the latest NBA articles with optional filters for source, team, player, and limit.
+  parameters:
+  - name: limit
+    type: string
+    description: The maximum number of articles to retrieve. Default is `None`.
+    required: false
+  - name: player
+    type: string
+    description: The player's name for which to filter articles, use a dash to separate names (e.g., 'kevin-durant'). Default
+      is `None`.
+    required: false
+  - name: team
+    type: string
+    description: The team name for which to filter articles (e.g., 'lakers'). Default is `None`.
+    required: false
+  - name: source
+    type: string
+    description: The source of the articles (e.g., 'bleacher-report', 'nba', 'espn'). Default is `None`.
+    required: false
+  tags:
+  - get
+  - all
+  - latest
+  test_prompts:
+    single:
+    - What are the latest NBA articles about LeBron James from ESPN?
+    single_clear:
+    - What are the latest NBA articles about LeBron James from ESPN?
+- name: sentence
+  descriptions:
+    minimal: This function creates lorem ipsum text by...
+    short: This function creates lorem ipsum text by specifying the number of sentences to generate.
+    medium: This function creates lorem ipsum text by specifying the number of sentences to generate. It makes a request to
+      the RapidAPI lorem ipsum service.
+    long: This function creates lorem ipsum text by specifying the number of sentences to generate. It makes a request to
+      the RapidAPI lorem ipsum service.
+    verbose: This function creates lorem ipsum text by specifying the number of sentences to generate. It makes a request
+      to the RapidAPI lorem ipsum service.
+  parameters:
+  - name: amount
+    type: integer
+    description: Number of sentences to generate. Defaults to 2.
+    required: true
+    default: '2'
+  tags:
+  - sentence
+  test_prompts:
+    single:
+    - Generate 5 sentences of Lorem Ipsum text.
+    - What are 4 sentences of lorem ipsum text that can be used in a blog post?
+    single_clear:
+    - Generate 5 sentences of Lorem Ipsum text.
+    - What are 4 sentences of lorem ipsum text that can be used in a blog post?
+- name: predict_evolution_rate
+  descriptions:
+    minimal: Predict the evolutionary rate for a specific...
+    short: Predict the evolutionary rate for a specific species for a given timeframe.
+    medium: Predict the evolutionary rate for a specific species for a given timeframe.
+    long: Predict the evolutionary rate for a specific species for a given timeframe.
+    verbose: Predict the evolutionary rate for a specific species for a given timeframe.
+  parameters:
+  - name: species
+    type: string
+    description: The species that the evolution rate will be predicted for.
+    required: true
+    default: Darwin
+  - name: years
+    type: integer
+    description: Number of years for the prediction.
+    required: true
+    default: Darwin
+  - name: model
+    type: string
+    description: 'The model used to make the prediction, options: ''Darwin'', ''Lamarck'', default is ''Darwin''.'
+    required: true
+  tags:
+  - predict
+  - evolution
+  - rate
+  test_prompts:
+    single:
+    - Predict the evolution rate of cats over 20 years using Lamarck's model.
+    - Predict the evolution rate of the species 'Canis lupus familiaris' over the next 50 years using the Lamarck model.
+    - I need to know how the evolution rate of the common house mouse will change over 15 years. Use the default model.
+    - How will the evolution of 'Canis lupus familiaris' (domestic dog) look like over 50 years according to Darwin's model?
+    - Predict the evolutionary rate of the human species over 100 years using the Lamarck model.
+    single_clear:
+    - Predict the evolution rate of cats over 20 years using Lamarck's model.
+    - Predict the evolution rate of the species 'Canis lupus familiaris' over the next 50 years using the Lamarck model.
+    - I need to know how the evolution rate of the common house mouse will change over 15 years. Use the default model.
+    - How will the evolution of 'Canis lupus familiaris' (domestic dog) look like over 50 years according to Darwin's model?
+    - Predict the evolutionary rate of the human species over 100 years using the Lamarck model.
+- name: v1_iplookup
+  descriptions:
+    minimal: Performs an IP address lookup using the API...
+    short: Performs an IP address lookup using the API Ninjas IP Lookup API.
+    medium: Performs an IP address lookup using the API Ninjas IP Lookup API.
+    long: Performs an IP address lookup using the API Ninjas IP Lookup API.
+    verbose: Performs an IP address lookup using the API Ninjas IP Lookup API.
+  parameters:
+  - name: address
+    type: string
+    description: The IP address to query. Must be in the format A.B.C.D (e.g., 73.9.149.180).
+    required: true
+    default: 24.48.0.3
+  tags:
+  - v1
+  - iplookup
+  test_prompts:
+    single:
+    - What is the city and country for IP 216.58.212.206?
+    single_clear:
+    - What is the city and country for IP 216.58.212.206?
+- name: matrix_multiply
+  descriptions:
+    minimal: Multiplies two matrices.
+    short: Multiplies two matrices.
+    medium: Multiplies two matrices.
+    long: Multiplies two matrices.
+    verbose: Multiplies two matrices.
+  parameters:
+  - name: matrix_a
+    type: string
+    description: The first matrix.
+    required: true
+  - name: matrix_b
+    type: string
+    description: The second matrix.
+    required: true
+  tags:
+  - matrix
+  - multiply
+  test_prompts:
+    single:
+    - 'I have two matrices: [[1, 2, 3], [4, 5, 6]] and [[7, 8], [9, 10], [11, 12]]. Can you multiply them?'
+    - 'Multiply these two matrices: [[1,2,3],[4,5,6]] and [[7,8],[9,10],[11,12]].'
+    - 'Multiply two matrices: [[1, 2, 3], [4, 5, 6]] and [[7, 8], [9, 10], [11, 12]]'
+    - 'Multiply two matrices: [[1, 1, 1], [2, 2, 2], [3, 3, 3]] and [[1, 2, 3], [1, 2, 3], [1, 2, 3]].'
+    - Determine the multiplication result of two matrices C and D where C is a 2x2 matrix with elements [1, 2; 3, 4] and D
+      is a 2x2 matrix with elements [5, 6; 7, 8].
+    - 'Multiply two matrices: one with rows [1, 2, 3] and [4, 5, 6], and another with rows [7, 8], [9, 10], [11, 12].'
+    - Multiply matrices A=[[1, 2], [3, 4], [5, 6]] and B=[[7, 8, 9], [10, 11, 12]].
+    single_clear:
+    - 'I have two matrices: [[1, 2, 3], [4, 5, 6]] and [[7, 8], [9, 10], [11, 12]]. Can you multiply them?'
+    - 'Multiply these two matrices: [[1,2,3],[4,5,6]] and [[7,8],[9,10],[11,12]].'
+    - 'Multiply two matrices: [[1, 2, 3], [4, 5, 6]] and [[7, 8], [9, 10], [11, 12]]'
+    - 'Multiply two matrices: [[1, 1, 1], [2, 2, 2], [3, 3, 3]] and [[1, 2, 3], [1, 2, 3], [1, 2, 3]].'
+    - Determine the multiplication result of two matrices C and D where C is a 2x2 matrix with elements [1, 2; 3, 4] and D
+      is a 2x2 matrix with elements [5, 6; 7, 8].
+    - 'Multiply two matrices: one with rows [1, 2, 3] and [4, 5, 6], and another with rows [7, 8], [9, 10], [11, 12].'
+    - Multiply matrices A=[[1, 2], [3, 4], [5, 6]] and B=[[7, 8, 9], [10, 11, 12]].
+- name: chapters_list_paginated
+  descriptions:
+    minimal: Fetches a paginated list of chapters for a...
+    short: Fetches a paginated list of chapters for a specific webtoon from a specified provider.
+    medium: Fetches a paginated list of chapters for a specific webtoon from a specified provider.
+    long: Fetches a paginated list of chapters for a specific webtoon from a specified provider.
+    verbose: Fetches a paginated list of chapters for a specific webtoon from a specified provider.
+  parameters:
+  - name: provider
+    type: string
+    description: The slug identifying the webtoon provider. Refer to /providers for the list of providers.
+    required: true
+    default: cosmic
+  - name: webtoon
+    type: string
+    description: The slug identifying the webtoon. Refer to /webtoons for the list of webtoons.
+    required: true
+    default: eleceed
+  - name: limit
+    type: integer
+    description: The number of results to return per page, between 1 and 20.
+    required: true
+    default: '10'
+  - name: page
+    type: integer
+    description: The page number to fetch.
+    required: true
+    default: '1'
+  tags:
+  - chapters
+  - list
+  - paginated
+  test_prompts:
+    single:
+    - List the chapters for the webtoon 'Solo Leveling' from the 'kakao' provider, with a limit of 15 results on page 3.
+    - Can you fetch the first 10 chapters of 'Naruto' from the 'MangaHere' provider on page 1?
+    single_clear:
+    - List the chapters for the webtoon 'Solo Leveling' from the 'kakao' provider, with a limit of 15 results on page 3.
+    - Can you fetch the first 10 chapters of 'Naruto' from the 'MangaHere' provider on page 1?
+- name: software_assets
+  descriptions:
+    minimal: Fetch details of SaaS/Software tools based on...
+    short: Fetch details of SaaS/Software tools based on specified feature tags or software name.
+    medium: Fetch details of SaaS/Software tools based on specified feature tags or software name.
+    long: Fetch details of SaaS/Software tools based on specified feature tags or software name.
+    verbose: Fetch details of SaaS/Software tools based on specified feature tags or software name.
+  parameters:
+  - name: q
+    type: string
+    description: Query string representing the list of feature tags or the name of the software for which details are to be
+      fetched.
+    required: true
+    default: email-marketing, landing-pages
+  tags:
+  - software
+  - assets
+  test_prompts:
+    single:
+    - Find SaaS tools that include 'CRM' and 'analytics' features.
+    single_clear:
+    - Find SaaS tools that include 'CRM' and 'analytics' features.
+- name: latest
+  descriptions:
+    minimal: Fetches the latest exchange rates for specified...
+    short: Fetches the latest exchange rates for specified currencies.
+    medium: Fetches the latest exchange rates for specified currencies.
+    long: Fetches the latest exchange rates for specified currencies.
+    verbose: Fetches the latest exchange rates for specified currencies.
+  parameters:
+  - name: to
+    type: string
+    description: Comma-separated list of currencies to limit the returned rates (default is 'USD,AUD').
+    required: true
+    default: USD,AUD
+  - name: is_from
+    type: string
+    description: The base currency for the rates (default is 'EUR').
+    required: true
+    default: EUR
+  tags:
+  - latest
+  test_prompts:
+    single:
+    - Fetch the latest exchange rates from EUR to USD and JPY.
+    - Retrieve the latest news in Dutch from the Netherlands.
+    single_clear:
+    - Fetch the latest exchange rates from EUR to USD and JPY.
+    - Retrieve the latest news in Dutch from the Netherlands.
+- name: get_breed_information
+  descriptions:
+    minimal: Retrieve information for a specific dog breed...
+    short: Retrieve information for a specific dog breed from the RapidAPI service.
+    medium: Retrieve information for a specific dog breed from the RapidAPI service.
+    long: Retrieve information for a specific dog breed from the RapidAPI service.
+    verbose: Retrieve information for a specific dog breed from the RapidAPI service.
+  parameters:
+  - name: breed
+    type: string
+    description: The name of the dog breed to get information about.
+    required: true
+    default: Cretan Hound
+  tags:
+  - get
+  - breed
+  - information
+  test_prompts:
+    single:
+    - I'm interested in the training requirements and the coat color of the Siberian Husky breed.
+    - What information can be obtained about the Maine Coon cat breed?
+    single_clear:
+    - I'm interested in the training requirements and the coat color of the Siberian Husky breed.
+    - What information can be obtained about the Maine Coon cat breed?
+- name: calculate_age
+  descriptions:
+    minimal: Calculates the age based on the birthdate.
+    short: Calculates the age based on the birthdate.
+    medium: Calculates the age based on the birthdate.
+    long: Calculates the age based on the birthdate.
+    verbose: Calculates the age based on the birthdate.
+  parameters:
+  - name: birthdate
+    type: string
+    description: The birthdate in the format 'YYYY-MM-DD'.
+    required: true
+  tags:
+  - calculate
+  - age
+  test_prompts:
+    single:
+    - Calculate the age of a person born on 1990-01-01
+    - Determine the age of a person born on 1990-01-01.
+    - How old is someone born on January 1, 1990?
+    - I need to know the age of a person born on July 4th, 1976.
+    single_clear:
+    - Calculate the age of a person born on 1990-01-01
+    - Determine the age of a person born on 1990-01-01.
+    - How old is someone born on January 1, 1990?
+    - I need to know the age of a person born on July 4th, 1976.
+- name: get_cities_by_filter
+  descriptions:
+    minimal: Fetches cities information based on the provided...
+    short: Fetches cities information based on the provided filter ID using the RapidAPI service.
+    medium: Fetches cities information based on the provided filter ID using the RapidAPI service.
+    long: Fetches cities information based on the provided filter ID using the RapidAPI service.
+    verbose: Fetches cities information based on the provided filter ID using the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: string
+    description: The filter ID used to specify which cities to fetch information for.
+    required: true
+  tags:
+  - get
+  - cities
+  - by
+  test_prompts:
+    single:
+    - Get information on cities filtered by ID 'highest_temperature'.
+    single_clear:
+    - Get information on cities filtered by ID 'highest_temperature'.
+- name: onpage_seo_analyze
+  descriptions:
+    minimal: Analyzes on-page SEO for a given website using...
+    short: Analyzes on-page SEO for a given website using the Toolbench RapidAPI service.
+    medium: Analyzes on-page SEO for a given website using the Toolbench RapidAPI service.
+    long: Analyzes on-page SEO for a given website using the Toolbench RapidAPI service.
+    verbose: Analyzes on-page SEO for a given website using the Toolbench RapidAPI service.
+  parameters:
+  - name: website
+    type: string
+    description: The URL of the website to be analyzed.
+    required: true
+    default: getecz.com
+  tags:
+  - onpage
+  - seo
+  - analyze
+  test_prompts:
+    single:
+    - Analyze the on-page SEO for 'https://www.example.com' and provide the results.
+    single_clear:
+    - Analyze the on-page SEO for 'https://www.example.com' and provide the results.
+- name: lines_line_abs
+  descriptions:
+    minimal: Fetches poems that contain a specific line using...
+    short: Fetches poems that contain a specific line using the Thundercomb Poetry DB API.
+    medium: Fetches poems that contain a specific line using the Thundercomb Poetry DB API.
+    long: Fetches poems that contain a specific line using the Thundercomb Poetry DB API.
+    verbose: Fetches poems that contain a specific line using the Thundercomb Poetry DB API.
+  parameters:
+  - name: line
+    type: string
+    description: The exact line to search for in poems.
+    required: true
+  tags:
+  - lines
+  - line
+  - abs
+  test_prompts:
+    single:
+    - Find poems with the line 'Shall I compare thee to a summer's day?'
+    single_clear:
+    - Find poems with the line 'Shall I compare thee to a summer's day?'
+- name: cosine_similarity
+  descriptions:
+    minimal: Calculates the cosine similarity between two...
+    short: Calculates the cosine similarity between two vectors.
+    medium: Calculates the cosine similarity between two vectors.
+    long: Calculates the cosine similarity between two vectors.
+    verbose: Calculates the cosine similarity between two vectors.
+  parameters:
+  - name: vector_a
+    type: string
+    description: The first vector.
+    required: true
+  - name: vector_b
+    type: string
+    description: The second vector.
+    required: true
+  tags:
+  - cosine
+  - similarity
+  test_prompts:
+    single:
+    - Calculate the cosine similarity between vectors [1, 2, 3] and [4, 5, 6].
+    - Compute the cosine similarity of vectors [0.5, 0.5, 0.5] and [1, 1, 1].
+    - Calculate the cosine similarity between two vectors [1, 2, 3] and [4, 5, 6].
+    - 'Compute the cosine similarity between two vectors: [0.5, 0.5, 0.5] and [1, 1, 1].'
+    - 'Calculate the cosine similarity between two vectors: [1, 2, 3] and [4, 5, 6].'
+    - Compute the cosine similarity between vectors [0.5, 0.5, 0.5] and [1, 1, 1].
+    single_clear:
+    - Calculate the cosine similarity between vectors [1, 2, 3] and [4, 5, 6].
+    - Compute the cosine similarity of vectors [0.5, 0.5, 0.5] and [1, 1, 1].
+    - Calculate the cosine similarity between two vectors [1, 2, 3] and [4, 5, 6].
+    - 'Compute the cosine similarity between two vectors: [0.5, 0.5, 0.5] and [1, 1, 1].'
+    - 'Calculate the cosine similarity between two vectors: [1, 2, 3] and [4, 5, 6].'
+    - Compute the cosine similarity between vectors [0.5, 0.5, 0.5] and [1, 1, 1].
+- name: download
+  descriptions:
+    minimal: Downloads a barcode of the specified type with...
+    short: Downloads a barcode of the specified type with the given data and optional size using the Toolbench RapidAPI service.
+    medium: Downloads a barcode of the specified type with the given data and optional size using the Toolbench RapidAPI service.
+    long: Downloads a barcode of the specified type with the given data and optional size using the Toolbench RapidAPI service.
+    verbose: Downloads a barcode of the specified type with the given data and optional size using the Toolbench RapidAPI
+      service.
+  parameters:
+  - name: type
+    type: string
+    description: 'The type of barcode to generate. Can be one of: ''qr_code'', ''code_128a'', ''code_128b'', ''code_128c'',
+      ''code_25'', ''code_25_interleaved'', ''code_25_iata'', ''code_39'', ''code_93'', ''gs1_128'', ''ean_13'', ''bookland'',
+      ''ean_8'', ''upc_supplemental'', ''codabar''.'
+    required: true
+    default: qr_code
+  - name: data
+    type: string
+    description: The data to encode in the barcode.
+    required: true
+    default: https://www.wynk182.com
+  - name: size
+    type: integer
+    description: The size of the barcode. Default is 5.
+    required: false
+    default: '5'
+  tags:
+  - download
+  test_prompts:
+    single:
+    - Download a 'qr_code' barcode for the data '123456789' with a size of 10.
+    single_clear:
+    - Download a 'qr_code' barcode for the data '123456789' with a size of 10.
+- name: shares_float
+  descriptions:
+    minimal: Provides the current shares float for a given...
+    short: Provides the current shares float for a given stock symbol using the Holistic Finance Stock Data API.
+    medium: Provides the current shares float for a given stock symbol using the Holistic Finance Stock Data API.
+    long: Provides the current shares float for a given stock symbol using the Holistic Finance Stock Data API.
+    verbose: Provides the current shares float for a given stock symbol using the Holistic Finance Stock Data API.
+  parameters:
+  - name: symbol
+    type: string
+    description: The stock symbol for which to retrieve the shares float.
+    required: true
+    default: MSFT
+  tags:
+  - shares
+  - float
+  test_prompts:
+    single:
+    - What is the shares float for Tesla Inc. (TSLA) right now?
+    - Please provide the current shares float for Alphabet Inc. (GOOGL), the parent company of Google.
+    single_clear:
+    - What is the shares float for Tesla Inc. (TSLA) right now?
+    - Please provide the current shares float for Alphabet Inc. (GOOGL), the parent company of Google.
+- name: directions_between_2_locations
+  descriptions:
+    minimal: Retrieve route information between two locations...
+    short: Retrieve route information between two locations in terms of distance, duration, and steps.
+    medium: Retrieve route information between two locations in terms of distance, duration, and steps.
+    long: Retrieve route information between two locations in terms of distance, duration, and steps.
+    verbose: Retrieve route information between two locations in terms of distance, duration, and steps.
+  parameters:
+  - name: start_lat
+    type: integer
+    description: Latitude of the starting point.
+    required: true
+    default: '31.1991806'
+  - name: end_lon
+    type: integer
+    description: Longitude of the ending point.
+    required: true
+    default: '31.23788289124186'
+  - name: start_lon
+    type: integer
+    description: Longitude of the starting point.
+    required: true
+    default: '29.8951716'
+  - name: end_lat
+    type: integer
+    description: Latitude of the ending point.
+    required: true
+    default: '30.02313795'
+  - name: distance_unit
+    type: string
+    description: Unit of distance measurement. Valid options are 'km' (default) and 'mi'.
+    required: false
+    default: km
+  tags:
+  - directions
+  - between
+  - '2'
+  test_prompts:
+    single:
+    - Get directions from Luxor (latitude 25.6872, longitude 32.6394) to Aswan (latitude 24.0915, longitude 32.8915) in miles.
+    - Get the directions between the locations with latitude and longitude (34.0522, -118.2437) and (40.7128, -74.0060).
+    - Get the driving directions from Gafsa to Tataouine in miles.
+    - Obtain the route from Douala to Bamenda (5.9667° N, 10.1500° E) in miles.
+    single_clear:
+    - Get directions from Luxor (latitude 25.6872, longitude 32.6394) to Aswan (latitude 24.0915, longitude 32.8915) in miles.
+    - Get the directions between the locations with latitude and longitude (34.0522, -118.2437) and (40.7128, -74.0060).
+    - Get the driving directions from Gafsa to Tataouine in miles.
+    - Obtain the route from Douala to Bamenda (5.9667° N, 10.1500° E) in miles.
+- name: find_longest_palindromic_substring
+  descriptions:
+    minimal: Finds the longest palindromic substring in a...
+    short: Finds the longest palindromic substring in a string.
+    medium: Finds the longest palindromic substring in a string.
+    long: Finds the longest palindromic substring in a string.
+    verbose: Finds the longest palindromic substring in a string.
+  parameters:
+  - name: s
+    type: string
+    description: The input string.
+    required: true
+  tags:
+  - find
+  - longest
+  - palindromic
+  test_prompts:
+    single:
+    - Find the longest palindromic substring in the string 'babad'.
+    - What is the longest palindromic substring in the sentence 'Able was I ere I saw Elba'?
+    - Identify the longest palindromic substring from the text 'Eva, can I see bees in a cave?'
+    - Find the longest palindromic substring in 'rotator level'
+    - Identify the longest palindromic substring in the phrase 'Madam, in Eden, I'm Adam'.
+    - Find the longest palindromic substring in the string 'babad'.
+    single_clear:
+    - Find the longest palindromic substring in the string 'babad'.
+    - What is the longest palindromic substring in the sentence 'Able was I ere I saw Elba'?
+    - Identify the longest palindromic substring from the text 'Eva, can I see bees in a cave?'
+    - Find the longest palindromic substring in 'rotator level'
+    - Identify the longest palindromic substring in the phrase 'Madam, in Eden, I'm Adam'.
+    - Find the longest palindromic substring in the string 'babad'.
+- name: search_countries_by_continent
+  descriptions:
+    minimal: Search for countries by their continent using the...
+    short: Search for countries by their continent using the specified query parameters.
+    medium: Search for countries by their continent using the specified query parameters.
+    long: Search for countries by their continent using the specified query parameters.
+    verbose: Search for countries by their continent using the specified query parameters.
+  parameters:
+  - name: continent
+    type: string
+    description: The continent of the countries to search for. This search is case insensitive and requires an exact match.
+    required: true
+    default: North America
+  - name: offset
+    type: integer
+    description: The zero-indexed page number from which the search should continue. Defaults to 0.
+    required: false
+    default: 0
+  - name: fields
+    type: string
+    description: A comma-separated list of fields to filter the response. Defaults to None.
+    required: false
+  - name: limit
+    type: integer
+    description: The maximum number of records to return per page. Defaults to 10.
+    required: false
+    default: 10
+  tags:
+  - search
+  - countries
+  - by
+  test_prompts:
+    single:
+    - List the countries in Asia starting from the 11th record.
+    single_clear:
+    - List the countries in Asia starting from the 11th record.
+- name: get_administrative_divisions
+  descriptions:
+    minimal: Retrieves geographical administrative division...
+    short: Retrieves geographical administrative division names to be used in the Listing by georef endpoint from the Airbnb
+      API.
+    medium: Retrieves geographical administrative division names to be used in the Listing by georef endpoint from the Airbnb
+      API. The hierarchical structure of administrative divisions must be respected for accurate results, meaning `admin1`
+      is needed for `admin2`, `admin2` is needed for `admin3`, and so on.
+    long: Retrieves geographical administrative division names to be used in the Listing by georef endpoint from the Airbnb
+      API. The hierarchical structure of administrative divisions must be respected for accurate results, meaning `admin1`
+      is needed for `admin2`, `admin2` is needed for `admin3`, and so on.
+    verbose: Retrieves geographical administrative division names to be used in the Listing by georef endpoint from the Airbnb
+      API. The hierarchical structure of administrative divisions must be respected for accurate results, meaning `admin1`
+      is needed for `admin2`, `admin2` is needed for `admin3`, and so on.
+  parameters:
+  - name: countrycode
+    type: string
+    description: The ISO country code.
+    required: true
+    default: IT
+  - name: admin2
+    type: string
+    description: The second-level administrative division. Requires `admin1` to be properly specified. Defaults to 'RM'.
+    required: false
+    default: RM
+  - name: admin1
+    type: string
+    description: The first-level administrative division. Defaults to '07'.
+    required: false
+    default: '07'
+  - name: admin4
+    type: string
+    description: The fourth-level administrative division. Requires `admin3`, `admin2`, and `admin1` to be properly specified.
+      Defaults to '05809101'.
+    required: false
+    default: 05809101
+  - name: admin3
+    type: string
+    description: The third-level administrative division. Requires `admin2` and `admin1` to be properly specified. Defaults
+      to '058091'.
+    required: false
+    default: 058091
+  tags:
+  - get
+  - administrative
+  - divisions
+  test_prompts:
+    single:
+    - Retrieve administrative divisions for France at all levels.
+    - Retrieve administrative divisions for Italy.
+    - Fetch administrative divisions for France at the first, second, and fourth levels.
+    - Retrieve administrative information for Canada in the province of Ontario, county of Toronto, and city of Toronto.
+    - Fetch detailed administrative divisions for Germany including the third and fourth levels.
+    single_clear:
+    - Retrieve administrative divisions for France at all levels.
+    - Retrieve administrative divisions for Italy.
+    - Fetch administrative divisions for France at the first, second, and fourth levels.
+    - Retrieve administrative information for Canada in the province of Ontario, county of Toronto, and city of Toronto.
+    - Fetch detailed administrative divisions for Germany including the third and fourth levels.
+- name: least_common_multiple
+  descriptions:
+    minimal: Computes the least common multiple (LCM) of two...
+    short: Computes the least common multiple (LCM) of two positive integers.
+    medium: Computes the least common multiple (LCM) of two positive integers.
+    long: Computes the least common multiple (LCM) of two positive integers.
+    verbose: Computes the least common multiple (LCM) of two positive integers.
+  parameters:
+  - name: a
+    type: integer
+    description: The first positive integer.
+    required: true
+  - name: b
+    type: integer
+    description: The second positive integer.
+    required: true
+  tags:
+  - least
+  - common
+  - multiple
+  test_prompts:
+    single:
+    - Calculate the least common multiple of 12 and 15.
+    - What is the least common multiple of 12 and 15?
+    - What's the LCM of 100 and 200?
+    - Compute the least common multiple of 12 and 18.
+    - Find the LCM of 24 and 36.
+    single_clear:
+    - Calculate the least common multiple of 12 and 15.
+    - What is the least common multiple of 12 and 15?
+    - What's the LCM of 100 and 200?
+    - Compute the least common multiple of 12 and 18.
+    - Find the LCM of 24 and 36.
+- name: ligue_1_standings
+  descriptions:
+    minimal: Fetches the Ligue 1 standings for a given season...
+    short: Fetches the Ligue 1 standings for a given season using the RapidAPI service.
+    medium: Fetches the Ligue 1 standings for a given season using the RapidAPI service.
+    long: Fetches the Ligue 1 standings for a given season using the RapidAPI service.
+    verbose: Fetches the Ligue 1 standings for a given season using the RapidAPI service.
+  parameters:
+  - name: season
+    type: string
+    description: The season for which to fetch the standings (e.g., '2022'). Defaults to None.
+    required: false
+  tags:
+  - ligue
+  - '1'
+  - standings
+  test_prompts:
+    single:
+    - What are the Ligue 1 standings for the 2021 season?
+    single_clear:
+    - What are the Ligue 1 standings for the 2021 season?
+- name: check_a_url
+  descriptions:
+    minimal: Check if the provided URL is a known phishing or...
+    short: Check if the provided URL is a known phishing or scam attempt using the FraudFreeze API.
+    medium: Check if the provided URL is a known phishing or scam attempt using the FraudFreeze API.
+    long: Check if the provided URL is a known phishing or scam attempt using the FraudFreeze API.
+    verbose: Check if the provided URL is a known phishing or scam attempt using the FraudFreeze API.
+  parameters:
+  - name: url
+    type: string
+    description: The URL to be checked for phishing or scam activities.
+    required: true
+    default: google.com
+  tags:
+  - check
+  - a
+  - url
+  test_prompts:
+    single:
+    - Is 'https://www.example.com/phish' a known phishing URL?
+    single_clear:
+    - Is 'https://www.example.com/phish' a known phishing URL?
+- name: loginuser
+  descriptions:
+    minimal: Logs in a user using the provided username and...
+    short: Logs in a user using the provided username and password, utilizing the Toolbench RapidAPI key for authorization.
+    medium: Logs in a user using the provided username and password, utilizing the Toolbench RapidAPI key for authorization.
+    long: Logs in a user using the provided username and password, utilizing the Toolbench RapidAPI key for authorization.
+    verbose: Logs in a user using the provided username and password, utilizing the Toolbench RapidAPI key for authorization.
+  parameters:
+  - name: username
+    type: string
+    description: The username for login.
+    required: true
+  - name: password
+    type: string
+    description: The password for login in plain text.
+    required: true
+  tags:
+  - loginuser
+  test_prompts:
+    single:
+    - I need to login with username 'johndoe' and password 'secret123' in the publicapitestinginbox module.
+    - I need to login with username 'johndoe' and password 'secret123' in the publicapitestinginbox module.
+    - Log in a user with username 'user123' and password 'pass123'.
+    - Log in a user with username 'admin' and password 'admin123' using the toolbench API.
+    - How can I log in with username 'user123' and password 'pass123'?
+    - Log in a user named 'user1' with password 'pass1234'.
+    - Log in a user with username 'user123' and password 'pass123' using the pet store system.
+    - Log in a user with username 'user123' and password 'pass123' using the pet store system.
+    single_clear:
+    - I need to login with username 'johndoe' and password 'secret123' in the publicapitestinginbox module.
+    - I need to login with username 'johndoe' and password 'secret123' in the publicapitestinginbox module.
+    - Log in a user with username 'user123' and password 'pass123'.
+    - Log in a user with username 'admin' and password 'admin123' using the toolbench API.
+    - How can I log in with username 'user123' and password 'pass123'?
+    - Log in a user named 'user1' with password 'pass1234'.
+    - Log in a user with username 'user123' and password 'pass123' using the pet store system.
+    - Log in a user with username 'user123' and password 'pass123' using the pet store system.

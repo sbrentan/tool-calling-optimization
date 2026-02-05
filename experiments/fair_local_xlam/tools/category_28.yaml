@@ -1,0 +1,740 @@
+category: category_28
+tools:
+- name: local_osm_v1_z_x_y_png
+  descriptions:
+    minimal: Downloads an OpenStreetMap standard tile image...
+    short: Downloads an OpenStreetMap standard tile image for specified coordinates and zoom level.
+    medium: Downloads an OpenStreetMap standard tile image for specified coordinates and zoom level.
+    long: Downloads an OpenStreetMap standard tile image for specified coordinates and zoom level.
+    verbose: Downloads an OpenStreetMap standard tile image for specified coordinates and zoom level.
+  parameters:
+  - name: y
+    type: integer
+    description: y tile number.
+    required: true
+    default: '3'
+  - name: z
+    type: integer
+    description: Zoom factor between 0 and 19.
+    required: true
+    default: '3'
+  - name: x
+    type: integer
+    description: x tile number.
+    required: true
+    default: '6'
+  tags:
+  - local
+  - osm
+  - v1
+  test_prompts:
+    single:
+    - Download an OpenStreetMap tile for zoom level 14, x=2345, y=1234.
+    single_clear:
+    - Download an OpenStreetMap tile for zoom level 14, x=2345, y=1234.
+- name: rocr
+  descriptions:
+    minimal: Calculates the Rate of Change Ratio (ROCR) for a...
+    short: Calculates the Rate of Change Ratio (ROCR) for a given financial instrument over a specified time period.
+    medium: Calculates the Rate of Change Ratio (ROCR) for a given financial instrument over a specified time period.
+    long: Calculates the Rate of Change Ratio (ROCR) for a given financial instrument over a specified time period.
+    verbose: Calculates the Rate of Change Ratio (ROCR) for a given financial instrument over a specified time period.
+  parameters:
+  - name: interval
+    type: string
+    description: 'Interval between two consecutive points in the time series. Supported values include: `1min`, `5min`, `15min`,
+      `30min`, `45min`, `1h`, `2h`, `4h`, `1day`, `1week`, `1month`.'
+    required: true
+    default: 1min
+  - name: symbol
+    type: string
+    description: Instrument symbol, which can be any equity, index, ETF, forex, or cryptocurrency (e.g., `AAPL`, `EUR/USD`,
+      `ETH/BTC`).
+    required: true
+    default: AAPL
+  - name: format
+    type: string
+    description: The format of the output, which can either be `csv` or `json`. Default is `json`.
+    required: false
+    default: json
+  - name: time_period
+    type: integer
+    description: Number of periods to go back for calculating the ROCR. Default is 9.
+    required: false
+    default: 9
+  - name: series_type
+    type: string
+    description: 'The type of price series to use in the calculation. Supported values include: `open`, `high`, `low`, `close`.
+      Default is `close`.'
+    required: false
+    default: close
+  - name: outputsize
+    type: integer
+    description: Number of data points to retrieve. Default is 30.
+    required: false
+    default: 30
+  tags:
+  - rocr
+  test_prompts:
+    single:
+    - Please provide the ROCR for the EUR/USD currency pair using 15-minute intervals and close prices for the last 20 periods.
+    - What is the ROCR for the S&P 500 index (SPY) using monthly intervals and high prices for the last 6 months?
+    - Calculate the ROCR for Apple Inc. (AAPL) over the last 9 periods using 15-minute intervals and close prices.
+    single_clear:
+    - Please provide the ROCR for the EUR/USD currency pair using 15-minute intervals and close prices for the last 20 periods.
+    - What is the ROCR for the S&P 500 index (SPY) using monthly intervals and high prices for the last 6 months?
+    - Calculate the ROCR for Apple Inc. (AAPL) over the last 9 periods using 15-minute intervals and close prices.
+- name: get_gas_fee_funding_wallets
+  descriptions:
+    minimal: Fetches gas fee funding wallet information from...
+    short: Fetches gas fee funding wallet information from the RapidAPI Token Forwarding service.
+    medium: Fetches gas fee funding wallet information from the RapidAPI Token Forwarding service.
+    long: Fetches gas fee funding wallet information from the RapidAPI Token Forwarding service.
+    verbose: Fetches gas fee funding wallet information from the RapidAPI Token Forwarding service.
+  parameters:
+  - name: is_id
+    type: string
+    description: The identifier used to fetch specific wallet information. Default is 'dfe02338-43ae-453f-bd51-6f0ea98e4df9'.
+    required: false
+    default: dfe02338-43ae-453f-bd51-6f0ea98e4df9
+  - name: limit
+    type: integer
+    description: The maximum number of records to retrieve. Default is 100.
+    required: false
+    default: '100'
+  - name: offset
+    type: integer
+    description: The number of records to skip before starting to return records. Default is 0.
+    required: false
+    default: '0'
+  tags:
+  - get
+  - gas
+  - fee
+  test_prompts:
+    single:
+    - Retrieve information for the wallet ID 'ghi789' from the 20th to the 120th record.
+    single_clear:
+    - Retrieve information for the wallet ID 'ghi789' from the 20th to the 120th record.
+- name: piercing_line
+  descriptions:
+    minimal: Returns a list of stocks that have a Piercing...
+    short: Returns a list of stocks that have a Piercing Line signal from the BarPatterns API.
+    medium: Returns a list of stocks that have a Piercing Line signal from the BarPatterns API.
+    long: Returns a list of stocks that have a Piercing Line signal from the BarPatterns API.
+    verbose: Returns a list of stocks that have a Piercing Line signal from the BarPatterns API.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number for paginated results. Defaults to 1.
+    required: true
+    default: '1'
+  tags:
+  - piercing
+  - line
+  test_prompts:
+    single:
+    - I need to find stocks exhibiting a Piercing Line pattern on the third page of results.
+    single_clear:
+    - I need to find stocks exhibiting a Piercing Line pattern on the third page of results.
+- name: trip_details
+  descriptions:
+    minimal: Fetches the details of a trip using the given...
+    short: Fetches the details of a trip using the given trip UID from the Flixbus API.
+    medium: Fetches the details of a trip using the given trip UID from the Flixbus API.
+    long: Fetches the details of a trip using the given trip UID from the Flixbus API.
+    verbose: Fetches the details of a trip using the given trip UID from the Flixbus API.
+  parameters:
+  - name: trip_uid
+    type: string
+    description: Unique identifier for the trip.
+    required: true
+    default: direct:110725991:2015:4188
+  tags:
+  - trip
+  - details
+  test_prompts:
+    single:
+    - Provide details for the Flixbus trip with UID 'FB123456789'
+    - What are the details of the Flixbus trip with UID 'TRIP123456789'?
+    - Detail the Flixbus trip with UID 'TRIP246810'.
+    single_clear:
+    - Provide details for the Flixbus trip with UID 'FB123456789'
+    - What are the details of the Flixbus trip with UID 'TRIP123456789'?
+    - Detail the Flixbus trip with UID 'TRIP246810'.
+- name: get_user_pins
+  descriptions:
+    minimal: Retrieves the Pinterest pins of a specified user.
+    short: Retrieves the Pinterest pins of a specified user.
+    medium: Retrieves the Pinterest pins of a specified user.
+    long: Retrieves the Pinterest pins of a specified user.
+    verbose: Retrieves the Pinterest pins of a specified user.
+  parameters:
+  - name: username
+    type: string
+    description: The Pinterest username whose pins are to be fetched.
+    required: true
+    default: 0869178429hau
+  tags:
+  - get
+  - user
+  - pins
+  test_prompts:
+    single:
+    - Can you fetch all pins from the user 'travel_enthusiast' on Pinterest?
+    single_clear:
+    - Can you fetch all pins from the user 'travel_enthusiast' on Pinterest?
+- name: get_player_details
+  descriptions:
+    minimal: Retrieves player details based on the provided...
+    short: Retrieves player details based on the provided username and region.
+    medium: Retrieves player details based on the provided username and region.
+    long: Retrieves player details based on the provided username and region.
+    verbose: Retrieves player details based on the provided username and region.
+  parameters:
+  - name: name
+    type: string
+    description: The username of the player. This is case sensitive.
+    required: true
+    default: CoreJJ
+  - name: region
+    type: string
+    description: The region of the player.
+    required: true
+    default: na
+  tags:
+  - get
+  - player
+  - details
+  test_prompts:
+    single:
+    - Retrieve the player details for 'Faker' in the 'KR' region.
+    single_clear:
+    - Retrieve the player details for 'Faker' in the 'KR' region.
+- name: player_statistics_seasons
+  descriptions:
+    minimal: Fetch the season statistics for a given player...
+    short: Fetch the season statistics for a given player using the SofaScores API.
+    medium: Fetch the season statistics for a given player using the SofaScores API.
+    long: Fetch the season statistics for a given player using the SofaScores API.
+    verbose: Fetch the season statistics for a given player using the SofaScores API.
+  parameters:
+  - name: player_id
+    type: integer
+    description: The unique identifier for the player whose statistics are to be fetched.
+    required: true
+    default: '12994'
+  tags:
+  - player
+  - statistics
+  - seasons
+  test_prompts:
+    single:
+    - What are the season statistics for the basketball player with ID 11223?
+    single_clear:
+    - What are the season statistics for the basketball player with ID 11223?
+- name: fixtures
+  descriptions:
+    minimal: Retrieves upcoming soccer fixtures for the next 7...
+    short: Retrieves upcoming soccer fixtures for the next 7 days from the sports API.
+    medium: Retrieves upcoming soccer fixtures for the next 7 days from the sports API.
+    long: Retrieves upcoming soccer fixtures for the next 7 days from the sports API.
+    verbose: Retrieves upcoming soccer fixtures for the next 7 days from the sports API.
+  parameters:
+  - name: page
+    type: integer
+    description: The page of results to retrieve. Defaults to 1.
+    required: false
+    default: '1'
+  - name: day
+    type: integer
+    description: The specific day of fixtures to retrieve. Defaults to 1.
+    required: false
+    default: '1'
+  tags:
+  - fixtures
+  test_prompts:
+    single:
+    - Provide the soccer fixtures for the day after tomorrow on page 1.
+    single_clear:
+    - Provide the soccer fixtures for the day after tomorrow on page 1.
+- name: related_videos
+  descriptions:
+    minimal: Fetches videos related to a specified video using...
+    short: Fetches videos related to a specified video using the YouTube V3 API.
+    medium: Fetches videos related to a specified video using the YouTube V3 API.
+    long: Fetches videos related to a specified video using the YouTube V3 API.
+    verbose: Fetches videos related to a specified video using the YouTube V3 API.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the video for which to fetch related videos.
+    required: true
+    default: dQw4w9WgXcQ
+  - name: x_cachebypass
+    type: string
+    description: Cache bypass parameter; pass '1' to bypass the cache. Defaults to None.
+    required: false
+  - name: geo
+    type: string
+    description: ISO 3166-2 country code of the region (e.g., 'US', 'UK', 'CA'). Defaults to 'US'.
+    required: false
+    default: US
+  - name: lang
+    type: string
+    description: Locale/language for the request (e.g., 'en', 'gb', 'hi'). Defaults to 'en'.
+    required: false
+    default: en
+  - name: token
+    type: string
+    description: Pagination token for fetching additional results. Defaults to None.
+    required: false
+  tags:
+  - related
+  - videos
+  test_prompts:
+    single:
+    - Fetch related videos for 'Abc123Def456' in Spanish and include a pagination token.
+    single_clear:
+    - Fetch related videos for 'Abc123Def456' in Spanish and include a pagination token.
+- name: screenshot_endpoint
+  descriptions:
+    minimal: Takes a screenshot of a specified webpage URL...
+    short: Takes a screenshot of a specified webpage URL with given dimensions.
+    medium: Takes a screenshot of a specified webpage URL with given dimensions.
+    long: Takes a screenshot of a specified webpage URL with given dimensions.
+    verbose: Takes a screenshot of a specified webpage URL with given dimensions.
+  parameters:
+  - name: height
+    type: string
+    description: The height of the screenshot in pixels.
+    required: true
+    default: '1080'
+  - name: url
+    type: string
+    description: The URL of the webpage to capture.
+    required: true
+    default: https://rapidapi.com/marketplace
+  - name: width
+    type: string
+    description: The width of the screenshot in pixels.
+    required: true
+    default: '1920'
+  - name: fullscreen
+    type: string
+    description: Whether to capture the screenshot in fullscreen mode. Defaults to 'true'.
+    required: false
+    default: 'true'
+  tags:
+  - screenshot
+  - endpoint
+  test_prompts:
+    single:
+    - Get a fullscreen screenshot of the Amazon website with a height of 700 pixels and a width of 1200 pixels.
+    single_clear:
+    - Get a fullscreen screenshot of the Amazon website with a height of 700 pixels and a width of 1200 pixels.
+- name: stock_calendar_events
+  descriptions:
+    minimal: Fetches calendar events for a specified stock...
+    short: Fetches calendar events for a specified stock symbol using the Yahoo Finance API.
+    medium: Fetches calendar events for a specified stock symbol using the Yahoo Finance API.
+    long: Fetches calendar events for a specified stock symbol using the Yahoo Finance API.
+    verbose: Fetches calendar events for a specified stock symbol using the Yahoo Finance API.
+  parameters:
+  - name: symbol
+    type: string
+    description: The stock symbol for which to retrieve calendar events.
+    required: true
+    default: AAPL
+  tags:
+  - stock
+  - calendar
+  - events
+  test_prompts:
+    single:
+    - What are the upcoming events for Microsoft Corp. (MSFT) stock?
+    single_clear:
+    - What are the upcoming events for Microsoft Corp. (MSFT) stock?
+- name: get_all_advisories
+  descriptions:
+    minimal: Fetches all advisories providing timely...
+    short: Fetches all advisories providing timely information about current security issues, vulnerabilities, and exploits
+      from CISA.
+    medium: Fetches all advisories providing timely information about current security issues, vulnerabilities, and exploits
+      from CISA.gov.
+    long: Fetches all advisories providing timely information about current security issues, vulnerabilities, and exploits
+      from CISA.gov.
+    verbose: Fetches all advisories providing timely information about current security issues, vulnerabilities, and exploits
+      from CISA.gov.
+  parameters:
+  - name: info
+    type: boolean
+    description: Flag to include additional information in the advisories. Defaults to None.
+    required: false
+    default: 'true'
+  - name: limit
+    type: integer
+    description: The number of advisories to return. Defaults to 2.
+    required: false
+    default: '2'
+  tags:
+  - get
+  - all
+  - advisories
+  test_prompts:
+    single:
+    - Get all advisories with additional information and limit the results to 3.
+    - Retrieve all advisories without additional information and limit the result to 3.
+    single_clear:
+    - Get all advisories with additional information and limit the results to 3.
+    - Retrieve all advisories without additional information and limit the result to 3.
+- name: fibonacci
+  descriptions:
+    minimal: Calculates the nth Fibonacci number.
+    short: Calculates the nth Fibonacci number.
+    medium: Calculates the nth Fibonacci number.
+    long: Calculates the nth Fibonacci number.
+    verbose: Calculates the nth Fibonacci number.
+  parameters:
+  - name: n
+    type: integer
+    description: The position of the Fibonacci number.
+    required: true
+  tags:
+  - fibonacci
+  test_prompts:
+    single:
+    - Find the 10th Fibonacci number.
+    - What is the 10th Fibonacci number?
+    single_clear:
+    - Find the 10th Fibonacci number.
+    - What is the 10th Fibonacci number?
+- name: get_user_feed
+  descriptions:
+    minimal: Fetch the feed of an Instagram user using the...
+    short: Fetch the feed of an Instagram user using the provided user ID via the RapidAPI service.
+    medium: Fetch the feed of an Instagram user using the provided user ID via the RapidAPI service.
+    long: Fetch the feed of an Instagram user using the provided user ID via the RapidAPI service.
+    verbose: Fetch the feed of an Instagram user using the provided user ID via the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The user ID of the Instagram account to fetch the feed for.
+    required: true
+    default: '25025320'
+  - name: max_id
+    type: string
+    description: The maximum ID for pagination in the feed. Defaults to '2796754904080592191_25025320'.
+    required: false
+    default: '2796754904080592191_25025320'
+  tags:
+  - get
+  - user
+  - feed
+  test_prompts:
+    single:
+    - Get the feed for the Instagram user with ID 123456789.
+    single_clear:
+    - Get the feed for the Instagram user with ID 123456789.
+- name: ip_address
+  descriptions:
+    minimal: Fetch information related to an IP address using...
+    short: Fetch information related to an IP address using the Phone and Email Validator API.
+    medium: Fetch information related to an IP address using the Phone and Email Validator API.
+    long: Fetch information related to an IP address using the Phone and Email Validator API.
+    verbose: Fetch information related to an IP address using the Phone and Email Validator API.
+  parameters:
+  - name: ip
+    type: string
+    description: The IP address to be queried.
+    required: true
+    default: 127.0.0.1
+  tags:
+  - ip
+  - address
+  test_prompts:
+    single:
+    - Fetch details about the IP address 8.8.8.8 using the Phone and Email Validator API.
+    single_clear:
+    - Fetch details about the IP address 8.8.8.8 using the Phone and Email Validator API.
+- name: matchmaking_matches
+  descriptions:
+    minimal: Fetch recent matchmaking matches with optional...
+    short: Fetch recent matchmaking matches with optional pagination and result limit.
+    medium: Fetch recent matchmaking matches with optional pagination and result limit.
+    long: Fetch recent matchmaking matches with optional pagination and result limit.
+    verbose: Fetch recent matchmaking matches with optional pagination and result limit.
+  parameters:
+  - name: limit
+    type: integer
+    description: The maximum number of match results to return. Default is 50.
+    required: true
+    default: '50'
+  - name: page
+    type: integer
+    description: The page number for pagination, each containing 50 results. Default is 0.
+    required: true
+    default: '0'
+  tags:
+  - matchmaking
+  - matches
+  test_prompts:
+    single:
+    - Fetch the latest 100 matchmaking matches in Trackmania.
+    single_clear:
+    - Fetch the latest 100 matchmaking matches in Trackmania.
+- name: get_specific_country
+  descriptions:
+    minimal: Fetches fuel prices for a specific country from...
+    short: Fetches fuel prices for a specific country from the RapidAPI endpoint.
+    medium: Fetches fuel prices for a specific country from the RapidAPI endpoint.
+    long: Fetches fuel prices for a specific country from the RapidAPI endpoint.
+    verbose: Fetches fuel prices for a specific country from the RapidAPI endpoint.
+  parameters:
+  - name: country
+    type: string
+    description: The name of the country for which to fetch fuel prices.
+    required: true
+    default: Germany
+  tags:
+  - get
+  - specific
+  - country
+  test_prompts:
+    single:
+    - Get the current fuel prices for France.
+    single_clear:
+    - Get the current fuel prices for France.
+- name: v1_planets
+  descriptions:
+    minimal: Fetch a list of planets that match the specified...
+    short: Fetch a list of planets that match the specified parameters.
+    medium: Fetch a list of planets that match the specified parameters. The results are limited to a maximum of 30; use the
+      `offset` parameter for pagination to access more results.
+    long: Fetch a list of planets that match the specified parameters. The results are limited to a maximum of 30; use the
+      `offset` parameter for pagination to access more results.
+    verbose: Fetch a list of planets that match the specified parameters. The results are limited to a maximum of 30; use
+      the `offset` parameter for pagination to access more results.
+  parameters:
+  - name: max_period
+    type: integer
+    description: Maximum orbital period of the planet in Earth days.
+    required: false
+  - name: max_temperature
+    type: integer
+    description: Maximum average surface temperature of the planet in Kelvin.
+    required: false
+  - name: offset
+    type: integer
+    description: Number of results to offset for pagination.
+    required: false
+  - name: max_distance_light_year
+    type: integer
+    description: Maximum distance the planet is from Earth in light years.
+    required: false
+  - name: min_distance_light_year
+    type: integer
+    description: Minimum distance the planet is from Earth in light years.
+    required: false
+  - name: max_mass
+    type: integer
+    description: Maximum mass of the planet in Jupiters (1 Jupiter = 1.898 × 10^27 kg).
+    required: false
+  - name: max_semi_major_axis
+    type: integer
+    description: Maximum semi-major axis of the planet in astronomical units (AU).
+    required: false
+  - name: min_mass
+    type: integer
+    description: Minimum mass of the planet in Jupiters (1 Jupiter = 1.898 × 10^27 kg).
+    required: false
+  - name: min_semi_major_axis
+    type: integer
+    description: Minimum semi-major axis of the planet in astronomical units (AU).
+    required: false
+  - name: name
+    type: string
+    description: Name of the planet. Defaults to 'Mars'.
+    required: false
+    default: Mars
+  - name: min_temperature
+    type: integer
+    description: Minimum average surface temperature of the planet in Kelvin.
+    required: false
+  - name: max_radius
+    type: integer
+    description: Maximum average radius of the planet in Jupiters (1 Jupiter = 69911 km).
+    required: false
+  - name: min_radius
+    type: integer
+    description: Minimum average radius of the planet in Jupiters (1 Jupiter = 69911 km).
+    required: false
+  - name: min_period
+    type: integer
+    description: Minimum orbital period of the planet in Earth days.
+    required: false
+  tags:
+  - v1
+  - planets
+  test_prompts:
+    single:
+    - Can you find planets with an orbital period less than 100 days and a surface temperature between 200 and 300 Kelvin?
+    - Fetch details of planets with a maximum orbital period of 1000 Earth days and a minimum surface temperature of 200 Kelvin.
+      Also, include planets named 'Mars'.
+    single_clear:
+    - Can you find planets with an orbital period less than 100 days and a surface temperature between 200 and 300 Kelvin?
+    - Fetch details of planets with a maximum orbital period of 1000 Earth days and a minimum surface temperature of 200 Kelvin.
+      Also, include planets named 'Mars'.
+- name: results_by_date
+  descriptions:
+    minimal: Fetches cricket match results for a specified...
+    short: Fetches cricket match results for a specified date using the RapidAPI service.
+    medium: Fetches cricket match results for a specified date using the RapidAPI service.
+    long: Fetches cricket match results for a specified date using the RapidAPI service.
+    verbose: Fetches cricket match results for a specified date using the RapidAPI service.
+  parameters:
+  - name: date
+    type: string
+    description: The date for which to retrieve cricket match results, in YYYY-MM-DD format.
+    required: true
+    default: '2020-09-20'
+  tags:
+  - results
+  - by
+  - date
+  test_prompts:
+    single:
+    - Retrieve cricket match results for March 15, 2023.
+    - What were the cricket match results on January 1, 2023?
+    single_clear:
+    - Retrieve cricket match results for March 15, 2023.
+    - What were the cricket match results on January 1, 2023?
+- name: symbol_strength
+  descriptions:
+    minimal: Fetches the combined strength of 8 individual...
+    short: Fetches the combined strength of 8 individual currencies using calculations applied to 28 Forex pairs for a given
+      timeframe.
+    medium: Fetches the combined strength of 8 individual currencies using calculations applied to 28 Forex pairs for a given
+      timeframe.
+    long: Fetches the combined strength of 8 individual currencies using calculations applied to 28 Forex pairs for a given
+      timeframe.
+    verbose: Fetches the combined strength of 8 individual currencies using calculations applied to 28 Forex pairs for a given
+      timeframe.
+  parameters:
+  - name: timeframe
+    type: string
+    description: The timeframe for the currency strength data. Supported values are 'h1' for 1 hour, 'h4' for 4 hours, 'd1'
+      for 1 day, and 'w1' for 1 week.
+    required: true
+    default: h1
+  tags:
+  - symbol
+  - strength
+  test_prompts:
+    single:
+    - Analyze the currency strength for the past day for all major currencies.
+    single_clear:
+    - Analyze the currency strength for the past day for all major currencies.
+- name: vin_decoder_standard
+  descriptions:
+    minimal: Decodes the given Vehicle Identification Number...
+    short: Decodes the given Vehicle Identification Number (VIN) using the VIN Decoder API.
+    medium: Decodes the given Vehicle Identification Number (VIN) using the VIN Decoder API.
+    long: Decodes the given Vehicle Identification Number (VIN) using the VIN Decoder API.
+    verbose: Decodes the given Vehicle Identification Number (VIN) using the VIN Decoder API.
+  parameters:
+  - name: vin
+    type: string
+    description: The Vehicle Identification Number to decode. It must be 17 characters long.
+    required: true
+    default: 5YJ3E1EA6PF384836
+  tags:
+  - vin
+  - decoder
+  - standard
+  test_prompts:
+    single:
+    - Decode the VIN 'WVWZZZ1JZFW002211' using the standard decoder.
+    single_clear:
+    - Decode the VIN 'WVWZZZ1JZFW002211' using the standard decoder.
+- name: nationalize
+  descriptions:
+    minimal: Fetches the nationality of the provided name...
+    short: Fetches the nationality of the provided name using the Genderize-Nationalize API.
+    medium: Fetches the nationality of the provided name using the Genderize-Nationalize API.
+    long: Fetches the nationality of the provided name using the Genderize-Nationalize API.
+    verbose: Fetches the nationality of the provided name using the Genderize-Nationalize API.
+  parameters:
+  - name: name
+    type: string
+    description: The name for which to determine the nationality.
+    required: true
+    default: jad
+  tags:
+  - nationalize
+  test_prompts:
+    single:
+    - What is the nationality of the name 'David' using the Genderize-Nationalize API?
+    single_clear:
+    - What is the nationality of the name 'David' using the Genderize-Nationalize API?
+- name: get_highlight_item
+  descriptions:
+    minimal: Fetch the highlight item from Instagram using the...
+    short: Fetch the highlight item from Instagram using the toolbench RapidAPI.
+    medium: Fetch the highlight item from Instagram using the toolbench RapidAPI.
+    long: Fetch the highlight item from Instagram using the toolbench RapidAPI.
+    verbose: Fetch the highlight item from Instagram using the toolbench RapidAPI.
+  parameters:
+  - name: is_id
+    type: string
+    description: The Instagram ID for which to fetch the highlight items.
+    required: true
+    default: '17934390836227915'
+  tags:
+  - get
+  - highlight
+  - item
+  test_prompts:
+    single:
+    - Get the highlight item for Instagram user with ID 'janedoe_456'.
+    single_clear:
+    - Get the highlight item for Instagram user with ID 'janedoe_456'.
+- name: newlyregistereddomains
+  descriptions:
+    minimal: Fetch a list of newly registered domains from a...
+    short: Fetch a list of newly registered domains from a REST API.
+    medium: Fetch a list of newly registered domains from a REST API.
+    long: Fetch a list of newly registered domains from a REST API.
+    verbose: Fetch a list of newly registered domains from a REST API.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number of domains to retrieve. Default is 1.
+    required: false
+    default: 1
+  - name: exclude
+    type: string
+    description: Keywords to exclude from the domain search. Default is None.
+    required: false
+  - name: date
+    type: string
+    description: The registration date of the domains to be searched in 'YYYY-MM-DD' format. Default is '2023-06-12'.
+    required: false
+    default: '2023-06-12'
+  - name: keywords
+    type: string
+    description: Keywords that must be included in the domain search. Default is None.
+    required: false
+  tags:
+  - newlyregistereddomains
+  test_prompts:
+    single:
+    - Fetch the list of newly registered domains on June 15, 2023, excluding those with 'shop' in the name.
+    - Fetch newly registered domains on page 2 excluding 'tech' and including 'finance'.
+    - Get domains from page 3, excluding 'shop' and including 'online'.
+    - Get domains from page 3, excluding 'crypto' and including 'banking'.
+    single_clear:
+    - Fetch the list of newly registered domains on June 15, 2023, excluding those with 'shop' in the name.
+    - Fetch newly registered domains on page 2 excluding 'tech' and including 'finance'.
+    - Get domains from page 3, excluding 'shop' and including 'online'.
+    - Get domains from page 3, excluding 'crypto' and including 'banking'.

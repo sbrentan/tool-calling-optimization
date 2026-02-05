@@ -1,0 +1,128 @@
+# Tool Categories
+#
+# This file defines descriptions for tool categories used in the clustering methodology.
+# The LLM uses these descriptions to select which category of tools to explore.
+
+categories:
+  - name: ai_ml_operations
+    description: "AI and machine learning operations including text generation, classification, embeddings, model inference, and natural language processing"
+
+  - name: analytics_operations
+    description: "Data analytics, statistics, reporting, dashboards, and business intelligence operations"
+
+  - name: audio_operations
+    description: "Audio processing, transcription, text-to-speech, speech recognition, and sound manipulation"
+
+  - name: authentication_operations
+    description: "User authentication, login, logout, session management, password handling, and identity verification"
+
+  - name: backup_operations
+    description: "Data backup, restore, snapshot creation, archival, and disaster recovery operations"
+
+  - name: caching_operations
+    description: "Cache management, storing and retrieving cached data, cache invalidation, and performance optimization"
+
+  - name: calendar_operations
+    description: "Calendar management, event scheduling, meeting coordination, reminders, and availability checking"
+
+  - name: cloud_storage_operations
+    description: "Cloud storage operations including upload, download, file management, and cloud service integration (S3, GCS, Azure Blob)"
+
+  - name: compliance_operations
+    description: "Regulatory compliance, audit logging, policy enforcement, GDPR/HIPAA compliance, and compliance reporting"
+
+  - name: container_operations
+    description: "Container management, Docker operations, Kubernetes orchestration, pod management, and container lifecycle"
+
+  - name: data_operations
+    description: "Data transformation, validation, parsing, format conversion, ETL operations, and data pipeline management"
+
+  - name: database_operations
+    description: "Database queries, CRUD operations, schema management, migrations, and data retrieval from SQL/NoSQL databases"
+
+  - name: devops_operations
+    description: "CI/CD pipelines, deployment automation, infrastructure management, and DevOps tooling"
+
+  - name: document_operations
+    description: "Document creation, editing, PDF generation, format conversion, and document management"
+
+  - name: ecommerce_operations
+    description: "E-commerce operations including orders, inventory management, products, shopping carts, and checkout"
+
+  - name: email_operations
+    description: "Email sending, receiving, inbox management, email templates, and email-related utilities"
+
+  - name: file_operations
+    description: "File system operations like read, write, copy, move, delete, and file metadata management"
+
+  - name: healthcare_operations
+    description: "Healthcare-related operations, patient records, medical data management, and health system integration"
+
+  - name: image_operations
+    description: "Image processing, manipulation, resizing, cropping, format conversion, and computer vision"
+
+  - name: iot_operations
+    description: "Internet of Things device management, sensor data collection, device control, and IoT protocols"
+
+  - name: location_operations
+    description: "Geolocation, maps, geocoding, reverse geocoding, distance calculation, and location-based services"
+
+  - name: logging_operations
+    description: "Application logging, log management, structured logging, log aggregation, and log analysis"
+
+  - name: math_operations
+    description: "Mathematical calculations, statistics, numerical operations, scientific computing, and formulas"
+
+  - name: messaging_operations
+    description: "Instant messaging, chat systems, real-time communication, message queuing, and chat integrations"
+
+  - name: monitoring_operations
+    description: "System monitoring, health checks, metrics collection, alerting, and observability"
+
+  - name: networking_operations
+    description: "Network operations, DNS management, HTTP requests, connectivity checks, and network configuration"
+
+  - name: notification_operations
+    description: "Push notifications, in-app alerts, notification preferences, and multi-channel notification delivery"
+
+  - name: payment_operations
+    description: "Payment processing, transactions, billing, invoicing, subscriptions, and financial operations"
+
+  - name: queue_operations
+    description: "Message queue management, job queuing, async task handling, and work distribution"
+
+  - name: rate_limiting_operations
+    description: "Rate limiting, request throttling, quota management, and API usage control"
+
+  - name: scheduling_operations
+    description: "Job scheduling, cron tasks, timed execution, recurring jobs, and task orchestration"
+
+  - name: search_operations
+    description: "Search functionality, full-text search, indexing, query building, and search result ranking"
+
+  - name: secrets_operations
+    description: "Secret management, encryption key storage, vault operations, and sensitive data handling"
+
+  - name: security_operations
+    description: "Security operations, encryption, hashing, access control, vulnerability scanning, and security policies"
+
+  - name: social_media_operations
+    description: "Social media integration, posting, content scheduling, social analytics, and platform APIs"
+
+  - name: system_operations
+    description: "System-level operations, process management, OS interactions, system info, and resource monitoring"
+
+  - name: testing_operations
+    description: "Testing utilities, test execution, mocking, assertions, test data generation, and quality assurance"
+
+  - name: text_operations
+    description: "Text processing, string manipulation, regex, text analysis, formatting, and text utilities"
+
+  - name: video_operations
+    description: "Video processing, transcoding, streaming, video manipulation, and video metadata"
+
+  - name: web_operations
+    description: "Web scraping, HTTP operations, URL handling, web crawling, and web-related utilities"
+
+  - name: workflow_operations
+    description: "Workflow management, state machines, process orchestration, approvals, and business process automation"

@@ -1,0 +1,1265 @@
+category: authentication_operations
+description: Authentication and identity management operations
+tools:
+  - name: authenticate_user
+    descriptions:
+      minimal: "Authenticate user"
+      short: "Authenticate a user"
+      medium: "Authenticate a user with credentials and return tokens."
+      long: "Authenticate a user with username/password or other credentials. Returns access and refresh tokens. Example: authenticate_user(username='john@example.com', password='***', method='password')."
+      verbose: "Authenticate users against identity provider. Methods: 'password', 'mfa', 'sso', 'oauth', 'certificate', 'biometric'. Returns: access token, refresh token, user info, expiration. Example: authenticate_user(username='john@example.com', password='***', method='password', mfa_code='123456', device_info='{\"device_id\": \"browser-123\", \"ip\": \"1.2.3.4\"}'). Note: Failed attempts should trigger lockout policies. Warning: Never log credentials; use secure channels."
+    parameters:
+      - name: username
+        type: string
+        description: "Username or email"
+        required: true
+      - name: password
+        type: string
+        description: "User password"
+        required: false
+      - name: method
+        type: string
+        description: "Authentication method"
+        required: false
+        default: "password"
+        enum: ["password", "mfa", "sso", "oauth", "certificate", "biometric"]
+      - name: mfa_code
+        type: string
+        description: "MFA/2FA code"
+        required: false
+      - name: device_info
+        type: string
+        description: "JSON device information"
+        required: false
+    tags: ["auth", "login", "authenticate", "user", "credentials"]
+    test_prompts:
+      single:
+        - "Log in the user"
+        - "Authenticate with password"
+        - "Verify user credentials"
+        - "User login with MFA"
+      single_clear:
+        - "I need to authenticate a user with credentials. Log in the user"
+        - "I need to authenticate a user with credentials. Authenticate with password"
+        - "I need to authenticate a user with credentials. Verify user credentials"
+        - "I need to authenticate a user with credentials. User login with MFA"
+
+  - name: create_user
+    descriptions:
+      minimal: "Create user"
+      short: "Create a new user account"
+      medium: "Create a new user account in the identity system."
+      long: "Create a user account with profile information. Example: create_user(email='jane@example.com', password='***', name='Jane Doe', role='user')."
+      verbose: "Create user accounts in identity system. Required: email/username, password (meeting policy). Optional: profile data, roles, groups, metadata. Features: email verification, welcome email, initial password change. Example: create_user(email='jane@example.com', password='***', profile='{\"first_name\": \"Jane\", \"last_name\": \"Doe\", \"phone\": \"+1234567890\"}', roles='[\"user\", \"beta_tester\"]', require_verification=true). Note: Password must meet complexity requirements. Warning: Verify email ownership before granting access."
+    parameters:
+      - name: email
+        type: string
+        description: "User email address"
+        required: true
+      - name: password
+        type: string
+        description: "Initial password"
+        required: true
+      - name: profile
+        type: string
+        description: "JSON profile data"
+        required: false
+      - name: roles
+        type: string
+        description: "JSON array of roles"
+        required: false
+      - name: require_verification
+        type: boolean
+        description: "Require email verification"
+        required: false
+        default: true
+    tags: ["auth", "user", "create", "register", "account"]
+    test_prompts:
+      single:
+        - "Create a new user account"
+        - "Register a new user"
+        - "Add user to the system"
+        - "Set up user account"
+      single_clear:
+        - "I need to register a new user account. Create a new user account"
+        - "I need to register a new user account. Register a new user"
+        - "I need to register a new user account. Add user to the system"
+        - "I need to register a new user account. Set up user account"
+
+  - name: manage_session
+    descriptions:
+      minimal: "Manage session"
+      short: "Manage user session"
+      medium: "Create, validate, or terminate user sessions."
+      long: "Manage user sessions. Create, validate, refresh, or revoke sessions. Example: manage_session(action='validate', token='eyJ...')."
+      verbose: "User session management operations. Actions: 'create' (new session), 'validate' (check token), 'refresh' (extend session), 'revoke' (logout), 'list' (user's sessions), 'revoke_all' (logout everywhere). Example: manage_session(action='validate', token='eyJ...', check_ip=true, check_device=true). Note: Sessions should have reasonable timeouts. Warning: Revoking all sessions forces re-authentication on all devices."
+    parameters:
+      - name: action
+        type: string
+        description: "Session action"
+        required: true
+        enum: ["create", "validate", "refresh", "revoke", "list", "revoke_all"]
+      - name: token
+        type: string
+        description: "Session token"
+        required: false
+      - name: user_id
+        type: string
+        description: "User ID (for list/revoke_all)"
+        required: false
+      - name: check_ip
+        type: boolean
+        description: "Validate client IP"
+        required: false
+        default: false
+      - name: check_device
+        type: boolean
+        description: "Validate device fingerprint"
+        required: false
+        default: false
+    tags: ["auth", "session", "token", "logout", "validate"]
+    test_prompts:
+      single:
+        - "Validate the session token"
+        - "Log out the user"
+        - "Refresh the access token"
+        - "List active sessions"
+      single_clear:
+        - "I need to manage the user session. Validate the session token"
+        - "Please log out the current user session. Log out the user"
+        - "I need to manage the user session. Refresh the access token"
+        - "I need to manage the user session. List active sessions"
+
+  - name: reset_password
+    descriptions:
+      minimal: "Reset password"
+      short: "Reset user password"
+      medium: "Initiate or complete a password reset for a user."
+      long: "Password reset flow. Send reset email or set new password with token. Example: reset_password(action='initiate', email='user@example.com')."
+      verbose: "Password reset operations. Actions: 'initiate' (send reset email), 'validate' (check reset token), 'complete' (set new password). Security: token expiration, rate limiting, notification to user. Example: reset_password(action='complete', token='abc123', new_password='NewSecure#Pass1', notify_user=true). Note: Reset tokens should expire within hours. Warning: Notify users of password changes for security."
+    parameters:
+      - name: action
+        type: string
+        description: "Reset action"
+        required: true
+        enum: ["initiate", "validate", "complete"]
+      - name: email
+        type: string
+        description: "User email (for initiate)"
+        required: false
+      - name: token
+        type: string
+        description: "Reset token"
+        required: false
+      - name: new_password
+        type: string
+        description: "New password (for complete)"
+        required: false
+      - name: notify_user
+        type: boolean
+        description: "Send confirmation notification"
+        required: false
+        default: true
+    tags: ["auth", "password", "reset", "recovery", "forgot"]
+    test_prompts:
+      single:
+        - "Reset the user's password"
+        - "Send password reset email"
+        - "I forgot my password"
+        - "Complete password reset"
+      single_clear:
+        - "Please initiate a password reset. Reset the user's password"
+        - "Please initiate a password reset. Send password reset email"
+        - "Please initiate a password reset. I forgot my password"
+        - "Please initiate a password reset. Complete password reset"
+
+  - name: manage_mfa
+    descriptions:
+      minimal: "Manage MFA"
+      short: "Manage multi-factor authentication"
+      medium: "Enable, disable, or configure MFA for user accounts."
+      long: "Manage multi-factor authentication settings. Set up TOTP, SMS, or push authentication. Example: manage_mfa(user_id='user123', action='enable', method='totp')."
+      verbose: "Multi-factor authentication management. Actions: 'enable', 'disable', 'setup' (get QR code), 'verify' (confirm setup), 'list' (enrolled methods). Methods: 'totp' (authenticator app), 'sms', 'email', 'push', 'webauthn'. Example: manage_mfa(user_id='user123', action='setup', method='totp') returns {\"qr_code\": \"data:image/png;...\", \"secret\": \"JBSWY3DPEHPK3PXP\"}. Note: Backup codes should be provided during setup. Warning: Lost MFA access requires recovery process."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User identifier"
+        required: true
+      - name: action
+        type: string
+        description: "MFA action"
+        required: true
+        enum: ["enable", "disable", "setup", "verify", "list"]
+      - name: method
+        type: string
+        description: "MFA method"
+        required: false
+        enum: ["totp", "sms", "email", "push", "webauthn"]
+      - name: code
+        type: string
+        description: "Verification code (for verify)"
+        required: false
+    tags: ["auth", "mfa", "2fa", "totp", "security"]
+    test_prompts:
+      single:
+        - "Enable two-factor authentication"
+        - "Set up authenticator app"
+        - "Disable MFA for user"
+        - "Verify MFA setup"
+      single_clear:
+        - "I need to configure multi-factor authentication. Enable two-factor authentication"
+        - "I need to configure multi-factor authentication. Set up authenticator app"
+        - "I need to configure multi-factor authentication. Disable MFA for user"
+        - "I need to configure multi-factor authentication. Verify MFA setup"
+
+  - name: manage_roles
+    descriptions:
+      minimal: "Manage roles"
+      short: "Manage user roles"
+      medium: "Assign, remove, or list roles for users."
+      long: "Role-based access control management. Assign or revoke roles from users. Example: manage_roles(user_id='user123', action='assign', roles='[\"admin\", \"editor\"]')."
+      verbose: "RBAC role management operations. Actions: 'assign' (grant roles), 'revoke' (remove roles), 'list' (user's roles), 'check' (verify role). Scope: roles can be global or resource-specific. Example: manage_roles(user_id='user123', action='assign', roles='[\"project_admin\"]', resource_type='project', resource_id='proj-456'). Note: Role changes take effect immediately. Warning: Removing admin role may lock out user from management."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User identifier"
+        required: true
+      - name: action
+        type: string
+        description: "Role action"
+        required: true
+        enum: ["assign", "revoke", "list", "check"]
+      - name: roles
+        type: string
+        description: "JSON array of roles"
+        required: false
+      - name: resource_type
+        type: string
+        description: "Resource type for scoped roles"
+        required: false
+      - name: resource_id
+        type: string
+        description: "Resource ID for scoped roles"
+        required: false
+    tags: ["auth", "roles", "rbac", "permissions", "access"]
+    test_prompts:
+      single:
+        - "Assign admin role to user"
+        - "Remove editor role"
+        - "List user's roles"
+        - "Check if user has permission"
+      single_clear:
+        - "I need to manage user roles and permissions. Assign admin role to user"
+        - "I need to manage user roles and permissions. Remove editor role"
+        - "I need to manage user roles and permissions. List user's roles"
+        - "I need to manage user roles and permissions. Check if user has permission"
+
+  - name: create_api_key
+    descriptions:
+      minimal: "Create API key"
+      short: "Create an API key"
+      medium: "Generate an API key for programmatic access."
+      long: "Create API keys for service authentication. Set permissions and expiration. Example: create_api_key(name='backend-service', scopes='[\"read\", \"write\"]', expires='2024-12-31')."
+      verbose: "Generate API keys for programmatic access. Features: custom name, scopes/permissions, expiration, IP whitelist, rate limits. Example: create_api_key(name='analytics-service', scopes='[\"read:events\", \"read:users\"]', expires='2024-12-31', ip_whitelist='[\"10.0.0.0/8\"]', rate_limit=1000). Note: API key is shown only once at creation. Warning: Store API keys securely; treat as passwords."
+    parameters:
+      - name: name
+        type: string
+        description: "API key name/description"
+        required: true
+      - name: scopes
+        type: string
+        description: "JSON array of permission scopes"
+        required: true
+      - name: expires
+        type: string
+        description: "Expiration date (ISO format)"
+        required: false
+      - name: ip_whitelist
+        type: string
+        description: "JSON array of allowed IPs/CIDRs"
+        required: false
+      - name: rate_limit
+        type: integer
+        description: "Requests per hour limit"
+        required: false
+    tags: ["auth", "api", "key", "token", "service"]
+    test_prompts:
+      single:
+        - "Create an API key"
+        - "Generate service token"
+        - "Create access credentials"
+        - "Set up API authentication"
+      single_clear:
+        - "I need to generate API credentials for programmatic access. Create an API key"
+        - "I need to generate API credentials for programmatic access. Generate service token"
+        - "I need to generate API credentials for programmatic access. Create access credentials"
+        - "I need to generate API credentials for programmatic access. Set up API authentication"
+
+  - name: manage_oauth
+    descriptions:
+      minimal: "Manage OAuth"
+      short: "Manage OAuth applications"
+      medium: "Create, update, or manage OAuth client applications."
+      long: "Manage OAuth 2.0 client applications. Register, update, or revoke OAuth clients. Example: manage_oauth(action='create', name='My App', redirect_uris='[\"https://app.example.com/callback\"]')."
+      verbose: "OAuth 2.0 application management. Actions: 'create' (register app), 'update', 'delete', 'list', 'rotate_secret'. Settings: name, redirect URIs, allowed scopes, grant types. Example: manage_oauth(action='create', name='Mobile App', redirect_uris='[\"myapp://callback\"]', scopes='[\"openid\", \"profile\", \"email\"]', grant_types='[\"authorization_code\", \"refresh_token\"]'). Note: Client secrets should be rotated regularly. Warning: Deleting OAuth app revokes all user authorizations."
+    parameters:
+      - name: action
+        type: string
+        description: "OAuth action"
+        required: true
+        enum: ["create", "update", "delete", "list", "rotate_secret"]
+      - name: client_id
+        type: string
+        description: "OAuth client ID"
+        required: false
+      - name: name
+        type: string
+        description: "Application name"
+        required: false
+      - name: redirect_uris
+        type: string
+        description: "JSON array of redirect URIs"
+        required: false
+      - name: scopes
+        type: string
+        description: "JSON array of allowed scopes"
+        required: false
+      - name: grant_types
+        type: string
+        description: "JSON array of grant types"
+        required: false
+    tags: ["auth", "oauth", "application", "client", "sso"]
+    test_prompts:
+      single:
+        - "Register an OAuth application"
+        - "Create OAuth client"
+        - "Rotate client secret"
+        - "List OAuth applications"
+      single_clear:
+        - "I need to manage OAuth client applications. Register an OAuth application"
+        - "I need to manage OAuth client applications. Create OAuth client"
+        - "I need to manage OAuth client applications. Rotate client secret"
+        - "I need to manage OAuth client applications. List OAuth applications"
+
+  - name: audit_auth_events
+    descriptions:
+      minimal: "Audit events"
+      short: "Audit authentication events"
+      medium: "Query authentication and security audit logs."
+      long: "Query authentication audit logs. Track logins, failures, and security events. Example: audit_auth_events(user_id='user123', event_types='[\"login\", \"login_failed\"]', period='7d')."
+      verbose: "Authentication audit log queries. Events: 'login', 'logout', 'login_failed', 'password_changed', 'mfa_enabled', 'role_changed', 'api_key_created'. Filters: user, IP, time range, event type, outcome. Example: audit_auth_events(event_types='[\"login_failed\"]', period='24h', group_by='ip', min_count=5). Note: Audit logs should be retained per compliance requirements. Warning: PII in logs requires appropriate handling."
+    parameters:
+      - name: user_id
+        type: string
+        description: "Filter by user ID"
+        required: false
+      - name: event_types
+        type: string
+        description: "JSON array of event types"
+        required: false
+      - name: period
+        type: string
+        description: "Time period"
+        required: false
+        default: "24h"
+      - name: ip_address
+        type: string
+        description: "Filter by IP address"
+        required: false
+      - name: outcome
+        type: string
+        description: "Filter by outcome"
+        required: false
+        enum: ["success", "failure", "all"]
+    tags: ["auth", "audit", "logs", "security", "events"]
+    test_prompts:
+      single:
+        - "Show failed login attempts"
+        - "Audit user authentication history"
+        - "Check security events"
+        - "Get login audit logs"
+      single_clear:
+        - "I need to query authentication audit logs. Show failed login attempts"
+        - "I need to query authentication audit logs. Audit user authentication history"
+        - "I need to query authentication audit logs. Check security events"
+        - "I need to query authentication audit logs. Get login audit logs"
+
+  - name: configure_auth_policy
+    descriptions:
+      minimal: "Configure policy"
+      short: "Configure authentication policy"
+      medium: "Set authentication policies like password rules and lockout settings."
+      long: "Configure authentication policies. Set password requirements, lockout rules, session timeouts. Example: configure_auth_policy(password_min_length=12, lockout_attempts=5)."
+      verbose: "Authentication policy configuration. Settings: password complexity (length, characters, history), account lockout (attempts, duration), session (timeout, concurrent), MFA requirements. Example: configure_auth_policy(password_min_length=12, password_require_special=true, password_history=5, lockout_attempts=5, lockout_duration=900, session_timeout=3600, require_mfa='admin'). Note: Policy changes apply to new authentications. Warning: Strict policies may increase support requests."
+    parameters:
+      - name: password_min_length
+        type: integer
+        description: "Minimum password length"
+        required: false
+      - name: password_require_special
+        type: boolean
+        description: "Require special characters"
+        required: false
+      - name: password_history
+        type: integer
+        description: "Password history count"
+        required: false
+      - name: lockout_attempts
+        type: integer
+        description: "Failed attempts before lockout"
+        required: false
+      - name: lockout_duration
+        type: integer
+        description: "Lockout duration (seconds)"
+        required: false
+      - name: session_timeout
+        type: integer
+        description: "Session timeout (seconds)"
+        required: false
+      - name: require_mfa
+        type: string
+        description: "Roles requiring MFA"
+        required: false
+    tags: ["auth", "policy", "password", "security", "config"]
+    test_prompts:
+      single:
+        - "Set password policy"
+        - "Configure lockout settings"
+        - "Require MFA for admins"
+        - "Update authentication policy"
+      single_clear:
+        - "I need to configure authentication policies. Set password policy"
+        - "I need to configure authentication policies. Configure lockout settings"
+        - "I need to configure authentication policies. Require MFA for admins"
+        - "I need to configure authentication policies. Update authentication policy"
+  - name: generate_api_key
+    descriptions:
+      minimal: "Generate API key"
+      short: "Generate a new API key for authentication"
+      medium: "Generate a new API key for programmatic access. Specify permissions and expiration."
+      long: "Generate an API key for service-to-service authentication. Configure scopes, rate limits, and expiration. Example: generate_api_key(name='Production API', scopes='[\"read\", \"write\"]', expires_in=86400)."
+      verbose: "Generate API keys for programmatic authentication. Features: custom scopes/permissions, rate limiting, expiration, IP restrictions, usage tracking. Example: generate_api_key(name='CI Pipeline Key', scopes='[\"deploy\", \"read\"]', expires_in=604800, rate_limit=1000, allowed_ips='[\"10.0.0.0/8\"]'). Returns: api_key (show once), key_id, created_at, expires_at. Note: Store keys securely; they cannot be retrieved after creation. Warning: Treat API keys as passwords; rotate regularly."
+    parameters:
+      - name: name
+        type: string
+        description: "Descriptive name for the API key"
+        required: true
+      - name: scopes
+        type: string
+        description: "JSON array of permission scopes"
+        required: false
+      - name: expires_in
+        type: integer
+        description: "Expiration time in seconds"
+        required: false
+        default: 31536000
+      - name: rate_limit
+        type: integer
+        description: "Requests per hour limit"
+        required: false
+      - name: allowed_ips
+        type: string
+        description: "JSON array of allowed IP ranges"
+        required: false
+    tags: ["auth", "api", "key", "token", "programmatic"]
+    test_prompts:
+      single:
+        - "Generate a new API key"
+        - "Create an API key for the production service"
+        - "Issue a read-only API key"
+        - "Generate API credentials with rate limiting"
+      single_clear:
+        - "I need to generate a new API key for programmatic access. Generate a new API key"
+        - "I need to generate a new API key for programmatic access. Create an API key for the production service"
+        - "I need to generate a new API key for programmatic access. Issue a read-only API key"
+        - "I need to generate a new API key for programmatic access. Generate API credentials with rate limiting"
+
+  - name: revoke_api_key
+    descriptions:
+      minimal: "Revoke API key"
+      short: "Revoke an existing API key"
+      medium: "Revoke an API key to immediately disable its access."
+      long: "Revoke an API key by ID or prefix. Immediately disables all access using that key. Example: revoke_api_key(key_id='ak_12345')."
+      verbose: "Revoke API keys to disable access. Supports: single key revocation, bulk revocation by user/service, revocation by prefix. Revocation is immediate and irreversible. Example: revoke_api_key(key_id='ak_12345', reason='Suspected compromise'). Options: notify_owner (email alert), log_audit (audit trail). Note: Revoked keys cannot be restored; generate new ones. Warning: Ensure dependent services have new keys before revoking."
+    parameters:
+      - name: key_id
+        type: string
+        description: "API key ID to revoke"
+        required: true
+      - name: reason
+        type: string
+        description: "Reason for revocation"
+        required: false
+      - name: notify_owner
+        type: boolean
+        description: "Send notification to key owner"
+        required: false
+        default: true
+    tags: ["auth", "api", "key", "revoke", "security"]
+    test_prompts:
+      single:
+        - "Revoke the compromised API key"
+        - "Disable API key ak_12345"
+        - "Cancel the old API credentials"
+        - "Invalidate the API key immediately"
+      single_clear:
+        - "I need to revoke an API key to disable access. Revoke the compromised API key"
+        - "I need to revoke an API key to disable access. Disable API key ak_12345"
+        - "I need to revoke an API key to disable access. Cancel the old API credentials"
+        - "I need to revoke an API key to disable access. Invalidate the API key immediately"
+
+  - name: setup_oauth_provider
+    descriptions:
+      minimal: "Setup OAuth provider"
+      short: "Configure an OAuth identity provider"
+      medium: "Configure an OAuth 2.0 identity provider for social login or SSO."
+      long: "Setup OAuth provider integration (Google, GitHub, Azure AD, etc.). Configure client ID, secret, scopes, and callback URLs. Example: setup_oauth_provider(provider='google', client_id='xxx', client_secret='yyy', scopes='[\"email\", \"profile\"]')."
+      verbose: "Configure OAuth 2.0/OpenID Connect identity providers. Supported: Google, GitHub, Microsoft, Apple, Facebook, Twitter, LinkedIn, Okta, Auth0, custom OIDC. Configuration: client credentials, scopes, callback URLs, token endpoints, user info mapping. Example: setup_oauth_provider(provider='azure_ad', client_id='xxx', client_secret='yyy', tenant_id='zzz', scopes='[\"openid\", \"email\", \"profile\"]', callback_url='https://app.com/auth/callback'). Note: Test in sandbox before production. Warning: Securely store client secrets; never expose in frontend code."
+    parameters:
+      - name: provider
+        type: string
+        description: "OAuth provider name"
+        required: true
+        enum: ["google", "github", "microsoft", "apple", "facebook", "twitter", "linkedin", "okta", "auth0", "custom"]
+      - name: client_id
+        type: string
+        description: "OAuth client ID"
+        required: true
+      - name: client_secret
+        type: string
+        description: "OAuth client secret"
+        required: true
+      - name: scopes
+        type: string
+        description: "JSON array of OAuth scopes"
+        required: false
+      - name: callback_url
+        type: string
+        description: "OAuth callback URL"
+        required: true
+      - name: tenant_id
+        type: string
+        description: "Tenant ID (for Azure AD)"
+        required: false
+    tags: ["auth", "oauth", "sso", "provider", "social"]
+    test_prompts:
+      single:
+        - "Setup Google OAuth login"
+        - "Configure GitHub authentication"
+        - "Add Microsoft SSO integration"
+        - "Enable social login with Facebook"
+      single_clear:
+        - "I need to configure an OAuth identity provider. Setup Google OAuth login"
+        - "I need to configure an OAuth identity provider. Configure GitHub authentication"
+        - "I need to configure an OAuth identity provider. Add Microsoft SSO integration"
+        - "I need to configure an OAuth identity provider. Enable social login with Facebook"
+
+  - name: verify_email
+    descriptions:
+      minimal: "Verify email"
+      short: "Verify a user's email address"
+      medium: "Verify a user's email address using a verification token or code."
+      long: "Verify email ownership using a token sent to the user. Marks the email as verified in the user profile. Example: verify_email(token='abc123def456')."
+      verbose: "Email verification for user accounts. Methods: token link (email contains URL), code entry (6-digit code), magic link (passwordless). Example: verify_email(token='eyJ...', method='token'). Actions: verify email, resend verification, check status. Response: verified (bool), verified_at, user_id. Note: Tokens typically expire in 24-48 hours. Warning: Rate limit verification attempts to prevent abuse."
+    parameters:
+      - name: token
+        type: string
+        description: "Email verification token"
+        required: false
+      - name: code
+        type: string
+        description: "Verification code (6 digits)"
+        required: false
+      - name: email
+        type: string
+        description: "Email to verify or resend"
+        required: false
+      - name: action
+        type: string
+        description: "Verification action"
+        required: false
+        default: "verify"
+        enum: ["verify", "resend", "check_status"]
+    tags: ["auth", "email", "verify", "confirmation", "user"]
+    test_prompts:
+      single:
+        - "Verify the user's email address"
+        - "Confirm email with verification code"
+        - "Resend verification email"
+        - "Check if email is verified"
+      single_clear:
+        - "I need to verify a user's email address. Verify the user's email address"
+        - "I need to verify a user's email address. Confirm email with verification code"
+        - "I need to verify a user's email address. Resend verification email"
+        - "I need to verify a user's email address. Check if email is verified"
+
+  - name: reset_password
+    descriptions:
+      minimal: "Reset password"
+      short: "Reset a user's password"
+      medium: "Initiate or complete a password reset flow for a user account."
+      long: "Handle password reset: request reset email, validate token, set new password. Example: reset_password(action='request', email='user@example.com')."
+      verbose: "Password reset workflow management. Actions: 'request' (send reset email), 'validate' (check token validity), 'complete' (set new password), 'admin_reset' (force reset by admin). Example: reset_password(action='complete', token='rst_...', new_password='***'). Security: tokens expire in 1 hour, single use, invalidate on password change. Options: force_logout (revoke all sessions), notify_user (confirmation email). Note: Enforce password policy on new passwords. Warning: Log all reset attempts for security monitoring."
+    parameters:
+      - name: action
+        type: string
+        description: "Reset action"
+        required: true
+        enum: ["request", "validate", "complete", "admin_reset"]
+      - name: email
+        type: string
+        description: "User email (for request)"
+        required: false
+      - name: token
+        type: string
+        description: "Reset token"
+        required: false
+      - name: new_password
+        type: string
+        description: "New password"
+        required: false
+      - name: user_id
+        type: string
+        description: "User ID (for admin reset)"
+        required: false
+      - name: force_logout
+        type: boolean
+        description: "Revoke all sessions"
+        required: false
+        default: true
+    tags: ["auth", "password", "reset", "recovery", "security"]
+    test_prompts:
+      single:
+        - "Reset the user's password"
+        - "Send password reset email"
+        - "Complete password reset with token"
+        - "Force password reset for user"
+      single_clear:
+        - "Please initiate a password reset. Reset the user's password"
+        - "Please initiate a password reset. Send password reset email"
+        - "Please initiate a password reset. Complete password reset with token"
+        - "Please initiate a password reset. Force password reset for user"
+
+  - name: enable_mfa
+    descriptions:
+      minimal: "Enable MFA"
+      short: "Enable multi-factor authentication"
+      medium: "Enable multi-factor authentication for a user account using TOTP, SMS, or hardware keys."
+      long: "Setup MFA for enhanced security. Supports TOTP apps, SMS codes, email codes, and hardware security keys. Example: enable_mfa(user_id='u123', method='totp')."
+      verbose: "Enable multi-factor authentication for user accounts. Methods: 'totp' (Google Authenticator, Authy), 'sms' (text message), 'email' (email codes), 'webauthn' (hardware keys like YubiKey), 'push' (mobile app push). Setup flow: generate secret/register device, verify with test code, save backup codes. Example: enable_mfa(user_id='u123', method='totp', phone='+1234567890'). Returns: secret (for TOTP QR), backup_codes, setup_complete. Note: Require backup codes download before enabling. Warning: Lost MFA access requires admin recovery process."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User ID to enable MFA for"
+        required: true
+      - name: method
+        type: string
+        description: "MFA method"
+        required: true
+        enum: ["totp", "sms", "email", "webauthn", "push"]
+      - name: phone
+        type: string
+        description: "Phone number (for SMS)"
+        required: false
+      - name: verification_code
+        type: string
+        description: "Code to verify setup"
+        required: false
+    tags: ["auth", "mfa", "2fa", "security", "totp"]
+    test_prompts:
+      single:
+        - "Enable two-factor authentication"
+        - "Setup MFA with authenticator app"
+        - "Add SMS verification to account"
+        - "Configure hardware security key"
+      single_clear:
+        - "I need to enable multi-factor authentication for security. Enable two-factor authentication"
+        - "I need to enable multi-factor authentication for security. Setup MFA with authenticator app"
+        - "I need to enable multi-factor authentication for security. Add SMS verification to account"
+        - "I need to enable multi-factor authentication for security. Configure hardware security key"
+
+  - name: disable_mfa
+    descriptions:
+      minimal: "Disable MFA"
+      short: "Disable multi-factor authentication"
+      medium: "Disable MFA for a user account after identity verification."
+      long: "Remove MFA from a user account. Requires current password or admin privileges. Example: disable_mfa(user_id='u123', method='totp', password='***')."
+      verbose: "Disable multi-factor authentication for user accounts. Security: requires password confirmation or admin override with reason. Options: disable specific method or all methods, keep backup codes. Example: disable_mfa(user_id='u123', method='all', password='***', reason='Switching to new device'). Audit: logs who disabled, when, and why. Note: Consider requiring MFA re-enrollment period after disable. Warning: Disabling MFA reduces account security; ensure legitimate request."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User ID to disable MFA for"
+        required: true
+      - name: method
+        type: string
+        description: "MFA method to disable"
+        required: false
+        default: "all"
+        enum: ["totp", "sms", "email", "webauthn", "push", "all"]
+      - name: password
+        type: string
+        description: "Current password for verification"
+        required: false
+      - name: admin_override
+        type: boolean
+        description: "Admin override flag"
+        required: false
+        default: false
+      - name: reason
+        type: string
+        description: "Reason for disabling"
+        required: false
+    tags: ["auth", "mfa", "2fa", "disable", "security"]
+    test_prompts:
+      single:
+        - "Disable two-factor authentication"
+        - "Remove MFA from account"
+        - "Turn off SMS verification"
+        - "Admin disable MFA for locked out user"
+      single_clear:
+        - "I need to disable multi-factor authentication. Disable two-factor authentication"
+        - "I need to disable multi-factor authentication. Remove MFA from account"
+        - "I need to disable multi-factor authentication. Turn off SMS verification"
+        - "I need to disable multi-factor authentication. Admin disable MFA for locked out user"
+
+  - name: create_service_account
+    descriptions:
+      minimal: "Create service account"
+      short: "Create a service account for automated access"
+      medium: "Create a service account for machine-to-machine authentication without human user."
+      long: "Create service accounts for automated systems, CI/CD pipelines, or backend services. Configure permissions and credentials. Example: create_service_account(name='ci-deployer', roles='[\"deploy\"]')."
+      verbose: "Create service accounts for non-human authentication. Use cases: CI/CD pipelines, microservices, scheduled jobs, external integrations. Configuration: name, description, roles/permissions, credential type (API key, JWT, certificate). Example: create_service_account(name='payment-processor', roles='[\"payment:process\", \"payment:refund\"]', credential_type='jwt', key_expiry=86400). Returns: service_account_id, credentials, created_at. Note: Apply principle of least privilege. Warning: Rotate service account credentials regularly; monitor for anomalous usage."
+    parameters:
+      - name: name
+        type: string
+        description: "Service account name"
+        required: true
+      - name: description
+        type: string
+        description: "Purpose description"
+        required: false
+      - name: roles
+        type: string
+        description: "JSON array of roles/permissions"
+        required: true
+      - name: credential_type
+        type: string
+        description: "Type of credentials to generate"
+        required: false
+        default: "api_key"
+        enum: ["api_key", "jwt", "certificate", "oauth_client"]
+      - name: key_expiry
+        type: integer
+        description: "Credential expiry in seconds"
+        required: false
+    tags: ["auth", "service", "account", "machine", "automation"]
+    test_prompts:
+      single:
+        - "Create a service account for the deployment pipeline"
+        - "Setup machine-to-machine authentication"
+        - "Create automated service credentials"
+        - "Add service account for microservice"
+      single_clear:
+        - "I need to create a service account for automated access. Create a service account for the deployment pipeline"
+        - "I need to create a service account for automated access. Setup machine-to-machine authentication"
+        - "I need to create a service account for automated access. Create automated service credentials"
+        - "I need to create a service account for automated access. Add service account for microservice"
+
+  - name: audit_auth_logs
+    descriptions:
+      minimal: "Audit auth logs"
+      short: "Query authentication audit logs"
+      medium: "Search and filter authentication events for security auditing and compliance."
+      long: "Query authentication audit logs. Filter by user, event type, date range, IP, and outcome. Example: audit_auth_logs(user_id='u123', event_type='login_failed', days=7)."
+      verbose: "Search authentication audit logs for security analysis and compliance. Event types: login_success, login_failed, logout, password_change, mfa_setup, token_refresh, session_revoked, api_key_used, permission_denied. Filters: user_id, event_type, date_range, ip_address, device, outcome. Example: audit_auth_logs(event_type='login_failed', ip_address='1.2.3.4', days=30, limit=1000). Returns: events with timestamps, user info, IP, device, outcome, metadata. Note: Logs retained per compliance requirements. Warning: Large queries may be slow; use filters and pagination."
+    parameters:
+      - name: user_id
+        type: string
+        description: "Filter by user ID"
+        required: false
+      - name: event_type
+        type: string
+        description: "Filter by event type"
+        required: false
+        enum: ["login_success", "login_failed", "logout", "password_change", "mfa_setup", "token_refresh", "session_revoked", "api_key_used", "permission_denied"]
+      - name: ip_address
+        type: string
+        description: "Filter by IP address"
+        required: false
+      - name: days
+        type: integer
+        description: "Number of days to search"
+        required: false
+        default: 7
+      - name: limit
+        type: integer
+        description: "Maximum events to return"
+        required: false
+        default: 100
+    tags: ["auth", "audit", "logs", "security", "compliance"]
+    test_prompts:
+      single:
+        - "Show failed login attempts"
+        - "Audit authentication logs for user"
+        - "Find all logins from IP address"
+      single_clear:
+        - "I need to query authentication audit logs for security analysis. Show failed login attempts"
+        - "I need to query authentication audit logs for security analysis. Audit authentication logs for user"
+        - "I need to query authentication audit logs for security analysis. Find all logins from IP address"
+
+  - name: configure_sso
+    descriptions:
+      minimal: "Configure SSO"
+      short: "Configure single sign-on"
+      medium: "Configure single sign-on (SSO) with identity providers."
+      long: "Set up SSO integration with providers like Okta, Azure AD, or Google. Example: configure_sso(provider='okta', domain='company.okta.com', client_id='abc123')."
+      verbose: "Configure enterprise SSO integration. Providers: Okta, Azure AD, Google Workspace, OneLogin, Auth0, PingIdentity, custom SAML/OIDC. Protocols: SAML 2.0, OpenID Connect, OAuth 2.0. Features: attribute mapping, JIT provisioning, group sync. Example: configure_sso(provider='azure_ad', tenant_id='xxx', client_id='yyy', client_secret='zzz', protocol='oidc', attribute_mapping='{\"email\": \"upn\", \"name\": \"displayName\", \"groups\": \"groups\"}', jit_provisioning=true). Note: Test SSO configuration in staging before production. Warning: Incorrect configuration can lock out all users."
+    parameters:
+      - name: provider
+        type: string
+        description: "Identity provider"
+        required: true
+        enum: ["okta", "azure_ad", "google", "onelogin", "auth0", "ping", "custom_saml", "custom_oidc"]
+      - name: tenant_id
+        type: string
+        description: "Provider tenant/domain ID"
+        required: true
+      - name: client_id
+        type: string
+        description: "OAuth client ID"
+        required: true
+      - name: client_secret
+        type: string
+        description: "OAuth client secret"
+        required: true
+      - name: protocol
+        type: string
+        description: "SSO protocol"
+        required: false
+        default: "oidc"
+        enum: ["saml", "oidc", "oauth2"]
+      - name: attribute_mapping
+        type: string
+        description: "JSON attribute mapping"
+        required: false
+      - name: jit_provisioning
+        type: boolean
+        description: "Enable just-in-time user provisioning"
+        required: false
+        default: false
+    tags: ["auth", "sso", "identity", "enterprise", "integration"]
+    test_prompts:
+      single:
+        - "Set up SSO with Okta"
+        - "Configure Azure AD integration"
+        - "Enable single sign-on"
+        - "Connect Google Workspace SSO"
+      single_clear:
+        - "I need to configure single sign-on integration. Set up SSO with Okta"
+        - "I need to configure single sign-on integration. Configure Azure AD integration"
+        - "I need to configure single sign-on integration. Enable single sign-on"
+        - "I need to configure single sign-on integration. Connect Google Workspace SSO"
+
+  - name: manage_api_scopes
+    descriptions:
+      minimal: "Manage scopes"
+      short: "Manage API authorization scopes"
+      medium: "Create and manage OAuth scopes for API authorization."
+      long: "Define and manage API scopes for fine-grained access control. Example: manage_api_scopes(action='create', scope='users:read', description='Read user data')."
+      verbose: "Manage OAuth 2.0 scopes for API authorization. Actions: list, create, update, delete, assign. Scope patterns: resource:action (e.g., 'users:write'), hierarchical (e.g., 'admin.users.delete'). Features: scope dependencies, consent requirements, admin-only scopes. Example: manage_api_scopes(action='create', scope='orders:write', description='Create and modify orders', requires_consent=true, dependencies='[\"orders:read\"]', admin_only=false). Note: Scope changes affect all API clients using them. Warning: Removing scopes may break existing integrations."
+    parameters:
+      - name: action
+        type: string
+        description: "Management action"
+        required: true
+        enum: ["list", "create", "update", "delete", "assign"]
+      - name: scope
+        type: string
+        description: "Scope name/identifier"
+        required: false
+      - name: description
+        type: string
+        description: "Scope description"
+        required: false
+      - name: requires_consent
+        type: boolean
+        description: "Requires user consent"
+        required: false
+        default: true
+      - name: dependencies
+        type: string
+        description: "JSON array of required scopes"
+        required: false
+      - name: admin_only
+        type: boolean
+        description: "Admin-only scope"
+        required: false
+        default: false
+    tags: ["auth", "scopes", "api", "oauth", "authorization"]
+    test_prompts:
+      single:
+        - "Create new API scope"
+        - "List all OAuth scopes"
+        - "Add scope to client"
+        - "Define permission scope"
+      single_clear:
+        - "I need to manage API authorization scopes. Create new API scope"
+        - "I need to manage API authorization scopes. List all OAuth scopes"
+        - "I need to manage API authorization scopes. Add scope to client"
+        - "I need to manage API authorization scopes. Define permission scope"
+
+  - name: configure_passwordless
+    descriptions:
+      minimal: "Configure passwordless"
+      short: "Configure passwordless authentication"
+      medium: "Set up passwordless authentication using magic links, passkeys, or biometrics."
+      long: "Enable passwordless authentication methods. Example: configure_passwordless(methods='[\"magic_link\", \"webauthn\"]', primary='magic_link')."
+      verbose: "Configure passwordless authentication options. Methods: magic link (email), WebAuthn/passkeys, SMS OTP, push notification, biometric. Features: fallback options, device trust, risk-based selection. Example: configure_passwordless(methods='[\"webauthn\", \"magic_link\"]', primary='webauthn', fallback='magic_link', magic_link_expiry=600, require_device_registration=true, risk_based_selection=true). Note: WebAuthn requires browser/device support. Warning: Ensure fallback options for users without passwordless capability."
+    parameters:
+      - name: methods
+        type: string
+        description: "JSON array of enabled methods"
+        required: true
+      - name: primary
+        type: string
+        description: "Primary authentication method"
+        required: true
+        enum: ["magic_link", "webauthn", "sms_otp", "push", "biometric"]
+      - name: fallback
+        type: string
+        description: "Fallback method"
+        required: false
+      - name: magic_link_expiry
+        type: integer
+        description: "Magic link expiry in seconds"
+        required: false
+        default: 600
+      - name: require_device_registration
+        type: boolean
+        description: "Require device registration"
+        required: false
+        default: false
+      - name: risk_based_selection
+        type: boolean
+        description: "Enable risk-based method selection"
+        required: false
+        default: false
+    tags: ["auth", "passwordless", "webauthn", "passkey", "magic_link"]
+    test_prompts:
+      single:
+        - "Enable passwordless login"
+        - "Set up magic link authentication"
+        - "Configure passkey authentication"
+        - "Enable WebAuthn"
+      single_clear:
+        - "I need to configure passwordless authentication. Enable passwordless login"
+        - "I need to configure passwordless authentication. Set up magic link authentication"
+        - "I need to configure passwordless authentication. Configure passkey authentication"
+        - "I need to configure passwordless authentication. Enable WebAuthn"
+
+  - name: manage_device_trust
+    descriptions:
+      minimal: "Manage devices"
+      short: "Manage trusted devices"
+      medium: "Manage trusted devices for user authentication."
+      long: "Track and manage user trusted devices. Approve or revoke device trust. Example: manage_device_trust(user_id='user123', action='list')."
+      verbose: "Trusted device management for authentication. Actions: list (view devices), trust (mark trusted), revoke (remove trust), revoke_all (clear all). Device info: fingerprint, browser, OS, location, last used. Features: device limits, auto-expiry, anomaly detection. Example: manage_device_trust(user_id='user-456', action='list', include_history=true, max_devices=5, auto_expire_days=90). Note: Device fingerprints may change with updates. Warning: Revoking all devices forces re-authentication everywhere."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User ID"
+        required: true
+      - name: action
+        type: string
+        description: "Device management action"
+        required: true
+        enum: ["list", "trust", "revoke", "revoke_all"]
+      - name: device_id
+        type: string
+        description: "Specific device ID"
+        required: false
+      - name: include_history
+        type: boolean
+        description: "Include revoked devices"
+        required: false
+        default: false
+      - name: max_devices
+        type: integer
+        description: "Maximum trusted devices"
+        required: false
+      - name: auto_expire_days
+        type: integer
+        description: "Auto-expire trust after days"
+        required: false
+    tags: ["auth", "device", "trust", "security", "management"]
+    test_prompts:
+      single:
+        - "Show trusted devices"
+        - "Revoke device access"
+        - "Trust this device"
+        - "Remove all trusted devices"
+      single_clear:
+        - "I need to manage trusted devices for authentication. Show trusted devices"
+        - "I need to manage trusted devices for authentication. Revoke device access"
+        - "I need to manage trusted devices for authentication. Trust this device"
+        - "I need to manage trusted devices for authentication. Remove all trusted devices"
+
+  - name: configure_rate_limiting
+    descriptions:
+      minimal: "Configure rate limiting"
+      short: "Configure authentication rate limiting"
+      medium: "Configure rate limiting for authentication endpoints to prevent abuse."
+      long: "Set up rate limits for login, registration, and password reset. Example: configure_rate_limiting(endpoint='login', limit=5, window='15m', action='block')."
+      verbose: "Authentication rate limiting configuration. Endpoints: login, register, password_reset, mfa, token_refresh, api. Limit types: per IP, per user, per endpoint. Actions: block, captcha, delay, alert. Example: configure_rate_limiting(endpoint='login', limit=5, window='15m', action='captcha', escalation='[{\"attempts\": 10, \"action\": \"block\", \"duration\": \"1h\"}]', whitelist='[\"10.0.0.0/8\"]', alert_threshold=100). Note: Rate limits should balance security and user experience. Warning: Aggressive limits may affect legitimate users with shared IPs."
+    parameters:
+      - name: endpoint
+        type: string
+        description: "Endpoint to rate limit"
+        required: true
+        enum: ["login", "register", "password_reset", "mfa", "token_refresh", "api", "all"]
+      - name: limit
+        type: integer
+        description: "Number of requests allowed"
+        required: true
+      - name: window
+        type: string
+        description: "Time window (e.g., '15m', '1h')"
+        required: true
+      - name: action
+        type: string
+        description: "Action when limit exceeded"
+        required: false
+        default: "block"
+        enum: ["block", "captcha", "delay", "alert"]
+      - name: escalation
+        type: string
+        description: "JSON escalation rules"
+        required: false
+      - name: whitelist
+        type: string
+        description: "JSON array of whitelisted IPs"
+        required: false
+    tags: ["auth", "rate_limit", "security", "abuse", "protection"]
+    test_prompts:
+      single:
+        - "Set up login rate limiting"
+        - "Configure brute force protection"
+        - "Limit password reset attempts"
+        - "Add rate limits to auth"
+      single_clear:
+        - "I need to configure rate limiting for authentication endpoints. Set up login rate limiting"
+        - "I need to configure rate limiting for authentication endpoints. Configure brute force protection"
+        - "I need to configure rate limiting for authentication endpoints. Limit password reset attempts"
+        - "I need to configure rate limiting for authentication endpoints. Add rate limits to auth"
+
+  - name: manage_identity_verification
+    descriptions:
+      minimal: "Verify identity"
+      short: "Manage identity verification"
+      medium: "Manage identity verification for users with document and biometric checks."
+      long: "Verify user identity using documents, biometrics, or third-party services. Example: manage_identity_verification(user_id='user123', action='initiate', type='document')."
+      verbose: "Identity verification and KYC management. Verification types: document (ID, passport), biometric (face match), database (credit bureaus), address. Providers: Onfido, Jumio, Persona, Veriff. Statuses: pending, verified, failed, expired. Example: manage_identity_verification(user_id='user-456', action='initiate', type='document_and_selfie', provider='onfido', documents='[\"passport\", \"driving_license\"]', require_liveness=true). Note: Verification times vary by provider and document type. Warning: Verification data subject to data protection regulations."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User ID to verify"
+        required: true
+      - name: action
+        type: string
+        description: "Verification action"
+        required: true
+        enum: ["initiate", "check_status", "get_result", "retry", "manual_review"]
+      - name: type
+        type: string
+        description: "Verification type"
+        required: false
+        enum: ["document", "biometric", "document_and_selfie", "database", "address"]
+      - name: provider
+        type: string
+        description: "Verification provider"
+        required: false
+        enum: ["onfido", "jumio", "persona", "veriff", "internal"]
+      - name: documents
+        type: string
+        description: "JSON array of accepted documents"
+        required: false
+      - name: require_liveness
+        type: boolean
+        description: "Require liveness check"
+        required: false
+        default: true
+    tags: ["auth", "identity", "verification", "kyc", "compliance"]
+    test_prompts:
+      single:
+        - "Verify user identity"
+        - "Start document verification"
+        - "Check verification status"
+        - "Initiate KYC process"
+      single_clear:
+        - "I need to manage identity verification for a user. Verify user identity"
+        - "I need to manage identity verification for a user. Start document verification"
+        - "I need to manage identity verification for a user. Check verification status"
+        - "I need to manage identity verification for a user. Initiate KYC process"
+
+  - name: configure_session_policy
+    descriptions:
+      minimal: "Configure sessions"
+      short: "Configure session policies"
+      medium: "Configure session management policies including timeouts and concurrent sessions."
+      long: "Set up session policies for duration, concurrency, and invalidation. Example: configure_session_policy(max_duration='24h', idle_timeout='2h', max_concurrent=3)."
+      verbose: "Session policy configuration. Settings: max duration, idle timeout, concurrent session limit, session binding (IP, device), refresh behavior. Features: sliding vs absolute expiry, geographic restrictions, privilege escalation timeout. Example: configure_session_policy(max_duration='8h', idle_timeout='30m', max_concurrent=3, concurrent_action='oldest', bind_to='[\"ip\", \"device\"]', require_reauth_for='[\"billing\", \"security\"]', sliding_expiry=true). Note: Strict policies improve security but reduce convenience. Warning: Policy changes may invalidate existing sessions."
+    parameters:
+      - name: max_duration
+        type: string
+        description: "Maximum session duration"
+        required: false
+        default: "24h"
+      - name: idle_timeout
+        type: string
+        description: "Idle timeout duration"
+        required: false
+        default: "2h"
+      - name: max_concurrent
+        type: integer
+        description: "Max concurrent sessions"
+        required: false
+      - name: concurrent_action
+        type: string
+        description: "Action when exceeding concurrent limit"
+        required: false
+        default: "oldest"
+        enum: ["oldest", "newest", "block", "prompt"]
+      - name: bind_to
+        type: string
+        description: "JSON array of session binding options"
+        required: false
+      - name: require_reauth_for
+        type: string
+        description: "JSON array of actions requiring re-auth"
+        required: false
+      - name: sliding_expiry
+        type: boolean
+        description: "Use sliding expiry window"
+        required: false
+        default: true
+    tags: ["auth", "session", "policy", "security", "timeout"]
+    test_prompts:
+      single:
+        - "Set session timeout"
+        - "Configure concurrent sessions"
+        - "Update session policy"
+        - "Limit active sessions"
+      single_clear:
+        - "I need to configure session management policies. Set session timeout"
+        - "I need to configure session management policies. Configure concurrent sessions"
+        - "I need to configure session management policies. Update session policy"
+        - "I need to configure session management policies. Limit active sessions"
+
+  - name: manage_emergency_access
+    descriptions:
+      minimal: "Emergency access"
+      short: "Manage emergency access"
+      medium: "Configure and manage emergency access procedures for account recovery."
+      long: "Set up emergency access for lockout recovery. Define trusted contacts or break-glass procedures. Example: manage_emergency_access(user_id='user123', action='configure', contacts='[\"trusted@email.com\"]')."
+      verbose: "Emergency access and break-glass procedures. Features: trusted contacts, waiting period, admin override, offline codes. Actions: configure, trigger, approve, revoke. Security: notification to account holder, audit logging, waiting period. Example: manage_emergency_access(user_id='user-456', action='configure', contacts='[\"spouse@email.com\"]', waiting_period='48h', notify_methods='[\"email\", \"sms\"]', require_approval=true, offline_codes=5). Note: Emergency access should be difficult to abuse. Warning: Emergency access bypasses normal security; log all usage."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User ID"
+        required: true
+      - name: action
+        type: string
+        description: "Emergency access action"
+        required: true
+        enum: ["configure", "trigger", "approve", "revoke", "generate_codes"]
+      - name: contacts
+        type: string
+        description: "JSON array of trusted contacts"
+        required: false
+      - name: waiting_period
+        type: string
+        description: "Waiting period before access"
+        required: false
+        default: "24h"
+      - name: notify_methods
+        type: string
+        description: "JSON array of notification methods"
+        required: false
+      - name: require_approval
+        type: boolean
+        description: "Require contact approval"
+        required: false
+        default: true
+      - name: offline_codes
+        type: integer
+        description: "Number of offline recovery codes"
+        required: false
+        default: 10
+    tags: ["auth", "emergency", "recovery", "break_glass", "backup"]
+    test_prompts:
+      single:
+        - "Set up emergency access"
+        - "Generate recovery codes"
+        - "Configure trusted contacts"
+        - "Trigger emergency recovery"
+      single_clear:
+        - "I need to manage emergency access procedures. Set up emergency access"
+        - "I need to manage emergency access procedures. Generate recovery codes"
+        - "I need to manage emergency access procedures. Configure trusted contacts"
+        - "I need to manage emergency access procedures. Trigger emergency recovery"
+
+  - name: sync_directory
+    descriptions:
+      minimal: "Sync directory"
+      short: "Sync user directory"
+      medium: "Synchronize users and groups from external directories like LDAP or Azure AD."
+      long: "Sync user directory from LDAP, Active Directory, or cloud providers. Example: sync_directory(source='azure_ad', action='sync', groups='[\"employees\", \"contractors\"]')."
+      verbose: "Directory synchronization with identity providers. Sources: LDAP, Active Directory, Azure AD, Google Workspace, Okta. Sync modes: full, incremental, real-time (SCIM). Options: attribute mapping, group filtering, conflict resolution. Example: sync_directory(source='ldap', connection='{\"host\": \"ldap.company.com\", \"base_dn\": \"dc=company,dc=com\"}', action='sync', mode='incremental', group_filter='(memberOf=cn=employees,ou=groups)', attribute_map='{\"mail\": \"email\", \"cn\": \"name\"}', sync_groups=true). Note: Large directories may take time to sync. Warning: Test in staging to avoid accidental user deprovisioning."
+    parameters:
+      - name: source
+        type: string
+        description: "Directory source"
+        required: true
+        enum: ["ldap", "active_directory", "azure_ad", "google", "okta", "scim"]
+      - name: connection
+        type: string
+        description: "JSON connection configuration"
+        required: true
+      - name: action
+        type: string
+        description: "Sync action"
+        required: true
+        enum: ["sync", "preview", "validate", "status"]
+      - name: mode
+        type: string
+        description: "Sync mode"
+        required: false
+        default: "incremental"
+        enum: ["full", "incremental", "realtime"]
+      - name: group_filter
+        type: string
+        description: "Group filter expression"
+        required: false
+      - name: attribute_map
+        type: string
+        description: "JSON attribute mapping"
+        required: false
+      - name: sync_groups
+        type: boolean
+        description: "Sync group memberships"
+        required: false
+        default: true
+    tags: ["auth", "directory", "sync", "ldap", "provisioning"]
+    test_prompts:
+      single:
+        - "Sync users from Active Directory"
+        - "Connect LDAP directory"
+        - "Import users from Azure AD"
+        - "Run directory sync"
+      single_clear:
+        - "I need to synchronize users from an external directory. Sync users from Active Directory"
+        - "I need to synchronize users from an external directory. Connect LDAP directory"
+        - "I need to synchronize users from an external directory. Import users from Azure AD"
+        - "I need to synchronize users from an external directory. Run directory sync"
+
+        - "Get security events from last week"

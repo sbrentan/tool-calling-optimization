@@ -1,0 +1,1325 @@
+category: payment_operations
+
+tools:
+  - name: create_payment_intent
+    descriptions:
+      minimal: "Create payment intent"
+      short: "Create a payment intent for processing a charge"
+      medium: "Create a payment intent to initiate a card payment with amount, currency, and customer info."
+      long: "Create a payment intent for processing a payment. Returns a client secret for frontend confirmation. Supports various payment methods. Example: create_payment_intent(amount=2999, currency='usd', customer_id='cus_123')."
+      verbose: "Create a payment intent to initiate the payment flow. Payment intents track the lifecycle of a payment from creation to completion. Supports: multiple payment methods (card, bank, wallet), saved payment methods, 3D Secure authentication, metadata, statement descriptors. Example: create_payment_intent(amount=5000, currency='usd', customer_id='cus_ABC123', payment_method_types=['card', 'sepa_debit'], metadata='{\"order_id\": \"ord_123\"}', statement_descriptor='MYCOMPANY', capture_method='automatic'). Note: Amount is in smallest currency unit (cents for USD). Warning: Handle the client_secret securely; never log it."
+    parameters:
+      - name: amount
+        type: integer
+        description: "Amount in smallest currency unit"
+        required: true
+      - name: currency
+        type: string
+        description: "Three-letter currency code"
+        required: true
+      - name: customer_id
+        type: string
+        description: "Customer identifier"
+        required: false
+      - name: payment_method_types
+        type: array
+        description: "Allowed payment methods"
+        required: false
+      - name: metadata
+        type: string
+        description: "Custom metadata JSON"
+        required: false
+      - name: statement_descriptor
+        type: string
+        description: "Statement descriptor"
+        required: false
+      - name: capture_method
+        type: string
+        description: "When to capture funds"
+        required: false
+        default: "automatic"
+        enum: ["automatic", "manual"]
+    tags: ["payment", "charge", "stripe", "intent", "card"]
+    test_prompts:
+      single:
+        - "Create a payment for $29.99"
+        - "Process a credit card charge"
+        - "Set up a payment intent for the order"
+        - "Initialize a card payment for the customer"
+      single_clear:
+        - "I need to process a payment transaction. Create a payment for $29.99"
+        - "I need to process a payment transaction. Process a credit card charge"
+        - "I need to process a payment transaction. Set up a payment intent for the order"
+        - "I need to process a payment transaction. Initialize a card payment for the customer"
+
+  - name: process_refund
+    descriptions:
+      minimal: "Process refund"
+      short: "Refund a payment"
+      medium: "Process a full or partial refund for a previous payment or charge."
+      long: "Refund a payment partially or fully. Specify the payment ID and optionally the amount. Example: process_refund(payment_id='pi_123', amount=1500, reason='customer_request')."
+      verbose: "Process a refund for a completed payment. Supports full or partial refunds, multiple partial refunds per payment, and refund reasons for analytics. Refunds are processed to the original payment method. Example: process_refund(payment_id='pi_ABC123', amount=2500, reason='duplicate', metadata='{\"ticket_id\": \"SUP-456\"}', refund_application_fee=false, reverse_transfer=true). Note: Refunds may take 5-10 business days to appear on customer statements. Warning: Some payment methods (bank transfers) may have refund limitations."
+    parameters:
+      - name: payment_id
+        type: string
+        description: "Original payment or charge ID"
+        required: true
+      - name: amount
+        type: integer
+        description: "Refund amount (omit for full refund)"
+        required: false
+      - name: reason
+        type: string
+        description: "Refund reason"
+        required: false
+        enum: ["duplicate", "fraudulent", "customer_request", "other"]
+      - name: metadata
+        type: string
+        description: "Custom metadata JSON"
+        required: false
+      - name: refund_application_fee
+        type: boolean
+        description: "Refund application fee"
+        required: false
+        default: false
+      - name: reverse_transfer
+        type: boolean
+        description: "Reverse connected account transfer"
+        required: false
+        default: false
+    tags: ["payment", "refund", "return", "chargeback", "cancel"]
+    test_prompts:
+      single:
+        - "Refund the customer's payment"
+        - "Process a partial refund of $15"
+        - "Give the customer their money back"
+        - "Refund the order due to cancellation"
+      single_clear:
+        - "I need to process a refund. Refund the customer's payment"
+        - "I need to process a refund. Process a partial refund of $15"
+        - "I need to process a refund. Give the customer their money back"
+        - "I need to process a refund. Refund the order due to cancellation"
+
+  - name: create_subscription
+    descriptions:
+      minimal: "Create subscription"
+      short: "Create a recurring subscription"
+      medium: "Create a recurring subscription for a customer with specified pricing and billing cycle."
+      long: "Create a subscription to charge a customer on a recurring basis. Specify the price/plan and billing settings. Example: create_subscription(customer_id='cus_123', price_id='price_456')."
+      verbose: "Create a recurring subscription for a customer. Supports: multiple pricing items, trial periods, proration, billing anchors, usage-based billing, and add-ons. Example: create_subscription(customer_id='cus_ABC', items=[{\"price\": \"price_monthly_pro\", \"quantity\": 1}], trial_period_days=14, billing_cycle_anchor='2024-02-01', payment_behavior='default_incomplete', collection_method='charge_automatically'). Note: Trial periods do not charge the customer. Warning: Ensure customer has a valid payment method before creating subscriptions without trials."
+    parameters:
+      - name: customer_id
+        type: string
+        description: "Customer identifier"
+        required: true
+      - name: price_id
+        type: string
+        description: "Price/plan identifier"
+        required: false
+      - name: items
+        type: array
+        description: "Subscription items array"
+        required: false
+      - name: trial_period_days
+        type: integer
+        description: "Trial period length"
+        required: false
+      - name: billing_cycle_anchor
+        type: string
+        description: "Anchor date for billing"
+        required: false
+      - name: payment_behavior
+        type: string
+        description: "Payment behavior"
+        required: false
+        enum: ["allow_incomplete", "default_incomplete", "error_if_incomplete", "pending_if_incomplete"]
+      - name: collection_method
+        type: string
+        description: "How to collect payment"
+        required: false
+        default: "charge_automatically"
+        enum: ["charge_automatically", "send_invoice"]
+    tags: ["subscription", "recurring", "billing", "saas", "payment"]
+    test_prompts:
+      single:
+        - "Subscribe the customer to the monthly plan"
+        - "Create a subscription for the Pro tier"
+        - "Set up recurring billing for the user"
+        - "Start a subscription with a 14-day trial"
+      single_clear:
+        - "I need to create a subscription. Subscribe the customer to the monthly plan"
+        - "I need to create a subscription. Create a subscription for the Pro tier"
+        - "I need to create a subscription. Set up recurring billing for the user"
+        - "I need to create a subscription. Start a subscription with a 14-day trial"
+
+  - name: cancel_subscription
+    descriptions:
+      minimal: "Cancel subscription"
+      short: "Cancel an active subscription"
+      medium: "Cancel a customer's subscription immediately or at the end of the current billing period."
+      long: "Cancel an active subscription. Can cancel immediately or schedule cancellation at period end. Example: cancel_subscription(subscription_id='sub_123', at_period_end=true)."
+      verbose: "Cancel a customer's subscription. Options: immediate cancellation (prorated refund possible), cancel at period end (access until period expires), or pause instead of cancel. Can provide cancellation reason for analytics. Example: cancel_subscription(subscription_id='sub_ABC123', at_period_end=true, cancellation_reason='too_expensive', feedback='Price is too high for my usage', prorate=true, invoice_now=false). Note: Canceling at period end maintains access until the paid period expires. Warning: Immediate cancellation may trigger prorated charges or refunds based on configuration."
+    parameters:
+      - name: subscription_id
+        type: string
+        description: "Subscription identifier"
+        required: true
+      - name: at_period_end
+        type: boolean
+        description: "Cancel at end of period"
+        required: false
+        default: false
+      - name: cancellation_reason
+        type: string
+        description: "Reason for cancellation"
+        required: false
+        enum: ["too_expensive", "missing_features", "switched_service", "unused", "other"]
+      - name: feedback
+        type: string
+        description: "Customer feedback"
+        required: false
+      - name: prorate
+        type: boolean
+        description: "Prorate final invoice"
+        required: false
+        default: true
+    tags: ["subscription", "cancel", "billing", "churn"]
+    test_prompts:
+      single:
+        - "Cancel the customer's subscription"
+        - "End the subscription at the end of the month"
+        - "Stop the recurring billing"
+        - "Cancel the Pro plan subscription"
+      single_clear:
+        - "I need to cancel a subscription. Cancel the customer's subscription"
+        - "I need to cancel a subscription. End the subscription at the end of the month"
+        - "I need to cancel a subscription. Stop the recurring billing"
+        - "I need to cancel a subscription. Cancel the Pro plan subscription"
+
+  - name: create_invoice
+    descriptions:
+      minimal: "Create invoice"
+      short: "Create an invoice for a customer"
+      medium: "Create an invoice with line items for a customer with optional payment terms and due date."
+      long: "Create an invoice for a customer. Add line items with descriptions and amounts. Set payment terms and due date. Example: create_invoice(customer_id='cus_123', items=[{\"description\": \"Consulting\", \"amount\": 50000}])."
+      verbose: "Create a professional invoice for a customer. Supports: multiple line items, tax calculation, discounts, payment terms, automatic collection, memo/notes, and custom fields. Example: create_invoice(customer_id='cus_ABC', items=[{\"description\": \"Web Development\", \"amount\": 250000, \"quantity\": 1}, {\"description\": \"Hosting (1 year)\", \"amount\": 12000, \"quantity\": 1}], due_days=30, tax_rate=8.25, memo='Payment due within 30 days', auto_advance=true, collection_method='send_invoice'). Note: auto_advance=true automatically finalizes and sends the invoice. Warning: Finalized invoices cannot be modified; void and recreate if needed."
+    parameters:
+      - name: customer_id
+        type: string
+        description: "Customer identifier"
+        required: true
+      - name: items
+        type: array
+        description: "Invoice line items"
+        required: true
+      - name: due_days
+        type: integer
+        description: "Days until due"
+        required: false
+        default: 30
+      - name: tax_rate
+        type: number
+        description: "Tax rate percentage"
+        required: false
+      - name: discount_amount
+        type: integer
+        description: "Discount amount"
+        required: false
+      - name: memo
+        type: string
+        description: "Invoice memo/notes"
+        required: false
+      - name: auto_advance
+        type: boolean
+        description: "Auto-finalize invoice"
+        required: false
+        default: false
+      - name: collection_method
+        type: string
+        description: "Collection method"
+        required: false
+        enum: ["charge_automatically", "send_invoice"]
+    tags: ["invoice", "billing", "payment", "accounts"]
+    test_prompts:
+      single:
+        - "Create an invoice for $500"
+        - "Bill the customer for the consulting work"
+        - "Generate an invoice with multiple line items"
+        - "Create a due invoice for the project"
+      single_clear:
+        - "Please create an invoice. Create an invoice for $500"
+        - "Please create an invoice. Bill the customer for the consulting work"
+        - "Please create an invoice. Generate an invoice with multiple line items"
+        - "Please create an invoice. Create a due invoice for the project"
+
+  - name: get_payment_status
+    descriptions:
+      minimal: "Get payment status"
+      short: "Check the status of a payment"
+      medium: "Retrieve the current status and details of a payment or charge."
+      long: "Get detailed status information for a payment including state, amount, fees, and timeline. Example: get_payment_status(payment_id='pi_123')."
+      verbose: "Retrieve comprehensive status and details for a payment. Returns: status (pending, succeeded, failed, canceled), amount, fees, net amount, payment method details, risk evaluation, receipt URL, refunds, disputes, and timeline of events. Example: get_payment_status(payment_id='pi_ABC123', expand=['customer', 'payment_method', 'latest_charge.balance_transaction']). Note: Status updates may be delayed for bank transfers. Warning: Contains sensitive payment details; ensure proper access controls."
+    parameters:
+      - name: payment_id
+        type: string
+        description: "Payment intent or charge ID"
+        required: true
+      - name: expand
+        type: array
+        description: "Related objects to expand"
+        required: false
+    tags: ["payment", "status", "check", "lookup"]
+    test_prompts:
+      single:
+        - "What's the status of payment pi_123?"
+        - "Check if the payment went through"
+        - "Get details on the customer's payment"
+        - "Has the charge been processed?"
+      single_clear:
+        - "I need to check a payment status. What's the status of payment pi_123?"
+        - "I need to check a payment status. Check if the payment went through"
+        - "I need to check a payment status. Get details on the customer's payment"
+        - "I need to check a payment status. Has the charge been processed?"
+
+  - name: create_customer
+    descriptions:
+      minimal: "Create customer"
+      short: "Create a customer record for payments"
+      medium: "Create a customer record to store payment methods and track transactions."
+      long: "Create a customer record in the payment system. Store email, name, and attach payment methods for future use. Example: create_customer(email='user@example.com', name='John Doe')."
+      verbose: "Create a customer record for payment processing. Stores: contact information, payment methods, billing address, default payment settings, and metadata. Customers can have multiple saved payment methods. Example: create_customer(email='john@company.com', name='John Doe', phone='+1555123456', address='{\"city\": \"San Francisco\", \"state\": \"CA\", \"country\": \"US\"}', metadata='{\"user_id\": \"usr_123\", \"plan\": \"enterprise\"}', tax_id='{\"type\": \"us_ein\", \"value\": \"12-3456789\"}'). Note: Customer records persist across payments. Warning: Ensure PCI compliance when handling customer payment data."
+    parameters:
+      - name: email
+        type: string
+        description: "Customer email"
+        required: true
+      - name: name
+        type: string
+        description: "Customer name"
+        required: false
+      - name: phone
+        type: string
+        description: "Phone number"
+        required: false
+      - name: address
+        type: string
+        description: "Address JSON"
+        required: false
+      - name: metadata
+        type: string
+        description: "Custom metadata JSON"
+        required: false
+      - name: payment_method
+        type: string
+        description: "Default payment method ID"
+        required: false
+      - name: tax_id
+        type: string
+        description: "Tax ID information"
+        required: false
+    tags: ["customer", "payment", "billing", "account"]
+    test_prompts:
+      single:
+        - "Create a new customer for payments"
+        - "Add a customer record for john@example.com"
+        - "Set up a billing customer"
+        - "Register the user for payment processing"
+      single_clear:
+        - "I need to create a customer record. Create a new customer for payments"
+        - "I need to create a customer record. Add a customer record for john@example.com"
+        - "I need to create a customer record. Set up a billing customer"
+        - "I need to create a customer record. Register the user for payment processing"
+
+  - name: add_payment_method
+    descriptions:
+      minimal: "Add payment method"
+      short: "Add a payment method to a customer"
+      medium: "Attach a payment method (card, bank account) to a customer for future payments."
+      long: "Add a payment method to a customer's account. Supports cards, bank accounts, and digital wallets. Example: add_payment_method(customer_id='cus_123', payment_method_id='pm_456')."
+      verbose: "Attach a payment method to a customer for reuse. Supported methods: credit/debit cards, bank accounts (ACH, SEPA), digital wallets (Apple Pay, Google Pay), and Buy Now Pay Later options. Can set as default for future payments. Example: add_payment_method(customer_id='cus_ABC', payment_method_id='pm_card_123', set_default=true, billing_details='{\"name\": \"John Doe\", \"email\": \"john@example.com\"}'). Note: Payment method tokens are created client-side for security. Warning: Validate payment method ownership before attaching to prevent fraud."
+    parameters:
+      - name: customer_id
+        type: string
+        description: "Customer identifier"
+        required: true
+      - name: payment_method_id
+        type: string
+        description: "Payment method token"
+        required: true
+      - name: set_default
+        type: boolean
+        description: "Set as default method"
+        required: false
+        default: false
+      - name: billing_details
+        type: string
+        description: "Billing details JSON"
+        required: false
+    tags: ["payment", "method", "card", "customer", "billing"]
+    test_prompts:
+      single:
+        - "Add the customer's credit card"
+        - "Save the payment method to the customer"
+        - "Attach the card to the account"
+        - "Store the customer's bank account"
+      single_clear:
+        - "I need to add a payment method. Add the customer's credit card"
+        - "I need to add a payment method. Save the payment method to the customer"
+        - "I need to add a payment method. Attach the card to the account"
+        - "I need to add a payment method. Store the customer's bank account"
+
+  - name: create_payout
+    descriptions:
+      minimal: "Create payout"
+      short: "Create a payout to a bank account"
+      medium: "Transfer funds from your account balance to an external bank account or debit card."
+      long: "Create a payout to transfer funds to a connected bank account. Specify amount and destination. Example: create_payout(amount=100000, destination='ba_123')."
+      verbose: "Transfer funds from your platform balance to a bank account or debit card. Supports: standard payouts (1-3 days), instant payouts (minutes), and scheduled payouts. Example: create_payout(amount=500000, currency='usd', destination='ba_ABC123', method='standard', description='Monthly earnings', statement_descriptor='MYCOMPANY PAYOUT', metadata='{\"month\": \"2024-01\"}'). Note: Instant payouts have higher fees but arrive within minutes. Warning: Ensure sufficient available balance; pending balance cannot be paid out."
+    parameters:
+      - name: amount
+        type: integer
+        description: "Amount in smallest currency unit"
+        required: true
+      - name: currency
+        type: string
+        description: "Three-letter currency code"
+        required: false
+        default: "usd"
+      - name: destination
+        type: string
+        description: "Bank account or card ID"
+        required: false
+      - name: method
+        type: string
+        description: "Payout method"
+        required: false
+        default: "standard"
+        enum: ["standard", "instant"]
+      - name: description
+        type: string
+        description: "Internal description"
+        required: false
+      - name: statement_descriptor
+        type: string
+        description: "Bank statement text"
+        required: false
+      - name: metadata
+        type: string
+        description: "Custom metadata JSON"
+        required: false
+    tags: ["payout", "transfer", "bank", "withdraw", "payment"]
+    test_prompts:
+      single:
+        - "Transfer $1000 to my bank account"
+        - "Create a payout of the available balance"
+        - "Withdraw funds to the connected bank"
+        - "Send an instant payout"
+      single_clear:
+        - "I need to create a payout. Transfer $1000 to my bank account"
+        - "I need to create a payout. Create a payout of the available balance"
+        - "I need to create a payout. Withdraw funds to the connected bank"
+        - "I need to create a payout. Send an instant payout"
+
+  - name: verify_payment_method
+    descriptions:
+      minimal: "Verify payment method"
+      short: "Verify a payment method is valid"
+      medium: "Verify that a payment method is valid and can be charged before processing a payment."
+      long: "Verify a payment method by performing a zero-dollar authorization or micro-deposit verification. Example: verify_payment_method(payment_method_id='pm_123', type='card')."
+      verbose: "Verify payment method validity before use. Methods: cards (zero-dollar auth, checks validity without charging), bank accounts (micro-deposits, two small deposits customer verifies). Returns verification status and any issues. Example: verify_payment_method(payment_method_id='pm_card_123', type='card', verification_method='instant', return_url='https://example.com/verify-complete'). Note: Bank account verification takes 1-2 business days for micro-deposits. Warning: Failed verifications may indicate fraud; handle accordingly."
+    parameters:
+      - name: payment_method_id
+        type: string
+        description: "Payment method to verify"
+        required: true
+      - name: type
+        type: string
+        description: "Payment method type"
+        required: true
+        enum: ["card", "bank_account"]
+      - name: verification_method
+        type: string
+        description: "Verification method"
+        required: false
+        enum: ["instant", "micro_deposits"]
+      - name: amounts
+        type: array
+        description: "Micro-deposit amounts (for bank)"
+        required: false
+      - name: return_url
+        type: string
+        description: "Return URL after verification"
+        required: false
+    tags: ["payment", "verify", "validation", "card", "bank"]
+    test_prompts:
+      single:
+        - "Verify the customer's credit card"
+        - "Check if the payment method is valid"
+        - "Verify the bank account with micro-deposits"
+        - "Validate the card before charging"
+      single_clear:
+        - "I need to verify a payment method. Verify the customer's credit card"
+        - "I need to verify a payment method. Check if the payment method is valid"
+        - "I need to verify a payment method. Verify the bank account with micro-deposits"
+        - "I need to verify a payment method. Validate the card before charging"
+  - name: create_invoice
+    descriptions:
+      minimal: "Create invoice"
+      short: "Create a payment invoice"
+      medium: "Create an invoice for a customer with line items and payment terms."
+      long: "Create an invoice with itemized charges, due date, and payment options. Automatically sends to customer. Example: create_invoice(customer_id='cus_123', items='[{\"description\": \"Consulting\", \"amount\": 5000}]')."
+      verbose: "Create professional invoices for customers. Features: line items, taxes, discounts, custom due dates, auto-send, payment links, recurring invoices. Supports: multiple currencies, custom branding, memo/notes, attachments. Example: create_invoice(customer_id='cus_ABC', items='[{\"description\": \"Web Development\", \"quantity\": 10, \"unit_price\": 15000}]', due_days=30, tax_percent=8.25, send_automatically=true, payment_methods='[\"card\", \"bank_transfer\"]'). Note: Invoices can be finalized and sent or kept as drafts. Warning: Finalized invoices cannot be edited."
+    parameters:
+      - name: customer_id
+        type: string
+        description: "Customer ID"
+        required: true
+      - name: items
+        type: string
+        description: "JSON array of line items"
+        required: true
+      - name: due_days
+        type: integer
+        description: "Days until due"
+        required: false
+        default: 30
+      - name: tax_percent
+        type: number
+        description: "Tax percentage"
+        required: false
+      - name: discount_percent
+        type: number
+        description: "Discount percentage"
+        required: false
+      - name: memo
+        type: string
+        description: "Invoice memo/notes"
+        required: false
+      - name: send_automatically
+        type: boolean
+        description: "Send upon finalization"
+        required: false
+        default: true
+    tags: ["payment", "invoice", "billing", "accounts", "receivable"]
+    test_prompts:
+      single:
+        - "Create an invoice for the client"
+        - "Generate invoice for consulting services"
+        - "Bill the customer for the project"
+        - "Send an invoice with net-30 terms"
+      single_clear:
+        - "Please create an invoice. Create an invoice for the client"
+        - "Please create an invoice. Generate invoice for consulting services"
+        - "Please create an invoice. Bill the customer for the project"
+        - "Please create an invoice. Send an invoice with net-30 terms"
+
+  - name: manage_subscription_billing
+    descriptions:
+      minimal: "Manage subscription"
+      short: "Manage subscription billing"
+      medium: "Create, update, or cancel recurring subscription billing for customers."
+      long: "Manage subscription lifecycles including creation, upgrades, downgrades, and cancellation. Example: manage_subscription_billing(action='create', customer_id='cus_123', plan_id='plan_pro')."
+      verbose: "Complete subscription billing management. Actions: create, update (change plan), cancel, pause, resume, preview_proration. Features: trial periods, proration, billing anchors, quantity changes, addons. Example: manage_subscription_billing(action='create', customer_id='cus_ABC', plan_id='plan_enterprise', quantity=5, trial_days=14, billing_cycle_anchor='month_start', cancel_at_period_end=false). Note: Proration is automatic on plan changes. Warning: Immediate cancellation stops access; use cancel_at_period_end for grace period."
+    parameters:
+      - name: action
+        type: string
+        description: "Subscription action"
+        required: true
+        enum: ["create", "update", "cancel", "pause", "resume", "preview"]
+      - name: customer_id
+        type: string
+        description: "Customer ID"
+        required: false
+      - name: subscription_id
+        type: string
+        description: "Existing subscription ID"
+        required: false
+      - name: plan_id
+        type: string
+        description: "Plan/price ID"
+        required: false
+      - name: quantity
+        type: integer
+        description: "Subscription quantity"
+        required: false
+        default: 1
+      - name: trial_days
+        type: integer
+        description: "Trial period days"
+        required: false
+      - name: cancel_at_period_end
+        type: boolean
+        description: "Cancel at period end vs immediately"
+        required: false
+        default: true
+    tags: ["payment", "subscription", "recurring", "billing", "plan"]
+    test_prompts:
+      single:
+        - "Create a monthly subscription"
+        - "Upgrade customer to premium plan"
+        - "Cancel the subscription at period end"
+        - "Start a free trial subscription"
+      single_clear:
+        - "I need to manage subscription billing. Create a monthly subscription"
+        - "I need to manage subscription billing. Upgrade customer to premium plan"
+        - "I need to manage subscription billing. Cancel the subscription at period end"
+        - "I need to manage subscription billing. Start a free trial subscription"
+
+  - name: calculate_tax
+    descriptions:
+      minimal: "Calculate tax"
+      short: "Calculate sales tax for a transaction"
+      medium: "Calculate applicable sales tax or VAT for a transaction based on location and items."
+      long: "Calculate sales tax, VAT, or GST based on customer location and product types. Returns tax breakdown. Example: calculate_tax(amount=10000, country='US', state='CA', product_type='digital_goods')."
+      verbose: "Calculate transaction taxes with jurisdiction awareness. Supports: US sales tax (state/county/city), EU VAT, UK VAT, Canadian GST/HST/PST, Australian GST, international taxes. Features: tax exemptions, product categorization, B2B reverse charge, tax-inclusive pricing. Example: calculate_tax(amount=15000, country='US', state='NY', city='New York', product_type='saas', customer_tax_exempt=false, inclusive=false). Returns: tax_amount, rate, jurisdiction breakdown. Note: Rates are updated automatically. Warning: Consult tax advisor for complex scenarios."
+    parameters:
+      - name: amount
+        type: integer
+        description: "Transaction amount"
+        required: true
+      - name: country
+        type: string
+        description: "Two-letter country code"
+        required: true
+      - name: state
+        type: string
+        description: "State/province code"
+        required: false
+      - name: city
+        type: string
+        description: "City name"
+        required: false
+      - name: postal_code
+        type: string
+        description: "Postal/ZIP code"
+        required: false
+      - name: product_type
+        type: string
+        description: "Product category"
+        required: false
+        enum: ["physical_goods", "digital_goods", "saas", "services", "food", "clothing"]
+      - name: customer_tax_exempt
+        type: boolean
+        description: "Customer is tax exempt"
+        required: false
+        default: false
+    tags: ["payment", "tax", "sales tax", "vat", "calculate"]
+    test_prompts:
+      single:
+        - "Calculate sales tax for California"
+        - "What's the VAT for this EU order?"
+        - "Compute tax for the transaction"
+        - "Get tax amount for New York purchase"
+      single_clear:
+        - "I need to calculate tax. Calculate sales tax for California"
+        - "I need to calculate tax. What's the VAT for this EU order?"
+        - "I need to calculate tax. Compute tax for the transaction"
+        - "I need to calculate tax. Get tax amount for New York purchase"
+
+  - name: create_payment_link
+    descriptions:
+      minimal: "Create payment link"
+      short: "Create a shareable payment link"
+      medium: "Generate a payment link that customers can use to pay without a full checkout flow."
+      long: "Create a reusable or one-time payment link. Share via email, SMS, or embed. Example: create_payment_link(amount=5000, currency='usd', description='Consulting Fee')."
+      verbose: "Generate shareable payment links for easy collection. Types: one-time (single use), reusable (multiple payments), donation (custom amount). Features: custom amounts, quantity selection, success redirects, expiration, branding. Example: create_payment_link(amount=25000, currency='usd', description='Annual License', quantity_adjustable=false, success_url='https://example.com/thanks', expires_at='2024-12-31', collect_shipping=false, collect_phone=true). Note: Payment links work without integration code. Warning: Protect links like passwords; anyone with link can pay."
+    parameters:
+      - name: amount
+        type: integer
+        description: "Amount in smallest unit"
+        required: true
+      - name: currency
+        type: string
+        description: "Currency code"
+        required: true
+      - name: description
+        type: string
+        description: "Product/payment description"
+        required: true
+      - name: quantity_adjustable
+        type: boolean
+        description: "Allow quantity changes"
+        required: false
+        default: false
+      - name: success_url
+        type: string
+        description: "Redirect URL after payment"
+        required: false
+      - name: expires_at
+        type: string
+        description: "Link expiration date"
+        required: false
+      - name: reusable
+        type: boolean
+        description: "Allow multiple uses"
+        required: false
+        default: false
+    tags: ["payment", "link", "checkout", "share", "collect"]
+    test_prompts:
+      single:
+        - "Create a payment link for $50"
+        - "Generate a shareable checkout link"
+        - "Make a payment link for the invoice"
+        - "Create a donation link"
+      single_clear:
+        - "I need to create a payment link. Create a payment link for $50"
+        - "I need to create a payment link. Generate a shareable checkout link"
+        - "I need to create a payment link. Make a payment link for the invoice"
+        - "I need to create a payment link. Create a donation link"
+
+  - name: process_ach_transfer
+    descriptions:
+      minimal: "Process ACH transfer"
+      short: "Process an ACH bank transfer"
+      medium: "Initiate an ACH bank transfer for payment or payout."
+      long: "Process ACH debit or credit transfers. Lower fees than cards but slower settlement. Example: process_ach_transfer(type='debit', amount=100000, bank_account_id='ba_123')."
+      verbose: "Process ACH (Automated Clearing House) bank transfers. Types: 'debit' (pull from customer), 'credit' (push to recipient). Speed: standard (3-5 days), same_day (additional fee). Requirements: verified bank account, customer authorization. Example: process_ach_transfer(type='debit', amount=250000, bank_account_id='ba_ABC', speed='same_day', statement_descriptor='INVOICE-1234', idempotency_key='ach_xyz'). Note: ACH debits can be disputed up to 60 days. Warning: Verify sufficient funds; NSF returns incur fees."
+    parameters:
+      - name: type
+        type: string
+        description: "Transfer type"
+        required: true
+        enum: ["debit", "credit"]
+      - name: amount
+        type: integer
+        description: "Amount in cents"
+        required: true
+      - name: bank_account_id
+        type: string
+        description: "Bank account ID"
+        required: true
+      - name: speed
+        type: string
+        description: "Processing speed"
+        required: false
+        default: "standard"
+        enum: ["standard", "same_day"]
+      - name: statement_descriptor
+        type: string
+        description: "Bank statement text"
+        required: false
+      - name: idempotency_key
+        type: string
+        description: "Unique request key"
+        required: false
+    tags: ["payment", "ach", "bank", "transfer", "debit"]
+    test_prompts:
+      single:
+        - "Process an ACH payment"
+        - "Debit customer's bank account"
+        - "Initiate bank transfer payment"
+        - "Send same-day ACH transfer"
+      single_clear:
+        - "I need to process an ACH transfer. Process an ACH payment"
+        - "I need to process an ACH transfer. Debit customer's bank account"
+        - "I need to process an ACH transfer. Initiate bank transfer payment"
+        - "I need to process an ACH transfer. Send same-day ACH transfer"
+
+  - name: manage_payment_dispute
+    descriptions:
+      minimal: "Manage dispute"
+      short: "Manage a payment dispute"
+      medium: "Handle payment disputes and chargebacks by submitting evidence or accepting."
+      long: "Manage chargebacks and disputes. Submit evidence, accept dispute, or track status. Example: manage_payment_dispute(dispute_id='dp_123', action='submit_evidence', evidence='{...}')."
+      verbose: "Handle payment disputes (chargebacks) lifecycle. Actions: 'get' (view details), 'submit_evidence' (fight dispute), 'accept' (concede and refund). Evidence types: customer communication, shipping proof, terms of service, duplicate charge documentation, refund policy. Example: manage_payment_dispute(dispute_id='dp_XYZ', action='submit_evidence', evidence='{\"customer_email_address\": \"customer@email.com\", \"shipping_tracking_number\": \"1Z999AA10123456784\", \"service_documentation\": \"...\"}', submit_immediately=true). Note: Evidence must be submitted before deadline. Warning: Lost disputes result in charge + dispute fee."
+    parameters:
+      - name: dispute_id
+        type: string
+        description: "Dispute ID"
+        required: true
+      - name: action
+        type: string
+        description: "Dispute action"
+        required: true
+        enum: ["get", "submit_evidence", "accept", "list"]
+      - name: evidence
+        type: string
+        description: "JSON evidence object"
+        required: false
+      - name: submit_immediately
+        type: boolean
+        description: "Submit evidence now vs save draft"
+        required: false
+        default: false
+    tags: ["payment", "dispute", "chargeback", "evidence", "fraud"]
+    test_prompts:
+      single:
+        - "Submit evidence for the chargeback"
+        - "Handle the payment dispute"
+        - "Fight the fraudulent chargeback"
+        - "Accept the dispute and refund"
+      single_clear:
+        - "I need to manage a payment dispute. Submit evidence for the chargeback"
+        - "I need to manage a payment dispute. Handle the payment dispute"
+        - "I need to manage a payment dispute. Fight the fraudulent chargeback"
+        - "I need to manage a payment dispute. Accept the dispute and refund"
+
+  - name: setup_recurring_payment
+    descriptions:
+      minimal: "Setup recurring"
+      short: "Set up a recurring payment"
+      medium: "Configure automatic recurring payments on a schedule."
+      long: "Set up automatic recurring charges on a custom schedule (not subscription plans). Example: setup_recurring_payment(customer_id='cus_123', amount=9900, frequency='monthly', start_date='2024-02-01')."
+      verbose: "Configure custom recurring payments independent of subscription plans. Use for: installment payments, membership dues, regular invoicing. Features: custom schedules, retry logic, notification preferences, end dates. Example: setup_recurring_payment(customer_id='cus_ABC', payment_method_id='pm_card', amount=49900, currency='usd', frequency='monthly', day_of_month=1, total_payments=12, notify_before=3, retry_failed=true). Note: Different from subscriptions which are plan-based. Warning: Customer must authorize recurring charges."
+    parameters:
+      - name: customer_id
+        type: string
+        description: "Customer ID"
+        required: true
+      - name: payment_method_id
+        type: string
+        description: "Payment method to charge"
+        required: true
+      - name: amount
+        type: integer
+        description: "Amount per payment"
+        required: true
+      - name: currency
+        type: string
+        description: "Currency code"
+        required: true
+      - name: frequency
+        type: string
+        description: "Payment frequency"
+        required: true
+        enum: ["weekly", "biweekly", "monthly", "quarterly", "annually"]
+      - name: start_date
+        type: string
+        description: "First payment date"
+        required: true
+      - name: total_payments
+        type: integer
+        description: "Total number of payments"
+        required: false
+      - name: day_of_month
+        type: integer
+        description: "Day to charge (1-28)"
+        required: false
+    tags: ["payment", "recurring", "automatic", "schedule", "installment"]
+    test_prompts:
+      single:
+        - "Set up monthly automatic payment"
+        - "Create installment payment plan"
+        - "Configure recurring charge"
+        - "Schedule automatic billing"
+      single_clear:
+        - "I need to set up a recurring payment. Set up monthly automatic payment"
+        - "I need to set up a recurring payment. Create installment payment plan"
+        - "I need to set up a recurring payment. Configure recurring charge"
+        - "I need to set up a recurring payment. Schedule automatic billing"
+
+  - name: generate_payment_report
+    descriptions:
+      minimal: "Generate report"
+      short: "Generate a payment report"
+      medium: "Generate reports on payments, refunds, and transaction activity."
+      long: "Generate payment activity reports. Filter by date, status, type. Export to various formats. Example: generate_payment_report(start_date='2024-01-01', end_date='2024-01-31', type='all')."
+      verbose: "Generate comprehensive payment and transaction reports. Report types: transactions, refunds, disputes, payouts, subscriptions, revenue, fees. Filters: date range, status, customer, amount range, payment method. Formats: CSV, PDF, JSON, Excel. Example: generate_payment_report(start_date='2024-01-01', end_date='2024-03-31', type='transactions', status='succeeded', group_by='day', include_fees=true, format='csv'). Note: Large reports may be generated asynchronously. Warning: Reports contain sensitive financial data; handle securely."
+    parameters:
+      - name: start_date
+        type: string
+        description: "Report start date"
+        required: true
+      - name: end_date
+        type: string
+        description: "Report end date"
+        required: true
+      - name: type
+        type: string
+        description: "Report type"
+        required: false
+        default: "transactions"
+        enum: ["transactions", "refunds", "disputes", "payouts", "revenue", "fees", "all"]
+      - name: status
+        type: string
+        description: "Filter by status"
+        required: false
+        enum: ["succeeded", "failed", "pending", "all"]
+      - name: group_by
+        type: string
+        description: "Grouping dimension"
+        required: false
+        enum: ["day", "week", "month", "customer", "product"]
+      - name: format
+        type: string
+        description: "Export format"
+        required: false
+        default: "csv"
+        enum: ["csv", "pdf", "json", "xlsx"]
+    tags: ["payment", "report", "analytics", "export", "transactions"]
+    test_prompts:
+      single:
+        - "Generate payment report for January"
+        - "Export transaction history"
+        - "Create revenue report"
+        - "Download payment analytics"
+      single_clear:
+        - "I need to generate a payment report. Generate payment report for January"
+        - "I need to generate a payment report. Export transaction history"
+        - "I need to generate a payment report. Create revenue report"
+        - "I need to generate a payment report. Download payment analytics"
+
+  - name: manage_payment_method
+    descriptions:
+      minimal: "Manage payment method"
+      short: "Add or update payment methods"
+      medium: "Add, update, remove, or set default payment methods for customers."
+      long: "Manage customer payment methods. Add new cards/banks, update expiration, remove old methods. Example: manage_payment_method(action='add', customer_id='cus_123', type='card', token='tok_visa')."
+      verbose: "Complete payment method lifecycle management. Actions: 'add' (attach new), 'update' (modify details), 'remove' (detach), 'set_default', 'list'. Payment types: cards, bank accounts, wallets (Apple Pay, Google Pay), SEPA, Bacs. Example: manage_payment_method(action='add', customer_id='cus_ABC', type='card', token='tok_visa_debit', set_as_default=true, billing_address='{\"line1\": \"123 Main\", \"city\": \"NYC\", \"postal_code\": \"10001\"}'). Note: PCI compliance required for handling raw card data. Warning: Removing the only payment method may affect active subscriptions."
+    parameters:
+      - name: action
+        type: string
+        description: "Payment method action"
+        required: true
+        enum: ["add", "update", "remove", "set_default", "list"]
+      - name: customer_id
+        type: string
+        description: "Customer ID"
+        required: true
+      - name: payment_method_id
+        type: string
+        description: "Existing payment method ID"
+        required: false
+      - name: type
+        type: string
+        description: "Payment method type"
+        required: false
+        enum: ["card", "bank_account", "sepa_debit", "bacs_debit", "wallet"]
+      - name: token
+        type: string
+        description: "Tokenized payment data"
+        required: false
+      - name: set_as_default
+        type: boolean
+        description: "Set as default method"
+        required: false
+        default: false
+    tags: ["payment", "method", "card", "bank", "manage"]
+    test_prompts:
+      single:
+        - "Add a credit card for customer"
+        - "Update the expiration date"
+        - "Remove old payment method"
+        - "Set default payment card"
+      single_clear:
+        - "I need to manage a payment method. Add a credit card for customer"
+        - "I need to manage a payment method. Update the expiration date"
+        - "I need to manage a payment method. Remove old payment method"
+        - "I need to manage a payment method. Set default payment card"
+
+  - name: create_payment_link
+    descriptions:
+      minimal: "Create payment link"
+      short: "Create a shareable payment link"
+      medium: "Generate a payment link that customers can use to pay."
+      long: "Create shareable payment links for one-time or recurring payments. Example: create_payment_link(amount=5000, currency='usd', description='Consulting fee')."
+      verbose: "Generate secure, shareable payment links. Features: custom amounts, product selection, quantity limits, expiration, custom branding, success redirects. Example: create_payment_link(amount=9900, currency='usd', description='Premium Package', allow_promotion_codes=true, expires_at='2024-12-31', success_url='https://example.com/thank-you', metadata='{\"order_id\": \"12345\"}'). Note: Links can be shared via email, SMS, or social media. Warning: Links without expiration remain active indefinitely."
+    parameters:
+      - name: amount
+        type: integer
+        description: "Amount in smallest currency unit"
+        required: true
+      - name: currency
+        type: string
+        description: "Three-letter currency code"
+        required: true
+      - name: description
+        type: string
+        description: "Payment description"
+        required: true
+      - name: success_url
+        type: string
+        description: "Redirect URL after payment"
+        required: false
+      - name: expires_at
+        type: string
+        description: "Link expiration (ISO 8601)"
+        required: false
+      - name: allow_promotion_codes
+        type: boolean
+        description: "Allow discount codes"
+        required: false
+        default: false
+      - name: metadata
+        type: string
+        description: "Custom metadata (JSON)"
+        required: false
+    tags: ["payment", "link", "checkout", "share", "invoice"]
+    test_prompts:
+      single:
+        - "Create a payment link"
+        - "Generate checkout link"
+        - "Share payment URL"
+        - "Make a pay-by-link"
+      single_clear:
+        - "I need to create a payment link. Create a payment link"
+        - "I need to create a payment link. Generate checkout link"
+        - "I need to create a payment link. Share payment URL"
+        - "I need to create a payment link. Make a pay-by-link"
+
+  - name: verify_bank_account
+    descriptions:
+      minimal: "Verify bank"
+      short: "Verify a bank account"
+      medium: "Verify a bank account using micro-deposits or instant verification."
+      long: "Verify bank account ownership for ACH payments. Example: verify_bank_account(account_id='ba_123', method='micro_deposits', amounts=[32, 45])."
+      verbose: "Bank account verification for secure ACH transactions. Methods: 'micro_deposits' (verify two small deposits), 'instant' (via Plaid/Finicity), 'manual' (document upload). Example: verify_bank_account(account_id='ba_ABC', method='micro_deposits', amounts=[32, 45]). Instant verification is faster but requires customer bank login. Note: Micro-deposits take 1-2 business days. Warning: Three failed attempts will lock the account."
+    parameters:
+      - name: account_id
+        type: string
+        description: "Bank account ID"
+        required: true
+      - name: method
+        type: string
+        description: "Verification method"
+        required: true
+        enum: ["micro_deposits", "instant", "manual"]
+      - name: amounts
+        type: array
+        description: "Micro-deposit amounts (cents)"
+        required: false
+      - name: plaid_token
+        type: string
+        description: "Plaid public token for instant"
+        required: false
+    tags: ["payment", "bank", "verify", "ach", "validation"]
+    test_prompts:
+      single:
+        - "Verify bank account"
+        - "Confirm micro-deposits"
+        - "Validate ACH account"
+        - "Complete bank verification"
+      single_clear:
+        - "I need to verify a bank account. Verify bank account"
+        - "I need to verify a bank account. Confirm micro-deposits"
+        - "I need to verify a bank account. Validate ACH account"
+        - "I need to verify a bank account. Complete bank verification"
+
+  - name: calculate_payment_fees
+    descriptions:
+      minimal: "Calculate fees"
+      short: "Calculate payment processing fees"
+      medium: "Calculate processing fees for a payment amount."
+      long: "Calculate payment gateway fees, interchange, and total costs. Example: calculate_payment_fees(amount=10000, payment_method='card', card_brand='visa')."
+      verbose: "Calculate detailed payment processing costs. Breakdown: interchange fees, assessment fees, processor markup, currency conversion fees. Example: calculate_payment_fees(amount=50000, currency='usd', payment_method='card', card_brand='amex', card_type='credit', is_international=true). Returns: {\"gross\": 50000, \"interchange\": 110, \"assessment\": 15, \"processor_fee\": 175, \"total_fees\": 300, \"net\": 49700}. Note: Fees vary by card type and region. Warning: Estimates may differ from actual fees."
+    parameters:
+      - name: amount
+        type: integer
+        description: "Payment amount in cents"
+        required: true
+      - name: currency
+        type: string
+        description: "Currency code"
+        required: false
+        default: "usd"
+      - name: payment_method
+        type: string
+        description: "Payment method type"
+        required: true
+        enum: ["card", "ach", "wire", "wallet"]
+      - name: card_brand
+        type: string
+        description: "Card brand if applicable"
+        required: false
+        enum: ["visa", "mastercard", "amex", "discover"]
+      - name: is_international
+        type: boolean
+        description: "International transaction"
+        required: false
+        default: false
+    tags: ["payment", "fees", "calculate", "cost", "interchange"]
+    test_prompts:
+      single:
+        - "Calculate payment fees"
+        - "What are the processing fees"
+        - "Show fee breakdown"
+        - "Estimate transaction cost"
+      single_clear:
+        - "I need to calculate payment fees. Calculate payment fees"
+        - "I need to calculate payment fees. What are the processing fees"
+        - "I need to calculate payment fees. Show fee breakdown"
+        - "I need to calculate payment fees. Estimate transaction cost"
+
+  - name: create_virtual_card
+    descriptions:
+      minimal: "Create virtual card"
+      short: "Create a virtual payment card"
+      medium: "Generate a virtual card for online purchases or vendor payments."
+      long: "Create virtual cards with spending limits and controls. Example: create_virtual_card(cardholder_id='ich_123', spending_limit=50000, currency='usd')."
+      verbose: "Issue virtual cards for controlled spending. Features: spending limits, merchant category restrictions, single-use or multi-use, expiration dates, real-time notifications. Example: create_virtual_card(cardholder_id='ich_ABC', spending_limit=100000, currency='usd', type='single_use', allowed_categories='[\"software\", \"advertising\"]', expires_at='2024-12-31'). Use cases: vendor payments, employee expenses, subscription management. Note: Requires issuing program enrollment. Warning: Virtual cards share credit limits with physical cards."
+    parameters:
+      - name: cardholder_id
+        type: string
+        description: "Cardholder ID"
+        required: true
+      - name: spending_limit
+        type: integer
+        description: "Spending limit in cents"
+        required: true
+      - name: currency
+        type: string
+        description: "Card currency"
+        required: true
+      - name: type
+        type: string
+        description: "Card type"
+        required: false
+        default: "multi_use"
+        enum: ["single_use", "multi_use"]
+      - name: allowed_categories
+        type: string
+        description: "JSON array of merchant categories"
+        required: false
+      - name: expires_at
+        type: string
+        description: "Expiration date"
+        required: false
+    tags: ["payment", "virtual", "card", "issuing", "spend"]
+    test_prompts:
+      single:
+        - "Create virtual card"
+        - "Generate a virtual credit card"
+        - "Issue single-use card"
+        - "Create burner card for subscription"
+      single_clear:
+        - "I need to create a virtual card. Create virtual card"
+        - "I need to create a virtual card. Generate a virtual credit card"
+        - "I need to create a virtual card. Issue single-use card"
+        - "I need to create a virtual card. Create burner card for subscription"
+
+  - name: split_payment
+    descriptions:
+      minimal: "Split payment"
+      short: "Split a payment between accounts"
+      medium: "Split a payment amount between multiple destination accounts."
+      long: "Split payments to multiple recipients or accounts. Example: split_payment(amount=10000, splits='[{\"destination\": \"acct_A\", \"amount\": 7000}, {\"destination\": \"acct_B\", \"amount\": 3000}]')."
+      verbose: "Distribute payments across multiple accounts. Use cases: marketplace payouts, revenue sharing, affiliate commissions, platform fees. Example: split_payment(source_payment='pi_123', splits='[{\"destination\": \"acct_vendor\", \"amount\": 8500}, {\"destination\": \"acct_platform\", \"amount\": 1500, \"type\": \"platform_fee\"}]', transfer_group='order_456'). Note: Connected accounts must be verified. Warning: Ensure split amounts equal total to avoid balance issues."
+    parameters:
+      - name: source_payment
+        type: string
+        description: "Source payment intent ID"
+        required: true
+      - name: splits
+        type: string
+        description: "JSON array of split destinations and amounts"
+        required: true
+      - name: transfer_group
+        type: string
+        description: "Grouping identifier"
+        required: false
+      - name: currency
+        type: string
+        description: "Currency code"
+        required: false
+        default: "usd"
+    tags: ["payment", "split", "transfer", "marketplace", "distribute"]
+    test_prompts:
+      single:
+        - "Split payment between vendors"
+        - "Divide payment to multiple accounts"
+        - "Distribute marketplace payment"
+        - "Split revenue between partners"
+      single_clear:
+        - "I need to split a payment. Split payment between vendors"
+        - "I need to split a payment. Divide payment to multiple accounts"
+        - "I need to split a payment. Distribute marketplace payment"
+        - "I need to split a payment. Split revenue between partners"
+
+  - name: create_payout
+    descriptions:
+      minimal: "Create payout"
+      short: "Create a payout to bank account"
+      medium: "Transfer funds from your account balance to a bank account."
+      long: "Initiate payout to connected bank account. Example: create_payout(amount=100000, currency='usd', destination='ba_123')."
+      verbose: "Transfer available balance to external bank accounts. Options: instant payouts (with fee), standard (1-2 days), manual or automatic scheduling. Example: create_payout(amount=500000, currency='usd', destination='ba_default', method='instant', description='Weekly settlement', metadata='{\"week\": \"2024-W01\"}'). Note: Instant payouts may incur additional fees. Warning: Ensure sufficient available balance before initiating."
+    parameters:
+      - name: amount
+        type: integer
+        description: "Payout amount in cents"
+        required: true
+      - name: currency
+        type: string
+        description: "Currency code"
+        required: true
+      - name: destination
+        type: string
+        description: "Bank account ID or 'default'"
+        required: false
+        default: "default"
+      - name: method
+        type: string
+        description: "Payout speed"
+        required: false
+        default: "standard"
+        enum: ["standard", "instant"]
+      - name: description
+        type: string
+        description: "Payout description"
+        required: false
+    tags: ["payment", "payout", "transfer", "bank", "withdraw"]
+    test_prompts:
+      single:
+        - "Create payout to bank"
+        - "Transfer balance to bank account"
+        - "Initiate instant payout"
+        - "Withdraw funds to bank"
+      single_clear:
+        - "I need to create a payout. Create payout to bank"
+        - "I need to create a payout. Transfer balance to bank account"
+        - "I need to create a payout. Initiate instant payout"
+        - "I need to create a payout. Withdraw funds to bank"
+
+  - name: apply_coupon
+    descriptions:
+      minimal: "Apply coupon"
+      short: "Apply a coupon code"
+      medium: "Apply a coupon or discount code to a payment or subscription."
+      long: "Apply coupon to reduce payment amount. Example: apply_coupon(code='SAVE20', target_id='sub_123', target_type='subscription')."
+      verbose: "Apply promotional codes and coupons. Discount types: percentage, fixed amount, free trial extension. Targets: one-time payments, subscriptions, invoices. Example: apply_coupon(code='NEWYEAR25', target_id='sub_ABC', target_type='subscription', validate_only=false). Validation checks: expiration, usage limits, minimum purchase, eligible products. Note: Only one coupon per target typically. Warning: Some coupons may not combine with existing discounts."
+    parameters:
+      - name: code
+        type: string
+        description: "Coupon or promo code"
+        required: true
+      - name: target_id
+        type: string
+        description: "Target payment/subscription ID"
+        required: true
+      - name: target_type
+        type: string
+        description: "Target type"
+        required: true
+        enum: ["payment", "subscription", "invoice", "cart"]
+      - name: validate_only
+        type: boolean
+        description: "Only validate, don't apply"
+        required: false
+        default: false
+    tags: ["payment", "coupon", "discount", "promo", "apply"]
+    test_prompts:
+      single:
+        - "Apply coupon code"
+        - "Use discount code"
+        - "Redeem promo code"
+        - "Apply promotional discount"
+      single_clear:
+        - "I need to apply a coupon. Apply coupon code"
+        - "I need to apply a coupon. Use discount code"
+        - "I need to apply a coupon. Redeem promo code"
+        - "I need to apply a coupon. Apply promotional discount"
+
+  - name: get_payment_balance
+    descriptions:
+      minimal: "Get balance"
+      short: "Get account balance"
+      medium: "Retrieve the current balance of your payment account."
+      long: "Get available and pending balance. Example: get_payment_balance(currency='usd', include_pending=true)."
+      verbose: "Retrieve detailed account balance information. Balances: available (can withdraw), pending (processing), reserved (held for disputes). Breakdown by source type and currency. Example: get_payment_balance(currency='usd', include_pending=true, breakdown_by_source=true). Returns: {\"available\": [{\"amount\": 150000, \"currency\": \"usd\"}], \"pending\": [{\"amount\": 25000, \"currency\": \"usd\"}], \"reserved\": 5000}. Note: Pending balance typically clears in 2-7 days. Warning: Reserved funds are not available for payout."
+    parameters:
+      - name: currency
+        type: string
+        description: "Filter by currency"
+        required: false
+      - name: include_pending
+        type: boolean
+        description: "Include pending balance"
+        required: false
+        default: true
+      - name: breakdown_by_source
+        type: boolean
+        description: "Show source breakdown"
+        required: false
+        default: false
+    tags: ["payment", "balance", "account", "funds", "available"]
+    test_prompts:
+      single:
+        - "Get account balance"
+        - "Check available funds"
+        - "Show payment balance"
+        - "What's my current balance"
+      single_clear:
+        - "I need to check the payment balance. Get account balance"
+        - "I need to check the payment balance. Check available funds"
+        - "I need to check the payment balance. Show payment balance"
+        - "I need to check the payment balance. What's my current balance"
+
+  - name: create_invoice
+    descriptions:
+      minimal: "Create invoice"
+      short: "Create a payment invoice"
+      medium: "Generate an invoice for a customer with line items."
+      long: "Create detailed invoice with line items and payment terms. Example: create_invoice(customer_id='cus_123', items='[{\"description\": \"Consulting\", \"amount\": 50000}]')."
+      verbose: "Generate professional invoices. Features: line items, taxes, discounts, payment terms, auto-send, custom branding, recurring invoices. Example: create_invoice(customer_id='cus_ABC', items='[{\"description\": \"Web Development\", \"amount\": 250000, \"quantity\": 1}, {\"description\": \"Hosting (monthly)\", \"amount\": 2900, \"quantity\": 12}]', due_date='2024-02-15', tax_rate=8.25, notes='Payment due within 30 days', auto_send=true). Note: Invoices can be paid via link or auto-charged. Warning: Overdue invoices may require follow-up."
+    parameters:
+      - name: customer_id
+        type: string
+        description: "Customer ID"
+        required: true
+      - name: items
+        type: string
+        description: "JSON array of line items"
+        required: true
+      - name: due_date
+        type: string
+        description: "Payment due date"
+        required: false
+      - name: tax_rate
+        type: number
+        description: "Tax rate percentage"
+        required: false
+      - name: notes
+        type: string
+        description: "Invoice notes"
+        required: false
+      - name: auto_send
+        type: boolean
+        description: "Automatically email invoice"
+        required: false
+        default: false
+    tags: ["payment", "invoice", "billing", "create", "itemized"]
+    test_prompts:
+      single:
+        - "Create an invoice"
+        - "Generate customer invoice"
+        - "Bill the client"
+        - "Send invoice to customer"
+      single_clear:
+        - "Please create an invoice. Create an invoice"
+        - "Please create an invoice. Generate customer invoice"
+        - "Please create an invoice. Bill the client"
+        - "Please create an invoice. Send invoice to customer"
+
+  - name: void_payment
+    descriptions:
+      minimal: "Void payment"
+      short: "Void a pending payment"
+      medium: "Cancel a payment before it has been captured or settled."
+      long: "Void an authorized but uncaptured payment. Example: void_payment(payment_id='pi_123', reason='customer_request')."
+      verbose: "Cancel payments before settlement. Only works on: authorized but uncaptured payments, pending ACH transfers. Example: void_payment(payment_id='pi_ABC', reason='duplicate', notify_customer=true). Reasons: 'duplicate', 'fraudulent', 'customer_request', 'order_cancelled'. Note: Voiding is faster than refunding and incurs no fees. Warning: Cannot void captured/settled payments; use refund instead."
+    parameters:
+      - name: payment_id
+        type: string
+        description: "Payment or authorization ID"
+        required: true
+      - name: reason
+        type: string
+        description: "Void reason"
+        required: true
+        enum: ["duplicate", "fraudulent", "customer_request", "order_cancelled"]
+      - name: notify_customer
+        type: boolean
+        description: "Send cancellation notice"
+        required: false
+        default: true
+    tags: ["payment", "void", "cancel", "authorization", "pending"]
+    test_prompts:
+      single:
+        - "Void the payment"
+        - "Cancel pending authorization"
+        - "Void uncaptured payment"
+        - "Cancel the transaction"
+      single_clear:
+        - "I need to void a payment. Void the payment"
+        - "I need to void a payment. Cancel pending authorization"
+        - "I need to void a payment. Void uncaptured payment"
+        - "I need to void a payment. Cancel the transaction"

@@ -1,0 +1,33 @@
+# Core dependencies - LLM Providers
+cerebras-cloud-sdk>=1.0.0   # Cerebras (FREE tier - recommended!)
+google-genai>=1.0.0          # Google Gemini
+openai>=1.0.0                # OpenAI (optional, paid)
+langchain-ollama>=0.2.0      # Ollama local LLM (requires Ollama server running)
+
+# Data models
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+
+# Configuration and CLI
+pyyaml>=6.0
+typer>=0.9.0
+
+# Data analysis and reporting
+pandas>=2.0.0
+numpy>=1.24.0
+
+# RAG methodology - embeddings and vector search
+sentence-transformers>=2.2.0
+faiss-cpu>=1.7.0
+
+# Logging
+loguru>=0.7.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+
+# Phase 3: Visualization and statistical analysis
+matplotlib>=3.7.0
+seaborn>=0.12.0
+scipy>=1.10.0

@@ -1,0 +1,34 @@
+# ============================================================
+# Doc Length Impact: RAG with Minimal Docs
+# ============================================================
+# Purpose: Measure impact of documentation length on RAG
+# Paired with: rag_200tools_k10, rag_200tools_verbose
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: doclength_rag_200tools_minimal
+description: "RAG at 200 tools with minimal documentation"
+
+# --- Tool Configuration ---
+num_tools: 200
+doc_length: minimal
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: rag
+rag_config:
+  embedding_model: all-MiniLM-L6-v2
+  top_k: 10
+  similarity_threshold: 0.0
+  cache_embeddings: true
+  include_params_in_embedding: false
+
+# --- Output ---
+output_dir: experiments/full_local/results

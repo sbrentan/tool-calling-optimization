@@ -1,0 +1,31 @@
+# ============================================================
+# PHASE 7: Robustness - MCP No-Tool Handling
+# ============================================================
+# Purpose: Test MCP handling of no-tool scenarios
+# Hypothesis: MCP should correctly decline calling tools
+# Rubric: Experiments - negative test cases
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase7_robust_mcp_notool
+description: "MCP with no-tool test scenarios"
+
+# --- Tool Configuration ---
+num_tools: 100
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+include_no_tool: true
+
+# --- Methodology ---
+methodology: mcp
+allow_no_tool_call: true
+
+# --- Output ---
+output_dir: experiments/full_local/results

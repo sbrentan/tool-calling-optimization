@@ -1,0 +1,449 @@
+category: compliance_operations
+description: Compliance, auditing, and regulatory operations
+tools:
+  - name: generate_audit_log
+    descriptions:
+      minimal: "Generate audit log"
+      short: "Generate an audit log"
+      medium: "Generate audit logs for compliance and security tracking."
+      long: "Create audit log entries for actions. Example: generate_audit_log(action='user_login', user_id='user_123', resource='auth_system')."
+      verbose: "Immutable audit logging for compliance. Fields: actor, action, resource, timestamp, IP, outcome. Example: generate_audit_log(action='data_export', user_id='user_456', resource='customer_database', details='{\"records\": 1000, \"format\": \"csv\"}', ip_address='192.168.1.100', outcome='success'). Standards: SOC2, HIPAA, GDPR, PCI-DSS. Note: Audit logs are immutable and tamper-evident. Warning: Ensure PII in logs complies with regulations."
+    parameters:
+      - name: action
+        type: string
+        description: "Action being audited"
+        required: true
+      - name: user_id
+        type: string
+        description: "User performing action"
+        required: true
+      - name: resource
+        type: string
+        description: "Resource being accessed"
+        required: true
+      - name: details
+        type: string
+        description: "Additional details (JSON)"
+        required: false
+      - name: ip_address
+        type: string
+        description: "Source IP address"
+        required: false
+      - name: outcome
+        type: string
+        description: "Action outcome"
+        required: false
+        default: "success"
+        enum: ["success", "failure", "partial"]
+    tags: ["compliance", "audit", "log", "security", "tracking"]
+    test_prompts:
+      single:
+        - "Generate audit log"
+        - "Log this action for audit"
+        - "Create compliance log entry"
+        - "Record audit trail"
+      single_clear:
+        - "I need to generate an audit log entry. Generate audit log"
+        - "I need to generate an audit log entry. Log this action for audit"
+        - "I need to generate an audit log entry. Create compliance log entry"
+        - "I need to generate an audit log entry. Record audit trail"
+
+  - name: run_compliance_check
+    descriptions:
+      minimal: "Compliance check"
+      short: "Run compliance check"
+      medium: "Run automated compliance checks against a standard."
+      long: "Check system compliance against regulations. Example: run_compliance_check(standard='SOC2', scope='infrastructure')."
+      verbose: "Automated compliance validation. Standards: SOC2, HIPAA, GDPR, PCI-DSS, ISO27001, NIST. Example: run_compliance_check(standard='PCI-DSS', scope='payment_systems', include_remediation=true, notify_on_failure=true). Returns: {\"compliant\": false, \"passed\": 85, \"failed\": 12, \"findings\": [...], \"remediation\": [...]}. Note: Automated checks don't replace formal audits. Warning: Non-compliance findings require prompt remediation."
+    parameters:
+      - name: standard
+        type: string
+        description: "Compliance standard"
+        required: true
+        enum: ["SOC2", "HIPAA", "GDPR", "PCI-DSS", "ISO27001", "NIST", "CCPA"]
+      - name: scope
+        type: string
+        description: "Scope of check"
+        required: true
+      - name: include_remediation
+        type: boolean
+        description: "Include remediation steps"
+        required: false
+        default: true
+      - name: notify_on_failure
+        type: boolean
+        description: "Send alerts on failures"
+        required: false
+        default: true
+    tags: ["compliance", "check", "audit", "standard", "regulation"]
+    test_prompts:
+      single:
+        - "Run compliance check"
+        - "Check HIPAA compliance"
+        - "Verify SOC2 compliance"
+        - "Audit for PCI-DSS"
+      single_clear:
+        - "I need to run a regulatory compliance check. Run compliance check"
+        - "I need to run a regulatory compliance check. Check HIPAA compliance"
+        - "I need to run a regulatory compliance check. Verify SOC2 compliance"
+        - "I need to run a regulatory compliance check. Audit for PCI-DSS"
+
+  - name: manage_data_retention
+    descriptions:
+      minimal: "Data retention"
+      short: "Manage data retention"
+      medium: "Configure and manage data retention policies."
+      long: "Set data retention rules. Example: manage_data_retention(data_type='user_logs', retention_days=90, action='archive')."
+      verbose: "Data lifecycle and retention management. Actions: set policy, enforce, report, purge. Example: manage_data_retention(data_type='customer_records', retention_days=2555, action='set_policy', archive_location='s3://archive', legal_hold=false, notify_before_purge=30). GDPR/CCPA: right to erasure, data minimization. Note: Legal holds override retention policies. Warning: Purged data cannot be recovered."
+    parameters:
+      - name: data_type
+        type: string
+        description: "Type of data"
+        required: true
+      - name: retention_days
+        type: integer
+        description: "Retention period in days"
+        required: true
+      - name: action
+        type: string
+        description: "Retention action"
+        required: true
+        enum: ["set_policy", "enforce", "report", "purge"]
+      - name: archive_location
+        type: string
+        description: "Archive destination"
+        required: false
+      - name: legal_hold
+        type: boolean
+        description: "Apply legal hold"
+        required: false
+        default: false
+    tags: ["compliance", "retention", "data", "gdpr", "lifecycle"]
+    test_prompts:
+      single:
+        - "Set data retention policy"
+        - "Configure retention rules"
+        - "Enforce data lifecycle"
+        - "Purge expired data"
+      single_clear:
+        - "I need to manage data retention policies. Set data retention policy"
+        - "I need to manage data retention policies. Configure retention rules"
+        - "I need to manage data retention policies. Enforce data lifecycle"
+        - "I need to manage data retention policies. Purge expired data"
+
+  - name: process_data_subject_request
+    descriptions:
+      minimal: "DSR processing"
+      short: "Process data subject request"
+      medium: "Process GDPR/CCPA data subject access or deletion requests."
+      long: "Handle data subject requests. Example: process_data_subject_request(type='access', subject_email='user@example.com', deadline='2024-02-15')."
+      verbose: "GDPR/CCPA data subject request handling. Types: access (export data), rectification (correct data), erasure (delete data), portability (transfer data). Example: process_data_subject_request(type='erasure', subject_email='user@example.com', verify_identity=true, exclude_systems='[\"legal_archives\"]', notify_processors=true). Deadlines: GDPR 30 days, CCPA 45 days. Note: Identity verification required. Warning: Erasure may have exceptions for legal obligations."
+    parameters:
+      - name: type
+        type: string
+        description: "Request type"
+        required: true
+        enum: ["access", "rectification", "erasure", "portability", "restriction"]
+      - name: subject_email
+        type: string
+        description: "Data subject email"
+        required: true
+      - name: verify_identity
+        type: boolean
+        description: "Require identity verification"
+        required: false
+        default: true
+      - name: deadline
+        type: string
+        description: "Response deadline"
+        required: false
+      - name: exclude_systems
+        type: string
+        description: "JSON array of excluded systems"
+        required: false
+    tags: ["compliance", "gdpr", "ccpa", "privacy", "dsr"]
+    test_prompts:
+      single:
+        - "Process data subject request"
+        - "Handle GDPR erasure request"
+        - "Export user data for request"
+        - "Delete user under CCPA"
+      single_clear:
+        - "I need to process a data subject request. Process data subject request"
+        - "I need to process a data subject request. Handle GDPR erasure request"
+        - "I need to process a data subject request. Export user data for request"
+        - "I need to process a data subject request. Delete user under CCPA"
+
+  - name: generate_compliance_report
+    descriptions:
+      minimal: "Compliance report"
+      short: "Generate compliance report"
+      medium: "Generate compliance status reports for auditors."
+      long: "Create compliance reports. Example: generate_compliance_report(standard='SOC2', period='2024-Q1', format='pdf')."
+      verbose: "Automated compliance reporting. Report types: executive summary, detailed findings, evidence collection, trend analysis. Example: generate_compliance_report(standard='SOC2', period='2024-Q1', format='pdf', include_evidence=true, include_remediation_status=true, recipients='[\"auditor@firm.com\", \"ciso@company.com\"]'). Standards: SOC2, HIPAA, PCI-DSS, ISO27001. Note: Reports should be reviewed before sharing externally. Warning: Contains sensitive compliance data."
+    parameters:
+      - name: standard
+        type: string
+        description: "Compliance standard"
+        required: true
+        enum: ["SOC2", "HIPAA", "GDPR", "PCI-DSS", "ISO27001"]
+      - name: period
+        type: string
+        description: "Reporting period"
+        required: true
+      - name: format
+        type: string
+        description: "Report format"
+        required: false
+        default: "pdf"
+        enum: ["pdf", "html", "json", "csv"]
+      - name: include_evidence
+        type: boolean
+        description: "Include evidence artifacts"
+        required: false
+        default: false
+      - name: recipients
+        type: string
+        description: "JSON array of email recipients"
+        required: false
+    tags: ["compliance", "report", "audit", "documentation", "evidence"]
+    test_prompts:
+      single:
+        - "Generate compliance report"
+        - "Create SOC2 report"
+        - "Audit report for Q1"
+        - "Export compliance status"
+      single_clear:
+        - "Please generate a compliance audit report. Generate compliance report"
+        - "Please generate a compliance audit report. Create SOC2 report"
+        - "Please generate a compliance audit report. Audit report for Q1"
+        - "Please generate a compliance audit report. Export compliance status"
+
+  - name: manage_consent
+    descriptions:
+      minimal: "Manage consent"
+      short: "Manage user consent"
+      medium: "Record and manage user consent for data processing."
+      long: "Track consent for data processing activities. Example: manage_consent(user_id='user_123', purpose='marketing', action='grant')."
+      verbose: "GDPR-compliant consent management. Actions: grant, revoke, query, export. Purposes: marketing, analytics, third_party, profiling. Example: manage_consent(user_id='user_123', purpose='marketing_email', action='grant', consent_text='I agree to receive marketing emails', ip_address='192.168.1.1', user_agent='Mozilla/5.0...'). Records: timestamp, version, method, withdrawal. Note: Consent must be freely given, specific, informed. Warning: Pre-ticked boxes don't constitute valid consent."
+    parameters:
+      - name: user_id
+        type: string
+        description: "User identifier"
+        required: true
+      - name: purpose
+        type: string
+        description: "Processing purpose"
+        required: true
+      - name: action
+        type: string
+        description: "Consent action"
+        required: true
+        enum: ["grant", "revoke", "query", "export"]
+      - name: consent_text
+        type: string
+        description: "Consent language shown to user"
+        required: false
+      - name: ip_address
+        type: string
+        description: "User IP address"
+        required: false
+    tags: ["compliance", "consent", "gdpr", "privacy", "permission"]
+    test_prompts:
+      single:
+        - "Record user consent"
+        - "Manage consent preferences"
+        - "Revoke marketing consent"
+        - "Check consent status"
+      single_clear:
+        - "I need to manage user consent records. Record user consent"
+        - "I need to manage user consent records. Manage consent preferences"
+        - "I need to manage user consent records. Revoke marketing consent"
+        - "I need to manage user consent records. Check consent status"
+
+  - name: classify_data
+    descriptions:
+      minimal: "Classify data"
+      short: "Classify data sensitivity"
+      medium: "Classify data according to sensitivity levels."
+      long: "Classify data for handling requirements. Example: classify_data(data_source='customer_db', scan_type='full', output='report')."
+      verbose: "Automated data classification and discovery. Levels: public, internal, confidential, restricted. PII detection: names, emails, SSN, credit cards, health data. Example: classify_data(data_source='s3://data-bucket', scan_type='full', detect_pii=true, apply_labels=true, notify_owners=true). Outputs: classification labels, PII inventory, risk scores. Note: Sample scans are faster but may miss data. Warning: Classification should be reviewed by data owners."
+    parameters:
+      - name: data_source
+        type: string
+        description: "Data source to classify"
+        required: true
+      - name: scan_type
+        type: string
+        description: "Scan coverage"
+        required: false
+        default: "sample"
+        enum: ["sample", "full", "incremental"]
+      - name: detect_pii
+        type: boolean
+        description: "Detect PII patterns"
+        required: false
+        default: true
+      - name: apply_labels
+        type: boolean
+        description: "Auto-apply classification labels"
+        required: false
+        default: false
+      - name: notify_owners
+        type: boolean
+        description: "Notify data owners"
+        required: false
+        default: true
+    tags: ["compliance", "classification", "data", "pii", "discovery"]
+    test_prompts:
+      single:
+        - "Classify data sensitivity"
+        - "Scan for PII"
+        - "Data classification scan"
+        - "Find sensitive data"
+      single_clear:
+        - "I need to classify data by sensitivity level. Classify data sensitivity"
+        - "I need to classify data by sensitivity level. Scan for PII"
+        - "I need to classify data by sensitivity level. Data classification scan"
+        - "I need to classify data by sensitivity level. Find sensitive data"
+
+  - name: manage_policy
+    descriptions:
+      minimal: "Manage policy"
+      short: "Manage compliance policy"
+      medium: "Create, update, or enforce compliance policies."
+      long: "Manage organizational policies. Example: manage_policy(action='create', name='Data Encryption Policy', type='security')."
+      verbose: "Policy lifecycle management. Actions: create, update, publish, archive, enforce. Types: security, privacy, acceptable_use, data_handling. Example: manage_policy(action='publish', policy_id='pol_123', effective_date='2024-02-01', require_acknowledgment=true, notify_users=true, training_required=true). Features: version control, acknowledgment tracking, exception management. Note: Policy changes should go through approval workflow. Warning: Effective dates should allow time for communication."
+    parameters:
+      - name: action
+        type: string
+        description: "Policy action"
+        required: true
+        enum: ["create", "update", "publish", "archive", "enforce", "list"]
+      - name: policy_id
+        type: string
+        description: "Existing policy ID"
+        required: false
+      - name: name
+        type: string
+        description: "Policy name"
+        required: false
+      - name: type
+        type: string
+        description: "Policy type"
+        required: false
+        enum: ["security", "privacy", "acceptable_use", "data_handling", "incident_response"]
+      - name: content
+        type: string
+        description: "Policy content"
+        required: false
+      - name: effective_date
+        type: string
+        description: "Effective date"
+        required: false
+    tags: ["compliance", "policy", "governance", "management", "rules"]
+    test_prompts:
+      single:
+        - "Create compliance policy"
+        - "Update security policy"
+        - "Publish new policy"
+        - "Manage organizational policies"
+      single_clear:
+        - "I need to manage a compliance policy. Create compliance policy"
+        - "I need to manage a compliance policy. Update security policy"
+        - "I need to manage a compliance policy. Publish new policy"
+        - "I need to manage a compliance policy. Manage organizational policies"
+
+  - name: track_vendor_compliance
+    descriptions:
+      minimal: "Vendor compliance"
+      short: "Track vendor compliance"
+      medium: "Monitor third-party vendor compliance status."
+      long: "Track vendor and third-party compliance. Example: track_vendor_compliance(vendor_id='vendor_123', action='assess')."
+      verbose: "Third-party risk and compliance management. Actions: assess, monitor, questionnaire, review. Tracks: SOC2 reports, security certifications, data processing agreements. Example: track_vendor_compliance(vendor_id='vendor_456', action='assess', frameworks='[\"SOC2\", \"ISO27001\"]', request_evidence=true, due_date='2024-03-01'). Risk levels: low, medium, high, critical based on data access. Note: Regular reassessment required for critical vendors. Warning: Expired certifications increase risk."
+    parameters:
+      - name: vendor_id
+        type: string
+        description: "Vendor identifier"
+        required: true
+      - name: action
+        type: string
+        description: "Tracking action"
+        required: true
+        enum: ["assess", "monitor", "questionnaire", "review", "list"]
+      - name: frameworks
+        type: string
+        description: "JSON array of required frameworks"
+        required: false
+      - name: request_evidence
+        type: boolean
+        description: "Request compliance evidence"
+        required: false
+        default: true
+      - name: due_date
+        type: string
+        description: "Assessment due date"
+        required: false
+    tags: ["compliance", "vendor", "third-party", "risk", "assessment"]
+    test_prompts:
+      single:
+        - "Track vendor compliance"
+        - "Assess third-party risk"
+        - "Send vendor questionnaire"
+        - "Review vendor security"
+      single_clear:
+        - "I need to track third-party vendor compliance. Track vendor compliance"
+        - "I need to track third-party vendor compliance. Assess third-party risk"
+        - "I need to track third-party vendor compliance. Send vendor questionnaire"
+        - "I need to track third-party vendor compliance. Review vendor security"
+
+  - name: manage_exception
+    descriptions:
+      minimal: "Manage exception"
+      short: "Manage compliance exception"
+      medium: "Request, approve, or track compliance exceptions."
+      long: "Handle compliance exceptions. Example: manage_exception(action='request', policy_id='pol_123', justification='Legacy system migration in progress')."
+      verbose: "Compliance exception management. Actions: request, approve, deny, extend, close. Example: manage_exception(action='request', policy_id='pol_encryption', justification='Legacy system cannot support encryption, migration planned Q2', risk_level='medium', expiration_date='2024-06-30', compensating_controls='Network isolation, enhanced monitoring', approver='ciso@company.com'). Features: approval workflows, expiration tracking, compensating controls. Note: Exceptions should be time-limited. Warning: Expired exceptions must be renewed or remediated."
+    parameters:
+      - name: action
+        type: string
+        description: "Exception action"
+        required: true
+        enum: ["request", "approve", "deny", "extend", "close", "list"]
+      - name: exception_id
+        type: string
+        description: "Existing exception ID"
+        required: false
+      - name: policy_id
+        type: string
+        description: "Related policy ID"
+        required: false
+      - name: justification
+        type: string
+        description: "Business justification"
+        required: false
+      - name: risk_level
+        type: string
+        description: "Risk level"
+        required: false
+        enum: ["low", "medium", "high", "critical"]
+      - name: expiration_date
+        type: string
+        description: "Exception expiration"
+        required: false
+      - name: compensating_controls
+        type: string
+        description: "Alternative controls"
+        required: false
+    tags: ["compliance", "exception", "waiver", "risk", "approval"]
+    test_prompts:
+      single:
+        - "Request compliance exception"
+        - "Approve policy exception"
+        - "Extend exception deadline"
+        - "Track compliance waivers"
+      single_clear:
+        - "I need to manage a compliance exception. Request compliance exception"
+        - "I need to manage a compliance exception. Approve policy exception"
+        - "I need to manage a compliance exception. Extend exception deadline"
+        - "I need to manage a compliance exception. Track compliance waivers"

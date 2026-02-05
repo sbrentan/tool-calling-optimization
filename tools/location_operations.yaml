@@ -1,0 +1,1216 @@
+category: location_operations
+
+tools:
+  - name: geocode_address
+    descriptions:
+      minimal: "Geocode address"
+      short: "Convert an address to coordinates"
+      medium: "Convert a street address to geographic coordinates (latitude and longitude)."
+      long: "Geocode an address to get its latitude and longitude coordinates. Also returns structured address components. Example: geocode_address(address='1600 Amphitheatre Parkway, Mountain View, CA')."
+      verbose: "Convert a human-readable address to geographic coordinates using geocoding. Returns: latitude, longitude, formatted address, and structured components (street, city, state, country, postal code). Supports partial addresses and place names. Example: geocode_address(address='Eiffel Tower, Paris', language='en', region_bias='fr') returns {\"lat\": 48.8584, \"lng\": 2.2945, \"formatted\": \"Eiffel Tower, Paris, France\", ...}. Note: Ambiguous addresses may return multiple results. Warning: Geocoding accuracy varies by region and address specificity."
+    parameters:
+      - name: address
+        type: string
+        description: "Address or place name to geocode"
+        required: true
+      - name: language
+        type: string
+        description: "Response language code"
+        required: false
+        default: "en"
+      - name: region_bias
+        type: string
+        description: "Country code to bias results"
+        required: false
+      - name: bounds
+        type: string
+        description: "Lat/lng bounds to bias results"
+        required: false
+    tags: ["location", "geocode", "address", "coordinates", "maps"]
+    test_prompts:
+      single:
+        - "Get the coordinates for 123 Main Street"
+        - "What's the latitude and longitude of the Eiffel Tower?"
+        - "Geocode this address"
+        - "Convert the address to GPS coordinates"
+      single_clear:
+        - "I need to convert an address to coordinates. Get the coordinates for 123 Main Street"
+        - "I need to convert an address to coordinates. What's the latitude and longitude of the Eiffel Tower?"
+        - "I need to convert an address to coordinates. Geocode this address"
+        - "I need to convert an address to coordinates. Convert the address to GPS coordinates"
+
+  - name: reverse_geocode
+    descriptions:
+      minimal: "Reverse geocode"
+      short: "Convert coordinates to an address"
+      medium: "Convert latitude and longitude coordinates to a human-readable street address."
+      long: "Reverse geocode coordinates to get the address at that location. Returns formatted address and components. Example: reverse_geocode(latitude=40.7128, longitude=-74.0060)."
+      verbose: "Convert geographic coordinates to a human-readable address using reverse geocoding. Returns: formatted address, street address, city, state, country, postal code, and place name if applicable. Multiple result types available (street address, neighborhood, city, etc.). Example: reverse_geocode(latitude=51.5074, longitude=-0.1278, result_type='street_address', language='en') returns the address at those coordinates in London. Note: Coordinates in oceans or uninhabited areas may return limited results. Warning: Very precise coordinates are needed for accurate street-level results."
+    parameters:
+      - name: latitude
+        type: number
+        description: "Latitude coordinate"
+        required: true
+      - name: longitude
+        type: number
+        description: "Longitude coordinate"
+        required: true
+      - name: language
+        type: string
+        description: "Response language code"
+        required: false
+        default: "en"
+      - name: result_type
+        type: string
+        description: "Type of result to return"
+        required: false
+        enum: ["street_address", "neighborhood", "city", "country", "any"]
+    tags: ["location", "geocode", "reverse", "coordinates", "address"]
+    test_prompts:
+      single:
+        - "What address is at these coordinates?"
+        - "Convert latitude 40.7128, longitude -74.0060 to an address"
+        - "Reverse geocode this location"
+        - "Find the address at this GPS position"
+      single_clear:
+        - "Please convert coordinates to an address. What address is at these coordinates?"
+        - "Please convert coordinates to an address. Convert latitude 40.7128, longitude -74.0060 to an address"
+        - "Please convert coordinates to an address. Reverse geocode this location"
+        - "Please convert coordinates to an address. Find the address at this GPS position"
+
+  - name: calculate_distance
+    descriptions:
+      minimal: "Calculate distance"
+      short: "Calculate distance between two points"
+      medium: "Calculate the distance between two geographic points, optionally using road distance."
+      long: "Calculate distance between two locations. Supports straight-line and driving distance. Returns distance in various units. Example: calculate_distance(origin='New York, NY', destination='Los Angeles, CA', mode='driving')."
+      verbose: "Calculate the distance between two geographic points. Methods: 'straight_line' (haversine formula), 'driving' (road distance), 'walking', 'cycling', 'transit'. Returns distance in specified units with travel time for route-based methods. Example: calculate_distance(origin='San Francisco, CA', destination='Los Angeles, CA', mode='driving', units='miles', avoid=['tolls', 'highways']) returns {\"distance\": 382.5, \"duration_minutes\": 360, ...}. Note: Route-based distances require valid road networks. Warning: Traffic conditions affect duration estimates for driving mode."
+    parameters:
+      - name: origin
+        type: string
+        description: "Starting location (address or lat,lng)"
+        required: true
+      - name: destination
+        type: string
+        description: "Ending location (address or lat,lng)"
+        required: true
+      - name: mode
+        type: string
+        description: "Travel mode"
+        required: false
+        default: "driving"
+        enum: ["straight_line", "driving", "walking", "cycling", "transit"]
+      - name: units
+        type: string
+        description: "Distance units"
+        required: false
+        default: "kilometers"
+        enum: ["kilometers", "miles", "meters"]
+      - name: avoid
+        type: array
+        description: "Route features to avoid"
+        required: false
+    tags: ["location", "distance", "travel", "route", "maps"]
+    test_prompts:
+      single:
+        - "How far is it from New York to Boston?"
+        - "Calculate the driving distance between the two addresses"
+        - "What's the distance between these coordinates?"
+        - "How long would it take to drive from A to B?"
+      single_clear:
+        - "I need to calculate distance between locations. How far is it from New York to Boston?"
+        - "I need to calculate distance between locations. Calculate the driving distance between the two addresses"
+        - "I need to calculate distance between locations. What's the distance between these coordinates?"
+        - "I need to calculate distance between locations. How long would it take to drive from A to B?"
+
+  - name: get_directions
+    descriptions:
+      minimal: "Get directions"
+      short: "Get turn-by-turn directions between locations"
+      medium: "Get detailed turn-by-turn directions between two or more locations with estimated time."
+      long: "Get step-by-step directions between locations. Supports multiple waypoints and various travel modes. Example: get_directions(origin='Times Square, NY', destination='Central Park, NY', mode='walking')."
+      verbose: "Get detailed turn-by-turn navigation directions between locations. Supports: multiple waypoints, alternative routes, departure/arrival time optimization, avoid options (tolls, highways, ferries). Returns: route overview, step-by-step instructions, distance, duration, and polyline for map display. Example: get_directions(origin='JFK Airport', destination='Manhattan, NY', waypoints=['Brooklyn Bridge'], mode='driving', departure_time='now', alternatives=true) returns multiple route options. Note: Transit directions include specific line/stop information. Warning: Real-time traffic requires departure_time='now'."
+    parameters:
+      - name: origin
+        type: string
+        description: "Starting location"
+        required: true
+      - name: destination
+        type: string
+        description: "Final destination"
+        required: true
+      - name: waypoints
+        type: array
+        description: "Intermediate stops"
+        required: false
+      - name: mode
+        type: string
+        description: "Travel mode"
+        required: false
+        default: "driving"
+        enum: ["driving", "walking", "cycling", "transit"]
+      - name: departure_time
+        type: string
+        description: "Departure time (ISO or 'now')"
+        required: false
+      - name: alternatives
+        type: boolean
+        description: "Return alternative routes"
+        required: false
+        default: false
+      - name: avoid
+        type: array
+        description: "Features to avoid"
+        required: false
+    tags: ["location", "directions", "navigation", "route", "maps"]
+    test_prompts:
+      single:
+        - "Get directions from the office to the airport"
+        - "How do I get to Central Park from here?"
+        - "Give me walking directions to the restaurant"
+        - "Navigate from A to B via C"
+      single_clear:
+        - "I need turn-by-turn navigation directions. Get directions from the office to the airport"
+        - "I need turn-by-turn navigation directions. How do I get to Central Park from here?"
+        - "I need turn-by-turn navigation directions. Give me walking directions to the restaurant"
+        - "I need turn-by-turn navigation directions. Navigate from A to B via C"
+
+  - name: search_places
+    descriptions:
+      minimal: "Search places"
+      short: "Search for nearby places"
+      medium: "Search for places like restaurants, hotels, or stores near a location or within an area."
+      long: "Search for places by type or query near a location. Returns matching places with ratings and details. Example: search_places(query='coffee shops', location='Seattle, WA', radius=1000)."
+      verbose: "Search for places of interest near a location or within an area. Search by: keyword query, place type (restaurant, hospital, park, etc.), or both. Returns: place name, address, coordinates, rating, price level, opening hours, photos, and place ID for details. Example: search_places(query='pizza', location='40.7128,-74.0060', radius=2000, type='restaurant', open_now=true, min_rating=4.0) returns highly-rated open pizza restaurants. Note: Maximum radius is typically 50km. Warning: Results are ranked by prominence; not all matching places may appear."
+    parameters:
+      - name: query
+        type: string
+        description: "Search query"
+        required: false
+      - name: location
+        type: string
+        description: "Center point (address or lat,lng)"
+        required: true
+      - name: radius
+        type: integer
+        description: "Search radius in meters"
+        required: false
+        default: 5000
+      - name: type
+        type: string
+        description: "Place type filter"
+        required: false
+      - name: open_now
+        type: boolean
+        description: "Only return open places"
+        required: false
+        default: false
+      - name: min_rating
+        type: number
+        description: "Minimum rating filter"
+        required: false
+    tags: ["location", "search", "places", "poi", "nearby"]
+    test_prompts:
+      single:
+        - "Find coffee shops near me"
+        - "Search for restaurants in the area"
+        - "What hotels are near the airport?"
+        - "Find pharmacies within 1km"
+      single_clear:
+        - "I want to search for nearby places. Find coffee shops near me"
+        - "I want to search for nearby places. Search for restaurants in the area"
+        - "I want to search for nearby places. What hotels are near the airport?"
+        - "I want to search for nearby places. Find pharmacies within 1km"
+
+  - name: get_place_details
+    descriptions:
+      minimal: "Get place details"
+      short: "Get detailed information about a place"
+      medium: "Get comprehensive details about a specific place including reviews, hours, and contact info."
+      long: "Get detailed information about a place using its place ID. Returns contact info, hours, reviews, and more. Example: get_place_details(place_id='ChIJN1t_tDeuEmsRUsoyG83frY4')."
+      verbose: "Retrieve comprehensive information about a specific place. Returns: name, formatted address, phone number, website, opening hours (with special hours), reviews and ratings, photos, price level, attributes (wheelchair accessible, etc.), Google Maps URL, and UTC offset. Example: get_place_details(place_id='ChIJabc123', fields=['name', 'rating', 'reviews', 'opening_hours', 'website', 'photos'], reviews_sort='newest') returns all specified details. Note: Some fields may not be available for all places. Warning: Reviews content is user-generated and unmoderated."
+    parameters:
+      - name: place_id
+        type: string
+        description: "Unique place identifier"
+        required: true
+      - name: fields
+        type: array
+        description: "Fields to return"
+        required: false
+      - name: reviews_sort
+        type: string
+        description: "Review sort order"
+        required: false
+        enum: ["most_relevant", "newest"]
+      - name: language
+        type: string
+        description: "Response language"
+        required: false
+        default: "en"
+    tags: ["location", "place", "details", "info", "reviews"]
+    test_prompts:
+      single:
+        - "Get details about this restaurant"
+        - "What are the opening hours?"
+        - "Show reviews for the hotel"
+        - "Get contact info for the business"
+      single_clear:
+        - "I need detailed information about a place. Get details about this restaurant"
+        - "I need detailed information about a place. What are the opening hours?"
+        - "I need detailed information about a place. Show reviews for the hotel"
+        - "I need detailed information about a place. Get contact info for the business"
+
+  - name: get_timezone
+    descriptions:
+      minimal: "Get timezone"
+      short: "Get timezone for a location"
+      medium: "Get the timezone and current local time for a specific location or coordinates."
+      long: "Get timezone information for a location. Returns timezone ID, name, and current offset. Example: get_timezone(location='Tokyo, Japan')."
+      verbose: "Get timezone information for a geographic location. Returns: timezone ID (e.g., 'America/New_York'), timezone name, UTC offset (including daylight saving), current local time, and DST status. Can query for specific timestamp to get historical offset. Example: get_timezone(latitude=35.6762, longitude=139.6503, timestamp='2024-06-15T12:00:00Z') returns Tokyo timezone info with DST status for that date. Note: Some locations have complex timezone rules. Warning: Historical timezone data may not be accurate for all dates."
+    parameters:
+      - name: location
+        type: string
+        description: "Location name or address"
+        required: false
+      - name: latitude
+        type: number
+        description: "Latitude coordinate"
+        required: false
+      - name: longitude
+        type: number
+        description: "Longitude coordinate"
+        required: false
+      - name: timestamp
+        type: string
+        description: "Timestamp for offset calculation"
+        required: false
+    tags: ["location", "timezone", "time", "utc", "offset"]
+    test_prompts:
+      single:
+        - "What timezone is New York in?"
+        - "Get the timezone for these coordinates"
+        - "What's the UTC offset for London?"
+        - "Is Tokyo currently in daylight saving time?"
+      single_clear:
+        - "I need to get timezone information for a location. What timezone is New York in?"
+        - "I need to get timezone information for a location. Get the timezone for these coordinates"
+        - "I need to get timezone information for a location. What's the UTC offset for London?"
+        - "I need to get timezone information for a location. Is Tokyo currently in daylight saving time?"
+
+  - name: get_elevation
+    descriptions:
+      minimal: "Get elevation"
+      short: "Get elevation for coordinates"
+      medium: "Get the elevation above sea level for one or more geographic coordinates."
+      long: "Get elevation data for locations. Supports single point or path of points. Returns elevation in meters. Example: get_elevation(locations='40.7128,-74.0060')."
+      verbose: "Get elevation above sea level for geographic coordinates. Supports: single location, multiple locations, or path sampling (elevation profile along a route). Returns elevation in meters with resolution indicating data accuracy. Example: get_elevation(locations=['48.8584,2.2945', '51.5074,-0.1278'], resolution='high') returns elevation for Eiffel Tower and London with accuracy info. Note: Ocean locations return negative elevations or null. Warning: Resolution varies by location; remote areas may have lower accuracy."
+    parameters:
+      - name: locations
+        type: string
+        description: "Coordinates (lat,lng or array)"
+        required: true
+      - name: path
+        type: boolean
+        description: "Treat as path and sample elevations"
+        required: false
+        default: false
+      - name: samples
+        type: integer
+        description: "Number of samples along path"
+        required: false
+        default: 100
+      - name: resolution
+        type: string
+        description: "Data resolution preference"
+        required: false
+        enum: ["low", "medium", "high"]
+    tags: ["location", "elevation", "altitude", "terrain", "geography"]
+    test_prompts:
+      single:
+        - "What's the elevation at these coordinates?"
+        - "Get the altitude of Mount Everest base camp"
+        - "Find the elevation profile along this route"
+        - "How high is this location above sea level?"
+      single_clear:
+        - "I need to get elevation data for coordinates. What's the elevation at these coordinates?"
+        - "I need to get elevation data for coordinates. Get the altitude of Mount Everest base camp"
+        - "I need to get elevation data for coordinates. Find the elevation profile along this route"
+        - "I need to get elevation data for coordinates. How high is this location above sea level?"
+
+  - name: validate_address
+    descriptions:
+      minimal: "Validate address"
+      short: "Validate and standardize an address"
+      medium: "Validate an address exists and return the standardized, properly formatted version."
+      long: "Validate and standardize an address. Checks if address is real and returns corrected/formatted version. Example: validate_address(address='123 Main St, NYC')."
+      verbose: "Validate that an address exists and is deliverable, with standardization to postal service formats. Returns: validation status, standardized address, parsed components, delivery point validation (for US), and suggested corrections for partial matches. Example: validate_address(address='123 Main Street Apt 4B, New York, NY', country='US', include_parsed=true) returns {\"valid\": true, \"standardized\": \"123 MAIN ST APT 4B, NEW YORK, NY 10001-1234\", \"components\": {...}}. Note: Validation depth varies by country. Warning: Valid address doesn't guarantee current occupancy."
+    parameters:
+      - name: address
+        type: string
+        description: "Address to validate"
+        required: true
+      - name: country
+        type: string
+        description: "Country code (ISO 3166-1)"
+        required: false
+      - name: include_parsed
+        type: boolean
+        description: "Include parsed components"
+        required: false
+        default: true
+      - name: require_unit
+        type: boolean
+        description: "Require unit/apt if applicable"
+        required: false
+        default: false
+    tags: ["location", "address", "validate", "verify", "postal"]
+    test_prompts:
+      single:
+        - "Is this address valid?"
+        - "Validate and format the shipping address"
+        - "Check if this is a real address"
+        - "Standardize the address format"
+      single_clear:
+        - "I need to validate and standardize an address. Is this address valid?"
+        - "I need to validate and standardize an address. Validate and format the shipping address"
+        - "I need to validate and standardize an address. Check if this is a real address"
+        - "I need to validate and standardize an address. Standardize the address format"
+
+  - name: get_weather
+    descriptions:
+      minimal: "Get weather"
+      short: "Get current weather for a location"
+      medium: "Get current weather conditions and forecast for a specific location."
+      long: "Get current weather and forecast for a location. Returns temperature, conditions, humidity, wind, and more. Example: get_weather(location='San Francisco, CA')."
+      verbose: "Get current weather conditions and forecast for a location. Returns: temperature (with feels-like), conditions, humidity, pressure, visibility, wind speed/direction, UV index, precipitation, sunrise/sunset. Forecast options: hourly (48 hours) or daily (7 days). Example: get_weather(location='Paris, France', units='metric', forecast='daily', days=5, include=['temperature', 'precipitation', 'wind']) returns 5-day forecast with specified details. Note: Forecasts become less accurate further out. Warning: Severe weather alerts should be checked separately for safety-critical applications."
+    parameters:
+      - name: location
+        type: string
+        description: "Location (city, address, or coordinates)"
+        required: true
+      - name: units
+        type: string
+        description: "Temperature units"
+        required: false
+        default: "metric"
+        enum: ["metric", "imperial"]
+      - name: forecast
+        type: string
+        description: "Forecast type"
+        required: false
+        enum: ["current", "hourly", "daily"]
+      - name: days
+        type: integer
+        description: "Forecast days (for daily)"
+        required: false
+        default: 7
+      - name: include
+        type: array
+        description: "Data to include"
+        required: false
+    tags: ["location", "weather", "forecast", "temperature", "climate"]
+    test_prompts:
+      single:
+        - "What's the weather in London?"
+        - "Get the 5-day forecast for New York"
+        - "What's the temperature right now?"
+        - "Will it rain tomorrow in Seattle?"
+      single_clear:
+        - "I need to get weather information for a location. What's the weather in London?"
+        - "I need to get weather information for a location. Get the 5-day forecast for New York"
+        - "I need to get weather information for a location. What's the temperature right now?"
+        - "I need to get weather information for a location. Will it rain tomorrow in Seattle?"
+  - name: optimize_route
+    descriptions:
+      minimal: "Optimize route"
+      short: "Optimize multi-stop route"
+      medium: "Find the optimal order for visiting multiple locations."
+      long: "Optimize a route with multiple stops to minimize distance or time. Example: optimize_route(origin='office', destinations='[\"client1\", \"client2\", \"client3\"]', optimize_for='time')."
+      verbose: "Route optimization for deliveries and field services. Algorithm: traveling salesman (TSP), vehicle routing (VRP). Constraints: time windows, capacity, priority. Example: optimize_route(origin='warehouse', destinations='[{\"address\": \"123 Main St\", \"window\": [\"09:00\", \"12:00\"]}, {\"address\": \"456 Oak Ave\", \"priority\": \"high\"}]', optimize_for='time', traffic='predictive', vehicle_capacity=50). Returns: optimized order, total distance/time, per-leg details. Note: Results vary with traffic conditions. Warning: Very large route sets may take longer to compute."
+    parameters:
+      - name: origin
+        type: string
+        description: "Starting location"
+        required: true
+      - name: destinations
+        type: string
+        description: "JSON array of destinations"
+        required: true
+      - name: optimize_for
+        type: string
+        description: "Optimization target"
+        required: false
+        default: "time"
+        enum: ["time", "distance", "fuel"]
+      - name: return_to_origin
+        type: boolean
+        description: "Return to start point"
+        required: false
+        default: false
+      - name: traffic
+        type: string
+        description: "Traffic model"
+        required: false
+        default: "live"
+        enum: ["none", "live", "predictive"]
+      - name: constraints
+        type: string
+        description: "JSON routing constraints"
+        required: false
+    tags: ["location", "route", "optimization", "delivery", "tsp"]
+    test_prompts:
+      single:
+        - "Find best order for deliveries"
+        - "Optimize delivery route"
+        - "Plan efficient multi-stop trip"
+        - "Order these stops optimally"
+      single_clear:
+        - "I need to optimize a multi-stop route. Find best order for deliveries"
+        - "I need to optimize a multi-stop route. Optimize delivery route"
+        - "I need to optimize a multi-stop route. Plan efficient multi-stop trip"
+        - "I need to optimize a multi-stop route. Order these stops optimally"
+
+  - name: create_geofence
+    descriptions:
+      minimal: "Create geofence"
+      short: "Create a geofence area"
+      medium: "Create a geographic boundary to trigger location-based events."
+      long: "Define a geofence area. Trigger events when devices enter or exit. Example: create_geofence(name='office', center='40.7128,-74.0060', radius=100, events='[\"enter\", \"exit\"]')."
+      verbose: "Create geofences for location-based automation. Shapes: circle (center + radius), polygon (points). Events: enter, exit, dwell. Example: create_geofence(name='Store Location', shape='circle', center='40.7128,-74.0060', radius=150, events='[\"enter\", \"exit\"]', dwell_time=300, notify_url='https://api.example.com/geofence', metadata='{\"store_id\": \"123\"}'). Note: Accuracy depends on device GPS quality. Warning: Very small geofences may trigger unreliably."
+    parameters:
+      - name: name
+        type: string
+        description: "Geofence name"
+        required: true
+      - name: shape
+        type: string
+        description: "Geofence shape"
+        required: true
+        enum: ["circle", "polygon"]
+      - name: center
+        type: string
+        description: "Center point (lat,lng)"
+        required: false
+      - name: radius
+        type: integer
+        description: "Radius in meters"
+        required: false
+      - name: points
+        type: string
+        description: "JSON polygon points"
+        required: false
+      - name: events
+        type: string
+        description: "JSON events to trigger"
+        required: true
+      - name: notify_url
+        type: string
+        description: "Webhook URL for events"
+        required: false
+    tags: ["location", "geofence", "boundary", "trigger", "automation"]
+    test_prompts:
+      single:
+        - "Create geofence around office"
+        - "Set up location trigger"
+        - "Define geo boundary"
+        - "Alert when user enters area"
+      single_clear:
+        - "I need to create a geographic boundary for location-based events. Create geofence around office"
+        - "I need to create a geographic boundary for location-based events. Set up location trigger"
+        - "I need to create a geographic boundary for location-based events. Define geo boundary"
+        - "I need to create a geographic boundary for location-based events. Alert when user enters area"
+
+  - name: search_places_nearby
+    descriptions:
+      minimal: "Search nearby"
+      short: "Search places nearby"
+      medium: "Find places of a specific type near a location."
+      long: "Search for places (restaurants, gas stations, etc.) near a location. Example: search_places_nearby(location='40.7128,-74.0060', type='restaurant', radius=1000)."
+      verbose: "Search for nearby points of interest. Categories: restaurant, cafe, gas_station, hospital, pharmacy, atm, parking, hotel. Filters: open now, rating, price level. Example: search_places_nearby(location='Times Square, NY', type='restaurant', radius=500, keyword='pizza', open_now=true, min_rating=4.0, max_results=20). Returns: place list with name, address, rating, hours, distance. Note: Results limited by API quotas. Warning: Business hours and ratings change frequently."
+    parameters:
+      - name: location
+        type: string
+        description: "Center location (address or lat,lng)"
+        required: true
+      - name: type
+        type: string
+        description: "Place type"
+        required: true
+      - name: radius
+        type: integer
+        description: "Search radius in meters"
+        required: false
+        default: 1000
+      - name: keyword
+        type: string
+        description: "Additional keyword filter"
+        required: false
+      - name: open_now
+        type: boolean
+        description: "Only open places"
+        required: false
+        default: false
+      - name: min_rating
+        type: number
+        description: "Minimum rating filter"
+        required: false
+      - name: max_results
+        type: integer
+        description: "Maximum results"
+        required: false
+        default: 20
+    tags: ["location", "places", "nearby", "search", "poi"]
+    test_prompts:
+      single:
+        - "Find restaurants nearby"
+        - "Search for gas stations"
+        - "Find ATMs near me"
+        - "Coffee shops within 500m"
+      single_clear:
+        - "I want to find places of a specific type nearby. Find restaurants nearby"
+        - "I want to find places of a specific type nearby. Search for gas stations"
+        - "I want to find places of a specific type nearby. Find ATMs near me"
+        - "I want to find places of a specific type nearby. Coffee shops within 500m"
+
+  - name: get_place_details
+    descriptions:
+      minimal: "Get place details"
+      short: "Get place information"
+      medium: "Get detailed information about a specific place."
+      long: "Retrieve detailed information about a place. Get hours, reviews, photos, etc. Example: get_place_details(place_id='ChIJN1t_tDeuEmsRUsoyG83frY4', fields='[\"name\", \"hours\", \"reviews\"]')."
+      verbose: "Get comprehensive place information. Available fields: name, address, phone, website, hours, rating, reviews, photos, price_level, types, accessibility. Example: get_place_details(place_id='ChIJN1t_tDeuEmsRUsoyG83frY4', fields='[\"name\", \"formatted_address\", \"opening_hours\", \"reviews\", \"photos\"]', language='en', reviews_sort='newest'). Returns: requested place details. Note: Some fields incur additional API costs. Warning: Review data is user-generated and may be outdated."
+    parameters:
+      - name: place_id
+        type: string
+        description: "Unique place identifier"
+        required: true
+      - name: fields
+        type: string
+        description: "JSON array of fields to return"
+        required: false
+      - name: language
+        type: string
+        description: "Response language"
+        required: false
+        default: "en"
+      - name: reviews_sort
+        type: string
+        description: "Review sort order"
+        required: false
+        enum: ["relevance", "newest"]
+    tags: ["location", "places", "details", "business", "info"]
+    test_prompts:
+      single:
+        - "Get restaurant details"
+        - "Show place information"
+        - "Get business hours"
+        - "Show reviews for place"
+      single_clear:
+        - "I need detailed information about a place. Get restaurant details"
+        - "I need detailed information about a place. Show place information"
+        - "I need detailed information about a place. Get business hours"
+        - "I need detailed information about a place. Show reviews for place"
+
+  - name: calculate_isochrone
+    descriptions:
+      minimal: "Calculate isochrone"
+      short: "Calculate travel time area"
+      medium: "Calculate the area reachable within a given travel time from a location."
+      long: "Generate an isochrone showing areas reachable in a given time. Example: calculate_isochrone(origin='office', time_minutes=30, mode='driving')."
+      verbose: "Generate isochrone polygons for reachability analysis. Use cases: site selection, coverage analysis, service areas. Example: calculate_isochrone(origin='downtown station', time_minutes=15, mode='transit', departure_time='2024-01-15T08:00:00', intervals='[5, 10, 15]'). Returns: GeoJSON polygons for each time interval. Note: Transit isochrones depend on schedule. Warning: Large time values create very large polygons."
+    parameters:
+      - name: origin
+        type: string
+        description: "Starting location"
+        required: true
+      - name: time_minutes
+        type: integer
+        description: "Travel time in minutes"
+        required: true
+      - name: mode
+        type: string
+        description: "Travel mode"
+        required: false
+        default: "driving"
+        enum: ["driving", "walking", "cycling", "transit"]
+      - name: intervals
+        type: string
+        description: "JSON array of time intervals"
+        required: false
+      - name: departure_time
+        type: string
+        description: "Departure time (ISO 8601)"
+        required: false
+    tags: ["location", "isochrone", "travel", "reachability", "analysis"]
+    test_prompts:
+      single:
+        - "Show 30 minute driving radius"
+        - "Calculate reachable area"
+        - "Where can I drive in 15 minutes"
+        - "Generate isochrone map"
+      single_clear:
+        - "I need to calculate the area reachable within a travel time. Show 30 minute driving radius"
+        - "I need to calculate the area reachable within a travel time. Calculate reachable area"
+        - "I need to calculate the area reachable within a travel time. Where can I drive in 15 minutes"
+        - "I need to calculate the area reachable within a travel time. Generate isochrone map"
+
+  - name: validate_address
+    descriptions:
+      minimal: "Validate address"
+      short: "Validate and format address"
+      medium: "Validate and standardize an address for accuracy."
+      long: "Validate address accuracy and standardize format. Returns corrected address. Example: validate_address(address='123 main st, NYC')."
+      verbose: "Address validation and standardization. Features: spelling correction, format standardization (USPS, postal), missing component detection, deliverability check. Example: validate_address(address='123 main st apt 4, new york', country='US', format='usps', include_metadata=true). Returns: standardized address, validity score, corrections made, components. Note: Validation accuracy varies by country. Warning: Some valid addresses may not geocode correctly."
+    parameters:
+      - name: address
+        type: string
+        description: "Address to validate"
+        required: true
+      - name: country
+        type: string
+        description: "Country code (ISO 3166-1)"
+        required: false
+      - name: format
+        type: string
+        description: "Output format standard"
+        required: false
+        enum: ["usps", "postal", "local"]
+      - name: include_metadata
+        type: boolean
+        description: "Include address metadata"
+        required: false
+        default: false
+    tags: ["location", "address", "validate", "format", "standardize"]
+    test_prompts:
+      single:
+        - "Validate this address"
+        - "Check if address is correct"
+        - "Format address properly"
+        - "Standardize shipping address"
+      single_clear:
+        - "I need to validate and standardize an address. Validate this address"
+        - "I need to validate and standardize an address. Check if address is correct"
+        - "I need to validate and standardize an address. Format address properly"
+        - "I need to validate and standardize an address. Standardize shipping address"
+
+  - name: batch_geocode
+    descriptions:
+      minimal: "Batch geocode"
+      short: "Geocode multiple addresses"
+      medium: "Geocode a list of addresses in a single batch request."
+      long: "Geocode multiple addresses efficiently. Returns coordinates for each. Example: batch_geocode(addresses='[\"123 Main St\", \"456 Oak Ave\"]')."
+      verbose: "Efficient batch geocoding for large address lists. Features: parallel processing, error handling, result matching. Example: batch_geocode(addresses='[{\"id\": \"A1\", \"address\": \"123 Main St, Boston\"}, {\"id\": \"A2\", \"address\": \"456 Oak Ave, Chicago\"}]', include_accuracy=true, fallback_partial=true). Returns: geocoded results with IDs, coordinates, accuracy scores. Note: Rate limits apply; large batches may be queued. Warning: Some addresses may fail to geocode."
+    parameters:
+      - name: addresses
+        type: string
+        description: "JSON array of addresses or objects"
+        required: true
+      - name: include_accuracy
+        type: boolean
+        description: "Include accuracy scores"
+        required: false
+        default: true
+      - name: fallback_partial
+        type: boolean
+        description: "Accept partial matches"
+        required: false
+        default: true
+      - name: country_bias
+        type: string
+        description: "Bias results to country"
+        required: false
+    tags: ["location", "geocode", "batch", "address", "coordinates"]
+    test_prompts:
+      single:
+        - "Geocode list of addresses"
+        - "Convert addresses to coordinates"
+        - "Batch geocode CSV"
+        - "Get lat/lng for addresses"
+      single_clear:
+        - "I need to geocode multiple addresses at once. Geocode list of addresses"
+        - "I need to geocode multiple addresses at once. Convert addresses to coordinates"
+        - "I need to geocode multiple addresses at once. Batch geocode CSV"
+        - "I need to geocode multiple addresses at once. Get lat/lng for addresses"
+
+  - name: calculate_elevation
+    descriptions:
+      minimal: "Get elevation"
+      short: "Calculate elevation"
+      medium: "Get elevation data for locations or along a path."
+      long: "Get elevation for points or paths. Useful for terrain analysis. Example: calculate_elevation(locations='40.7128,-74.0060', type='point')."
+      verbose: "Elevation data for points and paths. Types: point (single/multiple locations), path (elevation profile along route). Example: calculate_elevation(type='path', locations='40.7128,-74.0060|40.758,-73.9855', samples=100, resolution='high'). Returns: elevation values, min/max for paths, gradient. Note: Elevation accuracy varies by data source. Warning: Ocean and some remote areas may have limited data."
+    parameters:
+      - name: locations
+        type: string
+        description: "Location(s) as lat,lng or path"
+        required: true
+      - name: type
+        type: string
+        description: "Query type"
+        required: false
+        default: "point"
+        enum: ["point", "path"]
+      - name: samples
+        type: integer
+        description: "Path sample points"
+        required: false
+        default: 50
+      - name: resolution
+        type: string
+        description: "Data resolution"
+        required: false
+        default: "standard"
+        enum: ["standard", "high"]
+    tags: ["location", "elevation", "terrain", "altitude", "topography"]
+    test_prompts:
+      single:
+        - "Get elevation of location"
+        - "Show elevation profile"
+        - "What's the altitude here"
+        - "Calculate path elevation"
+      single_clear:
+        - "I need elevation data for a location. Get elevation of location"
+        - "I need elevation data for a location. Show elevation profile"
+        - "I need elevation data for a location. What's the altitude here"
+        - "I need elevation data for a location. Calculate path elevation"
+
+  - name: track_location
+    descriptions:
+      minimal: "Track location"
+      short: "Track device location"
+      medium: "Track and record device location over time."
+      long: "Track device location history. Record position at intervals. Example: track_location(device_id='phone1', action='start', interval=60)."
+      verbose: "Real-time location tracking for assets and users. Actions: start (begin tracking), stop, history (retrieve past locations). Example: track_location(device_id='delivery_truck_5', action='start', interval=30, battery_aware=true, accuracy='high', geofences='[\"warehouse\", \"customer_zone\"]'). Note: Tracking consumes device battery. Warning: Ensure proper consent and privacy compliance for tracking."
+    parameters:
+      - name: device_id
+        type: string
+        description: "Device identifier"
+        required: true
+      - name: action
+        type: string
+        description: "Tracking action"
+        required: true
+        enum: ["start", "stop", "history", "current"]
+      - name: interval
+        type: integer
+        description: "Update interval (seconds)"
+        required: false
+        default: 60
+      - name: accuracy
+        type: string
+        description: "Location accuracy"
+        required: false
+        default: "balanced"
+        enum: ["low", "balanced", "high"]
+      - name: period
+        type: string
+        description: "History period"
+        required: false
+    tags: ["location", "tracking", "device", "gps", "history"]
+    test_prompts:
+      single:
+        - "Start tracking device"
+        - "Get location history"
+        - "Track delivery truck"
+        - "Show current position"
+      single_clear:
+        - "I need to track a device location over time. Start tracking device"
+        - "I need to track a device location over time. Get location history"
+        - "I need to track a device location over time. Track delivery truck"
+        - "I need to track a device location over time. Show current position"
+
+  - name: find_nearest_location
+    descriptions:
+      minimal: "Find nearest"
+      short: "Find nearest location"
+      medium: "Find the nearest points of interest to a given location."
+      long: "Find nearest places by type or category. Example: find_nearest_location(lat=40.7128, lng=-74.006, type='gas_station', limit=5)."
+      verbose: "Nearest neighbor search for points of interest. Categories: restaurants, gas_stations, hospitals, pharmacies, atms, hotels, parking. Example: find_nearest_location(lat=40.7128, lng=-74.006, type='hospital', radius_km=10, limit=10, open_now=true, min_rating=4.0). Returns: [{\"name\": \"NYC General Hospital\", \"distance_km\": 0.8, \"address\": \"...\", \"rating\": 4.5, \"open\": true}]. Note: Availability data may not be real-time. Warning: Results limited by data coverage."
+    parameters:
+      - name: lat
+        type: number
+        description: "Latitude"
+        required: true
+      - name: lng
+        type: number
+        description: "Longitude"
+        required: true
+      - name: type
+        type: string
+        description: "Place type/category"
+        required: true
+      - name: radius_km
+        type: number
+        description: "Search radius in km"
+        required: false
+        default: 5
+      - name: limit
+        type: integer
+        description: "Maximum results"
+        required: false
+        default: 10
+      - name: open_now
+        type: boolean
+        description: "Filter by currently open"
+        required: false
+        default: false
+    tags: ["location", "nearest", "poi", "search", "places"]
+    test_prompts:
+      single:
+        - "Find nearest gas station"
+        - "Closest hospital to me"
+        - "Nearby restaurants"
+        - "Find ATM near location"
+      single_clear:
+        - "I need to find the nearest point of interest. Find nearest gas station"
+        - "I need to find the nearest point of interest. Closest hospital to me"
+        - "I need to find the nearest point of interest. Nearby restaurants"
+        - "I need to find the nearest point of interest. Find ATM near location"
+
+  - name: create_isochrone
+    descriptions:
+      minimal: "Create isochrone"
+      short: "Create travel time isochrone"
+      medium: "Generate an isochrone map showing reachable area within travel time."
+      long: "Create isochrone polygons for travel time analysis. Example: create_isochrone(lat=40.7128, lng=-74.006, time_minutes=30, mode='driving')."
+      verbose: "Generate travel time isochrones (reachable area polygons). Use for: service area analysis, site selection, delivery zones. Example: create_isochrone(lat=40.7128, lng=-74.006, time_minutes=[15, 30, 45], mode='driving', departure_time='2024-01-15T08:00:00', avoid='tolls'). Returns: GeoJSON polygons for each time interval. Note: Traffic affects results significantly. Warning: Large time ranges may return very large polygons."
+    parameters:
+      - name: lat
+        type: number
+        description: "Origin latitude"
+        required: true
+      - name: lng
+        type: number
+        description: "Origin longitude"
+        required: true
+      - name: time_minutes
+        type: string
+        description: "Time in minutes (single or JSON array)"
+        required: true
+      - name: mode
+        type: string
+        description: "Travel mode"
+        required: false
+        default: "driving"
+        enum: ["driving", "walking", "cycling", "transit"]
+      - name: departure_time
+        type: string
+        description: "Departure time (ISO 8601)"
+        required: false
+      - name: avoid
+        type: string
+        description: "Features to avoid"
+        required: false
+    tags: ["location", "isochrone", "travel", "time", "polygon"]
+    test_prompts:
+      single:
+        - "Create isochrone map"
+        - "Show 30-minute driving range"
+        - "Generate travel time polygon"
+        - "What area can I reach in 15 minutes"
+      single_clear:
+        - "I need to generate a travel time isochrone map. Create isochrone map"
+        - "I need to generate a travel time isochrone map. Show 30-minute driving range"
+        - "I need to generate a travel time isochrone map. Generate travel time polygon"
+        - "I need to generate a travel time isochrone map. What area can I reach in 15 minutes"
+
+  - name: snap_to_road
+    descriptions:
+      minimal: "Snap to road"
+      short: "Snap coordinates to roads"
+      medium: "Snap GPS coordinates to the nearest road network."
+      long: "Snap noisy GPS points to roads. Example: snap_to_road(points='[{\"lat\": 40.7128, \"lng\": -74.006}]')."
+      verbose: "Road snapping for GPS traces. Use for: cleaning GPS data, map matching, route reconstruction. Example: snap_to_road(points='[{\"lat\": 40.7128, \"lng\": -74.006, \"timestamp\": \"2024-01-15T10:00:00Z\"}, ...]', interpolate=true, include_road_info=true). Returns: snapped coordinates with road names and speed limits. Note: Works best with sequential timestamped points. Warning: Sparse points may snap to wrong roads."
+    parameters:
+      - name: points
+        type: string
+        description: "JSON array of lat/lng points"
+        required: true
+      - name: interpolate
+        type: boolean
+        description: "Interpolate between points"
+        required: false
+        default: false
+      - name: include_road_info
+        type: boolean
+        description: "Include road metadata"
+        required: false
+        default: true
+    tags: ["location", "snap", "road", "gps", "match"]
+    test_prompts:
+      single:
+        - "Snap GPS to road"
+        - "Match coordinates to road"
+        - "Clean GPS trace"
+        - "Road snap these points"
+      single_clear:
+        - "I need to snap GPS coordinates to the nearest road. Snap GPS to road"
+        - "I need to snap GPS coordinates to the nearest road. Match coordinates to road"
+        - "I need to snap GPS coordinates to the nearest road. Clean GPS trace"
+        - "I need to snap GPS coordinates to the nearest road. Road snap these points"
+
+  - name: get_elevation
+    descriptions:
+      minimal: "Get elevation"
+      short: "Get elevation data"
+      medium: "Get elevation for coordinates or along a path."
+      long: "Retrieve elevation data for points. Example: get_elevation(locations='[{\"lat\": 40.7128, \"lng\": -74.006}]')."
+      verbose: "Elevation data retrieval. Modes: single point, multiple points, path sampling. Example: get_elevation(locations='[{\"lat\": 40.7128, \"lng\": -74.006}, {\"lat\": 40.758, \"lng\": -73.9855}]', interpolate=true, samples=100). Returns: [{\"lat\": 40.7128, \"lng\": -74.006, \"elevation_m\": 10.2}]. Use for: hiking apps, terrain analysis, flood risk. Note: Elevation resolution varies by region. Warning: Ocean points return 0 or negative values."
+    parameters:
+      - name: locations
+        type: string
+        description: "JSON array of lat/lng points"
+        required: true
+      - name: interpolate
+        type: boolean
+        description: "Interpolate path"
+        required: false
+        default: false
+      - name: samples
+        type: integer
+        description: "Number of samples along path"
+        required: false
+        default: 50
+    tags: ["location", "elevation", "altitude", "terrain", "height"]
+    test_prompts:
+      single:
+        - "Get elevation for coordinates"
+        - "What's the altitude here"
+        - "Elevation along route"
+        - "Get terrain height"
+      single_clear:
+        - "I need to get elevation data for coordinates. Get elevation for coordinates"
+        - "I need to get elevation data for coordinates. What's the altitude here"
+        - "I need to get elevation data for coordinates. Elevation along route"
+        - "I need to get elevation data for coordinates. Get terrain height"
+
+  - name: validate_address
+    descriptions:
+      minimal: "Validate address"
+      short: "Validate and standardize address"
+      medium: "Validate an address and return standardized format."
+      long: "Validate and normalize postal addresses. Example: validate_address(address='123 Main St, NYC')."
+      verbose: "Address validation and standardization. Checks: deliverability, format correctness, component parsing. Example: validate_address(address='123 Main Street, Apt 4B, New York, NY', country='US', include_metadata=true). Returns: {\"valid\": true, \"deliverable\": true, \"standardized\": \"123 MAIN ST APT 4B\", \"components\": {...}, \"location\": {\"lat\": 40.7, \"lng\": -74.0}}. Note: Validation accuracy varies by country. Warning: Valid format doesn't guarantee deliverability."
+    parameters:
+      - name: address
+        type: string
+        description: "Address to validate"
+        required: true
+      - name: country
+        type: string
+        description: "Country code (ISO 3166-1)"
+        required: false
+      - name: include_metadata
+        type: boolean
+        description: "Include additional metadata"
+        required: false
+        default: true
+      - name: include_coordinates
+        type: boolean
+        description: "Include lat/lng"
+        required: false
+        default: true
+    tags: ["location", "address", "validate", "standardize", "postal"]
+    test_prompts:
+      single:
+        - "Validate this address"
+        - "Check if address is valid"
+        - "Standardize address format"
+        - "Verify postal address"
+      single_clear:
+        - "I need to validate and standardize an address. Validate this address"
+        - "I need to validate and standardize an address. Check if address is valid"
+        - "I need to validate and standardize an address. Standardize address format"
+        - "I need to validate and standardize an address. Verify postal address"
+
+  - name: create_geofence
+    descriptions:
+      minimal: "Create geofence"
+      short: "Create a geofence"
+      medium: "Create a geofence to monitor entry/exit events."
+      long: "Create geofence for location-based triggers. Example: create_geofence(name='Office', lat=40.7128, lng=-74.006, radius_m=100)."
+      verbose: "Geofence creation and management. Shapes: circle (radius), polygon (custom). Events: enter, exit, dwell. Example: create_geofence(name='Warehouse Zone', shape='circle', lat=40.7128, lng=-74.006, radius_m=500, triggers='[\"enter\", \"exit\"]', webhook='https://api.example.com/geofence', metadata='{\"zone_type\": \"delivery\"}'). Note: Geofence accuracy depends on device GPS. Warning: Small geofences may have frequent false triggers."
+    parameters:
+      - name: name
+        type: string
+        description: "Geofence name"
+        required: true
+      - name: shape
+        type: string
+        description: "Geofence shape"
+        required: false
+        default: "circle"
+        enum: ["circle", "polygon"]
+      - name: lat
+        type: number
+        description: "Center latitude (for circle)"
+        required: false
+      - name: lng
+        type: number
+        description: "Center longitude (for circle)"
+        required: false
+      - name: radius_m
+        type: number
+        description: "Radius in meters (for circle)"
+        required: false
+      - name: polygon
+        type: string
+        description: "JSON array of vertices (for polygon)"
+        required: false
+      - name: triggers
+        type: string
+        description: "JSON array of trigger events"
+        required: false
+    tags: ["location", "geofence", "boundary", "trigger", "zone"]
+    test_prompts:
+      single:
+        - "Create geofence"
+        - "Set up location boundary"
+        - "Define geo zone"
+        - "Create location trigger"
+      single_clear:
+        - "I need to create a geographic boundary for location-based events. Create geofence"
+        - "I need to create a geographic boundary for location-based events. Set up location boundary"
+        - "I need to create a geographic boundary for location-based events. Define geo zone"
+        - "I need to create a geographic boundary for location-based events. Create location trigger"
+
+  - name: batch_geocode
+    descriptions:
+      minimal: "Batch geocode"
+      short: "Batch geocode addresses"
+      medium: "Geocode multiple addresses in a single request."
+      long: "Geocode many addresses efficiently. Example: batch_geocode(addresses='[\"123 Main St, NYC\", \"456 Oak Ave, LA\"]')."
+      verbose: "Bulk address geocoding. Features: high throughput, async processing, error handling per address. Example: batch_geocode(addresses='[\"123 Main St, New York, NY\", \"456 Oak Ave, Los Angeles, CA\", \"789 Pine Rd, Chicago, IL\"]', country='US', include_quality_score=true). Returns: [{\"input\": \"123 Main St...\", \"lat\": 40.7, \"lng\": -74.0, \"quality\": 0.95}, ...]. Note: Rate limits may apply for large batches. Warning: Some addresses may fail; check individual results."
+    parameters:
+      - name: addresses
+        type: string
+        description: "JSON array of addresses"
+        required: true
+      - name: country
+        type: string
+        description: "Default country code"
+        required: false
+      - name: include_quality_score
+        type: boolean
+        description: "Include match quality"
+        required: false
+        default: true
+      - name: fail_on_error
+        type: boolean
+        description: "Fail entire batch on any error"
+        required: false
+        default: false
+    tags: ["location", "geocode", "batch", "address", "bulk"]
+    test_prompts:
+      single:
+        - "Geocode multiple addresses"
+        - "Batch geocode list"
+        - "Bulk address lookup"
+        - "Convert addresses to coordinates"
+      single_clear:
+        - "I need to geocode multiple addresses at once. Geocode multiple addresses"
+        - "I need to geocode multiple addresses at once. Batch geocode list"
+        - "I need to geocode multiple addresses at once. Bulk address lookup"
+        - "I need to geocode multiple addresses at once. Convert addresses to coordinates"
+
+  - name: get_speed_limit
+    descriptions:
+      minimal: "Get speed limit"
+      short: "Get road speed limit"
+      medium: "Get the speed limit for a road at given coordinates."
+      long: "Get speed limit for road location. Example: get_speed_limit(lat=40.7128, lng=-74.006)."
+      verbose: "Speed limit data retrieval. Use for: fleet management, driver alerts, route planning. Example: get_speed_limit(lat=40.7128, lng=-74.006, heading=90, include_road_info=true). Returns: {\"speed_limit_mph\": 35, \"speed_limit_kmh\": 56, \"road_name\": \"Broadway\", \"road_type\": \"secondary\"}. Note: Speed limits may vary by time of day or vehicle type. Warning: Data may not reflect recent changes."
+    parameters:
+      - name: lat
+        type: number
+        description: "Latitude"
+        required: true
+      - name: lng
+        type: number
+        description: "Longitude"
+        required: true
+      - name: heading
+        type: number
+        description: "Direction of travel (degrees)"
+        required: false
+      - name: include_road_info
+        type: boolean
+        description: "Include road metadata"
+        required: false
+        default: true
+    tags: ["location", "speed", "limit", "road", "driving"]
+    test_prompts:
+      single:
+        - "Get speed limit here"
+        - "What's the speed limit"
+        - "Speed limit for this road"
+        - "Check road speed limit"
+      single_clear:
+        - "I need to get the speed limit for a road. Get speed limit here"
+        - "I need to get the speed limit for a road. What's the speed limit"
+        - "I need to get the speed limit for a road. Speed limit for this road"
+        - "I need to get the speed limit for a road. Check road speed limit"
+
+  - name: get_static_map
+    descriptions:
+      minimal: "Get static map"
+      short: "Generate static map image"
+      medium: "Generate a static map image with markers and paths."
+      long: "Create static map image. Example: get_static_map(center_lat=40.7128, center_lng=-74.006, zoom=14, width=600, height=400)."
+      verbose: "Static map image generation. Features: custom center/zoom, markers, polylines, polygons, styling. Example: get_static_map(center_lat=40.7128, center_lng=-74.006, zoom=15, width=800, height=600, markers='[{\"lat\": 40.7128, \"lng\": -74.006, \"color\": \"red\", \"label\": \"A\"}]', path='[{\"lat\": 40.71, \"lng\": -74.01}, ...]', style='satellite', format='png'). Note: Image size affects response time. Warning: High zoom with many markers may be slow."
+    parameters:
+      - name: center_lat
+        type: number
+        description: "Center latitude"
+        required: true
+      - name: center_lng
+        type: number
+        description: "Center longitude"
+        required: true
+      - name: zoom
+        type: integer
+        description: "Zoom level (1-20)"
+        required: true
+      - name: width
+        type: integer
+        description: "Image width in pixels"
+        required: false
+        default: 600
+      - name: height
+        type: integer
+        description: "Image height in pixels"
+        required: false
+        default: 400
+      - name: markers
+        type: string
+        description: "JSON array of markers"
+        required: false
+      - name: path
+        type: string
+        description: "JSON array of path points"
+        required: false
+      - name: style
+        type: string
+        description: "Map style"
+        required: false
+        default: "roadmap"
+        enum: ["roadmap", "satellite", "terrain", "hybrid"]
+      - name: format
+        type: string
+        description: "Image format"
+        required: false
+        default: "png"
+        enum: ["png", "jpg", "webp"]
+    tags: ["location", "map", "static", "image", "generate"]
+    test_prompts:
+      single:
+        - "Generate static map"
+        - "Create map image"
+        - "Get map with markers"
+        - "Make a map snapshot"
+      single_clear:
+        - "I need to generate a static map image. Generate static map"
+        - "I need to generate a static map image. Create map image"
+        - "I need to generate a static map image. Get map with markers"
+        - "I need to generate a static map image. Make a map snapshot"

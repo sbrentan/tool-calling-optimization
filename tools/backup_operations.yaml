@@ -1,0 +1,471 @@
+category: backup_operations
+description: Backup, restore, and disaster recovery operations
+tools:
+  - name: create_backup
+    descriptions:
+      minimal: "Create backup"
+      short: "Create a backup"
+      medium: "Create a backup of files, databases, or systems."
+      long: "Create backup of specified resources. Example: create_backup(source='/data', destination='s3://backups', type='incremental')."
+      verbose: "Comprehensive backup creation. Types: full, incremental, differential. Sources: files, databases, VMs, containers. Example: create_backup(source='/var/www/app', destination='s3://backups/app', type='incremental', compression='gzip', encryption=true, retention_days=30, exclude='[\"*.log\", \"temp/*\"]'). Features: scheduling, verification, notifications. Note: Incremental backups require a full backup base. Warning: Ensure sufficient destination storage."
+    parameters:
+      - name: source
+        type: string
+        description: "Source path or resource"
+        required: true
+      - name: destination
+        type: string
+        description: "Backup destination"
+        required: true
+      - name: type
+        type: string
+        description: "Backup type"
+        required: false
+        default: "full"
+        enum: ["full", "incremental", "differential"]
+      - name: compression
+        type: string
+        description: "Compression algorithm"
+        required: false
+        default: "gzip"
+        enum: ["none", "gzip", "zstd", "lz4"]
+      - name: encryption
+        type: boolean
+        description: "Encrypt backup"
+        required: false
+        default: true
+      - name: exclude
+        type: string
+        description: "JSON array of exclusion patterns"
+        required: false
+    tags: ["backup", "create", "snapshot", "archive", "save"]
+    test_prompts:
+      single:
+        - "Create a backup"
+        - "Back up the database"
+        - "Make a snapshot"
+        - "Backup files to S3"
+      single_clear:
+        - "I need to create a backup of data. Create a backup"
+        - "I need to create a backup of data. Back up the database"
+        - "I need to create a backup of data. Make a snapshot"
+        - "I need to create a backup of data. Backup files to S3"
+
+  - name: restore_backup
+    descriptions:
+      minimal: "Restore backup"
+      short: "Restore from backup"
+      medium: "Restore files or systems from a backup."
+      long: "Restore from backup archive. Example: restore_backup(backup_id='bkp_123', destination='/data', point_in_time='2024-01-15T10:00:00Z')."
+      verbose: "Backup restoration. Options: full restore, partial restore, point-in-time recovery. Example: restore_backup(backup_id='bkp_abc', destination='/var/www/app_restored', point_in_time='2024-01-15T10:30:00Z', verify_integrity=true, overwrite=false, include_only='[\"database/*\", \"config/*\"]'). Features: integrity verification, selective restore, dry-run mode. Note: Restores may take significant time for large backups. Warning: Verify destination has sufficient space."
+    parameters:
+      - name: backup_id
+        type: string
+        description: "Backup identifier"
+        required: true
+      - name: destination
+        type: string
+        description: "Restore destination"
+        required: true
+      - name: point_in_time
+        type: string
+        description: "Point-in-time (ISO 8601)"
+        required: false
+      - name: verify_integrity
+        type: boolean
+        description: "Verify backup integrity"
+        required: false
+        default: true
+      - name: overwrite
+        type: boolean
+        description: "Overwrite existing files"
+        required: false
+        default: false
+      - name: include_only
+        type: string
+        description: "JSON array of paths to restore"
+        required: false
+    tags: ["backup", "restore", "recovery", "data", "retrieve"]
+    test_prompts:
+      single:
+        - "Restore from backup"
+        - "Recover the database"
+        - "Restore files"
+        - "Perform point-in-time recovery"
+      single_clear:
+        - "Please restore data from a backup. Restore from backup"
+        - "Please restore data from a backup. Recover the database"
+        - "Please restore data from a backup. Restore files"
+        - "Please restore data from a backup. Perform point-in-time recovery"
+
+  - name: list_backups
+    descriptions:
+      minimal: "List backups"
+      short: "List available backups"
+      medium: "List all backups for a resource with metadata."
+      long: "List backups with details. Example: list_backups(resource='/data', status='completed', limit=50)."
+      verbose: "Query backup inventory. Filters: resource, date range, status, type. Example: list_backups(resource='database-prod', start_date='2024-01-01', end_date='2024-01-31', status='completed', type='incremental', include_size=true). Returns: [{\"id\": \"bkp_123\", \"created\": \"...\", \"size_gb\": 50, \"type\": \"full\", \"status\": \"completed\"}]. Note: Metadata queries are fast; content listing is slower. Warning: Old backups may be in archive storage."
+    parameters:
+      - name: resource
+        type: string
+        description: "Resource or source path"
+        required: false
+      - name: start_date
+        type: string
+        description: "Start date filter"
+        required: false
+      - name: end_date
+        type: string
+        description: "End date filter"
+        required: false
+      - name: status
+        type: string
+        description: "Backup status"
+        required: false
+        enum: ["pending", "in_progress", "completed", "failed", "all"]
+      - name: type
+        type: string
+        description: "Backup type filter"
+        required: false
+      - name: limit
+        type: integer
+        description: "Maximum results"
+        required: false
+        default: 50
+    tags: ["backup", "list", "inventory", "query", "status"]
+    test_prompts:
+      single:
+        - "List all backups"
+        - "Show backup history"
+        - "Find available backups"
+        - "Get backup inventory"
+      single_clear:
+        - "I need to list available backups. List all backups"
+        - "I need to list available backups. Show backup history"
+        - "I need to list available backups. Find available backups"
+        - "I need to list available backups. Get backup inventory"
+
+  - name: verify_backup
+    descriptions:
+      minimal: "Verify backup"
+      short: "Verify backup integrity"
+      medium: "Verify the integrity and restorability of a backup."
+      long: "Verify backup integrity. Example: verify_backup(backup_id='bkp_123', method='checksum')."
+      verbose: "Backup integrity verification. Methods: checksum (fast), restore_test (thorough), file_count (quick). Example: verify_backup(backup_id='bkp_abc', method='restore_test', sample_percentage=10, notify_on_failure=true). Returns: {\"valid\": true, \"files_checked\": 10000, \"errors\": 0, \"method\": \"checksum\"}. Note: Restore tests create temporary copies. Warning: Full verification of large backups is resource-intensive."
+    parameters:
+      - name: backup_id
+        type: string
+        description: "Backup to verify"
+        required: true
+      - name: method
+        type: string
+        description: "Verification method"
+        required: false
+        default: "checksum"
+        enum: ["checksum", "restore_test", "file_count"]
+      - name: sample_percentage
+        type: integer
+        description: "Percentage to sample (for restore_test)"
+        required: false
+        default: 100
+      - name: notify_on_failure
+        type: boolean
+        description: "Alert on verification failure"
+        required: false
+        default: true
+    tags: ["backup", "verify", "integrity", "check", "validate"]
+    test_prompts:
+      single:
+        - "Verify backup integrity"
+        - "Check if backup is valid"
+        - "Test backup restorability"
+        - "Validate backup files"
+      single_clear:
+        - "I need to verify the integrity of a backup. Verify backup integrity"
+        - "I need to verify the integrity of a backup. Check if backup is valid"
+        - "I need to verify the integrity of a backup. Test backup restorability"
+        - "I need to verify the integrity of a backup. Validate backup files"
+
+  - name: delete_backup
+    descriptions:
+      minimal: "Delete backup"
+      short: "Delete a backup"
+      medium: "Delete a backup and free storage space."
+      long: "Delete backup permanently. Example: delete_backup(backup_id='bkp_123', confirm=true)."
+      verbose: "Permanent backup deletion. Options: single backup, bulk delete, retention-based cleanup. Example: delete_backup(backup_id='bkp_old', confirm=true, reason='Exceeded retention policy'). Bulk: delete_backup(older_than_days=90, resource='logs', dry_run=true). Note: Deletion is irreversible. Warning: Ensure compliance with retention requirements before deletion."
+    parameters:
+      - name: backup_id
+        type: string
+        description: "Backup ID to delete"
+        required: false
+      - name: older_than_days
+        type: integer
+        description: "Delete backups older than N days"
+        required: false
+      - name: resource
+        type: string
+        description: "Filter by resource for bulk delete"
+        required: false
+      - name: dry_run
+        type: boolean
+        description: "Preview deletion without executing"
+        required: false
+        default: false
+      - name: confirm
+        type: boolean
+        description: "Confirm deletion"
+        required: true
+    tags: ["backup", "delete", "cleanup", "storage", "remove"]
+    test_prompts:
+      single:
+        - "Delete old backup"
+        - "Remove backup files"
+        - "Clean up expired backups"
+        - "Delete backup to free space"
+      single_clear:
+        - "I need to delete a backup. Delete old backup"
+        - "I need to delete a backup. Remove backup files"
+        - "I need to delete a backup. Clean up expired backups"
+        - "I need to delete a backup. Delete backup to free space"
+
+  - name: schedule_backup
+    descriptions:
+      minimal: "Schedule backup"
+      short: "Schedule automatic backup"
+      medium: "Set up scheduled automatic backups."
+      long: "Create backup schedule. Example: schedule_backup(source='/data', schedule='0 2 * * *', retention_days=30)."
+      verbose: "Automated backup scheduling. Features: cron expressions, retention policies, notification settings, pre/post scripts. Example: schedule_backup(name='nightly-db-backup', source='database://prod', destination='s3://backups/db', schedule='0 2 * * *', type='incremental', full_backup_day='sunday', retention_days=30, notify_email='ops@company.com', pre_script='pg_dump_prep.sh'). Note: Use full backups periodically with incrementals. Warning: Verify schedule doesn't conflict with peak usage."
+    parameters:
+      - name: name
+        type: string
+        description: "Schedule name"
+        required: true
+      - name: source
+        type: string
+        description: "Backup source"
+        required: true
+      - name: destination
+        type: string
+        description: "Backup destination"
+        required: true
+      - name: schedule
+        type: string
+        description: "Cron expression"
+        required: true
+      - name: type
+        type: string
+        description: "Backup type"
+        required: false
+        default: "incremental"
+      - name: retention_days
+        type: integer
+        description: "Days to retain backups"
+        required: false
+        default: 30
+      - name: notify_email
+        type: string
+        description: "Notification email"
+        required: false
+    tags: ["backup", "schedule", "automate", "cron", "recurring"]
+    test_prompts:
+      single:
+        - "Schedule automatic backup"
+        - "Set up nightly backups"
+        - "Create backup schedule"
+        - "Automate database backup"
+      single_clear:
+        - "I need to schedule automatic backups. Schedule automatic backup"
+        - "I need to schedule automatic backups. Set up nightly backups"
+        - "I need to schedule automatic backups. Create backup schedule"
+        - "I need to schedule automatic backups. Automate database backup"
+
+  - name: replicate_backup
+    descriptions:
+      minimal: "Replicate backup"
+      short: "Replicate backup to another location"
+      medium: "Replicate backups to a secondary location for disaster recovery."
+      long: "Copy backups to secondary site. Example: replicate_backup(backup_id='bkp_123', destination='s3://dr-backup-region2')."
+      verbose: "Backup replication for disaster recovery. Options: single backup, continuous replication, cross-region, cross-cloud. Example: replicate_backup(source_location='s3://backups-us-east', destination='s3://backups-eu-west', continuous=true, bandwidth_limit_mbps=100, verify_after_copy=true). Features: encryption in transit, bandwidth throttling, verification. Note: Cross-region transfer incurs costs. Warning: Ensure destination region meets compliance requirements."
+    parameters:
+      - name: backup_id
+        type: string
+        description: "Specific backup to replicate"
+        required: false
+      - name: source_location
+        type: string
+        description: "Source backup location"
+        required: false
+      - name: destination
+        type: string
+        description: "Replication destination"
+        required: true
+      - name: continuous
+        type: boolean
+        description: "Enable continuous replication"
+        required: false
+        default: false
+      - name: bandwidth_limit_mbps
+        type: integer
+        description: "Bandwidth limit (Mbps)"
+        required: false
+      - name: verify_after_copy
+        type: boolean
+        description: "Verify after replication"
+        required: false
+        default: true
+    tags: ["backup", "replicate", "disaster-recovery", "copy", "sync"]
+    test_prompts:
+      single:
+        - "Replicate backup to DR site"
+        - "Copy backup to another region"
+        - "Sync backups across locations"
+        - "Set up backup replication"
+      single_clear:
+        - "I need to replicate a backup to another location. Replicate backup to DR site"
+        - "I need to replicate a backup to another location. Copy backup to another region"
+        - "I need to replicate a backup to another location. Sync backups across locations"
+        - "I need to replicate a backup to another location. Set up backup replication"
+
+  - name: export_backup
+    descriptions:
+      minimal: "Export backup"
+      short: "Export backup to portable format"
+      medium: "Export a backup to a portable format for transfer."
+      long: "Export backup to portable archive. Example: export_backup(backup_id='bkp_123', format='tar.gz', output_path='/exports/backup.tar.gz')."
+      verbose: "Export backups to portable formats. Formats: tar.gz, zip, ISO, raw. Use cases: migration, offline storage, sharing. Example: export_backup(backup_id='bkp_abc', format='tar.gz', output_path='/mnt/external/backup_export.tar.gz', encrypt=true, encryption_key='key_id', split_size_gb=4.7). Features: encryption, splitting for media, checksum files. Note: Large exports take significant time. Warning: Ensure sufficient space at output location."
+    parameters:
+      - name: backup_id
+        type: string
+        description: "Backup to export"
+        required: true
+      - name: format
+        type: string
+        description: "Export format"
+        required: true
+        enum: ["tar.gz", "zip", "iso", "raw"]
+      - name: output_path
+        type: string
+        description: "Output file path"
+        required: true
+      - name: encrypt
+        type: boolean
+        description: "Encrypt export"
+        required: false
+        default: true
+      - name: split_size_gb
+        type: number
+        description: "Split into files of N GB"
+        required: false
+    tags: ["backup", "export", "archive", "portable", "transfer"]
+    test_prompts:
+      single:
+        - "Export backup to file"
+        - "Create portable backup"
+        - "Export for offline storage"
+        - "Archive backup to ISO"
+      single_clear:
+        - "I need to export a backup to a portable format. Export backup to file"
+        - "I need to export a backup to a portable format. Create portable backup"
+        - "I need to export a backup to a portable format. Export for offline storage"
+        - "I need to export a backup to a portable format. Archive backup to ISO"
+
+  - name: backup_database
+    descriptions:
+      minimal: "Backup database"
+      short: "Backup a database"
+      medium: "Create a backup of a database with consistency guarantees."
+      long: "Database-specific backup. Example: backup_database(database='mydb', type='logical', output='s3://backups/mydb.sql')."
+      verbose: "Database backup with ACID consistency. Types: logical (SQL dump), physical (file copy), snapshot. Databases: PostgreSQL, MySQL, MongoDB, Redis. Example: backup_database(database='production_db', host='db.internal', type='logical', output='s3://backups/prod_db.sql.gz', compress=true, include_schemas='[\"public\", \"app\"]', parallel_jobs=4). Note: Logical backups are portable; physical backups are faster. Warning: Large databases may cause temporary performance impact."
+    parameters:
+      - name: database
+        type: string
+        description: "Database name"
+        required: true
+      - name: host
+        type: string
+        description: "Database host"
+        required: false
+        default: "localhost"
+      - name: type
+        type: string
+        description: "Backup type"
+        required: false
+        default: "logical"
+        enum: ["logical", "physical", "snapshot"]
+      - name: output
+        type: string
+        description: "Output path"
+        required: true
+      - name: compress
+        type: boolean
+        description: "Compress backup"
+        required: false
+        default: true
+      - name: include_schemas
+        type: string
+        description: "JSON array of schemas to include"
+        required: false
+    tags: ["backup", "database", "dump", "sql", "snapshot"]
+    test_prompts:
+      single:
+        - "Backup the database"
+        - "Create database dump"
+        - "Backup PostgreSQL database"
+        - "Export database backup"
+      single_clear:
+        - "I need to backup a database. Backup the database"
+        - "I need to backup a database. Create database dump"
+        - "I need to backup a database. Backup PostgreSQL database"
+        - "I need to backup a database. Export database backup"
+
+  - name: create_disaster_recovery_plan
+    descriptions:
+      minimal: "Create DR plan"
+      short: "Create disaster recovery plan"
+      medium: "Create and configure a disaster recovery plan."
+      long: "Define DR plan for critical systems. Example: create_disaster_recovery_plan(name='Production DR', rpo_hours=1, rto_hours=4)."
+      verbose: "Disaster recovery planning and automation. Components: RTO/RPO targets, failover procedures, runbooks, testing schedules. Example: create_disaster_recovery_plan(name='Critical Systems DR', systems='[\"database\", \"api-servers\", \"storage\"]', rpo_hours=1, rto_hours=4, dr_site='us-west-2', failover_type='automated', test_schedule='monthly', notification_list='[\"oncall@company.com\"]'). Features: automated failover, health checks, runbook generation. Note: Regular DR testing is essential. Warning: Untested DR plans often fail."
+    parameters:
+      - name: name
+        type: string
+        description: "DR plan name"
+        required: true
+      - name: systems
+        type: string
+        description: "JSON array of systems covered"
+        required: true
+      - name: rpo_hours
+        type: number
+        description: "Recovery Point Objective (hours)"
+        required: true
+      - name: rto_hours
+        type: number
+        description: "Recovery Time Objective (hours)"
+        required: true
+      - name: dr_site
+        type: string
+        description: "DR site/region"
+        required: true
+      - name: failover_type
+        type: string
+        description: "Failover type"
+        required: false
+        default: "manual"
+        enum: ["manual", "semi-automated", "automated"]
+      - name: test_schedule
+        type: string
+        description: "DR test frequency"
+        required: false
+        default: "quarterly"
+    tags: ["backup", "disaster-recovery", "plan", "failover", "rto"]
+    test_prompts:
+      single:
+        - "Create disaster recovery plan"
+        - "Set up DR configuration"
+        - "Define failover plan"
+        - "Configure RTO and RPO"
+      single_clear:
+        - "I need to create a disaster recovery plan. Create disaster recovery plan"
+        - "I need to create a disaster recovery plan. Set up DR configuration"
+        - "I need to create a disaster recovery plan. Define failover plan"
+        - "I need to create a disaster recovery plan. Configure RTO and RPO"

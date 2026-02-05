@@ -1,0 +1,774 @@
+category: category_36
+tools:
+- name: fixtures_by_date
+  descriptions:
+    minimal: Fetches cricket fixtures for a given date using...
+    short: Fetches cricket fixtures for a given date using the RapidAPI service.
+    medium: Fetches cricket fixtures for a given date using the RapidAPI service.
+    long: Fetches cricket fixtures for a given date using the RapidAPI service.
+    verbose: Fetches cricket fixtures for a given date using the RapidAPI service.
+  parameters:
+  - name: date
+    type: string
+    description: The date for which to fetch cricket fixtures, in the format 'YYYY-MM-DD'.
+    required: true
+    default: '2020-09-21'
+  tags:
+  - fixtures
+  - by
+  - date
+  test_prompts:
+    single:
+    - What are the cricket fixtures scheduled for 2023-09-10?
+    single_clear:
+    - What are the cricket fixtures scheduled for 2023-09-10?
+- name: get_5_year_historical_quarterly_prices
+  descriptions:
+    minimal: Fetches the 5-year historical quarterly stock...
+    short: Fetches the 5-year historical quarterly stock prices for a given ticker.
+    medium: Fetches the 5-year historical quarterly stock prices for a given ticker.
+    long: Fetches the 5-year historical quarterly stock prices for a given ticker.
+    verbose: Fetches the 5-year historical quarterly stock prices for a given ticker.
+  parameters:
+  - name: ticker
+    type: string
+    description: The stock ticker symbol to retrieve historical data for.
+    required: true
+    default: AAPL
+  tags:
+  - get
+  - '5'
+  - year
+  test_prompts:
+    single:
+    - Could you provide the historical quarterly stock prices for Apple Inc. over the past five years?
+    single_clear:
+    - Could you provide the historical quarterly stock prices for Apple Inc. over the past five years?
+- name: team_roster
+  descriptions:
+    minimal: Fetches and returns the roster for a specified...
+    short: Fetches and returns the roster for a specified football team using the RapidAPI service.
+    medium: Fetches and returns the roster for a specified football team using the RapidAPI service.
+    long: Fetches and returns the roster for a specified football team using the RapidAPI service.
+    verbose: Fetches and returns the roster for a specified football team using the RapidAPI service.
+  parameters:
+  - name: team
+    type: string
+    description: The abbreviation of the football team (e.g., BUF, NE, MIA).
+    required: true
+    default: NE
+  tags:
+  - team
+  - roster
+  test_prompts:
+    single:
+    - Fetch the roster for the New England Patriots.
+    single_clear:
+    - Fetch the roster for the New England Patriots.
+- name: season_episodes
+  descriptions:
+    minimal: Fetch episodes for a given season from the...
+    short: Fetch episodes for a given season from the Netflix RapidAPI.
+    medium: Fetch episodes for a given season from the Netflix RapidAPI.
+    long: Fetch episodes for a given season from the Netflix RapidAPI.
+    verbose: Fetch episodes for a given season from the Netflix RapidAPI.
+  parameters:
+  - name: ids
+    type: string
+    description: Season IDs (separated by commas) for which episodes are to be fetched.
+    required: true
+    default: 80077209,80117715
+  - name: lang
+    type: string
+    description: Language code for the episodes. Defaults to 'en'.
+    required: false
+    default: en
+  - name: limit
+    type: integer
+    description: The maximum number of episodes to return. Defaults to 25.
+    required: false
+    default: '25'
+  - name: offset
+    type: integer
+    description: The offset for pagination. Defaults to 0.
+    required: false
+    default: '0'
+  tags:
+  - season
+  - episodes
+  test_prompts:
+    single:
+    - Fetch episodes for season IDs '44455, 66677' in French with a limit of 25.
+    single_clear:
+    - Fetch episodes for season IDs '44455, 66677' in French with a limit of 25.
+- name: trainers_win_rate
+  descriptions:
+    minimal: Fetches trainers' win rate statistics from the...
+    short: Fetches trainers' win rate statistics from the past specified number of days.
+    medium: Fetches trainers' win rate statistics from the past specified number of days.
+    long: Fetches trainers' win rate statistics from the past specified number of days.
+    verbose: Fetches trainers' win rate statistics from the past specified number of days.
+  parameters:
+  - name: last_days
+    type: integer
+    description: The number of past days to consider for the statistics. Defaults to 7 days if not specified.
+    required: true
+    default: '7'
+  tags:
+  - trainers
+  - win
+  - rate
+  test_prompts:
+    single:
+    - What are the trainers' win rates for the last week?
+    single_clear:
+    - What are the trainers' win rates for the last week?
+- name: get_specific_ayah_verse
+  descriptions:
+    minimal: Fetches a specific Ayah (verse) from a given...
+    short: Fetches a specific Ayah (verse) from a given chapter in the Quran, with details in JSON format.
+    medium: Fetches a specific Ayah (verse) from a given chapter in the Quran, with details in JSON format.
+    long: Fetches a specific Ayah (verse) from a given chapter in the Quran, with details in JSON format.
+    verbose: Fetches a specific Ayah (verse) from a given chapter in the Quran, with details in JSON format.
+  parameters:
+  - name: chapterid
+    type: integer
+    description: The chapter (Surah) number to fetch the verse from. Must be between 1 and 114.
+    required: true
+    default: '38'
+  - name: verseid
+    type: integer
+    description: The verse (Ayah) number to fetch within the specified chapter. Must be a valid verse number within the chapter.
+    required: true
+    default: '29'
+  tags:
+  - get
+  - specific
+  - ayah
+  test_prompts:
+    single:
+    - Retrieve the verse 5 from chapter 3 of the Quran.
+    single_clear:
+    - Retrieve the verse 5 from chapter 3 of the Quran.
+- name: get_ip_geolocation
+  descriptions:
+    minimal: Fetches the geolocation information for a given...
+    short: Fetches the geolocation information for a given IP address using the Toolbench RapidAPI service.
+    medium: Fetches the geolocation information for a given IP address using the Toolbench RapidAPI service. If no IP address
+      is specified, it returns the geolocation information for the client's IP address.
+    long: Fetches the geolocation information for a given IP address using the Toolbench RapidAPI service. If no IP address
+      is specified, it returns the geolocation information for the client's IP address.
+    verbose: Fetches the geolocation information for a given IP address using the Toolbench RapidAPI service. If no IP address
+      is specified, it returns the geolocation information for the client's IP address.
+  parameters:
+  - name: ip
+    type: string
+    description: The IP address to get geolocation information for. Defaults to '206.71.50.230'.
+    required: true
+    default: 206.71.50.230
+  tags:
+  - get
+  - ip
+  - geolocation
+  test_prompts:
+    single:
+    - Get geolocation details for IP address 8.8.8.8.
+    single_clear:
+    - Get geolocation details for IP address 8.8.8.8.
+- name: search_places
+  descriptions:
+    minimal: Fetches a list of places (either countries...
+    short: Fetches a list of places (either countries, cities, or administrative divisions) that match a query and can be
+      filtered by various properties.
+    medium: Fetches a list of places (either countries, cities, or administrative divisions) that match a query and can be
+      filtered by various properties.
+    long: Fetches a list of places (either countries, cities, or administrative divisions) that match a query and can be filtered
+      by various properties.
+    verbose: Fetches a list of places (either countries, cities, or administrative divisions) that match a query and can be
+      filtered by various properties.
+  parameters:
+  - name: type
+    type: string
+    description: Filters places by `type`. Specifiable values are 'CITY', 'ADMIN_DIVISION_1', 'ADMIN_DIVISION_2', and 'COUNTRY'.
+      Default is 'CITY'.
+    required: true
+    default: CITY
+  - name: language
+    type: string
+    description: Specifies the language (ISO 639-1) to get the localized name of the place. If translation is unavailable,
+      the "localizedName" property will be null.
+    required: true
+  - name: skip
+    type: integer
+    description: Number of places to ignore before beginning to return results. Used with `limit` to paginate results. Defaults
+      to 0.
+    required: true
+    default: '0'
+  - name: country
+    type: string
+    description: Filters places by their country `id`. Multiple values can be specified, separated by commas (e.g., 'US,CA').
+      Default is 'US,CA'.
+    required: true
+    default: US,CA
+  - name: limit
+    type: integer
+    description: Maximum number of places to return. Used with `skip` to paginate results. Default is 10, maximum is 100.
+    required: true
+    default: '10'
+  - name: admindivision1
+    type: string
+    description: Filters places by their adminDivision1 `id`. Multiple values can be specified, separated by commas (e.g.,
+      'US.CA,US.DE').
+    required: true
+  - name: admindivision2
+    type: string
+    description: Filters places by their adminDivision2 `id`. Multiple values can be specified, separated by commas.
+    required: true
+  - name: accuracyradiuskm
+    type: integer
+    description: Maximum radius (in kilometers) from the point specified by `latitude` and `longitude` to filter places located
+      within the area. Default is 100 km.
+    required: true
+  - name: latitude
+    type: integer
+    description: Latitude coordinate to filter places by location. Ignored if `longitude` is not specified.
+    required: true
+  - name: q
+    type: string
+    description: Query string to find places with a similar name. Default is 'New York'.
+    required: true
+    default: New York
+  - name: longitude
+    type: integer
+    description: Longitude coordinate to filter places by location. Ignored if `latitude` is not specified.
+    required: true
+  tags:
+  - search
+  - places
+  test_prompts:
+    single:
+    - I'm looking for cities near a specific location (latitude 40.7128, longitude -74.0060). Can you find them?
+    single_clear:
+    - I'm looking for cities near a specific location (latitude 40.7128, longitude -74.0060). Can you find them?
+- name: get_countries
+  descriptions:
+    minimal: Fetches a list of countries from the 50k Radio...
+    short: Fetches a list of countries from the 50k Radio Stations API, optionally filtering by a keyword.
+    medium: Fetches a list of countries from the 50k Radio Stations API, optionally filtering by a keyword.
+    long: Fetches a list of countries from the 50k Radio Stations API, optionally filtering by a keyword.
+    verbose: Fetches a list of countries from the 50k Radio Stations API, optionally filtering by a keyword.
+  parameters:
+  - name: keyword
+    type: string
+    description: Optional parameter to filter countries by a specific keyword. Default is 'Indonesia'.
+    required: true
+    default: Indonesia
+  tags:
+  - get
+  - countries
+  test_prompts:
+    single:
+    - Get a list of countries from the 50k Radio Stations API, filtering by the keyword 'Asia'.
+    - Search for countries with the keyword 'united' and return the first 100 results.
+    single_clear:
+    - Get a list of countries from the 50k Radio Stations API, filtering by the keyword 'Asia'.
+    - Search for countries with the keyword 'united' and return the first 100 results.
+- name: get_all_posts
+  descriptions:
+    minimal: Retrieves a paginated list of all posts from the...
+    short: Retrieves a paginated list of all posts from the API.
+    medium: Retrieves a paginated list of all posts from the API.
+    long: Retrieves a paginated list of all posts from the API.
+    verbose: Retrieves a paginated list of all posts from the API.
+  parameters:
+  - name: per_page
+    type: integer
+    description: The number of posts to retrieve per page. Defaults to 10.
+    required: false
+    default: '10'
+  - name: page
+    type: integer
+    description: The number of posts to retrieve per page. Defaults to 10.
+    required: false
+    default: '1'
+  tags:
+  - get
+  - all
+  - posts
+  test_prompts:
+    single:
+    - Fetch all posts from the first page with 20 posts per page.
+    single_clear:
+    - Fetch all posts from the first page with 20 posts per page.
+- name: searchcnit
+  descriptions:
+    minimal: Fetches information related to a French vehicle...
+    short: Fetches information related to a French vehicle identification number (CNIT) using the specified license plate
+      and function.
+    medium: Fetches information related to a French vehicle identification number (CNIT) using the specified license plate
+      and function.
+    long: Fetches information related to a French vehicle identification number (CNIT) using the specified license plate and
+      function.
+    verbose: Fetches information related to a French vehicle identification number (CNIT) using the specified license plate
+      and function.
+  parameters:
+  - name: plate
+    type: string
+    description: The vehicle license plate number to search for. Defaults to '021A13'.
+    required: true
+    default: 021A13
+  - name: function
+    type: string
+    description: The specific API function to call. Defaults to 'getktypefornumplatefrancemineplate'.
+    required: true
+    default: getktypefornumplatefrancemineplate
+  tags:
+  - searchcnit
+  test_prompts:
+    single:
+    - Can you retrieve data for a French vehicle with plate 'ABC123' using the 'getktypefornumplatefrancemineplate' function?
+    single_clear:
+    - Can you retrieve data for a French vehicle with plate 'ABC123' using the 'getktypefornumplatefrancemineplate' function?
+- name: get_profile_info
+  descriptions:
+    minimal: Fetches the profile information from Pinterest...
+    short: Fetches the profile information from Pinterest for a given username using the RapidAPI service.
+    medium: Fetches the profile information from Pinterest for a given username using the RapidAPI service.
+    long: Fetches the profile information from Pinterest for a given username using the RapidAPI service.
+    verbose: Fetches the profile information from Pinterest for a given username using the RapidAPI service.
+  parameters:
+  - name: username
+    type: string
+    description: The Pinterest username for which the profile information is to be retrieved.
+    required: true
+    default: nasa
+  tags:
+  - get
+  - profile
+  - info
+  test_prompts:
+    single:
+    - Retrieve the profile information for the Pinterest user 'creative_ideas'.
+    single_clear:
+    - Retrieve the profile information for the Pinterest user 'creative_ideas'.
+- name: maclookup
+  descriptions:
+    minimal: Looks up the manufacturer information for a given...
+    short: Looks up the manufacturer information for a given MAC address using the Toolbench RapidAPI service.
+    medium: Looks up the manufacturer information for a given MAC address using the Toolbench RapidAPI service.
+    long: Looks up the manufacturer information for a given MAC address using the Toolbench RapidAPI service.
+    verbose: Looks up the manufacturer information for a given MAC address using the Toolbench RapidAPI service.
+  parameters:
+  - name: mac_number
+    type: string
+    description: The MAC address for which to find the manufacturer. Supported formats include 'xx-xx-xx-xx-xx-xx', 'xx:xx:xx:xx:xx:xx',
+      'xxxx.xxxx.xxxx', and 'xxxxxxxxxxxx'.
+    required: true
+    default: 14-AB-C5-D5-DA-F9
+  tags:
+  - maclookup
+  test_prompts:
+    single:
+    - I need to find out the manufacturer of a MAC address '00:14:22:01:23:45'. Can you help with that?
+    single_clear:
+    - I need to find out the manufacturer of a MAC address '00:14:22:01:23:45'. Can you help with that?
+- name: get_regions
+  descriptions:
+    minimal: Retrieves a list of regions based on provided...
+    short: Retrieves a list of regions based on provided search criteria.
+    medium: Retrieves a list of regions based on provided search criteria.
+    long: Retrieves a list of regions based on provided search criteria.
+    verbose: Retrieves a list of regions based on provided search criteria.
+  parameters:
+  - name: keyword
+    type: string
+    description: The keyword to search for regions. Defaults to 'asia'.
+    required: true
+    default: asia
+  - name: perpage
+    type: integer
+    description: The number of regions to return per page. Defaults to 50.
+    required: true
+    default: '50'
+  - name: is_id
+    type: string
+    description: The ID of the region to search for. Defaults to None.
+    required: false
+  - name: page
+    type: integer
+    description: The number of regions to return per page. Defaults to 50.
+    required: true
+    default: '1'
+  tags:
+  - get
+  - regions
+  test_prompts:
+    single:
+    - What are the regions in Asia with an ID of '12345'?
+    single_clear:
+    - What are the regions in Asia with an ID of '12345'?
+- name: webcams_list_category_category_category
+  descriptions:
+    minimal: Fetch a list of webcams based on specified...
+    short: Fetch a list of webcams based on specified categories.
+    medium: Fetch a list of webcams based on specified categories.
+    long: Fetch a list of webcams based on specified categories.
+    verbose: Fetch a list of webcams based on specified categories.
+  parameters:
+  - name: category
+    type: string
+    description: Comma-separated list of category names for which webcams are to be fetched. At least one category is required.
+    required: true
+  - name: lang
+    type: string
+    description: Language code to localize the results, if available. Defaults to 'en'.
+    required: false
+    default: en
+  - name: show
+    type: string
+    description: Specifies the content to be listed in the response. Possible values include 'webcams', 'categories', 'continents',
+      'countries', 'regions', 'properties'. Defaults to 'webcams:image,location'.
+    required: false
+    default: webcams:image,location
+  tags:
+  - webcams
+  - list
+  - category
+  test_prompts:
+    single:
+    - Please find me webcams in 'Skiing' and 'Camping' categories, but in French and with details about the location.
+    single_clear:
+    - Please find me webcams in 'Skiing' and 'Camping' categories, but in French and with details about the location.
+- name: solve_quadratic
+  descriptions:
+    minimal: Computes the roots of a quadratic equation given...
+    short: Computes the roots of a quadratic equation given its coefficients.
+    medium: Computes the roots of a quadratic equation given its coefficients.
+    long: Computes the roots of a quadratic equation given its coefficients.
+    verbose: Computes the roots of a quadratic equation given its coefficients.
+  parameters:
+  - name: a
+    type: number
+    description: The coefficient of the quadratic term (x^2).
+    required: true
+  - name: b
+    type: number
+    description: The coefficient of the linear term (x).
+    required: true
+  - name: c
+    type: number
+    description: The constant term.
+    required: true
+  tags:
+  - solve
+  - quadratic
+  test_prompts:
+    single:
+    - Solve for the roots of the equation x^2 + 5x + 6 = 0.
+    - What are the roots of the equation 3x^2 - 6x + 2 = 0?
+    single_clear:
+    - Solve for the roots of the equation x^2 + 5x + 6 = 0.
+    - What are the roots of the equation 3x^2 - 6x + 2 = 0?
+- name: currency_options
+  descriptions:
+    minimal: Fetches currency options data for a specified...
+    short: Fetches currency options data for a specified stock using the Investing Financial Stocks API.
+    medium: Fetches currency options data for a specified stock using the Investing Financial Stocks API.
+    long: Fetches currency options data for a specified stock using the Investing Financial Stocks API.
+    verbose: Fetches currency options data for a specified stock using the Investing Financial Stocks API.
+  parameters:
+  - name: slug
+    type: string
+    description: The stock identifier slug to specify the stock for which currency options are to be retrieved.
+    required: true
+    default: usd-jpy
+  tags:
+  - currency
+  - options
+  test_prompts:
+    single:
+    - Fetch currency options data for the stock with the slug 'AAPL'.
+    single_clear:
+    - Fetch currency options data for the stock with the slug 'AAPL'.
+- name: bmi
+  descriptions:
+    minimal: Calculates the Body Mass Index (BMI) using given...
+    short: Calculates the Body Mass Index (BMI) using given weight and height, optionally specifying the measurement system.
+    medium: Calculates the Body Mass Index (BMI) using given weight and height, optionally specifying the measurement system.
+    long: Calculates the Body Mass Index (BMI) using given weight and height, optionally specifying the measurement system.
+    verbose: Calculates the Body Mass Index (BMI) using given weight and height, optionally specifying the measurement system.
+  parameters:
+  - name: weight
+    type: integer
+    description: Weight of the individual.
+    required: true
+    default: '86'
+  - name: height
+    type: integer
+    description: Height of the individual.
+    required: true
+    default: '184'
+  - name: system
+    type: string
+    description: Measurement system, either 'metric' (kg/m^2) or 'imperial' (lbs/in^2). Defaults to 'metric'.
+    required: false
+    default: metric
+  tags:
+  - bmi
+  test_prompts:
+    single:
+    - Compute BMI for someone who is 150 lbs and 5 feet 9 inches.
+    single_clear:
+    - Compute BMI for someone who is 150 lbs and 5 feet 9 inches.
+- name: tsv1
+  descriptions:
+    minimal: Fetch metadata attributes for all subsets of a...
+    short: Fetch metadata attributes for all subsets of a given dataset from the ODAM API.
+    medium: Fetch metadata attributes for all subsets of a given dataset from the ODAM API.
+    long: Fetch metadata attributes for all subsets of a given dataset from the ODAM API.
+    verbose: Fetch metadata attributes for all subsets of a given dataset from the ODAM API.
+  parameters:
+  - name: dataset
+    type: string
+    description: The identifier for the dataset whose metadata is to be fetched.
+    required: true
+    default: frim1
+  - name: format
+    type: string
+    description: The desired format of the response (e.g., 'tsv', 'json'). Defaults to 'tsv'.
+    required: false
+    default: tsv
+  tags:
+  - tsv1
+  test_prompts:
+    single:
+    - Fetch metadata for the 'health_data' dataset in JSON format.
+    single_clear:
+    - Fetch metadata for the 'health_data' dataset in JSON format.
+- name: defaultroot
+  descriptions:
+    minimal: Fetches cat facts from the MeowFacts API based on...
+    short: Fetches cat facts from the MeowFacts API based on the provided parameters.
+    medium: Fetches cat facts from the MeowFacts API based on the provided parameters.
+    long: Fetches cat facts from the MeowFacts API based on the provided parameters.
+    verbose: Fetches cat facts from the MeowFacts API based on the provided parameters.
+  parameters:
+  - name: count
+    type: integer
+    description: The number of cat facts to return. If not specified, a default number of facts will be returned.
+    required: false
+  - name: factid
+    type: string
+    description: An optional ID to retrieve a specific cat fact. If not specified, random facts will be returned.
+    required: false
+  - name: lang
+    type: string
+    description: The locale in which to retrieve the cat facts. Defaults to 'eng' (English).
+    required: false
+    default: eng
+  tags:
+  - defaultroot
+  test_prompts:
+    single:
+    - Provide 10 cat facts in English.
+    - Fetch three cat facts in French.
+    single_clear:
+    - Provide 10 cat facts in English.
+    - Fetch three cat facts in French.
+- name: season_wins_leaderboard_mw_2
+  descriptions:
+    minimal: Fetches season wins information for a specified...
+    short: Fetches season wins information for a specified number of players on the MW 2 leaderboard.
+    medium: Fetches season wins information for a specified number of players on the MW 2 leaderboard.
+    long: Fetches season wins information for a specified number of players on the MW 2 leaderboard.
+    verbose: Fetches season wins information for a specified number of players on the MW 2 leaderboard.
+  parameters:
+  - name: limit
+    type: integer
+    description: Number of players to fetch the leaderboard information for, ranging from 1 to 2000.
+    required: true
+    default: '2000'
+  - name: season
+    type: string
+    description: The season for which to fetch the wins information. Defaults to 's1'.
+    required: false
+    default: s1
+  tags:
+  - season
+  - wins
+  - leaderboard
+  test_prompts:
+    single:
+    - Retrieve the leaderboard for the first season of MW 2, showing the top 10 players.
+    single_clear:
+    - Retrieve the leaderboard for the first season of MW 2, showing the top 10 players.
+- name: engines
+  descriptions:
+    minimal: Fetches engine information from a car API based...
+    short: Fetches engine information from a car API based on various query parameters.
+    medium: Fetches engine information from a car API based on various query parameters.
+    long: Fetches engine information from a car API based on various query parameters.
+    verbose: Fetches engine information from a car API based on various query parameters.
+  parameters:
+  - name: year
+    type: string
+    description: The year of the vehicle.
+    required: false
+  - name: direction
+    type: string
+    description: The direction to sort the results by, either 'asc' or 'desc'. Defaults to 'asc'.
+    required: false
+    default: asc
+  - name: valves
+    type: string
+    description: The number of valves in the engine.
+    required: false
+  - name: valve_timing
+    type: string
+    description: The valve timing of the engine.
+    required: false
+  - name: fuel_type
+    type: string
+    description: The fuel type of the vehicle.
+    required: false
+  - name: json
+    type: string
+    description: A JSON string for complex queries.
+    required: false
+  - name: model
+    type: string
+    description: The model of the vehicle.
+    required: false
+  - name: make
+    type: string
+    description: The make of the vehicle.
+    required: false
+  - name: make_model_id
+    type: string
+    description: The ID of the make and model.
+    required: false
+  - name: trim
+    type: string
+    description: The trim level of the vehicle.
+    required: false
+  - name: cam_type
+    type: string
+    description: The cam type of the engine.
+    required: false
+  - name: engine_type
+    type: string
+    description: The type of the engine.
+    required: false
+  - name: make_model_trim_id
+    type: string
+    description: The ID of the make, model, and trim.
+    required: false
+  - name: limit
+    type: integer
+    description: The maximum number of results to return.
+    required: false
+  - name: drive_type
+    type: string
+    description: The drive type of the vehicle.
+    required: false
+  - name: verbose
+    type: string
+    description: Include additional information such as make, model, and trim when 'yes'. Defaults to 'yes'.
+    required: false
+    default: 'yes'
+  - name: make_id
+    type: string
+    description: The ID of the make.
+    required: false
+  - name: cylinders
+    type: string
+    description: The number of cylinders in the engine.
+    required: false
+  - name: page
+    type: integer
+    description: The page number of the results.
+    required: false
+  - name: sort
+    type: string
+    description: The field to sort the results by. Defaults to 'id'.
+    required: false
+    default: id
+  - name: size
+    type: string
+    description: The size of the engine.
+    required: false
+  - name: horsepower_hp
+    type: string
+    description: The horsepower of the engine in HP.
+    required: false
+  - name: transmission
+    type: string
+    description: The type of transmission in the vehicle.
+    required: false
+  tags:
+  - engines
+  test_prompts:
+    single:
+    - Fetch engine details for a 2015 model car with 4 valves.
+    single_clear:
+    - Fetch engine details for a 2015 model car with 4 valves.
+- name: postcodes
+  descriptions:
+    minimal: This function fetches information about a given...
+    short: This function fetches information about a given Japanese postcode using the PostcodeJP API.
+    medium: This function fetches information about a given Japanese postcode using the PostcodeJP API.
+    long: This function fetches information about a given Japanese postcode using the PostcodeJP API.
+    verbose: This function fetches information about a given Japanese postcode using the PostcodeJP API.
+  parameters:
+  - name: postcode
+    type: string
+    description: The postcode for which information is to be fetched.
+    required: true
+    default: '1000001'
+  tags:
+  - postcodes
+  test_prompts:
+    single:
+    - What is the information for the Japanese postcode 100-0005?
+    single_clear:
+    - What is the information for the Japanese postcode 100-0005?
+- name: jokes_random
+  descriptions:
+    minimal: Retrieves a random Chuck Norris joke in JSON...
+    short: Retrieves a random Chuck Norris joke in JSON format from the specified API.
+    medium: Retrieves a random Chuck Norris joke in JSON format from the specified API.
+    long: Retrieves a random Chuck Norris joke in JSON format from the specified API.
+    verbose: Retrieves a random Chuck Norris joke in JSON format from the specified API.
+  parameters:
+  - name: category
+    type: string
+    description: Specifies the category of the random joke. Defaults to None.
+    required: false
+  tags:
+  - jokes
+  - random
+  test_prompts:
+    single:
+    - Fetch a random Chuck Norris joke without specifying a category.
+    single_clear:
+    - Fetch a random Chuck Norris joke without specifying a category.
+- name: genderize
+  descriptions:
+    minimal: Predict the gender of a person based on their...
+    short: Predict the gender of a person based on their name using the Genderize API.
+    medium: Predict the gender of a person based on their name using the Genderize API.
+    long: Predict the gender of a person based on their name using the Genderize API.
+    verbose: Predict the gender of a person based on their name using the Genderize API.
+  parameters:
+  - name: name
+    type: string
+    description: The name of the person whose gender is to be predicted.
+    required: true
+    default: amir
+  tags:
+  - genderize
+  test_prompts:
+    single:
+    - What is the predicted gender of a person named 'Taylor'?
+    single_clear:
+    - What is the predicted gender of a person named 'Taylor'?

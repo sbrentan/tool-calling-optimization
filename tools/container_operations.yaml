@@ -1,0 +1,448 @@
+category: container_operations
+description: Container and Kubernetes orchestration operations
+tools:
+  - name: create_container
+    descriptions:
+      minimal: "Create container"
+      short: "Create a container"
+      medium: "Create and start a new container from an image."
+      long: "Create container from image. Example: create_container(image='nginx:latest', name='web-server', ports='80:80')."
+      verbose: "Container creation with full configuration. Options: port mapping, volumes, environment, networks, resource limits. Example: create_container(image='node:18', name='api-server', ports='3000:3000', environment='{\"NODE_ENV\": \"production\"}', volumes='[\"/data:/app/data\"]', memory='512m', cpus='0.5', network='app-network', restart='always'). Note: Pull image first if not cached. Warning: Privileged containers have security implications."
+    parameters:
+      - name: image
+        type: string
+        description: "Container image"
+        required: true
+      - name: name
+        type: string
+        description: "Container name"
+        required: true
+      - name: ports
+        type: string
+        description: "Port mappings (host:container)"
+        required: false
+      - name: environment
+        type: string
+        description: "Environment variables (JSON)"
+        required: false
+      - name: volumes
+        type: string
+        description: "JSON array of volume mounts"
+        required: false
+      - name: memory
+        type: string
+        description: "Memory limit (e.g., 512m)"
+        required: false
+      - name: cpus
+        type: string
+        description: "CPU limit"
+        required: false
+      - name: restart
+        type: string
+        description: "Restart policy"
+        required: false
+        default: "no"
+        enum: ["no", "always", "on-failure", "unless-stopped"]
+    tags: ["container", "docker", "create", "run", "start"]
+    test_prompts:
+      single:
+        - "Create a container"
+        - "Run Docker container"
+        - "Start container from image"
+        - "Spin up a container"
+      single_clear:
+        - "I need to create a new Docker container. Create a container"
+        - "I need to create a new Docker container. Run Docker container"
+        - "I need to create a new Docker container. Start container from image"
+        - "I need to create a new Docker container. Spin up a container"
+
+  - name: stop_container
+    descriptions:
+      minimal: "Stop container"
+      short: "Stop a running container"
+      medium: "Stop a running container gracefully or forcefully."
+      long: "Stop container with timeout. Example: stop_container(container='web-server', timeout=30)."
+      verbose: "Container stopping with graceful shutdown. Options: timeout for graceful stop, force kill. Example: stop_container(container='api-server', timeout=30, remove=false). Graceful stop sends SIGTERM, then SIGKILL after timeout. Note: Stateful containers should handle SIGTERM. Warning: Force stop may cause data loss."
+    parameters:
+      - name: container
+        type: string
+        description: "Container name or ID"
+        required: true
+      - name: timeout
+        type: integer
+        description: "Graceful stop timeout (seconds)"
+        required: false
+        default: 10
+      - name: force
+        type: boolean
+        description: "Force kill immediately"
+        required: false
+        default: false
+      - name: remove
+        type: boolean
+        description: "Remove after stop"
+        required: false
+        default: false
+    tags: ["container", "stop", "kill", "shutdown", "docker"]
+    test_prompts:
+      single:
+        - "Stop the container"
+        - "Kill Docker container"
+        - "Shutdown container"
+        - "Stop running container"
+      single_clear:
+        - "Please stop a running container. Stop the container"
+        - "Please stop a running container. Kill Docker container"
+        - "Please stop a running container. Shutdown container"
+        - "Please stop a running container. Stop running container"
+
+  - name: list_containers
+    descriptions:
+      minimal: "List containers"
+      short: "List containers"
+      medium: "List running or all containers with status."
+      long: "List containers with filters. Example: list_containers(all=true, filter='{\"status\": \"exited\"}')."
+      verbose: "Container listing with rich filtering. Filters: status, name, label, network, ancestor image. Example: list_containers(all=true, filter='{\"label\": \"app=api\", \"status\": \"running\"}', format='table'). Returns: container ID, name, image, status, ports, created. Note: Use --all to include stopped containers. Warning: Large container lists may be slow."
+    parameters:
+      - name: all
+        type: boolean
+        description: "Include stopped containers"
+        required: false
+        default: false
+      - name: filter
+        type: string
+        description: "JSON filter conditions"
+        required: false
+      - name: limit
+        type: integer
+        description: "Maximum results"
+        required: false
+      - name: format
+        type: string
+        description: "Output format"
+        required: false
+        default: "json"
+        enum: ["json", "table", "quiet"]
+    tags: ["container", "list", "docker", "ps", "status"]
+    test_prompts:
+      single:
+        - "List all containers"
+        - "Show running containers"
+        - "Docker ps"
+        - "Get container list"
+      single_clear:
+        - "I need to list all containers. List all containers"
+        - "I need to list all containers. Show running containers"
+        - "I need to list all containers. Docker ps"
+        - "I need to list all containers. Get container list"
+
+  - name: get_container_logs
+    descriptions:
+      minimal: "Get logs"
+      short: "Get container logs"
+      medium: "Retrieve logs from a container."
+      long: "Get container logs with options. Example: get_container_logs(container='web-server', tail=100, since='1h')."
+      verbose: "Container log retrieval. Options: tail lines, since time, follow, timestamps, stdout/stderr split. Example: get_container_logs(container='api-server', tail=500, since='30m', timestamps=true, follow=false). Streaming: set follow=true for real-time logs. Note: Logs are from container's stdout/stderr. Warning: Very large logs may be truncated."
+    parameters:
+      - name: container
+        type: string
+        description: "Container name or ID"
+        required: true
+      - name: tail
+        type: integer
+        description: "Number of lines from end"
+        required: false
+        default: 100
+      - name: since
+        type: string
+        description: "Logs since (e.g., 1h, 30m)"
+        required: false
+      - name: timestamps
+        type: boolean
+        description: "Include timestamps"
+        required: false
+        default: false
+      - name: follow
+        type: boolean
+        description: "Stream logs"
+        required: false
+        default: false
+    tags: ["container", "logs", "docker", "output", "debug"]
+    test_prompts:
+      single:
+        - "Get container logs"
+        - "Show Docker logs"
+        - "View container output"
+        - "Tail container logs"
+      single_clear:
+        - "I need to retrieve container logs. Get container logs"
+        - "I need to retrieve container logs. Show Docker logs"
+        - "I need to retrieve container logs. View container output"
+        - "I need to retrieve container logs. Tail container logs"
+
+  - name: exec_in_container
+    descriptions:
+      minimal: "Exec command"
+      short: "Execute command in container"
+      medium: "Execute a command inside a running container."
+      long: "Run command in container. Example: exec_in_container(container='web-server', command='ls -la /app')."
+      verbose: "Execute commands inside running containers. Options: interactive, TTY, user, working directory, environment. Example: exec_in_container(container='api-server', command='npm run migrate', user='node', workdir='/app', environment='{\"DEBUG\": \"true\"}', interactive=false). Note: Container must be running. Warning: Commands run with container's privileges."
+    parameters:
+      - name: container
+        type: string
+        description: "Container name or ID"
+        required: true
+      - name: command
+        type: string
+        description: "Command to execute"
+        required: true
+      - name: user
+        type: string
+        description: "User to run as"
+        required: false
+      - name: workdir
+        type: string
+        description: "Working directory"
+        required: false
+      - name: environment
+        type: string
+        description: "Extra environment vars (JSON)"
+        required: false
+      - name: interactive
+        type: boolean
+        description: "Interactive mode"
+        required: false
+        default: false
+    tags: ["container", "exec", "command", "shell", "docker"]
+    test_prompts:
+      single:
+        - "Run command in container"
+        - "Execute in Docker"
+        - "Shell into container"
+        - "Exec command inside container"
+      single_clear:
+        - "I need to execute a command inside a container. Run command in container"
+        - "I need to execute a command inside a container. Execute in Docker"
+        - "I need to execute a command inside a container. Shell into container"
+        - "I need to execute a command inside a container. Exec command inside container"
+
+  - name: build_image
+    descriptions:
+      minimal: "Build image"
+      short: "Build container image"
+      medium: "Build a container image from a Dockerfile."
+      long: "Build image from Dockerfile. Example: build_image(context='.', dockerfile='Dockerfile', tag='myapp:v1')."
+      verbose: "Container image building. Options: build args, target stage, cache control, platform. Example: build_image(context='./app', dockerfile='Dockerfile.prod', tag='myapp:v1.2.3', build_args='{\"NODE_VERSION\": \"18\"}', target='production', no_cache=false, platform='linux/amd64'). Multi-stage builds supported. Note: Large contexts slow down builds. Warning: Build secrets should use --secret, not ARG."
+    parameters:
+      - name: context
+        type: string
+        description: "Build context path"
+        required: true
+      - name: dockerfile
+        type: string
+        description: "Dockerfile path"
+        required: false
+        default: "Dockerfile"
+      - name: tag
+        type: string
+        description: "Image tag"
+        required: true
+      - name: build_args
+        type: string
+        description: "Build arguments (JSON)"
+        required: false
+      - name: target
+        type: string
+        description: "Target build stage"
+        required: false
+      - name: no_cache
+        type: boolean
+        description: "Disable layer cache"
+        required: false
+        default: false
+      - name: platform
+        type: string
+        description: "Target platform"
+        required: false
+    tags: ["container", "build", "image", "dockerfile", "docker"]
+    test_prompts:
+      single:
+        - "Build Docker image"
+        - "Build container image"
+        - "Docker build"
+        - "Create image from Dockerfile"
+      single_clear:
+        - "I need to build a Docker image. Build Docker image"
+        - "I need to build a Docker image. Build container image"
+        - "I need to build a Docker image. Docker build"
+        - "I need to build a Docker image. Create image from Dockerfile"
+
+  - name: push_image
+    descriptions:
+      minimal: "Push image"
+      short: "Push image to registry"
+      medium: "Push a container image to a registry."
+      long: "Push image to container registry. Example: push_image(image='myapp:v1', registry='docker.io/myuser')."
+      verbose: "Push images to container registries. Registries: Docker Hub, ECR, GCR, ACR, private. Example: push_image(image='myapp:v1.2.3', registry='123456789.dkr.ecr.us-east-1.amazonaws.com', all_tags=false). Authentication handled via docker login or credential helpers. Note: Ensure registry authentication is configured. Warning: Public pushes expose images to everyone."
+    parameters:
+      - name: image
+        type: string
+        description: "Image name and tag"
+        required: true
+      - name: registry
+        type: string
+        description: "Target registry"
+        required: true
+      - name: all_tags
+        type: boolean
+        description: "Push all tags"
+        required: false
+        default: false
+    tags: ["container", "push", "image", "registry", "publish"]
+    test_prompts:
+      single:
+        - "Push Docker image"
+        - "Push to registry"
+        - "Upload container image"
+        - "Publish image to ECR"
+      single_clear:
+        - "I need to push an image to a registry. Push Docker image"
+        - "I need to push an image to a registry. Push to registry"
+        - "I need to push an image to a registry. Upload container image"
+        - "I need to push an image to a registry. Publish image to ECR"
+
+  - name: deploy_kubernetes
+    descriptions:
+      minimal: "Deploy K8s"
+      short: "Deploy to Kubernetes"
+      medium: "Deploy application manifests to a Kubernetes cluster."
+      long: "Deploy to Kubernetes cluster. Example: deploy_kubernetes(manifest='deployment.yaml', namespace='production')."
+      verbose: "Kubernetes deployment management. Supports: manifests, Helm charts, kustomize. Example: deploy_kubernetes(manifest='./k8s/', namespace='production', context='prod-cluster', dry_run=false, wait=true, timeout='5m'). Features: rolling updates, rollback, wait for ready. Note: Ensure kubectl context is set correctly. Warning: Production deployments should use CI/CD."
+    parameters:
+      - name: manifest
+        type: string
+        description: "Manifest file or directory"
+        required: true
+      - name: namespace
+        type: string
+        description: "Kubernetes namespace"
+        required: false
+        default: "default"
+      - name: context
+        type: string
+        description: "Kubectl context"
+        required: false
+      - name: dry_run
+        type: boolean
+        description: "Preview without applying"
+        required: false
+        default: false
+      - name: wait
+        type: boolean
+        description: "Wait for rollout"
+        required: false
+        default: true
+      - name: timeout
+        type: string
+        description: "Rollout timeout"
+        required: false
+        default: "5m"
+    tags: ["kubernetes", "deploy", "k8s", "manifest", "apply"]
+    test_prompts:
+      single:
+        - "Deploy to Kubernetes"
+        - "Apply K8s manifest"
+        - "Deploy application"
+        - "Kubernetes deployment"
+      single_clear:
+        - "I need to deploy to a Kubernetes cluster. Deploy to Kubernetes"
+        - "I need to deploy to a Kubernetes cluster. Apply K8s manifest"
+        - "I need to deploy to a Kubernetes cluster. Deploy application"
+        - "I need to deploy to a Kubernetes cluster. Kubernetes deployment"
+
+  - name: scale_deployment
+    descriptions:
+      minimal: "Scale deployment"
+      short: "Scale Kubernetes deployment"
+      medium: "Scale the number of replicas in a Kubernetes deployment."
+      long: "Scale deployment replicas. Example: scale_deployment(deployment='api-server', replicas=5, namespace='production')."
+      verbose: "Kubernetes horizontal scaling. Options: absolute replica count, percentage scaling. Example: scale_deployment(deployment='web-frontend', replicas=10, namespace='production', context='prod-cluster', wait=true). For autoscaling, configure HPA separately. Note: Scaling down may terminate pods. Warning: Ensure cluster has capacity for scale-up."
+    parameters:
+      - name: deployment
+        type: string
+        description: "Deployment name"
+        required: true
+      - name: replicas
+        type: integer
+        description: "Target replica count"
+        required: true
+      - name: namespace
+        type: string
+        description: "Kubernetes namespace"
+        required: false
+        default: "default"
+      - name: context
+        type: string
+        description: "Kubectl context"
+        required: false
+      - name: wait
+        type: boolean
+        description: "Wait for scaling to complete"
+        required: false
+        default: true
+    tags: ["kubernetes", "scale", "replicas", "deployment", "k8s"]
+    test_prompts:
+      single:
+        - "Scale deployment"
+        - "Scale to 5 replicas"
+        - "Increase pod count"
+        - "Scale Kubernetes deployment"
+      single_clear:
+        - "I need to scale a Kubernetes deployment. Scale deployment"
+        - "I need to scale a Kubernetes deployment. Scale to 5 replicas"
+        - "I need to scale a Kubernetes deployment. Increase pod count"
+        - "I need to scale a Kubernetes deployment. Scale Kubernetes deployment"
+
+  - name: get_pod_status
+    descriptions:
+      minimal: "Pod status"
+      short: "Get Kubernetes pod status"
+      medium: "Get status and details of Kubernetes pods."
+      long: "Get pod information. Example: get_pod_status(selector='app=api', namespace='production')."
+      verbose: "Kubernetes pod status and diagnostics. Information: status, conditions, events, resource usage. Example: get_pod_status(selector='app=api-server', namespace='production', include_events=true, include_logs=false). Returns: pod list with status, restarts, age, node. Note: Use selectors for filtering pods. Warning: Many pods may slow response."
+    parameters:
+      - name: selector
+        type: string
+        description: "Label selector"
+        required: false
+      - name: pod_name
+        type: string
+        description: "Specific pod name"
+        required: false
+      - name: namespace
+        type: string
+        description: "Kubernetes namespace"
+        required: false
+        default: "default"
+      - name: include_events
+        type: boolean
+        description: "Include pod events"
+        required: false
+        default: true
+      - name: include_logs
+        type: boolean
+        description: "Include recent logs"
+        required: false
+        default: false
+    tags: ["kubernetes", "pod", "status", "k8s", "health"]
+    test_prompts:
+      single:
+        - "Get pod status"
+        - "Check Kubernetes pods"
+        - "Show pod details"
+        - "K8s pod health"
+      single_clear:
+        - "I need to check the status of Kubernetes pods. Get pod status"
+        - "I need to check the status of Kubernetes pods. Check Kubernetes pods"
+        - "I need to check the status of Kubernetes pods. Show pod details"
+        - "I need to check the status of Kubernetes pods. K8s pod health"

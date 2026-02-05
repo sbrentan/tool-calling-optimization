@@ -1,0 +1,768 @@
+category: category_13
+tools:
+- name: get_ip_data
+  descriptions:
+    minimal: Fetch location-related data for a given IP...
+    short: Fetch location-related data for a given IP address using the APIIP.
+    medium: Fetch location-related data for a given IP address using the APIIP.net service.
+    long: Fetch location-related data for a given IP address using the APIIP.net service.
+    verbose: Fetch location-related data for a given IP address using the APIIP.net service.
+  parameters:
+  - name: callback
+    type: string
+    description: JSONP callback function name as per the APIIP.net documentation. Default is 'FUNCTION_NAME'.
+    required: true
+    default: FUNCTION_NAME
+  - name: ip
+    type: string
+    description: 'IPv4 or IPv6 address, or a comma-separated list of such addresses (limit: 50). Default is ''67.250.186.196''.'
+    required: true
+    default: 67.250.186.196
+  - name: language
+    type: string
+    description: 2-letter language code to customize the response language. Default is 'es'.
+    required: true
+    default: es
+  - name: fields
+    type: string
+    description: Comma-separated list of response fields to retrieve specific data according to the APIIP.net documentation.
+      Default is 'city,capital'.
+    required: true
+    default: city,capital
+  - name: output
+    type: string
+    description: Format of the API response, either 'json' or 'xml'. Default is 'xml'.
+    required: true
+    default: xml
+  tags:
+  - get
+  - ip
+  - data
+  test_prompts:
+    single:
+    - What is the location data for IP '8.8.8.8'?
+    single_clear:
+    - What is the location data for IP '8.8.8.8'?
+- name: emoji
+  descriptions:
+    minimal: Fetches the emoji associated with a given name...
+    short: Fetches the emoji associated with a given name using the Emoji API.
+    medium: Fetches the emoji associated with a given name using the Emoji API.
+    long: Fetches the emoji associated with a given name using the Emoji API.
+    verbose: Fetches the emoji associated with a given name using the Emoji API.
+  parameters:
+  - name: name
+    type: string
+    description: The name for which the emoji is to be fetched.
+    required: true
+    default: cat_face
+  tags:
+  - emoji
+  test_prompts:
+    single:
+    - Fetch the emoji for the name 'smile'
+    single_clear:
+    - Fetch the emoji for the name 'smile'
+- name: get_holidays_by_year
+  descriptions:
+    minimal: Retrieves the list of public holidays for a given...
+    short: Retrieves the list of public holidays for a given year and country using the Nager.
+    medium: Retrieves the list of public holidays for a given year and country using the Nager.Date API.
+    long: Retrieves the list of public holidays for a given year and country using the Nager.Date API.
+    verbose: Retrieves the list of public holidays for a given year and country using the Nager.Date API.
+  parameters:
+  - name: year
+    type: integer
+    description: The year for which to retrieve the holidays.
+    required: true
+  - name: country_code
+    type: string
+    description: The two-letter ISO 3166-1 alpha-2 country code.
+    required: true
+  tags:
+  - get
+  - holidays
+  - by
+  test_prompts:
+    single:
+    - A company is planning a marketing campaign around public holidays in the USA for the year 2023. What are the public
+      holidays in the USA in 2023?
+    - Can you find out the public holidays in France for the year 2023?
+    - Retrieve the public holidays in the UK for the year 2023.
+    single_clear:
+    - A company is planning a marketing campaign around public holidays in the USA for the year 2023. What are the public
+      holidays in the USA in 2023?
+    - Can you find out the public holidays in France for the year 2023?
+    - Retrieve the public holidays in the UK for the year 2023.
+- name: local_weather_api
+  descriptions:
+    minimal: Fetches local weather data using the World...
+    short: Fetches local weather data using the World Weather Online API.
+    medium: Fetches local weather data using the World Weather Online API.
+    long: Fetches local weather data using the World Weather Online API.
+    verbose: Fetches local weather data using the World Weather Online API.
+  parameters:
+  - name: q
+    type: string
+    description: Location query (city name, town name, or geographic coordinates).
+    required: true
+    default: 40.73,-73
+  - name: tp
+    type: string
+    description: Time interval between weather updates (e.g., '1' for hourly updates). Defaults to None.
+    required: false
+  - name: aqi
+    type: string
+    description: Whether to include Air Quality Index data ('yes' or 'no'). Defaults to 'yes'.
+    required: false
+    default: 'yes'
+  - name: format
+    type: string
+    description: Response format (e.g., 'json' or 'xml'). Defaults to None.
+    required: false
+  - name: lang
+    type: string
+    description: Language for the output. Defaults to 'en'.
+    required: false
+    default: en
+  - name: alerts
+    type: string
+    description: Whether to include weather alerts ('yes' or 'no'). Defaults to 'no'.
+    required: false
+    default: 'no'
+  - name: num_of_days
+    type: integer
+    description: Number of days for the weather forecast. Defaults to 3.
+    required: false
+    default: '3'
+  tags:
+  - local
+  - weather
+  - api
+  test_prompts:
+    single:
+    - What are the hourly weather updates for Los Angeles today, and are there any weather alerts?
+    - Retrieve the current weather and any alerts for London, UK, in French.
+    - Can you fetch the weather forecast for the next 7 days for Sydney, without air quality data or alerts, in English?
+    - What are the weather conditions and a 4-day forecast for Los Angeles, without air quality data, in Spanish?
+    - I need the weather forecast for the next 4 days in London, UK, in English, including any weather alerts.
+    - What is the weather like in Tokyo, Japan for the next 24 hours, updated hourly?
+    single_clear:
+    - What are the hourly weather updates for Los Angeles today, and are there any weather alerts?
+    - Retrieve the current weather and any alerts for London, UK, in French.
+    - Can you fetch the weather forecast for the next 7 days for Sydney, without air quality data or alerts, in English?
+    - What are the weather conditions and a 4-day forecast for Los Angeles, without air quality data, in Spanish?
+    - I need the weather forecast for the next 4 days in London, UK, in English, including any weather alerts.
+    - What is the weather like in Tokyo, Japan for the next 24 hours, updated hourly?
+- name: get_call
+  descriptions:
+    minimal: Fetches the API result using the given request ID.
+    short: Fetches the API result using the given request ID.
+    medium: Fetches the API result using the given request ID.
+    long: Fetches the API result using the given request ID.
+    verbose: Fetches the API result using the given request ID.
+  parameters:
+  - name: request_id
+    type: string
+    description: The unique identifier for the API request.
+    required: true
+    default: 76d1c748-51ed-435b-bcd8-3d9c9d3eb68a
+  tags:
+  - get
+  - call
+  test_prompts:
+    single:
+    - Get the outcome of the API request with ID 'xyz789' from the face comparison service.
+    single_clear:
+    - Get the outcome of the API request with ID 'xyz789' from the face comparison service.
+- name: titles_with_changed_sources
+  descriptions:
+    minimal: Fetches a listing of titles that have changed...
+    short: Fetches a listing of titles that have changed their streaming sources within a specified date range.
+    medium: Fetches a listing of titles that have changed their streaming sources within a specified date range.
+    long: Fetches a listing of titles that have changed their streaming sources within a specified date range.
+    verbose: Fetches a listing of titles that have changed their streaming sources within a specified date range.
+  parameters:
+  - name: start_date
+    type: integer
+    description: Start date to include changes from a specific date range. Format is YYYYMMDD (e.g., 20210101 for January
+      1st, 2021), or YYYYMMDDHHMMSS for more granular results (e.g., 20210101123459 for January 1st, 2021 12:24pm and 59 seconds).
+      Hours are in 24-hour format and in Eastern Standard Time. Defaults to None.
+    required: false
+  - name: limit
+    type: integer
+    description: Number of titles to return per page. Default is 50, maximum is 250.
+    required: false
+    default: '50'
+  - name: end_date
+    type: integer
+    description: End date to include changes from a specific date range. Format is YYYYMMDD (e.g., 20210101 for January 1st,
+      2021), or YYYYMMDDHHMMSS for more granular results (e.g., 20210101123459 for January 1st, 2021 12:24pm and 59 seconds).
+      Hours are in 24-hour format and in Eastern Standard Time. Defaults to None.
+    required: false
+  - name: regions
+    type: string
+    description: 2-character region code (e.g., US) for the country to get titles with changed sources from. Defaults to 'US,CA'.
+    required: false
+    default: US,CA
+  - name: types
+    type: string
+    description: 'Filter result to include only certain types of titles. Pass a single type or multiple types comma delimited.
+      Possible values: ''movie'', ''tv_series'', ''tv_special'', ''tv_miniseries'', ''short_film''. Defaults to ''movie,tv_series''.'
+    required: false
+    default: movie,tv_series
+  - name: page
+    type: integer
+    description: Page of results to return. Defaults to 1.
+    required: false
+    default: '1'
+  tags:
+  - titles
+  - with
+  - changed
+  test_prompts:
+    single:
+    - What are the titles that changed their streaming sources in the last week in the US?
+    single_clear:
+    - What are the titles that changed their streaming sources in the last week in the US?
+- name: news_latest_page
+  descriptions:
+    minimal: Fetches the latest news stories in chronological...
+    short: Fetches the latest news stories in chronological order, filtered by the specified page ID.
+    medium: Fetches the latest news stories in chronological order, filtered by the specified page ID.
+    long: Fetches the latest news stories in chronological order, filtered by the specified page ID.
+    verbose: Fetches the latest news stories in chronological order, filtered by the specified page ID.
+  parameters:
+  - name: page_id
+    type: string
+    description: The identifier for the specific news page to filter the stories.
+    required: true
+    default: main
+  tags:
+  - news
+  - latest
+  - page
+  test_prompts:
+    single:
+    - What are the latest business news from page 3?
+    - Retrieve the most recent news stories from the 'Financial Times' page.
+    - What are the latest stories from the health page on Biztoc?
+    single_clear:
+    - What are the latest business news from page 3?
+    - Retrieve the most recent news stories from the 'Financial Times' page.
+    - What are the latest stories from the health page on Biztoc?
+- name: title_details
+  descriptions:
+    minimal: Fetch detailed information about a movie or TV...
+    short: Fetch detailed information about a movie or TV show from the OTT Details API using the IMDb ID.
+    medium: Fetch detailed information about a movie or TV show from the OTT Details API using the IMDb ID.
+    long: Fetch detailed information about a movie or TV show from the OTT Details API using the IMDb ID.
+    verbose: Fetch detailed information about a movie or TV show from the OTT Details API using the IMDb ID.
+  parameters:
+  - name: imdbid
+    type: string
+    description: The IMDb ID of the movie or TV show to fetch details for.
+    required: true
+    default: tt9904802
+  tags:
+  - title
+  - details
+  test_prompts:
+    single:
+    - I need detailed information about the movie with IMDb ID 'tt0123456'.
+    - What are the details of the Netflix titles with IDs '70143830' and '70143860'?
+    single_clear:
+    - I need detailed information about the movie with IMDb ID 'tt0123456'.
+    - What are the details of the Netflix titles with IDs '70143830' and '70143860'?
+- name: batting_average
+  descriptions:
+    minimal: Calculates the batting average of a baseball...
+    short: Calculates the batting average of a baseball player based on the number of hits and at-bats.
+    medium: Calculates the batting average of a baseball player based on the number of hits and at-bats.
+    long: Calculates the batting average of a baseball player based on the number of hits and at-bats.
+    verbose: Calculates the batting average of a baseball player based on the number of hits and at-bats.
+  parameters:
+  - name: num_hits
+    type: integer
+    description: The number of hits.
+    required: true
+    default: 3
+  - name: num_at_bats
+    type: integer
+    description: The number of at-bats.
+    required: true
+    default: 3
+  - name: precision
+    type: integer
+    description: The number of decimal places to round the batting average. Defaults to 3.
+    required: false
+  tags:
+  - batting
+  - average
+  test_prompts:
+    single:
+    - Calculate the batting average of a player with 30 hits and 100 at-bats, rounded to 2 decimal places.
+    - What is the batting average of a player with 45 hits in 150 at-bats, rounded to 1 decimal place?
+    - Calculate the batting average of a player with 100 hits in 300 at-bats, rounded to 4 decimal places.
+    - Compute the batting average of a baseball player who has 45 hits in 150 at-bats, rounded to 3 decimal places.
+    - Determine the batting average of a player with 20 hits in 60 at-bats, with precision to 1 decimal place.
+    - Can you find the batting average for a player with 40 hits and 150 at-bats, rounding to 5 decimal places?
+    single_clear:
+    - Calculate the batting average of a player with 30 hits and 100 at-bats, rounded to 2 decimal places.
+    - What is the batting average of a player with 45 hits in 150 at-bats, rounded to 1 decimal place?
+    - Calculate the batting average of a player with 100 hits in 300 at-bats, rounded to 4 decimal places.
+    - Compute the batting average of a baseball player who has 45 hits in 150 at-bats, rounded to 3 decimal places.
+    - Determine the batting average of a player with 20 hits in 60 at-bats, with precision to 1 decimal place.
+    - Can you find the batting average for a player with 40 hits and 150 at-bats, rounding to 5 decimal places?
+- name: health
+  descriptions:
+    minimal: Fetches health-related news from Google News...
+    short: Fetches health-related news from Google News using the provided language region and API key.
+    medium: Fetches health-related news from Google News using the provided language region and API key.
+    long: Fetches health-related news from Google News using the provided language region and API key.
+    verbose: Fetches health-related news from Google News using the provided language region and API key.
+  parameters:
+  - name: lr
+    type: string
+    description: Language region for the news, e.g., 'en-US'.
+    required: true
+    default: en-US
+  tags:
+  - health
+  test_prompts:
+    single:
+    - Could you retrieve health news for the 'en-GB' region?
+    - Can you fetch the latest health news in English from Google News?
+    - Get health news in German for Germany.
+    - Fetch health news in 'en-US'.
+    single_clear:
+    - Could you retrieve health news for the 'en-GB' region?
+    - Can you fetch the latest health news in English from Google News?
+    - Get health news in German for Germany.
+    - Fetch health news in 'en-US'.
+- name: list_of_room_facility_types
+  descriptions:
+    minimal: Fetches a list of room facility types from the...
+    short: Fetches a list of room facility types from the Booking.
+    medium: Fetches a list of room facility types from the Booking.com API based on given criteria.
+    long: Fetches a list of room facility types from the Booking.com API based on given criteria.
+    verbose: Fetches a list of room facility types from the Booking.com API based on given criteria.
+  parameters:
+  - name: room_facility_type_id
+    type: string
+    description: ID of the specific room facility type to filter.
+    required: false
+  - name: facility_type_id
+    type: string
+    description: ID of the specific room facility type to filter.
+    required: false
+  tags:
+  - list
+  - of
+  - room
+  test_prompts:
+    single:
+    - List all room facility types with ID '101' and '202'.
+    - List all room facility types available on Booking.com without any specific filters.
+    - What are the room facility types available for ID 12345 and facility type ID 67890?
+    single_clear:
+    - List all room facility types with ID '101' and '202'.
+    - List all room facility types available on Booking.com without any specific filters.
+    - What are the room facility types available for ID 12345 and facility type ID 67890?
+- name: team_list
+  descriptions:
+    minimal: Fetches and returns a list of sports teams from...
+    short: Fetches and returns a list of sports teams from the SportScore API.
+    medium: Fetches and returns a list of sports teams from the SportScore API.
+    long: Fetches and returns a list of sports teams from the SportScore API.
+    verbose: Fetches and returns a list of sports teams from the SportScore API.
+  parameters:
+  - name: page
+    type: integer
+    description: Page number for pagination. Defaults to 1.
+    required: false
+    default: '1'
+  tags:
+  - team
+  - list
+  test_prompts:
+    single:
+    - Provide a list of teams from the third page of the SportScore API.
+    - Retrieve a list of sports teams from the SportScore API on page 3.
+    single_clear:
+    - Provide a list of teams from the third page of the SportScore API.
+    - Retrieve a list of sports teams from the SportScore API on page 3.
+- name: last_menstrual_period_lmp
+  descriptions:
+    minimal: Calculates the estimated due date based on the...
+    short: Calculates the estimated due date based on the user's last menstrual period (LMP).
+    medium: Calculates the estimated due date based on the user's last menstrual period (LMP).
+    long: Calculates the estimated due date based on the user's last menstrual period (LMP).
+    verbose: Calculates the estimated due date based on the user's last menstrual period (LMP).
+  parameters:
+  - name: cycle_length
+    type: string
+    description: The average length of the user's menstrual cycle in days.
+    required: true
+    default: '28'
+  - name: last_period_date
+    type: string
+    description: The date of the user's last menstrual period in the format 'YYYY-MM-DD'.
+    required: true
+    default: '2023-01-01'
+  tags:
+  - last
+  - menstrual
+  - period
+  test_prompts:
+    single:
+    - Calculate due date for a 29-day cycle with LMP on 2023-03-10, thanks.
+    - Estimate my due date with a 30-day cycle and LMP on 2023-02-15, please.
+    single_clear:
+    - Calculate due date for a 29-day cycle with LMP on 2023-03-10, thanks.
+    - Estimate my due date with a 30-day cycle and LMP on 2023-02-15, please.
+- name: community_post_details
+  descriptions:
+    minimal: Fetches details of a community post from YouTube...
+    short: Fetches details of a community post from YouTube using RapidAPI.
+    medium: Fetches details of a community post from YouTube using RapidAPI.
+    long: Fetches details of a community post from YouTube using RapidAPI.
+    verbose: Fetches details of a community post from YouTube using RapidAPI.
+  parameters:
+  - name: is_id
+    type: string
+    description: Community post ID. Default is 'UgkxCWeKPiIOLsnh_5a0MPHWCmYgbhifgwIZ'.
+    required: true
+    default: UgkxCWeKPiIOLsnh_5a0MPHWCmYgbhifgwIZ
+  tags:
+  - community
+  - post
+  - details
+  test_prompts:
+    single:
+    - What are the details of the YouTube community post 'UgzyxWeKPiIOLsnh_5a0MPHWCmYgbhifgwIZ'?
+    single_clear:
+    - What are the details of the YouTube community post 'UgzyxWeKPiIOLsnh_5a0MPHWCmYgbhifgwIZ'?
+- name: get_teams_and_players
+  descriptions:
+    minimal: Fetches teams and players information from the...
+    short: Fetches teams and players information from the League of Legends Esports API.
+    medium: Fetches teams and players information from the League of Legends Esports API. This function can filter results
+      based on the team name or team ID.
+    long: Fetches teams and players information from the League of Legends Esports API. This function can filter results based
+      on the team name or team ID.
+    verbose: Fetches teams and players information from the League of Legends Esports API. This function can filter results
+      based on the team name or team ID.
+  parameters:
+  - name: name
+    type: string
+    description: The name of the team to filter by. Defaults to None.
+    required: false
+  - name: is_id
+    type: string
+    description: The ID of the team to filter by. Defaults to 'lng-esports'.
+    required: false
+    default: lng-esports
+  tags:
+  - get
+  - teams
+  - and
+  test_prompts:
+    single:
+    - Could you find the teams and players for 'Fnatic' in League of Legends Esports?
+    - Get information about the team named 'Fnatic' from the League of Legends Esports API.
+    single_clear:
+    - Could you find the teams and players for 'Fnatic' in League of Legends Esports?
+    - Get information about the team named 'Fnatic' from the League of Legends Esports API.
+- name: basic_daily
+  descriptions:
+    minimal: Fetch daily 10-Q and 10-K report zip files from...
+    short: Fetch daily 10-Q and 10-K report zip files from the SEC financial statement dataset.
+    medium: Fetch daily 10-Q and 10-K report zip files from the SEC financial statement dataset.
+    long: Fetch daily 10-Q and 10-K report zip files from the SEC financial statement dataset.
+    verbose: Fetch daily 10-Q and 10-K report zip files from the SEC financial statement dataset.
+  parameters:
+  - name: date
+    type: string
+    description: The specific date for which to fetch the daily zip file, formatted as 'YYYY-MM-DD'.
+    required: true
+    default: '2023-07-07'
+  tags:
+  - basic
+  - daily
+  test_prompts:
+    single:
+    - Retrieve the daily reports for 10-Q and 10-K from the SEC dataset for March 31, 2022.
+    single_clear:
+    - Retrieve the daily reports for 10-Q and 10-K from the SEC dataset for March 31, 2022.
+- name: retrieve_proxy_information
+  descriptions:
+    minimal: Retrieves proxy test result information for a...
+    short: Retrieves proxy test result information for a given user request ID.
+    medium: Retrieves proxy test result information for a given user request ID.
+    long: Retrieves proxy test result information for a given user request ID.
+    verbose: Retrieves proxy test result information for a given user request ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The user request ID received from the response of sending a proxy for checking.
+    required: true
+    default: 6416ab3d3c01efbe45e97675
+  tags:
+  - retrieve
+  - proxy
+  - information
+  test_prompts:
+    single:
+    - Retrieve proxy information for request ID '12345'.
+    - Provide the proxy test details for the request with ID '13579'.
+    - Can you fetch the proxy test outcome for the user request '20486'?
+    - What were the results of the proxy test for the request identified by '98765'?
+    - Retrieve the results of the proxy test for the request identified by '75319'.
+    - What is the status of the proxy test for the request '86420'?
+    single_clear:
+    - Retrieve proxy information for request ID '12345'.
+    - Provide the proxy test details for the request with ID '13579'.
+    - Can you fetch the proxy test outcome for the user request '20486'?
+    - What were the results of the proxy test for the request identified by '98765'?
+    - Retrieve the results of the proxy test for the request identified by '75319'.
+    - What is the status of the proxy test for the request '86420'?
+- name: current_air_quality
+  descriptions:
+    minimal: Fetches the current air quality conditions for a...
+    short: Fetches the current air quality conditions for a given location specified by its longitude and latitude.
+    medium: Fetches the current air quality conditions for a given location specified by its longitude and latitude.
+    long: Fetches the current air quality conditions for a given location specified by its longitude and latitude.
+    verbose: Fetches the current air quality conditions for a given location specified by its longitude and latitude.
+  parameters:
+  - name: lon
+    type: string
+    description: Longitude of the location for which to retrieve air quality data.
+    required: true
+    default: '-73.00597'
+  - name: lat
+    type: string
+    description: Latitude of the location for which to retrieve air quality data.
+    required: true
+    default: '40.71427'
+  tags:
+  - current
+  - air
+  - quality
+  test_prompts:
+    single:
+    - What is the current air quality in New York City?
+    single_clear:
+    - What is the current air quality in New York City?
+- name: channel_playlists
+  descriptions:
+    minimal: Fetches playlists from a specified YouTube...
+    short: Fetches playlists from a specified YouTube channel using the YouTube Data API and various filters.
+    medium: Fetches playlists from a specified YouTube channel using the YouTube Data API and various filters.
+    long: Fetches playlists from a specified YouTube channel using the YouTube Data API and various filters.
+    verbose: Fetches playlists from a specified YouTube channel using the YouTube Data API and various filters.
+  parameters:
+  - name: hl
+    type: string
+    description: Language parameter, specified as a BCP-47 language code. Defaults to 'en'.
+    required: false
+    default: en
+  - name: filter
+    type: string
+    description: 'Filter key or token to specify the type of playlists to return. Defaults to None. Available options:'
+    required: false
+  - name: cursor
+    type: string
+    description: Continuation token for pagination. Defaults to None.
+    required: false
+  - name: is_id
+    type: string
+    description: The YouTube channel ID to fetch playlists for. Defaults to 'UC-lHJZR3Gqxm24_Vd_AJ5Yw'.
+    required: false
+    default: UC-lHJZR3Gqxm24_Vd_AJ5Yw
+  - name: gl
+    type: string
+    description: Geolocation parameter to filter results by region. Defaults to 'US'.
+    required: false
+    default: US
+  tags:
+  - channel
+  - playlists
+  test_prompts:
+    single:
+    - Fetch playlists from the YouTube channel with ID 'UC-lHJZR3Gqxm24_Vd_AJ5Yw' filtered by 'created_playlists_newest' and
+      in French language.
+    single_clear:
+    - Fetch playlists from the YouTube channel with ID 'UC-lHJZR3Gqxm24_Vd_AJ5Yw' filtered by 'created_playlists_newest' and
+      in French language.
+- name: top_players_by_matchmaking
+  descriptions:
+    minimal: Fetch the top players by their matchmaking rank...
+    short: Fetch the top players by their matchmaking rank from the TrackMania API.
+    medium: Fetch the top players by their matchmaking rank from the TrackMania API.
+    long: Fetch the top players by their matchmaking rank from the TrackMania API.
+    verbose: Fetch the top players by their matchmaking rank from the TrackMania API.
+  parameters:
+  - name: limit
+    type: integer
+    description: The number of results to be returned. Default is `50`.
+    required: false
+    default: '50'
+  - name: page
+    type: integer
+    description: The page number for the results, each containing 50 results. Default is `0`.
+    required: false
+    default: '0'
+  tags:
+  - top
+  - players
+  - by
+  test_prompts:
+    single:
+    - I'm looking for the top 75 players ranked by matchmaking, starting from page 3.
+    - I need to see the rankings of the top 50 players in TrackMania. Can you provide that?
+    - I'm interested in the top 20 players only. Can you get their rankings?
+    - List the top 5 players by matchmaking rank in TrackMania starting from page 1.
+    - Fetch the rankings for the next 20 players after the first 30 in matchmaking.
+    single_clear:
+    - I'm looking for the top 75 players ranked by matchmaking, starting from page 3.
+    - I need to see the rankings of the top 50 players in TrackMania. Can you provide that?
+    - I'm interested in the top 20 players only. Can you get their rankings?
+    - List the top 5 players by matchmaking rank in TrackMania starting from page 1.
+    - Fetch the rankings for the next 20 players after the first 30 in matchmaking.
+- name: get_user_info_by_user_id
+  descriptions:
+    minimal: Fetch Instagram user information by user ID using...
+    short: Fetch Instagram user information by user ID using the RapidAPI service.
+    medium: Fetch Instagram user information by user ID using the RapidAPI service.
+    long: Fetch Instagram user information by user ID using the RapidAPI service.
+    verbose: Fetch Instagram user information by user ID using the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The Instagram user ID for which the information is to be fetched.
+    required: true
+    default: '18527'
+  tags:
+  - get
+  - user
+  - info
+  test_prompts:
+    single:
+    - Fetch the profile information for Instagram user with ID 987654321.
+    single_clear:
+    - Fetch the profile information for Instagram user with ID 987654321.
+- name: predict_forest_area
+  descriptions:
+    minimal: Predicts the change in forest area over a...
+    short: Predicts the change in forest area over a specified number of years.
+    medium: Predicts the change in forest area over a specified number of years.
+    long: Predicts the change in forest area over a specified number of years.
+    verbose: Predicts the change in forest area over a specified number of years.
+  parameters:
+  - name: location
+    type: string
+    description: The geographic location for the prediction.
+    required: true
+  - name: num_years
+    type: integer
+    description: The number of years into the future to make the prediction.
+    required: true
+  - name: include_humans
+    type: boolean
+    description: Whether to include the impact of human activities in the prediction. Defaults to False.
+    required: false
+  tags:
+  - predict
+  - forest
+  - area
+  test_prompts:
+    single:
+    - Predict the change in forest area in the Amazon over the next 10 years, considering human impact.
+    - Forecast the forest area change in Siberia for 5 years without considering human activities.
+    single_clear:
+    - Predict the change in forest area in the Amazon over the next 10 years, considering human impact.
+    - Forecast the forest area change in Siberia for 5 years without considering human activities.
+- name: get_video_info
+  descriptions:
+    minimal: Gets video download links and other relevant...
+    short: Gets video download links and other relevant information in JSON format for a given YouTube video ID.
+    medium: Gets video download links and other relevant information in JSON format for a given YouTube video ID.
+    long: Gets video download links and other relevant information in JSON format for a given YouTube video ID.
+    verbose: Gets video download links and other relevant information in JSON format for a given YouTube video ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The YouTube video ID for which to fetch information.
+    required: true
+    default: UxxajLWwzqY
+  - name: geo
+    type: string
+    description: The country code in ISO 3166 format of the end user. Defaults to None.
+    required: false
+  tags:
+  - get
+  - video
+  - info
+  test_prompts:
+    single:
+    - What are the details for the video '123456789' in Germany?
+    single_clear:
+    - What are the details for the video '123456789' in Germany?
+- name: open_high_low_close_ohlc_price
+  descriptions:
+    minimal: Gets the open, high, low, and close prices for a...
+    short: Gets the open, high, low, and close prices for a given symbol and date by querying the API.
+    medium: Gets the open, high, low, and close prices for a given symbol and date by querying the API.
+    long: Gets the open, high, low, and close prices for a given symbol and date by querying the API.
+    verbose: Gets the open, high, low, and close prices for a given symbol and date by querying the API.
+  parameters:
+  - name: symbols
+    type: string
+    description: The three-letter currency code or commodity code for which to get the price data.
+    required: true
+    default: BRENTOIL
+  - name: date
+    type: string
+    description: The date for which to retrieve the price data.
+    required: true
+    default: '2022-01-10'
+  - name: base
+    type: string
+    description: The three-letter currency code or commodity code of the base currency.
+    required: true
+    default: USD
+  tags:
+  - open
+  - high
+  - low
+  test_prompts:
+    single:
+    - What were the OHLC prices for 'BTC' on March 31, 2023, with 'USD' as the base?
+    single_clear:
+    - What were the OHLC prices for 'BTC' on March 31, 2023, with 'USD' as the base?
+- name: verify_plate_number_location
+  descriptions:
+    minimal: Fetches information about the state and LGA...
+    short: Fetches information about the state and LGA (Local Government Area) associated with a given Nigerian plate number
+      code.
+    medium: Fetches information about the state and LGA (Local Government Area) associated with a given Nigerian plate number
+      code.
+    long: Fetches information about the state and LGA (Local Government Area) associated with a given Nigerian plate number
+      code.
+    verbose: Fetches information about the state and LGA (Local Government Area) associated with a given Nigerian plate number
+      code.
+  parameters:
+  - name: platecodeloc
+    type: string
+    description: The first three characters of a Nigerian plate number.
+    required: true
+  tags:
+  - verify
+  - plate
+  - number
+  test_prompts:
+    single:
+    - What is the location of the vehicle with plate number 'ABU' in Nigeria?
+    single_clear:
+    - What is the location of the vehicle with plate number 'ABU' in Nigeria?
