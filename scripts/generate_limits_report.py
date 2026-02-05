@@ -1481,71 +1481,6 @@ def generate_rag_k_tokens_impact(df: pd.DataFrame, output_path: Path):
     logger.info(f"Saved: {output_path}")
 
 
-def generate_rag_retrieval_recall(df: pd.DataFrame, output_path: Path):
-    """
-    Generate chart showing retrieval recall rate for RAG-based methodologies.
-    Retrieval recall measures whether the correct tool was in the retrieved candidate set.
-    """
-    import matplotlib.pyplot as plt
-    setup_matplotlib()
-    
-    # Filter for RAG-based methodologies
-    rag_methods = ["rag", "adaptive_rag", "hybrid"]
-    rag_df = df[df["methodology"].isin(rag_methods) & (df["retrieval_recall_rate"].notna()) & (df["retrieval_recall_rate"] > 0)]
-    
-    if rag_df.empty:
-        logger.warning("No RAG experiments with retrieval recall data found")
-        return
-    
-    fig, ax = plt.subplots(figsize=(12, 7))
-    
-    for methodology in rag_methods:
-        meth_df = rag_df[rag_df["methodology"] == methodology]
-        if meth_df.empty:
-            continue
-        
-        agg = meth_df.groupby("num_tools").agg({
-            "retrieval_recall_rate": ["mean", "std"]
-        }).reset_index()
-        agg.columns = ["num_tools", "recall_mean", "recall_std"]
-        agg = agg.sort_values("num_tools")
-        
-        color = METHODOLOGY_COLORS.get(methodology, "#666666")
-        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
-        
-        ax.plot(agg["num_tools"], agg["recall_mean"] * 100, 
-                marker='o', linewidth=2, markersize=8,
-                color=color, label=label)
-        
-        if agg["recall_std"].notna().any() and (agg["recall_std"] > 0).any():
-            ax.fill_between(
-                agg["num_tools"],
-                (agg["recall_mean"] - agg["recall_std"]) * 100,
-                (agg["recall_mean"] + agg["recall_std"]) * 100,
-                alpha=0.2, color=color
-            )
-    
-    ax.set_xlabel("Number of Tools")
-    ax.set_ylabel("Retrieval Recall (%)")
-    ax.set_title("RAG Methodologies: Retrieval Recall Rate vs. Number of Tools\n(Whether correct tool was in retrieved candidate set)", 
-                 fontsize=14, fontweight='bold')
-    ax.set_ylim(80, 105)
-    ax.legend(loc='lower left', frameon=True)
-    ax.grid(True, alpha=0.3)
-    
-    # Log scale if range is large
-    all_tools = rag_df["num_tools"].unique()
-    if len(all_tools) > 0 and max(all_tools) / min(all_tools) > 5:
-        ax.set_xscale('log')
-        ax.set_xticks(sorted(all_tools))
-        ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
-    
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches='tight')
-    plt.close()
-    logger.info(f"Saved: {output_path}")
-
-
 def generate_rag_recall_vs_accuracy(df: pd.DataFrame, output_path: Path):
     """
     Generate scatter plot comparing retrieval recall to final accuracy for RAG methods.
@@ -1992,9 +1927,10 @@ def generate_doc_length_impact_filtered(df: pd.DataFrame, output_path: Path):
     """
     Generate grouped bar chart showing accuracy by doc_length for each methodology.
     
-    FILTERING: Only uses data where for a given (methodology, num_tools) combination,
-    ALL verbosity levels (minimal, medium, clear, verbose) have data. This ensures
-    fair comparison - each bar represents comparable test conditions.
+    FILTERING: For each methodology, finds a (methodology, num_tools) pair where
+    ALL 3 verbosity levels (minimal, medium, verbose) are present. Different
+    methodologies may use different tool counts - this is the fairest comparison
+    possible given the available data.
     """
     import matplotlib.pyplot as plt
     setup_matplotlib()
@@ -2006,17 +1942,22 @@ def generate_doc_length_impact_filtered(df: pd.DataFrame, output_path: Path):
         logger.warning("Not enough doc_length variation to plot")
         return
     
-    # Find (methodology, num_tools) pairs that have ALL verbosity levels
-    required_verbosities = set(DOC_LENGTH_ORDER)  # {"minimal", "medium", "clear", "verbose"}
+    # Required verbosity levels (3 levels, not 4 - "clear" is not used in experiments)
+    required_verbosities = {"minimal", "medium", "verbose"}
     
-    valid_pairs = []
+    # For each methodology, find a tool count where all 3 verbosity levels are present
+    # Prefer larger tool counts if multiple options exist
+    methodology_best_pair = {}
+    
     for (meth, num_tools), group in df_filtered.groupby(["methodology", "num_tools"]):
         available_verbosities = set(group["doc_length"].unique())
         if required_verbosities.issubset(available_verbosities):
-            valid_pairs.append((meth, num_tools))
+            # This pair has all required verbosity levels
+            if meth not in methodology_best_pair or num_tools > methodology_best_pair[meth][1]:
+                methodology_best_pair[meth] = (meth, num_tools)
     
-    if not valid_pairs:
-        logger.warning("No (methodology, num_tools) pairs have all verbosity levels - cannot create fair comparison")
+    if not methodology_best_pair:
+        logger.warning("No methodology has complete verbosity coverage - cannot create fair comparison")
         # Create placeholder chart
         fig, ax = plt.subplots(figsize=(12, 6))
         ax.text(0.5, 0.5, "No data available with all verbosity levels\nfor fair comparison", 
@@ -2028,12 +1969,18 @@ def generate_doc_length_impact_filtered(df: pd.DataFrame, output_path: Path):
         plt.close()
         return
     
+    valid_pairs = list(methodology_best_pair.values())
+    valid_pairs_set = set(valid_pairs)
+    
     # Filter to only valid pairs
     df_fair = df_filtered[
-        df_filtered.apply(lambda row: (row["methodology"], row["num_tools"]) in valid_pairs, axis=1)
+        df_filtered.apply(lambda row: (row["methodology"], row["num_tools"]) in valid_pairs_set, axis=1)
     ]
     
-    logger.info(f"Doc length chart: using {len(valid_pairs)} valid (methodology, num_tools) pairs: {valid_pairs}")
+    # Also filter to only the 3 required verbosity levels
+    df_fair = df_fair[df_fair["doc_length"].isin(required_verbosities)]
+    
+    logger.info(f"Doc length chart: using {len(valid_pairs)} methodology pairs: {valid_pairs}")
     
     # Pivot for grouped bars
     pivot = df_fair.pivot_table(
@@ -2043,34 +1990,44 @@ def generate_doc_length_impact_filtered(df: pd.DataFrame, output_path: Path):
         aggfunc="mean"
     )
     
-    # Reorder columns
-    doc_order = [d for d in DOC_LENGTH_ORDER if d in pivot.columns]
+    # Reorder columns: minimal, medium, verbose
+    verbosity_order = ["minimal", "medium", "verbose"]
+    doc_order = [d for d in verbosity_order if d in pivot.columns]
     pivot = pivot[doc_order]
+    
+    # Reorder rows by methodology order
+    methodology_order = ["mcp", "clustering", "rag", "adaptive_rag", "hybrid"]
+    pivot = pivot.reindex([m for m in methodology_order if m in pivot.index])
     
     fig, ax = plt.subplots(figsize=(12, 6))
     
     x = np.arange(len(pivot.index))
-    width = 0.2
+    width = 0.25  # Slightly wider bars for 3 groups
+    
+    # Colors for verbosity levels
+    verbosity_colors = {"minimal": "#3498db", "medium": "#2ecc71", "verbose": "#e74c3c"}
     
     for i, doc_len in enumerate(pivot.columns):
         offset = (i - len(pivot.columns)/2 + 0.5) * width
-        bars = ax.bar(x + offset, pivot[doc_len] * 100, width, label=doc_len.capitalize())
+        bars = ax.bar(x + offset, pivot[doc_len] * 100, width, 
+                      label=doc_len.capitalize(), color=verbosity_colors.get(doc_len, None))
+    
+    # Create x-axis labels with tool count info
+    x_labels = []
+    for meth in pivot.index:
+        display_name = METHODOLOGY_DISPLAY_NAMES.get(meth, meth)
+        tool_count = methodology_best_pair[meth][1]
+        x_labels.append(f"{display_name}\n({tool_count} tools)")
     
     ax.set_xticks(x)
-    ax.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in pivot.index], rotation=30, ha='right')
+    ax.set_xticklabels(x_labels, rotation=0, ha='center')
     ax.set_ylabel("Accuracy (%)")
     ax.set_xlabel("Methodology")
-    ax.set_title("Impact of Documentation Length on Accuracy\n(Only tests with all verbosity levels per methodology+tool_count)", 
+    ax.set_title("Impact of Documentation Length on Accuracy\n(Each methodology at tool count with complete verbosity data)", 
                  fontsize=14, fontweight='bold')
     ax.legend(title="Doc Length", loc='upper right', frameon=True)
     ax.set_ylim(0, 110)
-    
-    # Add note about filtering
-    pairs_str = ", ".join([f"{m}@{t}" for m, t in valid_pairs[:3]])
-    if len(valid_pairs) > 3:
-        pairs_str += f" (+{len(valid_pairs)-3} more)"
-    ax.annotate(f"Based on: {pairs_str}", xy=(0.02, 0.02), xycoords='axes fraction',
-                fontsize=8, style='italic', color='gray')
+    ax.grid(True, alpha=0.3, axis='y')
     
     plt.tight_layout()
     plt.savefig(output_path, dpi=150, bbox_inches='tight')
@@ -2400,11 +2357,6 @@ def generate_limits_html_report(
             low retrieval recall indicates the embedding-based retrieval is the bottleneck.</p>
             
             <div class="figure">
-                <img src="limits_figures/14c_rag_retrieval_recall.png" alt="RAG Retrieval Recall">
-                <p class="figure-caption">Retrieval recall rate across RAG-based methodologies. Shows whether correct tool was in retrieved candidate set.</p>
-            </div>
-            
-            <div class="figure">
                 <img src="limits_figures/14d_rag_recall_vs_accuracy.png" alt="Recall vs Accuracy">
                 <p class="figure-caption">Retrieval recall vs final accuracy. Points below the diagonal indicate LLM selection errors from retrieved candidates.</p>
             </div>
@@ -2584,7 +2536,6 @@ def generate_report(
     generate_rag_verbosity_comparison(df, figures_dir / "14_rag_verbosity_comparison.png")
     generate_rag_k_accuracy_impact(df, figures_dir / "14a_rag_k_accuracy_impact.png")
     generate_rag_k_tokens_impact(df, figures_dir / "14b_rag_k_tokens_impact.png")
-    generate_rag_retrieval_recall(df, figures_dir / "14c_rag_retrieval_recall.png")
     generate_rag_recall_vs_accuracy(df, figures_dir / "14d_rag_recall_vs_accuracy.png")
     
     # Section 5: Adaptive RAG
