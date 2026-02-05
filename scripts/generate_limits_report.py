@@ -1848,6 +1848,236 @@ def generate_adaptive_prompt_clarity_comparison(df: pd.DataFrame, output_path: P
     logger.info(f"Saved: {output_path}")
 
 
+def generate_adaptive_k_distribution(df: pd.DataFrame, details_df: pd.DataFrame, output_path: Path):
+    """
+    Generate histogram of adaptive_k_used values for adaptive RAG.
+    Shows distribution of dynamically selected K values and strategy distribution.
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    setup_matplotlib()
+    
+    # Check if adaptive_k_used column exists
+    if "adaptive_k_used" not in details_df.columns:
+        logger.warning("No adaptive_k_used column in details - skipping adaptive K distribution chart")
+        # Create a placeholder figure
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.text(0.5, 0.5, "No adaptive K data available", ha='center', va='center', fontsize=14)
+        ax.set_title("Distribution of Adaptive K Values", fontweight='bold')
+        ax.axis('off')
+        plt.tight_layout()
+        plt.savefig(output_path, dpi=150, bbox_inches='tight')
+        plt.close()
+        return
+    
+    adaptive_details = details_df[
+        (details_df["methodology"] == "adaptive_rag") & 
+        (details_df["adaptive_k_used"].notna()) &
+        (details_df["adaptive_k_used"] > 0)
+    ]
+    
+    if adaptive_details.empty:
+        logger.warning("No adaptive_k_used data available")
+        # Create a placeholder figure
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.text(0.5, 0.5, "No adaptive K data available", ha='center', va='center', fontsize=14)
+        ax.set_title("Distribution of Adaptive K Values", fontweight='bold')
+        ax.axis('off')
+        plt.tight_layout()
+        plt.savefig(output_path, dpi=150, bbox_inches='tight')
+        plt.close()
+        return
+    
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    # Left: Histogram of k values
+    ax1 = axes[0]
+    sns.histplot(adaptive_details["adaptive_k_used"], bins=20, kde=True, 
+                 ax=ax1, color=METHODOLOGY_COLORS["adaptive_rag"])
+    ax1.axvline(adaptive_details["adaptive_k_used"].mean(), color='red', linestyle='--', 
+                label=f'Mean: {adaptive_details["adaptive_k_used"].mean():.1f}')
+    ax1.set_xlabel("Adaptive K Value")
+    ax1.set_ylabel("Count")
+    ax1.set_title("Distribution of Adaptive K Values", fontweight='bold')
+    ax1.legend()
+    
+    # Right: Strategy distribution
+    ax2 = axes[1]
+    if "adaptive_strategy" in adaptive_details.columns and adaptive_details["adaptive_strategy"].notna().any():
+        strategy_counts = adaptive_details["adaptive_strategy"].value_counts()
+        colors = plt.cm.Set2(np.linspace(0, 1, len(strategy_counts)))
+        ax2.pie(strategy_counts.values, labels=strategy_counts.index, autopct='%1.1f%%',
+                colors=colors, startangle=90)
+        ax2.set_title("Adaptive Strategy Distribution", fontweight='bold')
+    else:
+        ax2.text(0.5, 0.5, "No strategy data available", ha='center', va='center', fontsize=12)
+        ax2.set_title("Adaptive Strategy Distribution", fontweight='bold')
+        ax2.axis('off')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_clustering_category_accuracy(df: pd.DataFrame, output_path: Path):
+    """
+    Generate line chart showing clustering methodology category selection accuracy
+    as the number of tools increases.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter to clustering methodology only
+    cluster_df = df[df["methodology"] == "clustering"].copy()
+    
+    if cluster_df.empty:
+        logger.warning("No clustering experiments found")
+        return
+    
+    # Check if we have category_selection_accuracy
+    if "category_selection_accuracy" not in cluster_df.columns or cluster_df["category_selection_accuracy"].isna().all():
+        logger.warning("No category_selection_accuracy data available for clustering")
+        return
+    
+    # Group by num_tools
+    agg = cluster_df.groupby("num_tools").agg({
+        "category_selection_accuracy": ["mean", "std"],
+        "accuracy": ["mean", "std"]
+    }).reset_index()
+    agg.columns = ["num_tools", "cat_acc_mean", "cat_acc_std", "tool_acc_mean", "tool_acc_std"]
+    agg = agg.sort_values("num_tools")
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    # Plot category selection accuracy
+    ax.plot(agg["num_tools"], agg["cat_acc_mean"] * 100, 
+            marker='o', linewidth=2, markersize=8,
+            color=METHODOLOGY_COLORS["clustering"], label="Category Selection Accuracy")
+    
+    # Add error band
+    if agg["cat_acc_std"].notna().any():
+        ax.fill_between(
+            agg["num_tools"],
+            (agg["cat_acc_mean"] - agg["cat_acc_std"]) * 100,
+            (agg["cat_acc_mean"] + agg["cat_acc_std"]) * 100,
+            alpha=0.2, color=METHODOLOGY_COLORS["clustering"]
+        )
+    
+    # Also plot tool accuracy for comparison
+    ax.plot(agg["num_tools"], agg["tool_acc_mean"] * 100, 
+            marker='s', linewidth=2, markersize=8, linestyle='--',
+            color="#999999", label="Final Tool Accuracy")
+    
+    ax.set_xlabel("Number of Tools")
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_title("Clustering: Category Selection Accuracy vs Tool Count", fontsize=14, fontweight='bold')
+    ax.legend(loc='lower left', frameon=True)
+    ax.set_ylim(0, 105)
+    ax.grid(True, alpha=0.3)
+    
+    # Log scale if range is large
+    if len(agg) > 1 and agg["num_tools"].max() / agg["num_tools"].min() > 10:
+        ax.set_xscale('log')
+        ax.xaxis.set_major_formatter(plt.ScalarFormatter())
+        ax.set_xticks(agg["num_tools"].values)
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
+def generate_doc_length_impact_filtered(df: pd.DataFrame, output_path: Path):
+    """
+    Generate grouped bar chart showing accuracy by doc_length for each methodology.
+    
+    FILTERING: Only uses data where for a given (methodology, num_tools) combination,
+    ALL verbosity levels (minimal, medium, clear, verbose) have data. This ensures
+    fair comparison - each bar represents comparable test conditions.
+    """
+    import matplotlib.pyplot as plt
+    setup_matplotlib()
+    
+    # Filter to experiments that have doc_length
+    df_filtered = df[df["doc_length"].notna()].copy()
+    
+    if df_filtered.empty or df_filtered["doc_length"].nunique() < 2:
+        logger.warning("Not enough doc_length variation to plot")
+        return
+    
+    # Find (methodology, num_tools) pairs that have ALL verbosity levels
+    required_verbosities = set(DOC_LENGTH_ORDER)  # {"minimal", "medium", "clear", "verbose"}
+    
+    valid_pairs = []
+    for (meth, num_tools), group in df_filtered.groupby(["methodology", "num_tools"]):
+        available_verbosities = set(group["doc_length"].unique())
+        if required_verbosities.issubset(available_verbosities):
+            valid_pairs.append((meth, num_tools))
+    
+    if not valid_pairs:
+        logger.warning("No (methodology, num_tools) pairs have all verbosity levels - cannot create fair comparison")
+        # Create placeholder chart
+        fig, ax = plt.subplots(figsize=(12, 6))
+        ax.text(0.5, 0.5, "No data available with all verbosity levels\nfor fair comparison", 
+                ha='center', va='center', fontsize=14)
+        ax.set_title("Impact of Documentation Length on Accuracy", fontsize=14, fontweight='bold')
+        ax.axis('off')
+        plt.tight_layout()
+        plt.savefig(output_path, dpi=150, bbox_inches='tight')
+        plt.close()
+        return
+    
+    # Filter to only valid pairs
+    df_fair = df_filtered[
+        df_filtered.apply(lambda row: (row["methodology"], row["num_tools"]) in valid_pairs, axis=1)
+    ]
+    
+    logger.info(f"Doc length chart: using {len(valid_pairs)} valid (methodology, num_tools) pairs: {valid_pairs}")
+    
+    # Pivot for grouped bars
+    pivot = df_fair.pivot_table(
+        values="accuracy",
+        index="methodology",
+        columns="doc_length",
+        aggfunc="mean"
+    )
+    
+    # Reorder columns
+    doc_order = [d for d in DOC_LENGTH_ORDER if d in pivot.columns]
+    pivot = pivot[doc_order]
+    
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    x = np.arange(len(pivot.index))
+    width = 0.2
+    
+    for i, doc_len in enumerate(pivot.columns):
+        offset = (i - len(pivot.columns)/2 + 0.5) * width
+        bars = ax.bar(x + offset, pivot[doc_len] * 100, width, label=doc_len.capitalize())
+    
+    ax.set_xticks(x)
+    ax.set_xticklabels([METHODOLOGY_DISPLAY_NAMES.get(m, m) for m in pivot.index], rotation=30, ha='right')
+    ax.set_ylabel("Accuracy (%)")
+    ax.set_xlabel("Methodology")
+    ax.set_title("Impact of Documentation Length on Accuracy\n(Only tests with all verbosity levels per methodology+tool_count)", 
+                 fontsize=14, fontweight='bold')
+    ax.legend(title="Doc Length", loc='upper right', frameon=True)
+    ax.set_ylim(0, 110)
+    
+    # Add note about filtering
+    pairs_str = ", ".join([f"{m}@{t}" for m, t in valid_pairs[:3]])
+    if len(valid_pairs) > 3:
+        pairs_str += f" (+{len(valid_pairs)-3} more)"
+    ax.annotate(f"Based on: {pairs_str}", xy=(0.02, 0.02), xycoords='axes fraction',
+                fontsize=8, style='italic', color='gray')
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.close()
+    logger.info(f"Saved: {output_path}")
+
+
 # =============================================================================
 # Section 6: Final Summary
 # =============================================================================
@@ -2075,6 +2305,13 @@ def generate_limits_html_report(
                 <img src="limits_figures/07_clustering_latency.png" alt="Clustering Latency">
                 <p class="figure-caption">Latency comparison across methodologies.</p>
             </div>
+            
+            <h3>Category Selection Accuracy vs Tool Count</h3>
+            
+            <div class="figure">
+                <img src="limits_figures/07a_clustering_category_accuracy.png" alt="Clustering Category Accuracy">
+                <p class="figure-caption">Category selection accuracy compared to final tool accuracy as tool count increases.</p>
+            </div>
         </div>
         
         <!-- Section 3: Hybrid -->
@@ -2213,6 +2450,13 @@ def generate_limits_html_report(
                 <img src="limits_figures/18_adaptive_prompt_clarity.png" alt="Adaptive Prompt Clarity">
                 <p class="figure-caption">Impact of prompt clarity on Adaptive RAG accuracy - clear prompts vs concise prompts.</p>
             </div>
+            
+            <h3>Adaptive K Value Distribution</h3>
+            
+            <div class="figure">
+                <img src="limits_figures/18a_adaptive_k_distribution.png" alt="Adaptive K Distribution">
+                <p class="figure-caption">Distribution of dynamically selected K values and strategy distribution. Shows how adaptive RAG adjusts context size based on query clarity.</p>
+            </div>
         </div>
         
         <!-- Section 6: Summary -->
@@ -2228,6 +2472,13 @@ def generate_limits_html_report(
             <div class="figure">
                 <img src="limits_figures/20_accuracy_heatmap.png" alt="Accuracy Heatmap">
                 <p class="figure-caption">Complete accuracy heatmap: methodology × tool count.</p>
+            </div>
+            
+            <h3>Documentation Length Impact</h3>
+            
+            <div class="figure">
+                <img src="limits_figures/21_doc_length_impact.png" alt="Doc Length Impact">
+                <p class="figure-caption">Impact of documentation length on accuracy. Only includes (methodology, tool_count) pairs where all verbosity levels were tested for fair comparison.</p>
             </div>
         </div>
         
@@ -2317,6 +2568,7 @@ def generate_report(
     generate_clustering_category_confusion_matrix(df, details_df, figures_dir / "05_clustering_category_confusion.png")
     generate_clustering_steps_chart(df, figures_dir / "06_clustering_steps.png")
     generate_clustering_latency_comparison(df, figures_dir / "07_clustering_latency.png")
+    generate_clustering_category_accuracy(df, figures_dir / "07a_clustering_category_accuracy.png")
     
     # Section 3: Hybrid Methodology
     logger.info("Generating Section 3: Hybrid Methodology...")
@@ -2341,11 +2593,13 @@ def generate_report(
     generate_adaptive_tokens_vs_tools(df, figures_dir / "15a_adaptive_tokens_vs_tools.png")
     generate_adaptive_vs_rag_tokens(df, figures_dir / "17_adaptive_vs_rag_tokens.png")
     generate_adaptive_prompt_clarity_comparison(df, figures_dir / "18_adaptive_prompt_clarity.png")
+    generate_adaptive_k_distribution(df, details_df, figures_dir / "18a_adaptive_k_distribution.png")
     
     # Section 6: Final Summary
     logger.info("Generating Section 6: Final Summary...")
     generate_latency_distribution_filtered(df, details_df, figures_dir / "19_latency_distribution.png")
     generate_accuracy_heatmap_summary(df, figures_dir / "20_accuracy_heatmap.png")
+    generate_doc_length_impact_filtered(df, figures_dir / "21_doc_length_impact.png")
     
     # Generate HTML report
     generate_limits_html_report(df, details_df, output_dir / "limits_report.html", figures_dir)
