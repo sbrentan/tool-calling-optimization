@@ -1,0 +1,31 @@
+# ============================================================
+# PHASE 2: Clustering - 985 Tools (No Backtrack)
+# ============================================================
+# Purpose: Full scale without recovery - worst case scenario
+# Hypothesis: Significantly worse than with backtracking
+# Rubric: Experiments - backtracking value quantification
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase2_clustering_985tools_nobacktrack
+description: "Clustering with all 985 tools, no backtracking"
+
+# --- Tool Configuration ---
+num_tools: 985
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: clustering
+max_steps: 10
+allow_backtrack: false
+
+# --- Output ---
+output_dir: experiments/full_local/results

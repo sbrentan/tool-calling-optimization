@@ -1,0 +1,19 @@
+# Similar tools test - Clustering with 10 similar tools
+
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+name: similar10_clustering_100tools
+
+num_tools: 100
+doc_length: medium
+prompt_type: concise
+categories: null
+num_similar_tools: 10
+include_no_tool: false
+
+methodology: clustering
+allow_backtrack: true
+
+output_dir: experiments/full_local/results

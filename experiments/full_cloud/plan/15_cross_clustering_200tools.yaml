@@ -1,0 +1,30 @@
+# ============================================================
+# Clustering Baseline at 200 tools
+# ============================================================
+# Purpose: Add clustering to 200 tools comparison
+# Paired with: cross_mcp_200tools, cross_adaptive_200tools, etc.
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: cross_clustering_200tools
+description: "Clustering at 200 tools for cross-methodology comparison"
+
+# --- Tool Configuration ---
+num_tools: 200
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: clustering
+max_steps: 10
+allow_backtrack: true
+
+# --- Output ---
+output_dir: experiments/full_cloud/results

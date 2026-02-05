@@ -1,0 +1,31 @@
+# ============================================================
+# PHASE 2: Clustering - 100 Tools (Backtrack Enabled)
+# ============================================================
+# Purpose: Test clustering at medium scale
+# Hypothesis: More categories increase selection complexity
+# Rubric: Experiments - scaling behavior
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase2_clustering_100tools_backtrack
+description: "Clustering with 100 tools and backtracking enabled"
+
+# --- Tool Configuration ---
+num_tools: 100
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: clustering
+max_steps: 10
+allow_backtrack: true
+
+# --- Output ---
+output_dir: experiments/fair_local/results

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Methodology Limits Analysis Report</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; border-bottom: 3px solid #e74c3c; padding-bottom: 15px; }
+        h2 { color: #555; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-top: 40px; }
+        h3 { color: #666; margin-top: 30px; }
+        .section { margin: 30px 0; padding: 20px; background: #fafafa; border-radius: 8px; border-left: 4px solid #3498db; }
+        .section.mcp { border-left-color: #1f77b4; }
+        .section.clustering { border-left-color: #ff7f0e; }
+        .section.hybrid { border-left-color: #9467bd; }
+        .section.rag { border-left-color: #2ca02c; }
+        .section.adaptive { border-left-color: #d62728; }
+        .section.summary { border-left-color: #2ecc71; }
+        .figure { margin: 20px 0; text-align: center; }
+        .figure img { max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .figure-caption { margin-top: 10px; color: #666; font-style: italic; }
+        .key-points { background: #e8f6ff; padding: 15px; border-radius: 8px; margin: 20px 0; }
+        .key-points ul { margin: 0; padding-left: 20px; }
+        .key-points li { margin: 8px 0; }
+        .limit-badge { display: inline-block; background: #e74c3c; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin: 10px 5px; }
+        .solution-badge { display: inline-block; background: #2ecc71; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin: 10px 5px; }
+        .tradeoff-badge { display: inline-block; background: #f39c12; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin: 10px 5px; }
+        .nav { position: fixed; top: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 200px; }
+        .nav a { display: block; padding: 5px 0; color: #3498db; text-decoration: none; }
+        .nav a:hover { color: #2980b9; }
+        @media (max-width: 1600px) { .nav { display: none; } }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <strong>Navigation</strong>
+        <a href="#section-1">1. MCP Limits</a>
+        <a href="#section-2">2. Clustering</a>
+        <a href="#section-3">3. Hybrid</a>
+        <a href="#section-4">4. RAG</a>
+        <a href="#section-5">5. Adaptive RAG</a>
+        <a href="#section-6">6. Summary</a>
+    </nav>
+    
+    <div class="container">
+        <h1>🔧 Methodology Limits Analysis Report</h1>
+        <p><strong>Generated:</strong> 2026-02-05 21:46:56</p>
+        <p><strong>Experiments analyzed:</strong> 28 experiments across 4 methodologies</p>
+        <p>This report shows where each tool-calling methodology reaches its limits and how subsequent methodologies address those limitations.</p>
+        
+        <!-- Section 1: MCP Limits -->
+        <div id="section-1" class="section mcp">
+            <h2>📊 Section 1: MCP (Baseline) - Scaling Limits</h2>
+            <p>The Model Context Protocol (MCP) approach passes <strong>all available tools</strong> to the LLM in a single call. 
+            While this achieves high accuracy with small tool sets, it fails to scale due to context window limitations.</p>
+            
+            <div class="key-points">
+                <strong>Key Limitations:</strong>
+                <ul>
+                    <li><span class="limit-badge">Context Window</span> Token count grows linearly with tool count</li>
+                    <li><span class="limit-badge">Practical Limit</span> Cannot reliably test with ≥500 tools</li>
+                    <li><span class="limit-badge">Cost</span> High token usage = higher API costs</li>
+                </ul>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/01_mcp_accuracy_vs_tools.png" alt="MCP Accuracy vs Tools">
+                <p class="figure-caption">MCP accuracy degradation as tool count increases. Red markers indicate experiments with high error rates.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/02_mcp_tokens_vs_tools.png" alt="MCP Tokens vs Tools">
+                <p class="figure-caption">Token usage scales linearly with tool count, quickly exceeding context limits.</p>
+            </div>
+        </div>
+        
+        <!-- Section 2: Clustering -->
+        <div id="section-2" class="section clustering">
+            <h2>📊 Section 2: Clustering - Hierarchical Selection</h2>
+            <p>Clustering introduces a <strong>two-step hierarchical approach</strong>: first select a category, then select a tool within that category.
+            This enables scaling to large tool sets but introduces category selection errors.</p>
+            
+            <div class="key-points">
+                <strong>Trade-offs:</strong>
+                <ul>
+                    <li><span class="solution-badge">Scalability</span> Can handle 500+ tools with manageable context</li>
+                    <li><span class="limit-badge">Accuracy Loss</span> Category selection errors cascade to tool selection</li>
+                    <li><span class="tradeoff-badge">Backtracking</span> Allows recovery from wrong category selection at cost of more steps</li>
+                </ul>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/03_clustering_accuracy_vs_tools.png" alt="Clustering Accuracy vs Tools">
+                <p class="figure-caption">Clustering accuracy compared to MCP baseline across tool counts.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/04_clustering_tokens_vs_tools.png" alt="Clustering Tokens vs Tools">
+                <p class="figure-caption">Clustering maintains lower token usage even with large tool sets.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/05_clustering_category_confusion.png" alt="Clustering Category Confusion">
+                <p class="figure-caption">Category confusion matrix showing which categories are mistaken for others.</p>
+            </div>
+            
+            <h3>Category Selection Accuracy vs Tool Count</h3>
+            
+            <div class="figure">
+                <img src="limits_figures/07a_clustering_category_accuracy.png" alt="Clustering Category Accuracy">
+                <p class="figure-caption">Category selection accuracy compared to final tool accuracy as tool count increases.</p>
+            </div>
+        </div>
+        
+        <!-- Section 3: Hybrid -->
+        <div id="section-3" class="section hybrid">
+            <h2>📊 Section 3: Hybrid - RAG-Enhanced Category Selection</h2>
+            <p>The Hybrid methodology uses <strong>RAG to retrieve relevant categories</strong> instead of presenting all categories to the LLM.
+            This improves category selection accuracy while maintaining the ability to scale.</p>
+            
+            <div class="key-points">
+                <strong>Improvements:</strong>
+                <ul>
+                    <li><span class="solution-badge">Better Category Selection</span> RAG filters to most relevant categories</li>
+                    <li><span class="tradeoff-badge">Token Trade-off</span> More tokens than pure clustering, less than MCP</li>
+                    <li><span class="solution-badge">Scales to 500-985 tools</span> Successfully tested at large scale</li>
+                </ul>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/08_hybrid_accuracy_vs_tools.png" alt="Hybrid Accuracy vs Tools">
+                <p class="figure-caption">Hybrid accuracy improvement over clustering.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/09_hybrid_tokens_vs_tools.png" alt="Hybrid Tokens vs Tools">
+                <p class="figure-caption">Hybrid token usage - a middle ground between MCP and clustering.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/10_hybrid_category_confusion.png" alt="Hybrid Category Confusion">
+                <p class="figure-caption">Hybrid category selection confusion matrix - should show better diagonal concentration.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/11_hybrid_category_count.png" alt="Hybrid Category Count Impact">
+                <p class="figure-caption">Impact of top-K categories on hybrid accuracy.</p>
+            </div>
+        </div>
+        
+        <!-- Section 4: RAG -->
+        <div id="section-4" class="section rag">
+            <h2>📊 Section 4: RAG - Direct Tool Retrieval</h2>
+            <p>RAG bypasses category selection entirely, using <strong>vector similarity to retrieve the most relevant tools directly</strong>.
+            This provides high accuracy with constant token usage regardless of total tool count.</p>
+            
+            <div class="key-points">
+                <strong>Key Advantages:</strong>
+                <ul>
+                    <li><span class="solution-badge">No Category Errors</span> Direct tool retrieval eliminates category selection failures</li>
+                    <li><span class="solution-badge">Constant Context</span> Fixed K tools = predictable token usage</li>
+                    <li><span class="solution-badge">High Accuracy</span> Often matches or exceeds MCP baseline</li>
+                </ul>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/12_rag_accuracy_vs_tools.png" alt="RAG Accuracy vs Tools">
+                <p class="figure-caption">RAG accuracy remains stable regardless of total tool count.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/13_rag_tokens_vs_tools.png" alt="RAG Tokens vs Tools">
+                <p class="figure-caption">RAG token usage is constant - independent of total tools.</p>
+            </div>
+            
+            <h3>Impact of K (Retrieved Tools) on Performance</h3>
+            <p>The fixed K parameter determines how many tools are retrieved by the embedding similarity search. 
+            Analyzing how different K values affect accuracy and token usage helps find the optimal balance.</p>
+            
+            <div class="figure">
+                <img src="limits_figures/14a_rag_k_accuracy_impact.png" alt="RAG K Accuracy Impact">
+                <p class="figure-caption">Impact of fixed K on accuracy across different tool counts. K higher than 15 yields diminishing returns.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/14b_rag_k_tokens_impact.png" alt="RAG K Tokens Impact">
+                <p class="figure-caption">Impact of fixed K on token usage. Token usage scales linearly with K but remains constant regardless of total tool count.</p>
+            </div>
+            
+            <h3>Retrieval Recall Analysis</h3>
+            <p>Retrieval recall measures whether the correct tool was present in the retrieved candidate set. 
+            High retrieval recall with lower final accuracy indicates the LLM is struggling with selection from candidates; 
+            low retrieval recall indicates the embedding-based retrieval is the bottleneck.</p>
+            
+            <div class="figure">
+                <img src="limits_figures/14d_rag_recall_vs_accuracy.png" alt="Recall vs Accuracy">
+                <p class="figure-caption">Retrieval recall vs final accuracy. Points below the diagonal indicate LLM selection errors from retrieved candidates.</p>
+            </div>
+        </div>
+        
+        <!-- Section 5: Adaptive RAG -->
+        <div id="section-5" class="section adaptive">
+            <h2>📊 Section 5: Adaptive RAG - Dynamic K Selection</h2>
+            <p>Adaptive RAG extends RAG by <strong>dynamically selecting K based on similarity score patterns</strong>.
+            When a query clearly matches one tool, fewer tools are retrieved; when ambiguous, more are retrieved.</p>
+            
+            <div class="key-points">
+                <strong>Optimization:</strong>
+                <ul>
+                    <li><span class="solution-badge">Context Efficiency</span> Reduces tokens when fewer tools are needed</li>
+                    <li><span class="solution-badge">Maintained Accuracy</span> Dynamic K doesn't sacrifice accuracy</li>
+                    <li><span class="tradeoff-badge">Complexity</span> Requires tuning of similarity thresholds</li>
+                </ul>
+            </div>
+            
+            <h3>Comparison Across All Methodologies</h3>
+            
+            <div class="figure">
+                <img src="limits_figures/15_adaptive_accuracy_vs_tools.png" alt="Adaptive RAG Accuracy vs All">
+                <p class="figure-caption">Adaptive RAG accuracy compared to all other methodologies across tool counts.</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/15a_adaptive_tokens_vs_tools.png" alt="Adaptive RAG Tokens vs All">
+                <p class="figure-caption">Adaptive RAG token efficiency compared to all other methodologies.</p>
+            </div>
+            
+            <h3>Adaptive RAG vs Standard RAG</h3>
+            
+            <div class="figure">
+                <img src="limits_figures/17_adaptive_vs_rag_tokens.png" alt="Adaptive vs RAG Tokens">
+                <p class="figure-caption">Adaptive RAG token savings compared to fixed-K RAG.</p>
+            </div>
+            
+            <h3>Adaptive RAG Prompt Clarity Impact</h3>
+            
+            <div class="figure">
+                <img src="limits_figures/18_adaptive_prompt_clarity.png" alt="Adaptive Prompt Clarity">
+                <p class="figure-caption">Impact of prompt clarity on Adaptive RAG accuracy - clear prompts vs concise prompts.</p>
+            </div>
+            
+            <h3>Adaptive K Value Distribution</h3>
+            
+            <div class="figure">
+                <img src="limits_figures/18a_adaptive_k_distribution.png" alt="Adaptive K Distribution">
+                <p class="figure-caption">Distribution of dynamically selected K values and strategy distribution. Shows how adaptive RAG adjusts context size based on query clarity.</p>
+            </div>
+        </div>
+        
+        <!-- Section 6: Summary -->
+        <div id="section-6" class="section summary">
+            <h2>📊 Section 6: Final Summary</h2>
+            <p>Comprehensive comparison of all methodologies across accuracy and latency dimensions.</p>
+            
+            <div class="figure">
+                <img src="limits_figures/19_latency_distribution.png" alt="Latency Distribution">
+                <p class="figure-caption">Latency distribution across all methodologies (outliers filtered).</p>
+            </div>
+            
+            <div class="figure">
+                <img src="limits_figures/20_accuracy_heatmap.png" alt="Accuracy Heatmap">
+                <p class="figure-caption">Complete accuracy heatmap: methodology × tool count.</p>
+            </div>
+            
+            <h3>Documentation Length Impact</h3>
+            
+            <div class="figure">
+                <img src="limits_figures/21_doc_length_impact.png" alt="Doc Length Impact">
+                <p class="figure-caption">Impact of documentation length on accuracy. Only includes (methodology, tool_count) pairs where all verbosity levels were tested for fair comparison.</p>
+            </div>
+        </div>
+        
+        <h2>🔍 Key Takeaways</h2>
+        <div class="key-points">
+            <ul>
+                <li><strong>MCP</strong> works well for small tool sets (&lt;200) but doesn't scale</li>
+                <li><strong>Clustering</strong> enables scale but loses accuracy due to category selection errors</li>
+                <li><strong>Hybrid</strong> improves on clustering by using RAG for category selection</li>
+                <li><strong>RAG</strong> provides the best balance: high accuracy with constant token usage</li>
+                <li><strong>Adaptive RAG</strong> optimizes RAG further by dynamically adjusting context size</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

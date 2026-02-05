@@ -1,0 +1,23 @@
+# No-tool test experiments - test how methodologies handle requests where no tool should be called
+# Fixed tool count = 100 to isolate the no-tool behavior
+
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+name: notool_rag_100tools
+
+num_tools: 100
+doc_length: medium
+prompt_type: concise
+categories: null
+num_similar_tools: 0
+include_no_tool: true
+allow_no_tool_call: true
+
+methodology: rag
+rag_config:
+  top_k: 10
+  similarity_threshold: 0.0
+
+output_dir: experiments/full_cloud/results

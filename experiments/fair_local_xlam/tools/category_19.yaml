@@ -1,0 +1,808 @@
+category: category_19
+tools:
+- name: remove_duplicates
+  descriptions:
+    minimal: Removes duplicate elements from a list while...
+    short: Removes duplicate elements from a list while preserving the order.
+    medium: Removes duplicate elements from a list while preserving the order.
+    long: Removes duplicate elements from a list while preserving the order.
+    verbose: Removes duplicate elements from a list while preserving the order.
+  parameters:
+  - name: lst
+    type: array
+    description: The input list.
+    required: true
+  tags:
+  - remove
+  - duplicates
+  test_prompts:
+    single:
+    - I need to clean up a list with numbers and strings mixed, like [2, 'two', 2, 'three', 'three', 4, 'four', 'four'].
+    - Remove duplicates from the list ['apple', 'banana', 'apple', 'cherry', 'banana'].
+    - 'Could you remove duplicates from the list: [''apple'', ''banana'', ''banana'', ''cherry'', ''cherry'', ''cherry'']?'
+    - Remove duplicates from the list [1, 2, 2, 3, 4, 4, 5].
+    single_clear:
+    - I need to clean up a list with numbers and strings mixed, like [2, 'two', 2, 'three', 'three', 4, 'four', 'four'].
+    - Remove duplicates from the list ['apple', 'banana', 'apple', 'cherry', 'banana'].
+    - 'Could you remove duplicates from the list: [''apple'', ''banana'', ''banana'', ''cherry'', ''cherry'', ''cherry'']?'
+    - Remove duplicates from the list [1, 2, 2, 3, 4, 4, 5].
+- name: image_to_text_ocr
+  descriptions:
+    minimal: Extracts text from an image using the Google Lens...
+    short: Extracts text from an image using the Google Lens OCR API and provides detailed detections at the paragraph, sentence,
+      and word levels.
+    medium: Extracts text from an image using the Google Lens OCR API and provides detailed detections at the paragraph, sentence,
+      and word levels.
+    long: Extracts text from an image using the Google Lens OCR API and provides detailed detections at the paragraph, sentence,
+      and word levels.
+    verbose: Extracts text from an image using the Google Lens OCR API and provides detailed detections at the paragraph,
+      sentence, and word levels.
+  parameters:
+  - name: url
+    type: string
+    description: The URL of the image from which to extract text.
+    required: true
+    default: https://s3-us-west-2.amazonaws.com/courses-images/wp-content/uploads/sites/1844/2017/06/15213029/images-textwrap-topbottom.png
+  - name: language
+    type: string
+    description: The language of the results, specified as a 2-letter ISO 639-1 code (e.g., 'en' for English). Defaults to
+      'en'.
+    required: false
+    default: en
+  tags:
+  - image
+  - to
+  - text
+  test_prompts:
+    single:
+    - Extract text from an image of a restaurant menu in French from the URL 'https://example.com/french_menu.jpg'.
+    single_clear:
+    - Extract text from an image of a restaurant menu in French from the URL 'https://example.com/french_menu.jpg'.
+- name: get_all_images_of_an_collection
+  descriptions:
+    minimal: Fetches all images from a specified collection...
+    short: Fetches all images from a specified collection using the Pulsar6 API.
+    medium: Fetches all images from a specified collection using the Pulsar6 API.
+    long: Fetches all images from a specified collection using the Pulsar6 API.
+    verbose: Fetches all images from a specified collection using the Pulsar6 API.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the collection to retrieve images from.
+    required: true
+  tags:
+  - get
+  - all
+  - images
+  test_prompts:
+    single:
+    - Get all images from the 'PULSAR003' collection, including metadata, using the Pulsar6 API.
+    - Fetch all images from the 'naturePhotos' collection.
+    - Fetch all images from collection ID 'P67890' using the Pulsar6 API.
+    single_clear:
+    - Get all images from the 'PULSAR003' collection, including metadata, using the Pulsar6 API.
+    - Fetch all images from the 'naturePhotos' collection.
+    - Fetch all images from collection ID 'P67890' using the Pulsar6 API.
+- name: get_company_data_by_linkedin_url
+  descriptions:
+    minimal: Fetch company data using a given LinkedIn URL via...
+    short: Fetch company data using a given LinkedIn URL via the ToolBench RapidAPI.
+    medium: Fetch company data using a given LinkedIn URL via the ToolBench RapidAPI.
+    long: Fetch company data using a given LinkedIn URL via the ToolBench RapidAPI.
+    verbose: Fetch company data using a given LinkedIn URL via the ToolBench RapidAPI.
+  parameters:
+  - name: linkedin_url
+    type: string
+    description: The LinkedIn URL of the company to retrieve data for.
+    required: true
+    default: https://www.linkedin.com/company/apple/
+  tags:
+  - get
+  - company
+  - data
+  test_prompts:
+    single:
+    - Fetch the LinkedIn company data for IBM, please.
+    - Fetch company data for 'Google' using its LinkedIn URL 'https://www.linkedin.com/company/google/'
+    - Can you get the company details from Tesla's LinkedIn URL?
+    - I'm researching Google, could you provide their LinkedIn company data?
+    single_clear:
+    - Fetch the LinkedIn company data for IBM, please.
+    - Fetch company data for 'Google' using its LinkedIn URL 'https://www.linkedin.com/company/google/'
+    - Can you get the company details from Tesla's LinkedIn URL?
+    - I'm researching Google, could you provide their LinkedIn company data?
+- name: get_cities
+  descriptions:
+    minimal: Fetches a list of cities within a specified...
+    short: Fetches a list of cities within a specified region of a country using the provided RapidAPI key.
+    medium: Fetches a list of cities within a specified region of a country using the provided RapidAPI key.
+    long: Fetches a list of cities within a specified region of a country using the provided RapidAPI key.
+    verbose: Fetches a list of cities within a specified region of a country using the provided RapidAPI key.
+  parameters:
+  - name: region_code
+    type: string
+    description: The code of the region for which to retrieve cities.
+    required: true
+    default: abr
+  - name: country_code
+    type: string
+    description: The code of the country which contains the region.
+    required: true
+    default: ph
+  tags:
+  - get
+  - cities
+  test_prompts:
+    single:
+    - Can you list cities in the Lombardy region of Italy?
+    - What are the major cities in the Tokyo region of Japan?
+    - I need the names of cities in the Gauteng province of South Africa.
+    single_clear:
+    - Can you list cities in the Lombardy region of Italy?
+    - What are the major cities in the Tokyo region of Japan?
+    - I need the names of cities in the Gauteng province of South Africa.
+- name: judget0
+  descriptions:
+    minimal: Compiles and executes code using the Safe Exam...
+    short: Compiles and executes code using the Safe Exam API.
+    medium: Compiles and executes code using the Safe Exam API.
+    long: Compiles and executes code using the Safe Exam API.
+    verbose: Compiles and executes code using the Safe Exam API.
+  parameters:
+  - name: code
+    type: string
+    description: The code to be compiled and executed. Defaults to 'print("Hello World")'.
+    required: true
+    default: print("Hello World")
+  tags:
+  - judget0
+  test_prompts:
+    single:
+    - Compile and run the code 'print("Testing Safe Exam API")'.
+    single_clear:
+    - Compile and run the code 'print("Testing Safe Exam API")'.
+- name: tournament_results_by_id_and_year_wta
+  descriptions:
+    minimal: Retrieves all the matches played in a selected...
+    short: Retrieves all the matches played in a selected WTA tournament for a given year.
+    medium: Retrieves all the matches played in a selected WTA tournament for a given year.
+    long: Retrieves all the matches played in a selected WTA tournament for a given year.
+    verbose: Retrieves all the matches played in a selected WTA tournament for a given year.
+  parameters:
+  - name: year
+    type: integer
+    description: The year of the tournament. Please note that not all tournaments are held every year.
+    required: true
+    default: '2022'
+  - name: tournament_id
+    type: string
+    description: The ID of the tournament. You can retrieve this list from the WTA endpoint.
+    required: true
+    default: '709'
+  tags:
+  - tournament
+  - results
+  - by
+  test_prompts:
+    single:
+    - Retrieve the match results for the WTA tournament with ID '1002' in the year 2019.
+    single_clear:
+    - Retrieve the match results for the WTA tournament with ID '1002' in the year 2019.
+- name: getteam
+  descriptions:
+    minimal: Fetches the details of an NHL team based on the...
+    short: Fetches the details of an NHL team based on the provided team ID, with optional query parameters to expand the
+      response and specify the season.
+    medium: Fetches the details of an NHL team based on the provided team ID, with optional query parameters to expand the
+      response and specify the season.
+    long: Fetches the details of an NHL team based on the provided team ID, with optional query parameters to expand the response
+      and specify the season.
+    verbose: Fetches the details of an NHL team based on the provided team ID, with optional query parameters to expand the
+      response and specify the season.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the team.
+    required: true
+    default: 28
+  - name: expand
+    type: string
+    description: Additional data to expand in the response. Defaults to 'team.roster'.
+    required: false
+    default: team.roster
+  - name: season
+    type: integer
+    description: The specific season for which to return team data. Defaults to 20172018.
+    required: false
+    default: 20172018
+  tags:
+  - getteam
+  test_prompts:
+    single:
+    - Can you retrieve the roster of the Montreal Canadiens for the 2016-2017 season?
+    single_clear:
+    - Can you retrieve the roster of the Montreal Canadiens for the 2016-2017 season?
+- name: emailvalidation
+  descriptions:
+    minimal: Validates whether the given email address is...
+    short: Validates whether the given email address is disposable or not by using the Toolbench RapidAPI service.
+    medium: Validates whether the given email address is disposable or not by using the Toolbench RapidAPI service.
+    long: Validates whether the given email address is disposable or not by using the Toolbench RapidAPI service.
+    verbose: Validates whether the given email address is disposable or not by using the Toolbench RapidAPI service.
+  parameters:
+  - name: email
+    type: string
+    description: The email address to be validated.
+    required: true
+    default: info@peekdomain.com
+  tags:
+  - emailvalidation
+  test_prompts:
+    single:
+    - Is the email address john.doe@example.com disposable?
+    - Is the email address 'test@example.com' disposable?
+    - Is the email 'info@newstartup.io' valid and in use?
+    - Is 'ceo@corporation.com' a valid email address?
+    single_clear:
+    - Is the email address john.doe@example.com disposable?
+    - Is the email address 'test@example.com' disposable?
+    - Is the email 'info@newstartup.io' valid and in use?
+    - Is 'ceo@corporation.com' a valid email address?
+- name: get_reply_comment_by_id
+  descriptions:
+    minimal: Fetch a list of reply comments from TikTok for a...
+    short: Fetch a list of reply comments from TikTok for a given comment and video ID.
+    medium: Fetch a list of reply comments from TikTok for a given comment and video ID.
+    long: Fetch a list of reply comments from TikTok for a given comment and video ID.
+    verbose: Fetch a list of reply comments from TikTok for a given comment and video ID.
+  parameters:
+  - name: cid
+    type: integer
+    description: The ID of the comment for which to fetch reply comments.
+    required: true
+    default: '7178309240628658970'
+  - name: aweme_id
+    type: integer
+    description: The ID of the TikTok video associated with the comment.
+    required: true
+    default: '7178094165614464282'
+  - name: count
+    type: integer
+    description: The number of reply comments to retrieve, with a maximum value of 30. Default is 5.
+    required: false
+    default: '5'
+  - name: cursor
+    type: integer
+    description: The cursor position for paginating through the comments. Default is 0.
+    required: false
+    default: '0'
+  tags:
+  - get
+  - reply
+  - comment
+  test_prompts:
+    single:
+    - Can you help me find the reply comments for comment ID 123456 on a TikTok video with ID 789012? Also, I need the top
+      10 replies, not the default 5.
+    single_clear:
+    - Can you help me find the reply comments for comment ID 123456 on a TikTok video with ID 789012? Also, I need the top
+      10 replies, not the default 5.
+- name: neuronal_activity_rate
+  descriptions:
+    minimal: Calculates the neuronal activity rate based on...
+    short: Calculates the neuronal activity rate based on the synaptic input rate, synaptic weight, and decay constant.
+    medium: Calculates the neuronal activity rate based on the synaptic input rate, synaptic weight, and decay constant.
+    long: Calculates the neuronal activity rate based on the synaptic input rate, synaptic weight, and decay constant.
+    verbose: Calculates the neuronal activity rate based on the synaptic input rate, synaptic weight, and decay constant.
+  parameters:
+  - name: synaptic_input_rate
+    type: integer
+    description: The rate of synaptic inputs per second.
+    required: true
+    default: 1.0
+  - name: synaptic_weight
+    type: number
+    description: The weight of the synaptic input, denoting its influence. Defaults to 1.0.
+    required: false
+    default: 0.1
+  - name: decay_constant
+    type: number
+    description: The rate at which the neuron's potential decays. Defaults to 0.1.
+    required: false
+    default: 1.0
+  tags:
+  - neuronal
+  - activity
+  - rate
+  test_prompts:
+    single:
+    - Compute the neuronal activity rate for a neuron with a high synaptic input rate of 500 inputs per second, a low synaptic
+      weight of 0.2, and a decay constant of 0.2.
+    - Calculate the neuronal activity rate for a neuron with a synaptic input rate of 100 inputs per second, a synaptic weight
+      of 0.8, and a decay constant of 0.05.
+    - If the synaptic input rate is 200 inputs per second and the decay constant is 0.2, what would be the neuronal activity
+      rate with a synaptic weight of 1.5?
+    - What's the neuronal activity rate if there are 50 synaptic inputs per second with a weight of 0.8 and a decay of 0.05?
+    - Determine the neuronal activity rate with a synaptic input rate of 200, a synaptic weight of 1.2, and a decay constant
+      of 0.2.
+    single_clear:
+    - Compute the neuronal activity rate for a neuron with a high synaptic input rate of 500 inputs per second, a low synaptic
+      weight of 0.2, and a decay constant of 0.2.
+    - Calculate the neuronal activity rate for a neuron with a synaptic input rate of 100 inputs per second, a synaptic weight
+      of 0.8, and a decay constant of 0.05.
+    - If the synaptic input rate is 200 inputs per second and the decay constant is 0.2, what would be the neuronal activity
+      rate with a synaptic weight of 1.5?
+    - What's the neuronal activity rate if there are 50 synaptic inputs per second with a weight of 0.8 and a decay of 0.05?
+    - Determine the neuronal activity rate with a synaptic input rate of 200, a synaptic weight of 1.2, and a decay constant
+      of 0.2.
+- name: get_channels
+  descriptions:
+    minimal: Retrieve a list of radio channels based on...
+    short: Retrieve a list of radio channels based on various filtering parameters.
+    medium: Retrieve a list of radio channels based on various filtering parameters.
+    long: Retrieve a list of radio channels based on various filtering parameters.
+    verbose: Retrieve a list of radio channels based on various filtering parameters.
+  parameters:
+  - name: keyword
+    type: string
+    description: Filter channels by keyword. Default is 'a'. Set to an empty string if no filtering by keyword is needed.
+    required: true
+    default: a
+  - name: genre_id
+    type: integer
+    description: Filter channels by genre ID. Default is None.
+    required: false
+  - name: city_id
+    type: integer
+    description: Filter channels by city ID. Default is None.
+    required: false
+  - name: country_id
+    type: integer
+    description: Filter channels by country ID. Default is 50.
+    required: true
+    default: '50'
+  - name: page
+    type: integer
+    description: The page number for pagination. Default is 1.
+    required: true
+    default: '1'
+  tags:
+  - get
+  - channels
+  test_prompts:
+    single:
+    - List all radio channels in the country with ID 50 that are related to the keyword 'rock'.
+    single_clear:
+    - List all radio channels in the country with ID 50 that are related to the keyword 'rock'.
+- name: density
+  descriptions:
+    minimal: Calculates the density of an object given its...
+    short: Calculates the density of an object given its mass and volume.
+    medium: Calculates the density of an object given its mass and volume.
+    long: Calculates the density of an object given its mass and volume.
+    verbose: Calculates the density of an object given its mass and volume.
+  parameters:
+  - name: mass
+    type: number
+    description: The mass of the object.
+    required: true
+  - name: volume
+    type: number
+    description: The volume of the object.
+    required: true
+  tags:
+  - density
+  test_prompts:
+    single:
+    - Compute the density of a sample with a mass of 500 grams and a volume of 200 milliliters.
+    - Calculate the density of an object with a mass of 150 grams and a volume of 50 cubic centimeters.
+    - If a balloon has a mass of 0.02 kg and a volume of 0.5 cubic meters when inflated, what is its density?
+    - Calculate the density of a substance with mass 120 grams and volume 15 milliliters.
+    - Calculate the density of a solid with a mass of 750 grams and a volume of 75 cubic centimeters.
+    - What is the density of an object with mass 50 kg and volume 0.02 m^3?
+    single_clear:
+    - Compute the density of a sample with a mass of 500 grams and a volume of 200 milliliters.
+    - Calculate the density of an object with a mass of 150 grams and a volume of 50 cubic centimeters.
+    - If a balloon has a mass of 0.02 kg and a volume of 0.5 cubic meters when inflated, what is its density?
+    - Calculate the density of a substance with mass 120 grams and volume 15 milliliters.
+    - Calculate the density of a solid with a mass of 750 grams and a volume of 75 cubic centimeters.
+    - What is the density of an object with mass 50 kg and volume 0.02 m^3?
+- name: stopwords
+  descriptions:
+    minimal: Retrieves stopwords for specified languages and...
+    short: Retrieves stopwords for specified languages and categories from the RapidAPI service.
+    medium: Retrieves stopwords for specified languages and categories from the RapidAPI service.
+    long: Retrieves stopwords for specified languages and categories from the RapidAPI service.
+    verbose: Retrieves stopwords for specified languages and categories from the RapidAPI service.
+  parameters:
+  - name: langs
+    type: string
+    description: Comma-separated list of language ISO codes.
+    required: false
+  - name: details
+    type: boolean
+    description: Flag indicating whether to include details for each stopword.
+    required: false
+    default: '0'
+  - name: categories
+    type: string
+    description: Comma-separated list of categories. Use /categories to get category IDs.
+    required: false
+  tags:
+  - stopwords
+  test_prompts:
+    single:
+    - Get stopwords for German language with details and include categories 'science' and 'technology'.
+    - Retrieve stopwords for Italian in the 'medical' category.
+    - Fetch stopwords for German with detailed information.
+    single_clear:
+    - Get stopwords for German language with details and include categories 'science' and 'technology'.
+    - Retrieve stopwords for Italian in the 'medical' category.
+    - Fetch stopwords for German with detailed information.
+- name: linearregintercept
+  descriptions:
+    minimal: Calculates the linear regression intercept for...
+    short: Calculates the linear regression intercept for the specified symbol and interval using the specified parameters
+      and the Twelve Data API.
+    medium: Calculates the linear regression intercept for the specified symbol and interval using the specified parameters
+      and the Twelve Data API.
+    long: Calculates the linear regression intercept for the specified symbol and interval using the specified parameters
+      and the Twelve Data API.
+    verbose: Calculates the linear regression intercept for the specified symbol and interval using the specified parameters
+      and the Twelve Data API.
+  parameters:
+  - name: symbol
+    type: string
+    description: The instrument symbol (e.g., equity, index, ETF, forex, or cryptocurrency) to calculate the intercept for.
+    required: true
+    default: AAPL
+  - name: interval
+    type: string
+    description: The interval between two consecutive data points in the time series (e.g., `1min`, `5min`, `15min`, etc.).
+    required: true
+    default: 1min
+  - name: series_type
+    type: string
+    description: The type of series to consider (e.g., `open`, `high`, `low`, `close`). Default is `close`.
+    required: false
+    default: close
+  - name: time_period
+    type: integer
+    description: The period of time over which to calculate the intercept. Default is 9.
+    required: false
+    default: 9
+  - name: format
+    type: string
+    description: The format of the returned data (`csv` or `json`). Default is `json`.
+    required: false
+    default: json
+  - name: outputsize
+    type: integer
+    description: The number of data points to retrieve. Default is 30.
+    required: false
+    default: 30
+  tags:
+  - linearregintercept
+  test_prompts:
+    single:
+    - Determine the linear regression intercept for the S&P 500 index (SPX) using daily intervals and considering the high
+      prices over a 180-day period.
+    - Fetch the linear regression intercept for Bitcoin using 15min intervals and the closing price over a 30-day period.
+    single_clear:
+    - Determine the linear regression intercept for the S&P 500 index (SPX) using daily intervals and considering the high
+      prices over a 180-day period.
+    - Fetch the linear regression intercept for Bitcoin using 15min intervals and the closing price over a 30-day period.
+- name: email_extractor
+  descriptions:
+    minimal: Extracts emails from the provided URL using the...
+    short: Extracts emails from the provided URL using the RapidAPI email scraper service.
+    medium: Extracts emails from the provided URL using the RapidAPI email scraper service.
+    long: Extracts emails from the provided URL using the RapidAPI email scraper service.
+    verbose: Extracts emails from the provided URL using the RapidAPI email scraper service.
+  parameters:
+  - name: url
+    type: string
+    description: The URL from which to extract emails.
+    required: true
+    default: https://en.wikipedia.org/wiki/Email
+  tags:
+  - email
+  - extractor
+  test_prompts:
+    single:
+    - Extract emails from the website https://www.example.com.
+    single_clear:
+    - Extract emails from the website https://www.example.com.
+- name: dad_jokes_search
+  descriptions:
+    minimal: Searches for dad jokes containing the given...
+    short: Searches for dad jokes containing the given keyword using the RapidAPI Dad Jokes API.
+    medium: Searches for dad jokes containing the given keyword using the RapidAPI Dad Jokes API.
+    long: Searches for dad jokes containing the given keyword using the RapidAPI Dad Jokes API.
+    verbose: Searches for dad jokes containing the given keyword using the RapidAPI Dad Jokes API.
+  parameters:
+  - name: text
+    type: string
+    description: The keyword to search for in the jokes. Default is 'dad'.
+    required: true
+    default: dad
+  tags:
+  - dad
+  - jokes
+  - search
+  test_prompts:
+    single:
+    - Search for dad jokes containing the word 'cat'.
+    single_clear:
+    - Search for dad jokes containing the word 'cat'.
+- name: get_countrywise_city_data
+  descriptions:
+    minimal: Fetches a list of cities for a given country...
+    short: Fetches a list of cities for a given country using an API, based on provided parameters.
+    medium: Fetches a list of cities for a given country using an API, based on provided parameters.
+    long: Fetches a list of cities for a given country using an API, based on provided parameters.
+    verbose: Fetches a list of cities for a given country using an API, based on provided parameters.
+  parameters:
+  - name: iso3
+    type: string
+    description: A 3-character ISO3 country code. Default is 'IND'.
+    required: true
+    default: IND
+  - name: country
+    type: string
+    description: The country name. Default is 'IND'.
+    required: true
+    default: IND
+  - name: count
+    type: integer
+    description: The maximum number of results to return. Default is 2.
+    required: true
+    default: '2'
+  - name: iso2
+    type: string
+    description: A 2-character ISO2 country code. Default is 'IN'.
+    required: true
+    default: IN
+  tags:
+  - get
+  - countrywise
+  - city
+  test_prompts:
+    single:
+    - Get information about cities in Japan.
+    single_clear:
+    - Get information about cities in Japan.
+- name: merge_sorted_lists
+  descriptions:
+    minimal: Merges two sorted lists into a single sorted list.
+    short: Merges two sorted lists into a single sorted list.
+    medium: Merges two sorted lists into a single sorted list.
+    long: Merges two sorted lists into a single sorted list.
+    verbose: Merges two sorted lists into a single sorted list.
+  parameters:
+  - name: list1
+    type: string
+    description: The first sorted list.
+    required: true
+  - name: list2
+    type: string
+    description: The second sorted list.
+    required: true
+  tags:
+  - merge
+  - sorted
+  - lists
+  test_prompts:
+    single:
+    - 'Merge these sorted lists: [1, 2, 3] and [4, 5, 6].'
+    - Merge sorted lists [5, 15, 25] and [10, 20, 30] into a single sorted list.
+    - 'Merge two sorted lists: one containing [1, 3, 5] and another with [2, 4, 6].'
+    - What is the result of merging [5, 15, 25] with [10, 20, 30]?
+    - 'Merge two sorted lists: [1, 3, 5, 7] and [2, 4, 6, 8]'
+    single_clear:
+    - 'Merge these sorted lists: [1, 2, 3] and [4, 5, 6].'
+    - Merge sorted lists [5, 15, 25] and [10, 20, 30] into a single sorted list.
+    - 'Merge two sorted lists: one containing [1, 3, 5] and another with [2, 4, 6].'
+    - What is the result of merging [5, 15, 25] with [10, 20, 30]?
+    - 'Merge two sorted lists: [1, 3, 5, 7] and [2, 4, 6, 8]'
+- name: search_news
+  descriptions:
+    minimal: Search for news articles using a specified...
+    short: Search for news articles using a specified keyword and language.
+    medium: Search for news articles using a specified keyword and language.
+    long: Search for news articles using a specified keyword and language.
+    verbose: Search for news articles using a specified keyword and language.
+  parameters:
+  - name: keyword
+    type: string
+    description: The keyword to search for in news articles.
+    required: true
+    default: Joe Biden
+  - name: language
+    type: string
+    description: 'The language of the news articles. Supported languages include:'
+    required: true
+  tags:
+  - search
+  - news
+  test_prompts:
+    single:
+    - Search for news articles in Spanish about 'economía'.
+    single_clear:
+    - Search for news articles in Spanish about 'economía'.
+- name: data_breach_checker_endpoint
+  descriptions:
+    minimal: Checks if the given email has been compromised in...
+    short: Checks if the given email has been compromised in any known data breaches using the Data Breach Checker API.
+    medium: Checks if the given email has been compromised in any known data breaches using the Data Breach Checker API.
+    long: Checks if the given email has been compromised in any known data breaches using the Data Breach Checker API.
+    verbose: Checks if the given email has been compromised in any known data breaches using the Data Breach Checker API.
+  parameters:
+  - name: email
+    type: string
+    description: The email address to be checked for data breaches.
+    required: true
+    default: example@xyz.com
+  tags:
+  - data
+  - breach
+  - checker
+  test_prompts:
+    single:
+    - Please verify if 'info@marketingpro.co' has been compromised in any recent data breaches.
+    - Verify if the email 'user123@gmail.com' has been compromised in any known data breaches.
+    - Check if the email 'john.doe@example.com' has been involved in any data breaches.
+    - Check if the email 'example@email.com' has been involved in any data breaches.
+    single_clear:
+    - Please verify if 'info@marketingpro.co' has been compromised in any recent data breaches.
+    - Verify if the email 'user123@gmail.com' has been compromised in any known data breaches.
+    - Check if the email 'john.doe@example.com' has been involved in any data breaches.
+    - Check if the email 'example@email.com' has been involved in any data breaches.
+- name: view_song_copy
+  descriptions:
+    minimal: Retrieves detailed information about a song using...
+    short: Retrieves detailed information about a song using the specified parameters.
+    medium: Retrieves detailed information about a song using the specified parameters.
+    long: Retrieves detailed information about a song using the specified parameters.
+    verbose: Retrieves detailed information about a song using the specified parameters.
+  parameters:
+  - name: https_only
+    type: string
+    description: Indicates if the request should use HTTPS only.
+    required: true
+    default: '1'
+  - name: wmid
+    type: string
+    description: Identifier for the user or session making the request.
+    required: true
+    default: '161445361'
+  - name: songid
+    type: string
+    description: Identifier for the song whose information is being retrieved.
+    required: true
+    default: ttEleQJoxgCuNOIbUuRh7Q==
+  - name: s
+    type: string
+    description: Signature or token required for the API call.
+    required: true
+    default: fe7cc2de3cfcc4efd457838a9521e7e9
+  - name: song_preview_kbps
+    type: string
+    description: Bitrate for the song preview.
+    required: true
+    default: '320'
+  - name: lang
+    type: string
+    description: Desired language for the response.
+    required: true
+    default: id
+  - name: country
+    type: string
+    description: Country code where the request is made from.
+    required: true
+    default: id
+  tags:
+  - view
+  - song
+  - copy
+  test_prompts:
+    single:
+    - What are the details of the song with ID '12345' in English, using HTTPS only, and a preview bitrate of 128 kbps?
+    - Retrieve information about the song 'song789' with HTTPS only, using wmid 'session101', signature 'def456', preview
+      at 256 kbps, in Spanish, from Spain.
+    single_clear:
+    - What are the details of the song with ID '12345' in English, using HTTPS only, and a preview bitrate of 128 kbps?
+    - Retrieve information about the song 'song789' with HTTPS only, using wmid 'session101', signature 'def456', preview
+      at 256 kbps, in Spanish, from Spain.
+- name: shazam_songs_get_details
+  descriptions:
+    minimal: Fetches song details from the Shazam API using a...
+    short: Fetches song details from the Shazam API using a given song ID.
+    medium: Fetches song details from the Shazam API using a given song ID.
+    long: Fetches song details from the Shazam API using a given song ID.
+    verbose: Fetches song details from the Shazam API using a given song ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The value of the 'id' field returned by the /search endpoint on Shazam.
+    required: true
+    default: '40333609'
+  - name: locale
+    type: string
+    description: The language code (default is 'en-US').
+    required: false
+    default: en-US
+  tags:
+  - shazam
+  - songs
+  - get
+  test_prompts:
+    single:
+    - Can you find details about the song with ID '12345' in French?
+    single_clear:
+    - Can you find details about the song with ID '12345' in French?
+- name: get_user_info
+  descriptions:
+    minimal: Fetches information about an Instagram user using...
+    short: Fetches information about an Instagram user using their user ID.
+    medium: Fetches information about an Instagram user using their user ID.
+    long: Fetches information about an Instagram user using their user ID.
+    verbose: Fetches information about an Instagram user using their user ID.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The user ID of the Instagram account.
+    required: true
+    default: '25025320'
+  tags:
+  - get
+  - user
+  - info
+  test_prompts:
+    single:
+    - Get information about the Instagram user with ID 987654321.
+    - Obtain details about the Instagram user with ID 1122334455.
+    single_clear:
+    - Get information about the Instagram user with ID 987654321.
+    - Obtain details about the Instagram user with ID 1122334455.
+- name: stock_get_financial_stmts
+  descriptions:
+    minimal: Fetch financial statements for a given stock...
+    short: Fetch financial statements for a given stock symbol.
+    medium: Fetch financial statements for a given stock symbol.
+    long: Fetch financial statements for a given stock symbol.
+    verbose: Fetch financial statements for a given stock symbol.
+  parameters:
+  - name: frequency
+    type: string
+    description: The frequency of the financial statements. It can be either 'annual' or 'quarterly'.
+    required: true
+    default: quarterly
+  - name: symbol
+    type: string
+    description: The ticker symbol of the stock (e.g., "AAPL" for Apple Inc.).
+    required: true
+    default: AAPL
+  - name: statement_type
+    type: string
+    description: The type of financial statement to retrieve. It can be 'income', 'balance', 'cash', or a list containing
+      these types.
+    required: true
+    default: income
+  - name: region
+    type: string
+    description: The region of the stock market. Defaults to 'US'. Allowed values are 'US', 'BR', 'AU', 'CA', 'FR', 'DE',
+      'HK', 'IN', 'IT', 'ES', 'GB', 'S'.
+    required: false
+    default: US
+  tags:
+  - stock
+  - get
+  - financial
+  test_prompts:
+    single:
+    - Fetch the annual financial statements (income, balance, cash) for Alibaba Group Holding Ltd (BABA) from the Hong Kong
+      market.
+    single_clear:
+    - Fetch the annual financial statements (income, balance, cash) for Alibaba Group Holding Ltd (BABA) from the Hong Kong
+      market.

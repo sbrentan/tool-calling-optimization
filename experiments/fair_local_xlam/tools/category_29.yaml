@@ -1,0 +1,716 @@
+category: category_29
+tools:
+- name: get_products
+  descriptions:
+    minimal: Fetches products from the store's catalog with...
+    short: Fetches products from the store's catalog with optional pagination.
+    medium: Fetches products from the store's catalog with optional pagination.
+    long: Fetches products from the store's catalog with optional pagination.
+    verbose: Fetches products from the store's catalog with optional pagination.
+  parameters:
+  - name: skip
+    type: integer
+    description: The number of products to skip. Defaults to None.
+    required: false
+  - name: limit
+    type: integer
+    description: The maximum number of products to retrieve. Defaults to None.
+    required: false
+  tags:
+  - get
+  - products
+  test_prompts:
+    single:
+    - Get all products from the store without any pagination.
+    - Fetch the first 10 products from the store's catalog, skipping the first 5.
+    - What are the products after the first 30 if I only want to see 20 of them?
+    single_clear:
+    - Get all products from the store without any pagination.
+    - Fetch the first 10 products from the store's catalog, skipping the first 5.
+    - What are the products after the first 30 if I only want to see 20 of them?
+- name: genericname
+  descriptions:
+    minimal: This function retrieves the generic name of a...
+    short: This function retrieves the generic name of a given drug using the RapidAPI Drug Info and Price History API.
+    medium: This function retrieves the generic name of a given drug using the RapidAPI Drug Info and Price History API.
+    long: This function retrieves the generic name of a given drug using the RapidAPI Drug Info and Price History API.
+    verbose: This function retrieves the generic name of a given drug using the RapidAPI Drug Info and Price History API.
+  parameters:
+  - name: drug
+    type: string
+    description: The brand name of the drug. Defaults to 'advil'.
+    required: false
+    default: advil
+  tags:
+  - genericname
+  test_prompts:
+    single:
+    - Identify the generic name of the drug 'Aspirin'.
+    single_clear:
+    - Identify the generic name of the drug 'Aspirin'.
+- name: retrievepornstar
+  descriptions:
+    minimal: Retrieve information about a specific pornstar...
+    short: Retrieve information about a specific pornstar based on the given criteria.
+    medium: Retrieve information about a specific pornstar based on the given criteria.
+    long: Retrieve information about a specific pornstar based on the given criteria.
+    verbose: Retrieve information about a specific pornstar based on the given criteria.
+  parameters:
+  - name: is_id
+    type: string
+    description: A unique identifier for the pornstar.
+    required: true
+  - name: ethnicity
+    type: string
+    description: The ethnicity of the pornstar.
+    required: false
+  - name: min_weight
+    type: string
+    description: The minimum weight of the pornstar.
+    required: false
+  - name: max_cup_size
+    type: string
+    description: The maximum cup size of the pornstar.
+    required: false
+  - name: nationality
+    type: string
+    description: The nationality of the pornstar.
+    required: false
+  - name: min_waist
+    type: string
+    description: The minimum waist size of the pornstar.
+    required: false
+  - name: hair
+    type: string
+    description: The hair color of the pornstar.
+    required: false
+  - name: max_age
+    type: string
+    description: The maximum age of the pornstar.
+    required: false
+  - name: min_age
+    type: string
+    description: The minimum age of the pornstar.
+    required: false
+  - name: min_cup_size
+    type: string
+    description: The minimum cup size of the pornstar.
+    required: false
+  - name: date_of_birth
+    type: string
+    description: The birth date of the pornstar.
+    required: false
+  - name: eyes
+    type: string
+    description: The eye color of the pornstar.
+    required: false
+  - name: max_waist
+    type: string
+    description: The maximum waist size of the pornstar.
+    required: false
+  - name: name
+    type: string
+    description: The name of the pornstar.
+    required: false
+  - name: tattoos
+    type: string
+    description: Whether the pornstar has tattoos.
+    required: false
+  - name: max_weight
+    type: string
+    description: The maximum weight of the pornstar.
+    required: false
+  tags:
+  - retrievepornstar
+  test_prompts:
+    single:
+    - I'm looking for a pornstar with ID 'star456' who is Caucasian, has green eyes, and weighs no more than 120 lbs.
+    single_clear:
+    - I'm looking for a pornstar with ID 'star456' who is Caucasian, has green eyes, and weighs no more than 120 lbs.
+- name: fetch_company_details
+  descriptions:
+    minimal: Fetch company details by company name using the...
+    short: Fetch company details by company name using the Toolbench RapidAPI.
+    medium: Fetch company details by company name using the Toolbench RapidAPI.
+    long: Fetch company details by company name using the Toolbench RapidAPI.
+    verbose: Fetch company details by company name using the Toolbench RapidAPI.
+  parameters:
+  - name: query
+    type: string
+    description: The company name to search for.
+    required: true
+    default: saharsh
+  tags:
+  - fetch
+  - company
+  - details
+  test_prompts:
+    single:
+    - What information is available about 'Microsoft Corporation' from the company details API?
+    single_clear:
+    - What information is available about 'Microsoft Corporation' from the company details API?
+- name: get_info_user
+  descriptions:
+    minimal: Fetch information about a TikTok user using the...
+    short: Fetch information about a TikTok user using the provided username.
+    medium: Fetch information about a TikTok user using the provided username.
+    long: Fetch information about a TikTok user using the provided username.
+    verbose: Fetch information about a TikTok user using the provided username.
+  parameters:
+  - name: username
+    type: string
+    description: The TikTok username for which to retrieve information.
+    required: true
+    default: tiktok
+  tags:
+  - get
+  - info
+  - user
+  test_prompts:
+    single:
+    - Fetch information about the TikTok user with username 'tiktok_star'.
+    single_clear:
+    - Fetch information about the TikTok user with username 'tiktok_star'.
+- name: get_php
+  descriptions:
+    minimal: Fetch terminology extraction from a given text in...
+    short: Fetch terminology extraction from a given text in a specified language using RapidAPI.
+    medium: Fetch terminology extraction from a given text in a specified language using RapidAPI.
+    long: Fetch terminology extraction from a given text in a specified language using RapidAPI.
+    verbose: Fetch terminology extraction from a given text in a specified language using RapidAPI.
+  parameters:
+  - name: text
+    type: string
+    description: The text from which to extract terminology.
+    required: true
+  - name: lang
+    type: string
+    description: 'The language code for the text. Currently supported languages: en, fr, it.'
+    required: true
+  tags:
+  - get
+  - php
+  test_prompts:
+    single:
+    - Get terminology extraction for 'Machine learning algorithms' in Italian.
+    single_clear:
+    - Get terminology extraction for 'Machine learning algorithms' in Italian.
+- name: have_a_chat_with_our_bot
+  descriptions:
+    minimal: Initiates a conversation with the Islam&AI Bot...
+    short: Initiates a conversation with the Islam&AI Bot, utilizing chat history and an API key for authentication.
+    medium: Initiates a conversation with the Islam&AI Bot, utilizing chat history and an API key for authentication.
+    long: Initiates a conversation with the Islam&AI Bot, utilizing chat history and an API key for authentication.
+    verbose: Initiates a conversation with the Islam&AI Bot, utilizing chat history and an API key for authentication.
+  parameters:
+  - name: question
+    type: string
+    description: The question to pose to the Islam&AI Bot.
+    required: true
+    default: What is Islam?
+  - name: chathistory
+    type: string
+    description: The chat history to be included in the conversation. Defaults to a predefined string about a dua.
+    required: false
+    default: What is Dua to recite when you see a miraculous thing like Islam & AI? | There is no specific dua (supplication)
+      mentioned in the Quran or Hadith that is to be recited when witnessing a miracle. However, Muslims are encouraged to
+      constantly remember Allah and express their gratitude to Him for the blessings and miracles they witness in their lives.
+      In general, it is recommended to say 'Subhan Allah' (Glory be to Allah) when witnessing something amazing or miraculous
+  tags:
+  - have
+  - a
+  - chat
+  test_prompts:
+    single:
+    - What is the response from the Islam&AI Bot when asked about the importance of charity in Islam?
+    single_clear:
+    - What is the response from the Islam&AI Bot when asked about the importance of charity in Islam?
+- name: tsv
+  descriptions:
+    minimal: Fetches a subset list of a dataset from the...
+    short: Fetches a subset list of a dataset from the specified API along with its metadata.
+    medium: Fetches a subset list of a dataset from the specified API along with its metadata.
+    long: Fetches a subset list of a dataset from the specified API along with its metadata.
+    verbose: Fetches a subset list of a dataset from the specified API along with its metadata.
+  parameters:
+  - name: dataset
+    type: string
+    description: The identifier of the dataset to query.
+    required: true
+    default: frim1
+  - name: format
+    type: string
+    description: The output format of the data. Defaults to 'tsv'.
+    required: false
+    default: tsv
+  tags:
+  - tsv
+  test_prompts:
+    single:
+    - Fetch the tsv data for the 'healthcare_statistics' dataset.
+    single_clear:
+    - Fetch the tsv data for the 'healthcare_statistics' dataset.
+- name: getstats
+  descriptions:
+    minimal: Fetches the latest and historical coronavirus...
+    short: Fetches the latest and historical coronavirus statistics data, including confirmed cases, deaths, and recovered
+      cases, for a specified location.
+    medium: Fetches the latest and historical coronavirus statistics data, including confirmed cases, deaths, and recovered
+      cases, for a specified location.
+    long: Fetches the latest and historical coronavirus statistics data, including confirmed cases, deaths, and recovered
+      cases, for a specified location.
+    verbose: Fetches the latest and historical coronavirus statistics data, including confirmed cases, deaths, and recovered
+      cases, for a specified location.
+  parameters:
+  - name: location
+    type: string
+    description: ISO 3166-2 location code (e.g., "FR" for France, "US" for the United States, "US-CA" for California state,
+      or "global" for worldwide statistics).
+    required: true
+    default: US
+  tags:
+  - getstats
+  test_prompts:
+    single:
+    - Can you provide the latest coronavirus statistics for California?
+    single_clear:
+    - Can you provide the latest coronavirus statistics for California?
+- name: airports_direct_routes_for_an_airport
+  descriptions:
+    minimal: Returns a list of direct routes for a given...
+    short: Returns a list of direct routes for a given airport using the RapidAPI service.
+    medium: Returns a list of direct routes for a given airport using the RapidAPI service.
+    long: Returns a list of direct routes for a given airport using the RapidAPI service.
+    verbose: Returns a list of direct routes for a given airport using the RapidAPI service.
+  parameters:
+  - name: airportiatacode
+    type: string
+    description: The IATA code of the airport for which the direct routes are being queried.
+    required: true
+  tags:
+  - airports
+  - direct
+  - routes
+  test_prompts:
+    single:
+    - Find all direct routes from HND.
+    single_clear:
+    - Find all direct routes from HND.
+- name: get_movies_by_year
+  descriptions:
+    minimal: Fetches a list of movies released in a specified...
+    short: Fetches a list of movies released in a specified year from the IMDb API.
+    medium: Fetches a list of movies released in a specified year from the IMDb API.
+    long: Fetches a list of movies released in a specified year from the IMDb API.
+    verbose: Fetches a list of movies released in a specified year from the IMDb API.
+  parameters:
+  - name: movie_year
+    type: integer
+    description: The year to filter movies by. Defaults to None.
+    required: false
+  tags:
+  - get
+  - movies
+  - by
+  test_prompts:
+    single:
+    - List movies from the year 1994
+    - Could you find out the movies that were released in 1977? I'm particularly interested in the ones that were blockbusters.
+    single_clear:
+    - List movies from the year 1994
+    - Could you find out the movies that were released in 1977? I'm particularly interested in the ones that were blockbusters.
+- name: players_at_position
+  descriptions:
+    minimal: Fetches all players at a specified position from...
+    short: Fetches all players at a specified position from the National Football Players API.
+    medium: Fetches all players at a specified position from the National Football Players API.
+    long: Fetches all players at a specified position from the National Football Players API.
+    verbose: Fetches all players at a specified position from the National Football Players API.
+  parameters:
+  - name: position
+    type: string
+    description: The abbreviated position name to query players for (e.g., QB, RB, WR).
+    required: true
+    default: QB
+  tags:
+  - players
+  - at
+  - position
+  test_prompts:
+    single:
+    - Find all running backs in the National Football Players API.
+    single_clear:
+    - Find all running backs in the National Football Players API.
+- name: offers
+  descriptions:
+    minimal: This function retrieves a list of offers for a...
+    short: This function retrieves a list of offers for a product identified by the `is_id` parameter from a price comparison
+      API.
+    medium: This function retrieves a list of offers for a product identified by the `is_id` parameter from a price comparison
+      API. Latitude, longitude, country, and the API key can be optionally provided to refine the search.
+    long: This function retrieves a list of offers for a product identified by the `is_id` parameter from a price comparison
+      API. Latitude, longitude, country, and the API key can be optionally provided to refine the search.
+    verbose: This function retrieves a list of offers for a product identified by the `is_id` parameter from a price comparison
+      API. Latitude, longitude, country, and the API key can be optionally provided to refine the search.
+  parameters:
+  - name: is_id
+    type: string
+    description: 'An identifier for the product, which can be any of the following: UPC, EAN, ISBN, GTIN, or Amazon ASIN.'
+    required: true
+    default: '611247373064'
+  - name: latitude
+    type: string
+    description: The latitude for the location filter. Defaults to '37.777805'.
+    required: false
+    default: '37.777805'
+  - name: longitude
+    type: string
+    description: The longitude for the location filter. Defaults to '-122.49493'.
+    required: false
+    default: '-122.49493'
+  - name: country
+    type: string
+    description: The country code for the location filter. Defaults to 'US'.
+    required: false
+    default: US
+  tags:
+  - offers
+  test_prompts:
+    single:
+    - Find offers for a product with UPC 885391000001 in Los Angeles, USA.
+    single_clear:
+    - Find offers for a product with UPC 885391000001 in Los Angeles, USA.
+- name: video_post_comments
+  descriptions:
+    minimal: Fetches comments for a specified video post from...
+    short: Fetches comments for a specified video post from the TikTok API.
+    medium: Fetches comments for a specified video post from the TikTok API.
+    long: Fetches comments for a specified video post from the TikTok API.
+    verbose: Fetches comments for a specified video post from the TikTok API.
+  parameters:
+  - name: video_id
+    type: string
+    description: The ID of the video for which to fetch comments.
+    required: true
+    default: '7137423965982592302'
+  - name: fresh
+    type: integer
+    description: Set to 1 to force the API to return fresh data (not cached). Defaults to 0.
+    required: false
+    default: '0'
+  - name: limit
+    type: integer
+    description: Number of comments to return. Defaults to 50. Maximum is 150.
+    required: false
+    default: '50'
+  - name: max_cursor
+    type: integer
+    description: Pagination cursor for navigating through pages of comments. Defaults to 0.
+    required: false
+    default: '0'
+  tags:
+  - video
+  - post
+  - comments
+  test_prompts:
+    single:
+    - Fetch comments for the TikTok video with ID '6063636063606360636', ensuring fresh data and limiting to 75 comments.
+    single_clear:
+    - Fetch comments for the TikTok video with ID '6063636063606360636', ensuring fresh data and limiting to 75 comments.
+- name: movie_details_json
+  descriptions:
+    minimal: Fetches detailed information about a specific...
+    short: Fetches detailed information about a specific movie from the YTS API.
+    medium: Fetches detailed information about a specific movie from the YTS API.
+    long: Fetches detailed information about a specific movie from the YTS API.
+    verbose: Fetches detailed information about a specific movie from the YTS API.
+  parameters:
+  - name: movie_id
+    type: integer
+    description: The ID of the movie.
+    required: true
+  - name: with_cast
+    type: boolean
+    description: If True, includes information about the cast. Defaults to None.
+    required: false
+  - name: with_images
+    type: boolean
+    description: If True, includes image URLs. Defaults to None.
+    required: false
+  tags:
+  - movie
+  - details
+  - json
+  test_prompts:
+    single:
+    - Find information about the movie with ID 67890 without cast details but with image URLs.
+    - Get detailed information about the movie with ID 12345, including cast and images.
+    single_clear:
+    - Find information about the movie with ID 67890 without cast details but with image URLs.
+    - Get detailed information about the movie with ID 12345, including cast and images.
+- name: locations_auto_complete_deprecated
+  descriptions:
+    minimal: Fetch location suggestions based on a term or...
+    short: Fetch location suggestions based on a term or phrase, with optional location-based sorting.
+    medium: Fetch location suggestions based on a term or phrase, with optional location-based sorting.
+    long: Fetch location suggestions based on a term or phrase, with optional location-based sorting.
+    verbose: Fetch location suggestions based on a term or phrase, with optional location-based sorting.
+  parameters:
+  - name: text
+    type: string
+    description: The term or phrase to search for location suggestions (e.g., city, district, country name).
+    required: true
+    default: milan
+  - name: latitude
+    type: integer
+    description: The latitude of the end user's location, used for sorting purposes. Defaults to None.
+    required: false
+  - name: longitude
+    type: integer
+    description: The longitude of the end user's location, used for sorting purposes. Defaults to None.
+    required: false
+  tags:
+  - locations
+  - auto
+  - complete
+  test_prompts:
+    single:
+    - Suggest 'Thai restaurants' in Los Angeles.
+    single_clear:
+    - Suggest 'Thai restaurants' in Los Angeles.
+- name: is_anagram
+  descriptions:
+    minimal: Checks if two words are anagrams of each other.
+    short: Checks if two words are anagrams of each other.
+    medium: Checks if two words are anagrams of each other.
+    long: Checks if two words are anagrams of each other.
+    verbose: Checks if two words are anagrams of each other.
+  parameters:
+  - name: word1
+    type: string
+    description: The first word.
+    required: true
+  - name: word2
+    type: string
+    description: The second word.
+    required: true
+  tags:
+  - is
+  - anagram
+  test_prompts:
+    single:
+    - Are 'cinema' and 'iceman' anagrams?
+    - Check if 'listen' and 'silent' are anagrams.
+    - Check if 'listen' and 'silent' are anagrams.
+    single_clear:
+    - Are 'cinema' and 'iceman' anagrams?
+    - Check if 'listen' and 'silent' are anagrams.
+    - Check if 'listen' and 'silent' are anagrams.
+- name: veiculo_tipo_id_marca
+  descriptions:
+    minimal: Retrieves a listing of vehicles for a given brand...
+    short: Retrieves a listing of vehicles for a given brand from an API.
+    medium: Retrieves a listing of vehicles for a given brand from an API.
+    long: Retrieves a listing of vehicles for a given brand from an API.
+    verbose: Retrieves a listing of vehicles for a given brand from an API.
+  parameters:
+  - name: veiculo_tipo
+    type: string
+    description: The type of vehicle (e.g., "carros", "motos").
+    required: true
+    default: carros
+  - name: id_marca
+    type: string
+    description: The ID of the vehicle brand.
+    required: true
+    default: '6'
+  tags:
+  - veiculo
+  - tipo
+  - id
+  test_prompts:
+    single:
+    - List all car models from the brand with ID 'BMW'
+    single_clear:
+    - List all car models from the brand with ID 'BMW'
+- name: video_post_metadata
+  descriptions:
+    minimal: Fetch metadata for a single TikTok video post.
+    short: Fetch metadata for a single TikTok video post.
+    medium: Fetch metadata for a single TikTok video post.
+    long: Fetch metadata for a single TikTok video post.
+    verbose: Fetch metadata for a single TikTok video post.
+  parameters:
+  - name: video
+    type: string
+    description: 'The URL of the TikTok video post. For example: ''https://www.tiktok.com/@charlidamelio/video/7137423965982592302''.'
+    required: true
+    default: https://www.tiktok.com/@charlidamelio/video/7010108194051640582
+  - name: fresh
+    type: integer
+    description: If set to 1, force the return of fresh data (not cached). Defaults to 0.
+    required: false
+    default: '0'
+  tags:
+  - video
+  - post
+  - metadata
+  test_prompts:
+    single:
+    - Retrieve metadata for the TikTok video at 'https://www.tiktok.com/@charlidamelio/video/7137423965982592302' and ensure
+      the data is fresh.
+    single_clear:
+    - Retrieve metadata for the TikTok video at 'https://www.tiktok.com/@charlidamelio/video/7137423965982592302' and ensure
+      the data is fresh.
+- name: states_details
+  descriptions:
+    minimal: Retrieves detailed information about a specific...
+    short: Retrieves detailed information about a specific state using its ID.
+    medium: Retrieves detailed information about a specific state using its ID.
+    long: Retrieves detailed information about a specific state using its ID.
+    verbose: Retrieves detailed information about a specific state using its ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the state for which to retrieve details.
+    required: true
+    default: '4022'
+  tags:
+  - states
+  - details
+  test_prompts:
+    single:
+    - Could you provide the detailed information about the state with ID 'CA001'?
+    single_clear:
+    - Could you provide the detailed information about the state with ID 'CA001'?
+- name: posts
+  descriptions:
+    minimal: Fetches posts of a creator from the Patreon API...
+    short: Fetches posts of a creator from the Patreon API using the given parameters.
+    medium: Fetches posts of a creator from the Patreon API using the given parameters.
+    long: Fetches posts of a creator from the Patreon API using the given parameters.
+    verbose: Fetches posts of a creator from the Patreon API using the given parameters.
+  parameters:
+  - name: creator_id
+    type: integer
+    description: The ID of the creator whose posts are to be fetched.
+    required: true
+    default: '2416483'
+  - name: cursor
+    type: string
+    description: The cursor for pagination to the next page of results. Defaults to None.
+    required: false
+  - name: amount
+    type: integer
+    description: The number of posts to return. Defaults to 10. Maximum is 500.
+    required: false
+    default: '10'
+  tags:
+  - posts
+  test_prompts:
+    single:
+    - Get the latest 20 posts from creator ID 101010101 on Patreon.
+    single_clear:
+    - Get the latest 20 posts from creator ID 101010101 on Patreon.
+- name: comments
+  descriptions:
+    minimal: Fetch comments from a YouTube video using the...
+    short: Fetch comments from a YouTube video using the provided video ID.
+    medium: Fetch comments from a YouTube video using the provided video ID.
+    long: Fetch comments from a YouTube video using the provided video ID.
+    verbose: Fetch comments from a YouTube video using the provided video ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The YouTube video ID to fetch comments for.
+    required: true
+    default: dQw4w9WgXcQ
+  - name: sort_by
+    type: string
+    description: Criteria to sort comments by. Options are "top" or "new". Defaults to "top".
+    required: false
+    default: top
+  tags:
+  - comments
+  test_prompts:
+    single:
+    - Fetch the top comments for the YouTube video with ID 'dQw4w9WgXcQ'.
+    single_clear:
+    - Fetch the top comments for the YouTube video with ID 'dQw4w9WgXcQ'.
+- name: free_games
+  descriptions:
+    minimal: Returns all free games currently on offer and...
+    short: Returns all free games currently on offer and upcoming free games from the Epic Games Store.
+    medium: Returns all free games currently on offer and upcoming free games from the Epic Games Store.
+    long: Returns all free games currently on offer and upcoming free games from the Epic Games Store.
+    verbose: Returns all free games currently on offer and upcoming free games from the Epic Games Store.
+  parameters:
+  - name: country
+    type: string
+    description: Country code for local offers (e.g., 'US', 'DE', 'ES'). Defaults to 'US'.
+    required: false
+    default: US
+  tags:
+  - free
+  - games
+  test_prompts:
+    single:
+    - What are the current free games available on the Epic Games Store in Germany?
+    single_clear:
+    - What are the current free games available on the Epic Games Store in Germany?
+- name: get_token_forwarding_wallets
+  descriptions:
+    minimal: Fetches a list of token forwarding wallets from...
+    short: Fetches a list of token forwarding wallets from the RapidAPI Token Forwarding service.
+    medium: Fetches a list of token forwarding wallets from the RapidAPI Token Forwarding service.
+    long: Fetches a list of token forwarding wallets from the RapidAPI Token Forwarding service.
+    verbose: Fetches a list of token forwarding wallets from the RapidAPI Token Forwarding service.
+  parameters:
+  - name: is_id
+    type: string
+    description: Identifier for the token forwarding wallet. Defaults to 'dfe02338-43ae-453f-bd51-6f0ea98e4df9'.
+    required: true
+    default: dfe02338-43ae-453f-bd51-6f0ea98e4df9
+  - name: limit
+    type: integer
+    description: Maximum number of records to return. Defaults to 100.
+    required: true
+    default: '100'
+  - name: offset
+    type: integer
+    description: Number of records to skip from the beginning. Defaults to 0.
+    required: true
+    default: '0'
+  tags:
+  - get
+  - token
+  - forwarding
+  test_prompts:
+    single:
+    - Fetch the token forwarding wallets with an identifier 'dfe02338-43ae-453f-bd51-6f0ea98e4df9' and limit the results to
+      200.
+    - Fetch all available token forwarding wallets without specifying any identifier or limit.
+    single_clear:
+    - Fetch the token forwarding wallets with an identifier 'dfe02338-43ae-453f-bd51-6f0ea98e4df9' and limit the results to
+      200.
+    - Fetch all available token forwarding wallets without specifying any identifier or limit.
+- name: balansheet_financials
+  descriptions:
+    minimal: Fetches and returns the financial data for a...
+    short: Fetches and returns the financial data for a given company symbol using the specified RapidAPI key.
+    medium: Fetches and returns the financial data for a given company symbol using the specified RapidAPI key.
+    long: Fetches and returns the financial data for a given company symbol using the specified RapidAPI key.
+    verbose: Fetches and returns the financial data for a given company symbol using the specified RapidAPI key.
+  parameters:
+  - name: symbol
+    type: string
+    description: The stock ticker symbol of the company for which financial data is requested.
+    required: true
+  tags:
+  - balansheet
+  - financials
+  test_prompts:
+    single:
+    - What are the financials of Tesla Inc. as reported in their balance sheet?
+    single_clear:
+    - What are the financials of Tesla Inc. as reported in their balance sheet?

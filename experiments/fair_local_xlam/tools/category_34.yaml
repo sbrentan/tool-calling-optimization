@@ -1,0 +1,683 @@
+category: category_34
+tools:
+- name: science
+  descriptions:
+    minimal: Fetches science news from Google News using the...
+    short: Fetches science news from Google News using the provided language region and RapidAPI key.
+    medium: Fetches science news from Google News using the provided language region and RapidAPI key.
+    long: Fetches science news from Google News using the provided language region and RapidAPI key.
+    verbose: Fetches science news from Google News using the provided language region and RapidAPI key.
+  parameters:
+  - name: lr
+    type: string
+    description: The language region code (e.g., 'en-US') to filter the news articles.
+    required: true
+    default: en-US
+  tags:
+  - science
+  test_prompts:
+    single:
+    - Fetch science news in English for the US region.
+    single_clear:
+    - Fetch science news in English for the US region.
+- name: single_strain
+  descriptions:
+    minimal: Fetches detailed information for a single strain...
+    short: Fetches detailed information for a single strain by its ID using the Weed Strain API.
+    medium: Fetches detailed information for a single strain by its ID using the Weed Strain API.
+    long: Fetches detailed information for a single strain by its ID using the Weed Strain API.
+    verbose: Fetches detailed information for a single strain by its ID using the Weed Strain API.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the strain for which details are to be fetched.
+    required: true
+    default: '45'
+  tags:
+  - single
+  - strain
+  test_prompts:
+    single:
+    - Retrieve information about strain ID 456.
+    single_clear:
+    - Retrieve information about strain ID 456.
+- name: list_all_bot_category_groups
+  descriptions:
+    minimal: Get a list of category groups that are linked to...
+    short: Get a list of category groups that are linked to user-owned bots (not locked bots).
+    medium: Get a list of category groups that are linked to user-owned bots (not locked bots).
+    long: Get a list of category groups that are linked to user-owned bots (not locked bots).
+    verbose: Get a list of category groups that are linked to user-owned bots (not locked bots).
+  parameters:
+  - name: category_group
+    type: string
+    description: Category group slug of the category group in the bot category group.
+    required: false
+  - name: dir
+    type: string
+    description: Direction of the ordering. Default is 'asc'.
+    required: false
+    default: asc
+  - name: limit
+    type: integer
+    description: The number of records to return. Default is 20.
+    required: false
+    default: 20
+  - name: order
+    type: string
+    description: The search field to order by. Default is 'id'.
+    required: false
+    default: id
+  - name: is_id
+    type: integer
+    description: The ID of the bot category group.
+    required: false
+  - name: bot
+    type: string
+    description: Bot slug of the bot in the bot category group.
+    required: false
+  - name: category_group_id
+    type: integer
+    description: The ID of the category group.
+    required: false
+  - name: bot_id
+    type: integer
+    description: The ID of the bot category group.
+    required: false
+  - name: page
+    type: integer
+    description: The page number of results to start from. Default is 1.
+    required: false
+    default: 1
+  tags:
+  - list
+  - all
+  - bot
+  test_prompts:
+    single:
+    - List all bot category groups ordered by 'id' in ascending order, starting from page 1 with a limit of 30.
+    single_clear:
+    - List all bot category groups ordered by 'id' in ascending order, starting from page 1 with a limit of 30.
+- name: get_date_and_time_by_city
+  descriptions:
+    minimal: Get the current date and time for a specified...
+    short: Get the current date and time for a specified city.
+    medium: Get the current date and time for a specified city.
+    long: Get the current date and time for a specified city.
+    verbose: Get the current date and time for a specified city.
+  parameters:
+  - name: city
+    type: string
+    description: Name of the city to get the date and time for.
+    required: true
+    default: Los Angeles
+  tags:
+  - get
+  - date
+  - and
+  test_prompts:
+    single:
+    - What's the current time in New York?
+    single_clear:
+    - What's the current time in New York?
+- name: find_next_greater_element
+  descriptions:
+    minimal: Finds the next greater element for each element...
+    short: Finds the next greater element for each element in a list.
+    medium: Finds the next greater element for each element in a list.
+    long: Finds the next greater element for each element in a list.
+    verbose: Finds the next greater element for each element in a list.
+  parameters:
+  - name: nums
+    type: string
+    description: The list of numbers.
+    required: true
+  tags:
+  - find
+  - next
+  - greater
+  test_prompts:
+    single:
+    - Can you determine the next greater elements for the numbers 4, 5, 2, 7, 3, 6, 8, 1?
+    - Find the next greater element for each number in the list [4, 5, 2, 25].
+    - What is the next greater element for each element in the list [3, 1, 4, 1, 5, 9]?
+    - Find the next greater element for each number in the list [1, 3, 2, 4].
+    single_clear:
+    - Can you determine the next greater elements for the numbers 4, 5, 2, 7, 3, 6, 8, 1?
+    - Find the next greater element for each number in the list [4, 5, 2, 25].
+    - What is the next greater element for each element in the list [3, 1, 4, 1, 5, 9]?
+    - Find the next greater element for each number in the list [1, 3, 2, 4].
+- name: nsfw_image_classification
+  descriptions:
+    minimal: Classifies whether the image content at the given...
+    short: Classifies whether the image content at the given URL is inappropriate or not using the NSFW Image Classification
+      API.
+    medium: Classifies whether the image content at the given URL is inappropriate or not using the NSFW Image Classification
+      API.
+    long: Classifies whether the image content at the given URL is inappropriate or not using the NSFW Image Classification
+      API.
+    verbose: Classifies whether the image content at the given URL is inappropriate or not using the NSFW Image Classification
+      API.
+  parameters:
+  - name: link
+    type: string
+    description: The URL of the image to be analyzed.
+    required: true
+    default: https://cdn77-pic.xvideos-cdn.com/videos/thumbs169poster/c5/d0/e4/c5d0e4cd6124e1d2f5b3add1f582ca13/c5d0e4cd6124e1d2f5b3add1f582ca13.30.jpg
+  tags:
+  - nsfw
+  - image
+  - classification
+  test_prompts:
+    single:
+    - Classify the image at https://example.com/image7.jpg for NSFW content.
+    single_clear:
+    - Classify the image at https://example.com/image7.jpg for NSFW content.
+- name: getallcountry
+  descriptions:
+    minimal: Fetches the list of country names via an API...
+    short: Fetches the list of country names via an API based on the provided query parameters.
+    medium: Fetches the list of country names via an API based on the provided query parameters.
+    long: Fetches the list of country names via an API based on the provided query parameters.
+    verbose: Fetches the list of country names via an API based on the provided query parameters.
+  parameters:
+  - name: limit
+    type: integer
+    description: The maximum number of items per page. Default is 500.
+    required: false
+    default: '500'
+  - name: page
+    type: integer
+    description: The page number to retrieve. Default is 1.
+    required: false
+    default: '1'
+  - name: order
+    type: string
+    description: The order in which to sort results. Accepts 'ASC' for ascending or 'DESC' for descending. Default is 'ASC'.
+    required: false
+    default: ASC
+  tags:
+  - getallcountry
+  test_prompts:
+    single:
+    - Retrieve the entire list of country names with a limit of 500.
+    single_clear:
+    - Retrieve the entire list of country names with a limit of 500.
+- name: stock_get_stock_price
+  descriptions:
+    minimal: Retrieve the current stock price for a given...
+    short: Retrieve the current stock price for a given ticker symbol from the Yahoo!
+    medium: Retrieve the current stock price for a given ticker symbol from the Yahoo! Finance API.
+    long: Retrieve the current stock price for a given ticker symbol from the Yahoo! Finance API.
+    verbose: Retrieve the current stock price for a given ticker symbol from the Yahoo! Finance API.
+  parameters:
+  - name: symbol
+    type: string
+    description: The ticker symbol of the stock. For example, "AAPL" is the ticker symbol for Apple Inc.
+    required: true
+    default: AAPL
+  - name: region
+    type: string
+    description: The market region of the ticker symbol. Allowed values are 'US', 'BR', 'AU', 'CA', 'FR', 'DE', 'HK', 'IN',
+      'IT', 'ES', 'GB', 'S'. Defaults to 'US'.
+    required: false
+    default: US
+  tags:
+  - stock
+  - get
+  - stock
+  test_prompts:
+    single:
+    - What is the current stock price for Amazon.com Inc. in the Indian market?
+    - What is the current stock price of Google in the Australian market?
+    single_clear:
+    - What is the current stock price for Amazon.com Inc. in the Indian market?
+    - What is the current stock price of Google in the Australian market?
+- name: get_stations
+  descriptions:
+    minimal: Retrieve the nearest electric vehicle charging...
+    short: Retrieve the nearest electric vehicle charging stations within a specified distance.
+    medium: Retrieve the nearest electric vehicle charging stations within a specified distance.
+    long: Retrieve the nearest electric vehicle charging stations within a specified distance.
+    verbose: Retrieve the nearest electric vehicle charging stations within a specified distance.
+  parameters:
+  - name: distance
+    type: string
+    description: The radius in miles to search for charging stations. Defaults to '100'.
+    required: false
+    default: '100'
+  - name: longitude
+    type: string
+    description: The longitude coordinate for the search location. Defaults to '2.4379392'.
+    required: false
+    default: '2.4379392'
+  - name: latitude
+    type: string
+    description: The latitude coordinate for the search location. Defaults to '44.351488'.
+    required: false
+    default: '44.351488'
+  tags:
+  - get
+  - stations
+  test_prompts:
+    single:
+    - Find electric vehicle charging stations within 50 miles of Paris, France, with coordinates 48.8566 and 2.3522.
+    single_clear:
+    - Find electric vehicle charging stations within 50 miles of Paris, France, with coordinates 48.8566 and 2.3522.
+- name: get_u_54_athlete_ranking
+  descriptions:
+    minimal: Fetches the under-54 athlete ranking for...
+    short: Fetches the under-54 athlete ranking for Taekwondo from the provided RapidAPI service.
+    medium: Fetches the under-54 athlete ranking for Taekwondo from the provided RapidAPI service.
+    long: Fetches the under-54 athlete ranking for Taekwondo from the provided RapidAPI service.
+    verbose: Fetches the under-54 athlete ranking for Taekwondo from the provided RapidAPI service.
+  parameters:
+  - name: country
+    type: string
+    description: The country to filter the athlete rankings. Defaults to None.
+    required: false
+  tags:
+  - get
+  - u
+  - '54'
+  test_prompts:
+    single:
+    - Who are the leading under-54 Taekwondo athletes globally?
+    single_clear:
+    - Who are the leading under-54 Taekwondo athletes globally?
+- name: get_coverage
+  descriptions:
+    minimal: Retrieves cell coverage information for major US...
+    short: Retrieves cell coverage information for major US carriers (AT&T, T-Mobile, U.
+    medium: Retrieves cell coverage information for major US carriers (AT&T, T-Mobile, U.S. Cellular, and Verizon) based on
+      the provided zip code.
+    long: Retrieves cell coverage information for major US carriers (AT&T, T-Mobile, U.S. Cellular, and Verizon) based on
+      the provided zip code.
+    verbose: Retrieves cell coverage information for major US carriers (AT&T, T-Mobile, U.S. Cellular, and Verizon) based
+      on the provided zip code.
+  parameters:
+  - name: postcode
+    type: string
+    description: The zip code for which to retrieve cell coverage information.
+    required: true
+    default: '92101'
+  tags:
+  - get
+  - coverage
+  test_prompts:
+    single:
+    - Get cell coverage details for zip code 10001.
+    single_clear:
+    - Get cell coverage details for zip code 10001.
+- name: transaction
+  descriptions:
+    minimal: Fetches full data for a specific transaction on...
+    short: Fetches full data for a specific transaction on the Optimism blockchain.
+    medium: Fetches full data for a specific transaction on the Optimism blockchain.
+    long: Fetches full data for a specific transaction on the Optimism blockchain.
+    verbose: Fetches full data for a specific transaction on the Optimism blockchain.
+  parameters:
+  - name: hash
+    type: string
+    description: The hash of the transaction to scan.
+    required: true
+    default: '0xc3f239bae81d78c344f475955801bf2a491430009f171c34a4937dc89ad88d9f'
+  - name: network
+    type: string
+    description: The network to use (mainnet or testnet). Defaults to None.
+    required: false
+  tags:
+  - transaction
+  test_prompts:
+    single:
+    - Fetch the transaction details for a transaction with hash '0x123abc' on the mainnet.
+    single_clear:
+    - Fetch the transaction details for a transaction with hash '0x123abc' on the mainnet.
+- name: getorderbyid
+  descriptions:
+    minimal: Fetches the order details from the Petstore API...
+    short: Fetches the order details from the Petstore API using the provided order ID.
+    medium: Fetches the order details from the Petstore API using the provided order ID.
+    long: Fetches the order details from the Petstore API using the provided order ID.
+    verbose: Fetches the order details from the Petstore API using the provided order ID.
+  parameters:
+  - name: orderid
+    type: integer
+    description: The ID of the order to be fetched. Must be an integer between 1 and 10.
+    required: true
+  tags:
+  - getorderbyid
+  test_prompts:
+    single:
+    - Fetch the details of order number 5 from the Petstore API
+    single_clear:
+    - Fetch the details of order number 5 from the Petstore API
+- name: company_cash_flow
+  descriptions:
+    minimal: Fetch public company's quarterly or annual cash...
+    short: Fetch public company's quarterly or annual cash flow information.
+    medium: Fetch public company's quarterly or annual cash flow information.
+    long: Fetch public company's quarterly or annual cash flow information.
+    verbose: Fetch public company's quarterly or annual cash flow information.
+  parameters:
+  - name: period
+    type: string
+    description: The period for which to retrieve the company's cash flow. Valid values are 'QUARTERLY' or 'ANNUAL'.
+    required: true
+  - name: symbol
+    type: string
+    description: The stock symbol (ticker) of the company. Examples include 'MSFT', 'AAPL', or 'MSFT:NASDAQ'.
+    required: true
+    default: AAPL:NASDAQ
+  - name: language
+    type: string
+    description: The language to use for the results, specified as a 2-letter language code according to ISO 639-1 standards.
+      Defaults to 'en'.
+    required: false
+    default: en
+  tags:
+  - company
+  - cash
+  - flow
+  test_prompts:
+    single:
+    - I need the annual cash flow data for 'MSFT' in English. Can you fetch that for me?
+    single_clear:
+    - I need the annual cash flow data for 'MSFT' in English. Can you fetch that for me?
+- name: article_page
+  descriptions:
+    minimal: Fetches a page of articles based on the provided...
+    short: Fetches a page of articles based on the provided page ID, with an optional limit on the number of articles returned
+      and a specified RapidAPI key.
+    medium: Fetches a page of articles based on the provided page ID, with an optional limit on the number of articles returned
+      and a specified RapidAPI key.
+    long: Fetches a page of articles based on the provided page ID, with an optional limit on the number of articles returned
+      and a specified RapidAPI key.
+    verbose: Fetches a page of articles based on the provided page ID, with an optional limit on the number of articles returned
+      and a specified RapidAPI key.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the page to fetch articles from.
+    required: true
+    default: '1'
+  - name: limit
+    type: integer
+    description: The maximum number of articles to retrieve. Defaults to 10.
+    required: false
+    default: '10'
+  tags:
+  - article
+  - page
+  test_prompts:
+    single:
+    - Could you fetch articles from the climate news feed page 10, but limit the results to 5 articles?
+    single_clear:
+    - Could you fetch articles from the climate news feed page 10, but limit the results to 5 articles?
+- name: search_for_creators
+  descriptions:
+    minimal: Search for creators on Patreon using the given...
+    short: Search for creators on Patreon using the given search query.
+    medium: Search for creators on Patreon using the given search query.
+    long: Search for creators on Patreon using the given search query.
+    verbose: Search for creators on Patreon using the given search query.
+  parameters:
+  - name: search_query
+    type: string
+    description: The search term used to query creators on Patreon.
+    required: true
+    default: adnr studios
+  tags:
+  - search
+  - for
+  - creators
+  test_prompts:
+    single:
+    - Search for creators on Patreon with the keyword 'artist'.
+    single_clear:
+    - Search for creators on Patreon with the keyword 'artist'.
+- name: by_zip_code
+  descriptions:
+    minimal: Fetches weather data based on a given zip code...
+    short: Fetches weather data based on a given zip code using the Toolbench RapidAPI service.
+    medium: Fetches weather data based on a given zip code using the Toolbench RapidAPI service.
+    long: Fetches weather data based on a given zip code using the Toolbench RapidAPI service.
+    verbose: Fetches weather data based on a given zip code using the Toolbench RapidAPI service.
+  parameters:
+  - name: zip
+    type: string
+    description: The zip code for which to fetch the weather data. If the country is not specified, the search defaults to
+      the USA.
+    required: true
+    default: '94040'
+  - name: lang
+    type: string
+    description: Language in which to receive the output. Defaults to None.
+    required: false
+  - name: units
+    type: string
+    description: Units of measurement to use. Available options are 'standard', 'metric', and 'imperial'. If not specified,
+      'standard' units will be used by default. Defaults to None.
+    required: false
+  tags:
+  - by
+  - zip
+  - code
+  test_prompts:
+    single:
+    - Fetch the current weather in Paris, France using metric units and French language.
+    - Fetch the current weather in Paris, France in French and using metric units.
+    single_clear:
+    - Fetch the current weather in Paris, France using metric units and French language.
+    - Fetch the current weather in Paris, France in French and using metric units.
+- name: get_ip_location
+  descriptions:
+    minimal: Retrieves the latitude and longitude coordinates...
+    short: Retrieves the latitude and longitude coordinates of a given IP address using the ip-api.
+    medium: Retrieves the latitude and longitude coordinates of a given IP address using the ip-api.com API.
+    long: Retrieves the latitude and longitude coordinates of a given IP address using the ip-api.com API.
+    verbose: Retrieves the latitude and longitude coordinates of a given IP address using the ip-api.com API.
+  parameters:
+  - name: ip
+    type: string
+    description: The IP address to locate.
+    required: true
+  tags:
+  - get
+  - ip
+  - location
+  test_prompts:
+    single:
+    - Find the latitude and longitude of the IP address 8.8.8.8.
+    - Get the location of the IP 67.67.67.67.
+    single_clear:
+    - Find the latitude and longitude of the IP address 8.8.8.8.
+    - Get the location of the IP 67.67.67.67.
+- name: get_individual_quotes_by_quote_id
+  descriptions:
+    minimal: Fetches individual quotes based on the given...
+    short: Fetches individual quotes based on the given quote ID.
+    medium: Fetches individual quotes based on the given quote ID.
+    long: Fetches individual quotes based on the given quote ID.
+    verbose: Fetches individual quotes based on the given quote ID.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the quote to be retrieved.
+    required: true
+    default: '4'
+  tags:
+  - get
+  - individual
+  - quotes
+  test_prompts:
+    single:
+    - Can you get the quote with ID 24680 from the movie and TV shows quotes database?
+    single_clear:
+    - Can you get the quote with ID 24680 from the movie and TV shows quotes database?
+- name: get_cigar_average_length
+  descriptions:
+    minimal: Fetches the average length of cigars based on...
+    short: Fetches the average length of cigars based on specified filters.
+    medium: Fetches the average length of cigars based on specified filters.
+    long: Fetches the average length of cigars based on specified filters.
+    verbose: Fetches the average length of cigars based on specified filters.
+  parameters:
+  - name: wrapper
+    type: string
+    description: The wrapper type of the cigar. Default is 'Connecticut Shade, Ecuador'.
+    required: true
+    default: Connecticut Shade, Ecuador
+  - name: name
+    type: string
+    description: The name of the cigar. Default is 'Torpedo'.
+    required: true
+    default: Torpedo
+  - name: filler
+    type: string
+    description: The filler type of the cigar. Default is 'Nicaragua'.
+    required: true
+    default: Nicaragua
+  - name: country
+    type: string
+    description: The country where the cigar is made. Default is 'Nicaragua'.
+    required: true
+    default: Nicaragua
+  - name: color
+    type: string
+    description: The color of the cigar. Default is 'Colorado Claro'.
+    required: true
+    default: Colorado Claro
+  - name: strength
+    type: string
+    description: The strength of the cigar. Default is 'Mild-Medium'.
+    required: true
+    default: Mild-Medium
+  - name: brandid
+    type: integer
+    description: The brand ID of the cigar. Default is 13711.
+    required: true
+    default: '13711'
+  tags:
+  - get
+  - cigar
+  - average
+  test_prompts:
+    single:
+    - What is the average length of cigars with a Connecticut Shade wrapper, Nicaraguan filler, and made in Nicaragua?
+    single_clear:
+    - What is the average length of cigars with a Connecticut Shade wrapper, Nicaraguan filler, and made in Nicaragua?
+- name: get_tiktok_video_info
+  descriptions:
+    minimal: Fetches detailed information about a TikTok...
+    short: Fetches detailed information about a TikTok video, including options for HD quality and no watermark.
+    medium: Fetches detailed information about a TikTok video, including options for HD quality and no watermark.
+    long: Fetches detailed information about a TikTok video, including options for HD quality and no watermark.
+    verbose: Fetches detailed information about a TikTok video, including options for HD quality and no watermark.
+  parameters:
+  - name: url
+    type: string
+    description: The URL of the TikTok video. It can be in the format of a TikTok ID or a direct TikTok video link.
+    required: true
+    default: https://vm.tiktok.com/ZTRvK8Fn4/
+  tags:
+  - get
+  - tiktok
+  - video
+  test_prompts:
+    single:
+    - Get detailed information about the TikTok video at 'https://www.tiktok.com/@user/video123456789'
+    single_clear:
+    - Get detailed information about the TikTok video at 'https://www.tiktok.com/@user/video123456789'
+- name: market_get_compact
+  descriptions:
+    minimal: Fetch the most informative fields about indices...
+    short: Fetch the most informative fields about indices, commodities, currencies, rates, and other market data.
+    medium: Fetch the most informative fields about indices, commodities, currencies, rates, and other market data.
+    long: Fetch the most informative fields about indices, commodities, currencies, rates, and other market data.
+    verbose: Fetch the most informative fields about indices, commodities, currencies, rates, and other market data.
+  parameters:
+  - name: is_id
+    type: string
+    description: A comma-separated string of market IDs returned from the `/market/auto-complete` endpoint.
+    required: true
+    default: adsmi:ind,aex:ind,co1:com,gc1:com
+  tags:
+  - market
+  - get
+  - compact
+  test_prompts:
+    single:
+    - Get compact market data for currencies 'EUR/USD', 'GBP/USD', and 'USD/JPY'.
+    single_clear:
+    - Get compact market data for currencies 'EUR/USD', 'GBP/USD', and 'USD/JPY'.
+- name: getprojects
+  descriptions:
+    minimal: Fetches artificial intelligence projects from the...
+    short: Fetches artificial intelligence projects from the specified page using the provided RapidAPI key.
+    medium: Fetches artificial intelligence projects from the specified page using the provided RapidAPI key.
+    long: Fetches artificial intelligence projects from the specified page using the provided RapidAPI key.
+    verbose: Fetches artificial intelligence projects from the specified page using the provided RapidAPI key.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number of the projects to retrieve.
+    required: true
+    default: '1'
+  tags:
+  - getprojects
+  test_prompts:
+    single:
+    - Can you fetch the artificial intelligence projects from page 1?
+    single_clear:
+    - Can you fetch the artificial intelligence projects from page 1?
+- name: get_weekly_popular_books_by_genre
+  descriptions:
+    minimal: Retrieve the most popular books from the past...
+    short: Retrieve the most popular books from the past week based on a specified genre.
+    medium: Retrieve the most popular books from the past week based on a specified genre.
+    long: Retrieve the most popular books from the past week based on a specified genre.
+    verbose: Retrieve the most popular books from the past week based on a specified genre.
+  parameters:
+  - name: genre
+    type: string
+    description: The genre of books to retrieve.
+    required: true
+    default: horror
+  - name: number_results
+    type: integer
+    description: The number of results to return. Defaults to 10.
+    required: false
+    default: '10'
+  tags:
+  - get
+  - weekly
+  - popular
+  test_prompts:
+    single:
+    - Fetch me 15 popular books from the last week in the mystery genre.
+    single_clear:
+    - Fetch me 15 popular books from the last week in the mystery genre.
+- name: is_power_of_two
+  descriptions:
+    minimal: Checks if a number is a power of two.
+    short: Checks if a number is a power of two.
+    medium: Checks if a number is a power of two.
+    long: Checks if a number is a power of two.
+    verbose: Checks if a number is a power of two.
+  parameters:
+  - name: num
+    type: integer
+    description: The number to check.
+    required: true
+  tags:
+  - is
+  - power
+  - of
+  test_prompts:
+    single:
+    - Check if 128 is a power of two.
+    - Can you determine if the number 128 is a power of two?
+    single_clear:
+    - Check if 128 is a power of two.
+    - Can you determine if the number 128 is a power of two?

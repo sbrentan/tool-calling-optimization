@@ -12,9 +12,8 @@ This guide documents all methodologies implemented in the tool-calling optimizat
 4. [RAG (Retrieval-Augmented Generation)](#rag-retrieval-augmented-generation)
 5. [Hybrid (RAG + Clustering)](#hybrid-rag--clustering)
 6. [Adaptive RAG](#adaptive-rag)
-7. [Confidence-Based Fallback](#confidence-based-fallback)
-8. [Comparison Summary](#comparison-summary)
-9. [Tuning Guidelines](#tuning-guidelines)
+7. [Comparison Summary](#comparison-summary)
+8. [Tuning Guidelines](#tuning-guidelines)
 
 ---
 
@@ -442,95 +441,6 @@ adaptive_rag_config:
 
 ---
 
-## Confidence-Based Fallback
-
-### How It Works
-
-Implements a fallback chain with confidence scoring:
-1. **Try Fast Method (RAG)**: Check if confidence is high enough
-2. **Fallback to Clustering**: If RAG confidence is low
-3. **Fallback to MCP**: If still not confident enough
-
-```
-Query → [RAG] → High Confidence? → Yes → Return Result
-                    ↓ No
-              [Clustering] → High Confidence? → Yes → Return Result
-                    ↓ No
-              [MCP] → Return Result
-```
-
-### Implementation
-
-Located in `src/methodologies/confidence.py`
-
-```python
-class ConfidenceMethodology(BaseMethodology):
-    NAME = "confidence"
-    
-    def run_single(self, prompt, tools, client):
-        # Try RAG first (fastest)
-        rag_result = self.rag.run_single(prompt, tools, client)
-        if rag_result.confidence > self.rag_threshold:
-            return rag_result
-        
-        # Fall back to clustering
-        cluster_result = self.clustering.run_single(prompt, tools, client)
-        if cluster_result.confidence > self.cluster_threshold:
-            return cluster_result
-        
-        # Fall back to full MCP (most accurate)
-        return self.mcp.run_single(prompt, tools, client)
-```
-
-### Trade-offs
-
-| Aspect | Rating | Notes |
-|--------|--------|-------|
-| **Accuracy** | ⭐⭐⭐⭐⭐ | Best of all methods |
-| **Context Usage** | ⭐⭐⭐ | Variable - depends on fallback rate |
-| **Latency** | ⭐⭐⭐ | Can be slow if many fallbacks |
-| **Cost** | ⭐⭐⭐ | Variable - depends on fallback rate |
-| **Scalability** | ⭐⭐⭐⭐ | Good, with appropriate thresholds |
-
-### When to Use
-
-✅ **Use Confidence when:**
-- Production systems requiring high reliability
-- Cost can vary within bounds
-- You can tune confidence thresholds
-- You need graceful degradation
-
-❌ **Avoid Confidence when:**
-- Latency must be predictable
-- Cost must be constant
-- Simple use cases where one method suffices
-
-### Configuration
-
-```yaml
-methodology: confidence
-confidence_config:
-  rag_threshold: 0.8        # Confidence needed to accept RAG result
-  cluster_threshold: 0.7    # Confidence needed to accept clustering result
-  # Nested configs for each sub-methodology
-  rag_config:
-    top_k: 10
-  hybrid_config:
-    top_k_categories: 3
-```
-
-### Tuning Tips
-
-1. **Monitor Fallback Rate**: Track `fallback_rate` and `method_used_distribution`
-   - High fallback rate? Lower thresholds or improve RAG/clustering
-   - Low fallback rate? Raise thresholds to save costs
-
-2. **Analyze When Fallbacks Occur**: Look at queries that trigger fallbacks
-   - Improve tool descriptions for those query types
-   - Add training examples
-
----
-
 ## Comparison Summary
 
 | Methodology | Best For | Context | Accuracy | Speed | Cost |
@@ -540,20 +450,6 @@ confidence_config:
 | **RAG** | Large tool sets | Medium | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
 | **Hybrid** | Semantic category selection | Medium | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
 | **Adaptive RAG** | Variable complexity queries | Adaptive | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **Confidence** | Production reliability | Variable | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ |
-
-### Decision Tree
-
-```
-How many tools?
-├── <50 tools → Use MCP
-└── 50+ tools
-    ├── Well-organized categories?
-    │   ├── Yes → Consider Hybrid or Clustering
-    │   └── No → Use RAG or Adaptive RAG
-    └── Need production reliability?
-        └── Yes → Use Confidence methodology
-```
 
 ---
 
@@ -573,8 +469,6 @@ How many tools?
 | **Accuracy** | Overall correctness |
 | **Retrieval Recall@K** | Was correct tool in retrieved set? |
 | **Category Accuracy** | Is category selection working? |
-| **Confidence Distribution** | Are confidence scores meaningful? |
-| **Fallback Rate** | How often does confidence fallback? |
 | **Latency Distribution** | Are there outliers? |
 
 ### Improving Accuracy
@@ -603,10 +497,9 @@ How many tools?
 
 ### Reducing Cost
 
-1. **Use Efficient Methodologies**: RAG < Hybrid < Clustering < Confidence < MCP
+1. **Use Efficient Methodologies**: RAG < Hybrid < Clustering < MCP
 2. **Lower K Values**: Fewer tokens per request
-3. **Tune Confidence Thresholds**: Accept faster methods more often
-4. **Use Smaller LLMs**: For simple queries, smaller models suffice
+3. **Use Smaller LLMs**: For simple queries, smaller models suffice
 
 ---
 
@@ -619,7 +512,6 @@ How many tools?
 | RAG Methodology | `src/methodologies/rag.py` |
 | Hybrid Methodology | `src/methodologies/hybrid.py` |
 | Adaptive RAG Methodology | `src/methodologies/adaptive_rag.py` |
-| Confidence Methodology | `src/methodologies/confidence.py` |
 | Tool Categories | `tools/categories.yaml` |
 | Experiment Configs | `experiments/configs/*.yaml` |
 | Analysis Script | `scripts/analyze_results.py` |

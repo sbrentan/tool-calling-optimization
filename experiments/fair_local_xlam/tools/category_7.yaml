@@ -1,0 +1,864 @@
+category: category_7
+tools:
+- name: tsv6
+  descriptions:
+    minimal: Fetches the variable list within the specified...
+    short: Fetches the variable list within the specified category of a merged data subset along with the metadata.
+    medium: Fetches the variable list within the specified category of a merged data subset along with the metadata.
+    long: Fetches the variable list within the specified category of a merged data subset along with the metadata.
+    verbose: Fetches the variable list within the specified category of a merged data subset along with the metadata.
+  parameters:
+  - name: dataset
+    type: string
+    description: The dataset identifier.
+    required: true
+    default: frim1
+  - name: category
+    type: string
+    description: The category to filter the data.
+    required: true
+    default: factor
+  - name: subset
+    type: string
+    description: The data subset identifier.
+    required: true
+    default: activome
+  - name: format
+    type: string
+    description: The desired output format. Default is 'tsv'.
+    required: false
+    default: tsv
+  tags:
+  - tsv6
+  test_prompts:
+    single:
+    - Can you get the variable list and metadata for the 'Health' category in the 'GlobalData' subset of the 'WorldBank' dataset?
+      Also, please return the results in JSON format.
+    single_clear:
+    - Can you get the variable list and metadata for the 'Health' category in the 'GlobalData' subset of the 'WorldBank' dataset?
+      Also, please return the results in JSON format.
+- name: visa_requirements
+  descriptions:
+    minimal: Fetches visa requirements for a given passport...
+    short: Fetches visa requirements for a given passport and destination using the Toolbench RapidAPI.
+    medium: Fetches visa requirements for a given passport and destination using the Toolbench RapidAPI.
+    long: Fetches visa requirements for a given passport and destination using the Toolbench RapidAPI.
+    verbose: Fetches visa requirements for a given passport and destination using the Toolbench RapidAPI.
+  parameters:
+  - name: passport
+    type: string
+    description: The passport country code.
+    required: true
+    default: US
+  - name: destination
+    type: string
+    description: The destination country code.
+    required: true
+    default: US
+  tags:
+  - visa
+  - requirements
+  test_prompts:
+    single:
+    - What are the visa requirements for a UK citizen going to Brazil?
+    - What are the visa requirements for a US citizen traveling to Japan?
+    single_clear:
+    - What are the visa requirements for a UK citizen going to Brazil?
+    - What are the visa requirements for a US citizen traveling to Japan?
+- name: zip_code
+  descriptions:
+    minimal: Retrieves income-related data for a given US ZIP...
+    short: Retrieves income-related data for a given US ZIP code using the Toolbench RapidAPI service.
+    medium: Retrieves income-related data for a given US ZIP code using the Toolbench RapidAPI service.
+    long: Retrieves income-related data for a given US ZIP code using the Toolbench RapidAPI service.
+    verbose: Retrieves income-related data for a given US ZIP code using the Toolbench RapidAPI service.
+  parameters:
+  - name: zip
+    type: integer
+    description: The ZIP code for which to retrieve income-related data.
+    required: true
+    default: '0'
+  tags:
+  - zip
+  - code
+  test_prompts:
+    single:
+    - Could you retrieve the income data for ZIP code 85001 in Phoenix, AZ?
+    single_clear:
+    - Could you retrieve the income data for ZIP code 85001 in Phoenix, AZ?
+- name: probability_of_consecutive_rolls
+  descriptions:
+    minimal: Calculates the probability of rolling a specific...
+    short: Calculates the probability of rolling a specific value on a die consecutively for a given number of rolls.
+    medium: Calculates the probability of rolling a specific value on a die consecutively for a given number of rolls.
+    long: Calculates the probability of rolling a specific value on a die consecutively for a given number of rolls.
+    verbose: Calculates the probability of rolling a specific value on a die consecutively for a given number of rolls.
+  parameters:
+  - name: target_value
+    type: integer
+    description: The desired value to be rolled.
+    required: true
+    default: 6
+  - name: num_rolls
+    type: integer
+    description: The number of consecutive rolls.
+    required: true
+    default: 6
+  - name: num_sides
+    type: integer
+    description: The number of sides on the die. Defaults to 6.
+    required: false
+  tags:
+  - probability
+  - of
+  - consecutive
+  test_prompts:
+    single:
+    - Calculate the probability of rolling a 6 on a ten-sided die five times consecutively.
+    - What is the probability of rolling a 6 three times in a row on a standard six-sided die?
+    - What is the probability of rolling a 6 on a 6-sided die three times consecutively?
+    - What is the probability of rolling a 6 three times consecutively on a standard 6-sided die?
+    - Calculate the probability of rolling a 1 on a 4-sided die twice consecutively.
+    - What's the chance of rolling a 1 three times in a row on a 4-sided die?
+    - What is the probability of rolling a 5 on a standard 6-sided die three times in a row?
+    - What is the probability of rolling a 1 on a 10-sided die five times consecutively?
+    - Calculate the probability of rolling a 2 twice in succession on a 10-sided die.
+    single_clear:
+    - Calculate the probability of rolling a 6 on a ten-sided die five times consecutively.
+    - What is the probability of rolling a 6 three times in a row on a standard six-sided die?
+    - What is the probability of rolling a 6 on a 6-sided die three times consecutively?
+    - What is the probability of rolling a 6 three times consecutively on a standard 6-sided die?
+    - Calculate the probability of rolling a 1 on a 4-sided die twice consecutively.
+    - What's the chance of rolling a 1 three times in a row on a 4-sided die?
+    - What is the probability of rolling a 5 on a standard 6-sided die three times in a row?
+    - What is the probability of rolling a 1 on a 10-sided die five times consecutively?
+    - Calculate the probability of rolling a 2 twice in succession on a 10-sided die.
+- name: get_5_day_forecast
+  descriptions:
+    minimal: Fetches the 5-day weather forecast for a...
+    short: Fetches the 5-day weather forecast for a specified ski resort.
+    medium: Fetches the 5-day weather forecast for a specified ski resort.
+    long: Fetches the 5-day weather forecast for a specified ski resort.
+    verbose: Fetches the 5-day weather forecast for a specified ski resort.
+  parameters:
+  - name: resort
+    type: string
+    description: The name of the ski resort for which to fetch the forecast.
+    required: true
+    default: Jackson Hole
+  - name: units
+    type: string
+    description: The units for temperature and snow depth. Accepted values are 'i' for imperial and 'm' for metric. Defaults
+      to 'i'.
+    required: false
+    default: i
+  - name: el
+    type: string
+    description: The elevation level of the mountain for which to fetch the forecast. Accepted values are 'top', 'mid', and
+      'bot'. Defaults to 'top'.
+    required: false
+    default: top
+  tags:
+  - get
+  - '5'
+  - day
+  test_prompts:
+    single:
+    - I'm planning a ski trip to Aspen next week. What's the forecast for the mid-level elevation in imperial units?
+    - What is the 5-day weather forecast for Aspen Ski Resort in metric units at the top elevation level?
+    single_clear:
+    - I'm planning a ski trip to Aspen next week. What's the forecast for the mid-level elevation in imperial units?
+    - What is the 5-day weather forecast for Aspen Ski Resort in metric units at the top elevation level?
+- name: market_undervalued_large_caps
+  descriptions:
+    minimal: Fetches a list of potentially undervalued large...
+    short: Fetches a list of potentially undervalued large cap stocks from the API.
+    medium: Fetches a list of potentially undervalued large cap stocks from the API.
+    long: Fetches a list of potentially undervalued large cap stocks from the API.
+    verbose: Fetches a list of potentially undervalued large cap stocks from the API.
+  parameters:
+  - name: start
+    type: integer
+    description: The starting index for the results. Defaults to 0.
+    required: false
+    default: '0'
+  tags:
+  - market
+  - undervalued
+  - large
+  test_prompts:
+    single:
+    - Get the list of undervalued large cap stocks starting from the 20th stock.
+    - Retrieve the first 10 undervalued large cap stocks.
+    - Find undervalued large cap stocks starting from the 20th result.
+    single_clear:
+    - Get the list of undervalued large cap stocks starting from the 20th stock.
+    - Retrieve the first 10 undervalued large cap stocks.
+    - Find undervalued large cap stocks starting from the 20th result.
+- name: calculate_quarterly_dividend
+  descriptions:
+    minimal: Calculates the quarterly dividend per share based...
+    short: Calculates the quarterly dividend per share based on the total dividend payout and the number of outstanding shares.
+    medium: Calculates the quarterly dividend per share based on the total dividend payout and the number of outstanding shares.
+    long: Calculates the quarterly dividend per share based on the total dividend payout and the number of outstanding shares.
+    verbose: Calculates the quarterly dividend per share based on the total dividend payout and the number of outstanding
+      shares.
+  parameters:
+  - name: total_dividend
+    type: integer
+    description: The total dividend payout in USD.
+    required: true
+  - name: num_shares
+    type: integer
+    description: The number of outstanding shares.
+    required: true
+  tags:
+  - calculate
+  - quarterly
+  - dividend
+  test_prompts:
+    single:
+    - Compute the quarterly dividend per share for a firm with a total dividend of $500,000 and 20,000 shares.
+    - Calculate the quarterly dividend per share for a company with a total dividend of $1000000 and 500000 shares.
+    - What is the quarterly dividend per share if the total dividend is $1000000 and there are 500000 shares?
+    - Determine the quarterly dividend per share for a company with a total annual dividend of $100,000 and 5000 outstanding
+      shares.
+    single_clear:
+    - Compute the quarterly dividend per share for a firm with a total dividend of $500,000 and 20,000 shares.
+    - Calculate the quarterly dividend per share for a company with a total dividend of $1000000 and 500000 shares.
+    - What is the quarterly dividend per share if the total dividend is $1000000 and there are 500000 shares?
+    - Determine the quarterly dividend per share for a company with a total annual dividend of $100,000 and 5000 outstanding
+      shares.
+- name: air_quality_forecast
+  descriptions:
+    minimal: Returns an air quality forecast for a given...
+    short: Returns an air quality forecast for a given location.
+    medium: Returns an air quality forecast for a given location.
+    long: Returns an air quality forecast for a given location.
+    verbose: Returns an air quality forecast for a given location.
+  parameters:
+  - name: lat
+    type: integer
+    description: The latitude of the location for which the air quality forecast is to be retrieved.
+    required: true
+    default: '35.779'
+  - name: lon
+    type: integer
+    description: The longitude of the location for which the air quality forecast is to be retrieved.
+    required: true
+    default: '-78.638'
+  - name: hours
+    type: integer
+    description: The number of hours for which the forecast is to be retrieved (default is 72).
+    required: true
+    default: '72'
+  tags:
+  - air
+  - quality
+  - forecast
+  test_prompts:
+    single:
+    - Provide a 96-hour air quality forecast for Los Angeles, California.
+    - What is the air quality forecast for Rio de Janeiro for the next 72 hours?
+    - What is the air quality forecast for Los Angeles for the next 60 hours?
+    single_clear:
+    - Provide a 96-hour air quality forecast for Los Angeles, California.
+    - What is the air quality forecast for Rio de Janeiro for the next 72 hours?
+    - What is the air quality forecast for Los Angeles for the next 60 hours?
+- name: autocomplete
+  descriptions:
+    minimal: This function sends a request to the Place...
+    short: This function sends a request to the Place Autocomplete API to get place suggestions based on the input text and
+      specified radius.
+    medium: This function sends a request to the Place Autocomplete API to get place suggestions based on the input text and
+      specified radius.
+    long: This function sends a request to the Place Autocomplete API to get place suggestions based on the input text and
+      specified radius.
+    verbose: This function sends a request to the Place Autocomplete API to get place suggestions based on the input text
+      and specified radius.
+  parameters:
+  - name: radius
+    type: string
+    description: The radius within which to search for place suggestions.
+    required: true
+    default: '500'
+  - name: input
+    type: string
+    description: The input text for which to find place matches.
+    required: true
+    default: new
+  tags:
+  - autocomplete
+  test_prompts:
+    single:
+    - Suggest places near Times Square, New York within a 5km radius.
+    single_clear:
+    - Suggest places near Times Square, New York within a 5km radius.
+- name: numerical_derivative
+  descriptions:
+    minimal: Estimates the derivative of a function at a given...
+    short: Estimates the derivative of a function at a given point using the central difference formula.
+    medium: Estimates the derivative of a function at a given point using the central difference formula.
+    long: Estimates the derivative of a function at a given point using the central difference formula.
+    verbose: Estimates the derivative of a function at a given point using the central difference formula.
+  parameters:
+  - name: function
+    type: string
+    description: The function to calculate the derivative of.
+    required: true
+  - name: x
+    type: number
+    description: The point at which to estimate the derivative.
+    required: true
+  tags:
+  - numerical
+  - derivative
+  test_prompts:
+    single:
+    - Estimate the derivative of the function f(x) = x^2 at x = 3 using numerical methods.
+    - Calculate the derivative of the function f(x) = sin(x) at x = π/2.
+    - Determine the derivative of the function f(x) = e^x at x = 1.
+    - Determine the derivative of the function f(x) = sin(x) + x at x = π.
+    - Estimate the derivative of the function f(x) = x^2 at x=3 using numerical methods.
+    - Estimate the derivative of the function f(x) = x^2 at x = 3.
+    - Find the derivative of the function k(x) = 1/x at x = 3.
+    - Compute the derivative of the function g(x) = sin(x) at x = π/2 using numerical differentiation.
+    - Estimate the derivative of the function f(x) = x^2 at x = 3.
+    - Calculate the derivative of the function g(x) = sin(x) at x = π/2.
+    - Estimate the derivative of the function f(x) = 3x^3 - 2x^2 + x - 1 at x = 2.
+    - Estimate the derivative of the function f(x) = x^2 at x = 3 using numerical methods.
+    single_clear:
+    - Estimate the derivative of the function f(x) = x^2 at x = 3 using numerical methods.
+    - Calculate the derivative of the function f(x) = sin(x) at x = π/2.
+    - Determine the derivative of the function f(x) = e^x at x = 1.
+    - Determine the derivative of the function f(x) = sin(x) + x at x = π.
+    - Estimate the derivative of the function f(x) = x^2 at x=3 using numerical methods.
+    - Estimate the derivative of the function f(x) = x^2 at x = 3.
+    - Find the derivative of the function k(x) = 1/x at x = 3.
+    - Compute the derivative of the function g(x) = sin(x) at x = π/2 using numerical differentiation.
+    - Estimate the derivative of the function f(x) = x^2 at x = 3.
+    - Calculate the derivative of the function g(x) = sin(x) at x = π/2.
+    - Estimate the derivative of the function f(x) = 3x^3 - 2x^2 + x - 1 at x = 2.
+    - Estimate the derivative of the function f(x) = x^2 at x = 3 using numerical methods.
+- name: search_all_words_api
+  descriptions:
+    minimal: Fetches King James Version (KJV) Bible verses...
+    short: Fetches King James Version (KJV) Bible verses containing all the supplied words from the Complete Study Bible API.
+    medium: Fetches King James Version (KJV) Bible verses containing all the supplied words from the Complete Study Bible
+      API.
+    long: Fetches King James Version (KJV) Bible verses containing all the supplied words from the Complete Study Bible API.
+    verbose: Fetches King James Version (KJV) Bible verses containing all the supplied words from the Complete Study Bible
+      API.
+  parameters:
+  - name: words
+    type: string
+    description: Words to search for in the KJV Bible verses, separated by '%20' (URL encoded spaces).
+    required: true
+    default: Melchizedek priest
+  tags:
+  - search
+  - all
+  - words
+  test_prompts:
+    single:
+    - Find all Bible verses containing the words 'love', 'faith', and 'hope'.
+    single_clear:
+    - Find all Bible verses containing the words 'love', 'faith', and 'hope'.
+- name: create_histogram
+  descriptions:
+    minimal: Create a histogram based on provided data.
+    short: Create a histogram based on provided data.
+    medium: Create a histogram based on provided data.
+    long: Create a histogram based on provided data.
+    verbose: Create a histogram based on provided data.
+  parameters:
+  - name: data
+    type: array
+    description: The data for which histogram needs to be plotted.
+    required: true
+    default: 10
+  - name: bins
+    type: integer
+    description: The number of equal-width bins in the range. Default is 10.
+    required: true
+    default: 10
+  tags:
+  - create
+  - histogram
+  test_prompts:
+    single:
+    - Generate a histogram for the ages of participants in a survey, which are [25, 30, 35, 40, 45, 50, 55, 60] using 4 bins.
+    - Plot a histogram for the numbers [10, 20, 30, 40, 50] with 4 bins.
+    - Plot a histogram for the temperatures recorded in a city over a week. The temperatures are [22, 23, 24, 25, 26, 27,
+      28, 29, 30] and use 2 bins.
+    - Create a histogram for the data set [1, 2, 2, 3, 3, 3, 4, 4, 4, 4] using 5 bins.
+    - Create a histogram for the salaries of employees in a company. The salaries are [30000, 35000, 40000, 45000, 50000,
+      55000, 60000, 65000, 70000, 75000] and use 4 bins.
+    single_clear:
+    - Generate a histogram for the ages of participants in a survey, which are [25, 30, 35, 40, 45, 50, 55, 60] using 4 bins.
+    - Plot a histogram for the numbers [10, 20, 30, 40, 50] with 4 bins.
+    - Plot a histogram for the temperatures recorded in a city over a week. The temperatures are [22, 23, 24, 25, 26, 27,
+      28, 29, 30] and use 2 bins.
+    - Create a histogram for the data set [1, 2, 2, 3, 3, 3, 4, 4, 4, 4] using 5 bins.
+    - Create a histogram for the salaries of employees in a company. The salaries are [30000, 35000, 40000, 45000, 50000,
+      55000, 60000, 65000, 70000, 75000] and use 4 bins.
+- name: get_mempool_v2
+  descriptions:
+    minimal: Retrieve a list of transaction IDs currently in...
+    short: Retrieve a list of transaction IDs currently in the mempool of the specified blockchain node, representing unconfirmed
+      transactions not yet included in any block.
+    medium: Retrieve a list of transaction IDs currently in the mempool of the specified blockchain node, representing unconfirmed
+      transactions not yet included in any block.
+    long: Retrieve a list of transaction IDs currently in the mempool of the specified blockchain node, representing unconfirmed
+      transactions not yet included in any block.
+    verbose: Retrieve a list of transaction IDs currently in the mempool of the specified blockchain node, representing unconfirmed
+      transactions not yet included in any block.
+  parameters:
+  - name: blockchain
+    type: string
+    description: The name of the blockchain.
+    required: true
+    default: bitcoin
+  - name: pagesize
+    type: integer
+    description: The number of transactions to return per call. Default and maximum is 1000.
+    required: false
+    default: 1000
+  - name: page
+    type: integer
+    description: Specifies the page of returned transactions, starting from 1. If out of range, the closest possible page
+      is returned. Default is 1.
+    required: false
+    default: 1
+  tags:
+  - get
+  - mempool
+  - v2
+  test_prompts:
+    single:
+    - List all unconfirmed transactions in the Bitcoin blockchain.
+    single_clear:
+    - List all unconfirmed transactions in the Bitcoin blockchain.
+- name: tournament_list_wta
+  descriptions:
+    minimal: Retrieves the list of all WTA tournaments to be...
+    short: Retrieves the list of all WTA tournaments to be played in a given year, including basic information such as tournament
+      venue, surface, and prizemoney.
+    medium: Retrieves the list of all WTA tournaments to be played in a given year, including basic information such as tournament
+      venue, surface, and prizemoney.
+    long: Retrieves the list of all WTA tournaments to be played in a given year, including basic information such as tournament
+      venue, surface, and prizemoney.
+    verbose: Retrieves the list of all WTA tournaments to be played in a given year, including basic information such as tournament
+      venue, surface, and prizemoney.
+  parameters:
+  - name: year
+    type: string
+    description: The year for which to retrieve tournament data. Must be between 1960 and 2022.
+    required: true
+    default: '2022'
+  tags:
+  - tournament
+  - list
+  - wta
+  test_prompts:
+    single:
+    - Could you list all WTA tournaments scheduled for the year 2019?
+    - What WTA tournaments are scheduled for the year 2022?
+    single_clear:
+    - Could you list all WTA tournaments scheduled for the year 2019?
+    - What WTA tournaments are scheduled for the year 2022?
+- name: get_1_3_analyse
+  descriptions:
+    minimal: Analyse a given period between start and end...
+    short: Analyse a given period between start and end dates for a specified country and configuration.
+    medium: Analyse a given period between start and end dates for a specified country and configuration.
+    long: Analyse a given period between start and end dates for a specified country and configuration.
+    verbose: Analyse a given period between start and end dates for a specified country and configuration.
+  parameters:
+  - name: start_date
+    type: string
+    description: The start date in YYYY-MM-DD format.
+    required: true
+    default: '2013-01-01'
+  - name: end_date
+    type: string
+    description: The end date in YYYY-MM-DD format.
+    required: true
+    default: '2013-12-31'
+  - name: country_code
+    type: string
+    description: The ISO 3166-1 alpha-2 country code (2 letters).
+    required: true
+    default: US
+  - name: end_time
+    type: string
+    description: The end time in 24-hour format (e.g., '18:15'). Defaults to '18:15'.
+    required: false
+    default: '18:15'
+  - name: start_time
+    type: string
+    description: The start time in 24-hour format (e.g., '09:14'). Defaults to '09:14'.
+    required: false
+    default: 09:14
+  - name: profile_id
+    type: string
+    description: An identifier for a specific profile configuration. Defaults to None.
+    required: false
+  - name: configuration
+    type: string
+    description: The name of the preset configuration to be used. Defaults to 'Federal holidays'.
+    required: false
+    default: Federal holidays
+  tags:
+  - get
+  - '1'
+  - '3'
+  test_prompts:
+    single:
+    - Can you analyze the working days for a project starting on January 10, 2023, in the USA, considering a standard workday
+      from 9:00 AM to 6:15 PM?
+    single_clear:
+    - Can you analyze the working days for a project starting on January 10, 2023, in the USA, considering a standard workday
+      from 9:00 AM to 6:15 PM?
+- name: product_reviews
+  descriptions:
+    minimal: Fetch product reviews from the Real-Time Product...
+    short: Fetch product reviews from the Real-Time Product Search API, supporting infinite pagination and filtering options.
+    medium: Fetch product reviews from the Real-Time Product Search API, supporting infinite pagination and filtering options.
+    long: Fetch product reviews from the Real-Time Product Search API, supporting infinite pagination and filtering options.
+    verbose: Fetch product reviews from the Real-Time Product Search API, supporting infinite pagination and filtering options.
+  parameters:
+  - name: product_id
+    type: string
+    description: The product ID for which reviews are to be fetched.
+    required: true
+    default: '11577822456427762145'
+  - name: country
+    type: string
+    description: ISO 3166-1 alpha-2 country code. Default is 'us'.
+    required: false
+    default: us
+  - name: language
+    type: string
+    description: ISO 639-1 language code. Default is 'en'.
+    required: false
+    default: en
+  - name: offset
+    type: string
+    description: Number of reviews to skip. Valid values are integers from 0 to 30000. Default is None.
+    required: false
+  - name: rating
+    type: string
+    description: Minimum user rating of the reviews to be fetched. Valid values are 1-5. Default is None.
+    required: false
+  - name: limit
+    type: string
+    description: Maximum number of reviews to return. Valid values are integers from 0 to 100. Default is None.
+    required: false
+  tags:
+  - product
+  - reviews
+  test_prompts:
+    single:
+    - Retrieve the top 10 reviews for the Sony WH-1000XM4 headphones in the US, skipping the first 5 reviews.
+    - I want to see reviews for the Sony WH-1000XM4 headphones, but only those with a rating of 4 or higher.
+    single_clear:
+    - Retrieve the top 10 reviews for the Sony WH-1000XM4 headphones in the US, skipping the first 5 reviews.
+    - I want to see reviews for the Sony WH-1000XM4 headphones, but only those with a rating of 4 or higher.
+- name: team_image
+  descriptions:
+    minimal: Fetches the image of a soccer team using the...
+    short: Fetches the image of a soccer team using the given team ID and RapidAPI key.
+    medium: Fetches the image of a soccer team using the given team ID and RapidAPI key.
+    long: Fetches the image of a soccer team using the given team ID and RapidAPI key.
+    verbose: Fetches the image of a soccer team using the given team ID and RapidAPI key.
+  parameters:
+  - name: team_id
+    type: integer
+    description: The unique identifier of the soccer team whose image is to be fetched.
+    required: true
+    default: '662'
+  tags:
+  - team
+  - image
+  test_prompts:
+    single:
+    - Can you fetch the team image for the soccer team with ID 1234?
+    single_clear:
+    - Can you fetch the team image for the soccer team with ID 1234?
+- name: calculate_distance
+  descriptions:
+    minimal: Calculates the Euclidean distance between two...
+    short: Calculates the Euclidean distance between two points in n-dimensional space.
+    medium: Calculates the Euclidean distance between two points in n-dimensional space.
+    long: Calculates the Euclidean distance between two points in n-dimensional space.
+    verbose: Calculates the Euclidean distance between two points in n-dimensional space.
+  parameters:
+  - name: point1
+    type: string
+    description: The coordinates of the first point.
+    required: true
+  - name: point2
+    type: string
+    description: The coordinates of the second point.
+    required: true
+  tags:
+  - calculate
+  - distance
+  test_prompts:
+    single:
+    - Compute the distance between two points in a 6D space, where the first point is (1, 0, -1, 0, 1, 0) and the second point
+      is (0, 1, 0, -1, 0, 1).
+    - Determine the Euclidean distance between two points in 2D space, where the first point is (3, 4) and the second point
+      is (6, 8).
+    - 'Compute the distance between two points in 2D space: (0, 0) and (3, 4).'
+    - What is the distance between two points in a 7D space, where the first point has coordinates (1, 2, 3, 4, 5, 6, 7) and
+      the second point has coordinates (8, 9, 10, 11, 12, 13, 14)?
+    - Compute the distance between two points in an 8D space. The first point has coordinates (1, 2, 3, 4, 5, 6, 7, 8) and
+      the second point has coordinates (9, 10, 11, 12, 13, 14, 15, 16).
+    - Find the distance between a point at (10, 20, 30) and another at (20, 40, 60) in 3D space.
+    - 'Calculate the distance between two points in 2D space: (3, 4) and (6, 8).'
+    - 'Calculate the Euclidean distance between two points in 3D space: (1, 2, 3) and (4, 5, 6).'
+    - What is the distance between two points in a 3D space where the first point is (3, 4, 5) and the second point is (6,
+      7, 8)?
+    - Determine the distance between two points in a 7D space. The first point is at (1, 1, 1, 1, 1, 1, 1) and the second
+      point is at (2, 2, 2, 2, 2, 2, 2).
+    - 'Calculate the distance between two points in 3D space: (1, 2, 3) and (4, 5, 6).'
+    - What is the Euclidean distance between two points in 3D space, where the first point is (1, 2, 3) and the second point
+      is (4, 5, 6)?
+    single_clear:
+    - Compute the distance between two points in a 6D space, where the first point is (1, 0, -1, 0, 1, 0) and the second point
+      is (0, 1, 0, -1, 0, 1).
+    - Determine the Euclidean distance between two points in 2D space, where the first point is (3, 4) and the second point
+      is (6, 8).
+    - 'Compute the distance between two points in 2D space: (0, 0) and (3, 4).'
+    - What is the distance between two points in a 7D space, where the first point has coordinates (1, 2, 3, 4, 5, 6, 7) and
+      the second point has coordinates (8, 9, 10, 11, 12, 13, 14)?
+    - Compute the distance between two points in an 8D space. The first point has coordinates (1, 2, 3, 4, 5, 6, 7, 8) and
+      the second point has coordinates (9, 10, 11, 12, 13, 14, 15, 16).
+    - Find the distance between a point at (10, 20, 30) and another at (20, 40, 60) in 3D space.
+    - 'Calculate the distance between two points in 2D space: (3, 4) and (6, 8).'
+    - 'Calculate the Euclidean distance between two points in 3D space: (1, 2, 3) and (4, 5, 6).'
+    - What is the distance between two points in a 3D space where the first point is (3, 4, 5) and the second point is (6,
+      7, 8)?
+    - Determine the distance between two points in a 7D space. The first point is at (1, 1, 1, 1, 1, 1, 1) and the second
+      point is at (2, 2, 2, 2, 2, 2, 2).
+    - 'Calculate the distance between two points in 3D space: (1, 2, 3) and (4, 5, 6).'
+    - What is the Euclidean distance between two points in 3D space, where the first point is (1, 2, 3) and the second point
+      is (4, 5, 6)?
+- name: get_charades_word
+  descriptions:
+    minimal: Fetch a random charades word with the specified...
+    short: Fetch a random charades word with the specified difficulty level using the Toolbench RapidAPI.
+    medium: Fetch a random charades word with the specified difficulty level using the Toolbench RapidAPI.
+    long: Fetch a random charades word with the specified difficulty level using the Toolbench RapidAPI.
+    verbose: Fetch a random charades word with the specified difficulty level using the Toolbench RapidAPI.
+  parameters:
+  - name: difficulty
+    type: string
+    description: The difficulty level of the charades word (e.g., 'easy', 'medium', 'hard'). If not provided, a random difficulty
+      level will be used.
+    required: false
+  tags:
+  - get
+  - charades
+  - word
+  test_prompts:
+    single:
+    - What's a medium difficulty charades word suitable for a mixed-age group?
+    single_clear:
+    - What's a medium difficulty charades word suitable for a mixed-age group?
+- name: symbols_press_releases
+  descriptions:
+    minimal: Fetches a list of press releases for a given...
+    short: Fetches a list of press releases for a given stock symbol from Seeking Alpha's API.
+    medium: Fetches a list of press releases for a given stock symbol from Seeking Alpha's API.
+    long: Fetches a list of press releases for a given stock symbol from Seeking Alpha's API.
+    verbose: Fetches a list of press releases for a given stock symbol from Seeking Alpha's API.
+  parameters:
+  - name: ticker_slug
+    type: string
+    description: The slug representing the stock ticker symbol.
+    required: true
+    default: NVDA
+  - name: page_number
+    type: integer
+    description: The page number of the press releases to fetch.
+    required: true
+    default: '1'
+  tags:
+  - symbols
+  - press
+  - releases
+  test_prompts:
+    single:
+    - Fetch press releases for the stock symbol 'aapl' on page 1.
+    - Access press releases for 'goog' on page 3 from Seeking Alpha.
+    - Can you provide the latest press releases for Apple Inc. (AAPL) from Seeking Alpha?
+    - List press releases for 'tsla' from Seeking Alpha's API on page 2.
+    - Fetch press releases for Tesla Inc. (TSLA) on page 2.
+    single_clear:
+    - Fetch press releases for the stock symbol 'aapl' on page 1.
+    - Access press releases for 'goog' on page 3 from Seeking Alpha.
+    - Can you provide the latest press releases for Apple Inc. (AAPL) from Seeking Alpha?
+    - List press releases for 'tsla' from Seeking Alpha's API on page 2.
+    - Fetch press releases for Tesla Inc. (TSLA) on page 2.
+- name: account_transaction_history
+  descriptions:
+    minimal: Gets an array of all transactions for a given...
+    short: Gets an array of all transactions for a given address on the Binance Smart Chain.
+    medium: Gets an array of all transactions for a given address on the Binance Smart Chain.
+    long: Gets an array of all transactions for a given address on the Binance Smart Chain.
+    verbose: Gets an array of all transactions for a given address on the Binance Smart Chain.
+  parameters:
+  - name: address
+    type: string
+    description: The address to scan for transactions.
+    required: true
+    default: '0x0000000000000000000000000000000000000123'
+  - name: network
+    type: string
+    description: Specify the network to be used, either 'mainnet' or 'testnet'. Defaults to None.
+    required: false
+  tags:
+  - account
+  - transaction
+  - history
+  test_prompts:
+    single:
+    - Fetch transaction records for address 0x789ghi on the Binance Smart Chain.
+    - Retrieve all transactions for the address '0x456def...' on the Binance Smart Chain testnet.
+    - Get all transactions for address 0x456def on the mainnet of Binance Smart Chain.
+    - Can you fetch the transaction history for the Ethereum address '0x1234567890abcdef1234567890abcdef123456'?
+    - What are the transaction histories for Ethereum address '0x123...abc' on the mainnet?
+    single_clear:
+    - Fetch transaction records for address 0x789ghi on the Binance Smart Chain.
+    - Retrieve all transactions for the address '0x456def...' on the Binance Smart Chain testnet.
+    - Get all transactions for address 0x456def on the mainnet of Binance Smart Chain.
+    - Can you fetch the transaction history for the Ethereum address '0x1234567890abcdef1234567890abcdef123456'?
+    - What are the transaction histories for Ethereum address '0x123...abc' on the mainnet?
+- name: convert_cooking_measurements
+  descriptions:
+    minimal: Converts a quantity of a cooking ingredient from...
+    short: Converts a quantity of a cooking ingredient from one measurement unit to another.
+    medium: Converts a quantity of a cooking ingredient from one measurement unit to another.
+    long: Converts a quantity of a cooking ingredient from one measurement unit to another.
+    verbose: Converts a quantity of a cooking ingredient from one measurement unit to another.
+  parameters:
+  - name: quantity
+    type: number
+    description: The quantity of the item to convert.
+    required: true
+  - name: from_unit
+    type: string
+    description: The unit of the input quantity (e.g., 'cup', 'gram').
+    required: true
+  - name: to_unit
+    type: string
+    description: The unit to which the quantity should be converted (e.g., 'ounce', 'kilogram').
+    required: true
+  - name: item
+    type: string
+    description: The cooking ingredient being converted (e.g., 'flour', 'sugar').
+    required: true
+  tags:
+  - convert
+  - cooking
+  - measurements
+  test_prompts:
+    single:
+    - Convert 1 cup of flour to grams.
+    - Convert 1 pound of butter to ounces.
+    - Convert 1.5 cups of flour to grams.
+    single_clear:
+    - Convert 1 cup of flour to grams.
+    - Convert 1 pound of butter to ounces.
+    - Convert 1.5 cups of flour to grams.
+- name: can_attend_all_meetings
+  descriptions:
+    minimal: Determines if a person can attend all meetings...
+    short: Determines if a person can attend all meetings given a list of meeting time intervals.
+    medium: Determines if a person can attend all meetings given a list of meeting time intervals.
+    long: Determines if a person can attend all meetings given a list of meeting time intervals.
+    verbose: Determines if a person can attend all meetings given a list of meeting time intervals.
+  parameters:
+  - name: intervals
+    type: string
+    description: A list of meeting time intervals, where each interval is represented as [start_time, end_time].
+    required: true
+  tags:
+  - can
+  - attend
+  - all
+  test_prompts:
+    single:
+    - Can a person attend all meetings if the meetings are scheduled from 9 to 10, 10 to 11, and 11 to 12?
+    - Can a person attend all meetings with intervals [[0, 30], [5, 10], [15, 20]]?
+    - Determine if a person can attend all meetings scheduled from 9 to 10, 10 to 11, 11 to 12, and 12 to 13.
+    - Can a person attend all meetings scheduled at [9:00, 10:30], [12:00, 13:00], [14:30, 15:30]?
+    - Verify if a person can attend all meetings with intervals [ [8, 9], [9, 10], [10, 11] ].
+    - Is it possible for a person to attend all meetings with intervals [[0, 30], [5, 10], [15, 20]]?
+    - Determine if a person can attend all meetings with intervals [ [10, 15], [15, 20], [20, 25] ].
+    - Can a person attend all meetings if the intervals are [[10, 15], [15, 20], [20, 25]]?
+    - 'Determine if someone can attend all meetings with these intervals: [10:00, 11:30], [11:30, 13:00], [14:00, 15:30].'
+    - Determine if a person can attend all meetings with intervals [ [9:00, 10:30], [12:00, 13:00], [14:30, 15:00] ].
+    single_clear:
+    - Can a person attend all meetings if the meetings are scheduled from 9 to 10, 10 to 11, and 11 to 12?
+    - Can a person attend all meetings with intervals [[0, 30], [5, 10], [15, 20]]?
+    - Determine if a person can attend all meetings scheduled from 9 to 10, 10 to 11, 11 to 12, and 12 to 13.
+    - Can a person attend all meetings scheduled at [9:00, 10:30], [12:00, 13:00], [14:30, 15:30]?
+    - Verify if a person can attend all meetings with intervals [ [8, 9], [9, 10], [10, 11] ].
+    - Is it possible for a person to attend all meetings with intervals [[0, 30], [5, 10], [15, 20]]?
+    - Determine if a person can attend all meetings with intervals [ [10, 15], [15, 20], [20, 25] ].
+    - Can a person attend all meetings if the intervals are [[10, 15], [15, 20], [20, 25]]?
+    - 'Determine if someone can attend all meetings with these intervals: [10:00, 11:30], [11:30, 13:00], [14:00, 15:30].'
+    - Determine if a person can attend all meetings with intervals [ [9:00, 10:30], [12:00, 13:00], [14:30, 15:00] ].
+- name: getrandomword
+  descriptions:
+    minimal: Fetches random words based on the specified type...
+    short: Fetches random words based on the specified type and count from the RapidAPI service.
+    medium: Fetches random words based on the specified type and count from the RapidAPI service.
+    long: Fetches random words based on the specified type and count from the RapidAPI service.
+    verbose: Fetches random words based on the specified type and count from the RapidAPI service.
+  parameters:
+  - name: type
+    type: string
+    description: The type of words to fetch (e.g., 'adjective', 'noun'). Defaults to 'adjective'.
+    required: true
+    default: adjective
+  - name: count
+    type: integer
+    description: The number of random words to fetch. Defaults to 1.
+    required: true
+    default: '1'
+  tags:
+  - getrandomword
+  test_prompts:
+    single:
+    - Fetch 4 random adjectives that could be used to describe a luxurious car.
+    single_clear:
+    - Fetch 4 random adjectives that could be used to describe a luxurious car.
+- name: races
+  descriptions:
+    minimal: Retrieves a list of races and session details for...
+    short: Retrieves a list of races and session details for a specified F1 season.
+    medium: Retrieves a list of races and session details for a specified F1 season.
+    long: Retrieves a list of races and session details for a specified F1 season.
+    verbose: Retrieves a list of races and session details for a specified F1 season.
+  parameters:
+  - name: season_id
+    type: integer
+    description: The ID of the F1 season for which to list races and session details.
+    required: true
+    default: '2020'
+  tags:
+  - races
+  test_prompts:
+    single:
+    - List all races and session details for the F1 season 2021.
+    - Retrieve details of races for the F1 season 2020.
+    - Fetch races for the F1 season 2018.
+    single_clear:
+    - List all races and session details for the F1 season 2021.
+    - Retrieve details of races for the F1 season 2020.
+    - Fetch races for the F1 season 2018.

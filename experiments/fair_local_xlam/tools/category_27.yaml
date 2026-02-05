@@ -1,0 +1,742 @@
+category: category_27
+tools:
+- name: validate_cpf_number
+  descriptions:
+    minimal: Validates a given CPF number using the RapidAPI...
+    short: Validates a given CPF number using the RapidAPI CPF Validator service.
+    medium: Validates a given CPF number using the RapidAPI CPF Validator service.
+    long: Validates a given CPF number using the RapidAPI CPF Validator service.
+    verbose: Validates a given CPF number using the RapidAPI CPF Validator service.
+  parameters:
+  - name: n
+    type: string
+    description: The CPF number to be validated.
+    required: true
+    default: 123.456.789-09
+  tags:
+  - validate
+  - cpf
+  - number
+  test_prompts:
+    single:
+    - Validate the CPF number '123.456.789-09'.
+    single_clear:
+    - Validate the CPF number '123.456.789-09'.
+- name: last_year_summary
+  descriptions:
+    minimal: Retrieve the last year's performance summary for...
+    short: Retrieve the last year's performance summary for a given player using the RapidAPI service.
+    medium: Retrieve the last year's performance summary for a given player using the RapidAPI service.
+    long: Retrieve the last year's performance summary for a given player using the RapidAPI service.
+    verbose: Retrieve the last year's performance summary for a given player using the RapidAPI service.
+  parameters:
+  - name: player_id
+    type: integer
+    description: The ID of the player whose summary is to be retrieved.
+    required: true
+    default: '12994'
+  tags:
+  - last
+  - year
+  - summary
+  test_prompts:
+    single:
+    - Fetch the last year's performance summary for player ID 12345.
+    single_clear:
+    - Fetch the last year's performance summary for player ID 12345.
+- name: get_trivia_fact
+  descriptions:
+    minimal: Fetches a trivia fact about a given number from...
+    short: Fetches a trivia fact about a given number from the Numbers API.
+    medium: Fetches a trivia fact about a given number from the Numbers API.
+    long: Fetches a trivia fact about a given number from the Numbers API.
+    verbose: Fetches a trivia fact about a given number from the Numbers API.
+  parameters:
+  - name: number
+    type: string
+    description: The number for which to retrieve the trivia fact.
+    required: true
+    default: '42'
+  - name: fragment
+    type: string
+    description: Whether to return the fact as a sentence fragment. Defaults to 'True'.
+    required: false
+    default: true
+  - name: notfound
+    type: string
+    description: Determines the behavior when a fact is not found for the specified number. Options are 'default', 'floor',
+      or 'ceil'. Defaults to 'floor'.
+    required: false
+    default: floor
+  - name: json
+    type: string
+    description: Whether to return the result as JSON. Defaults to 'True'.
+    required: false
+    default: true
+  tags:
+  - get
+  - trivia
+  - fact
+  test_prompts:
+    single:
+    - Tell me a trivia fact about the number 12, formatted as a JSON object.
+    single_clear:
+    - Tell me a trivia fact about the number 12, formatted as a JSON object.
+- name: webcams_list_region_region_region
+  descriptions:
+    minimal: Fetch a list of webcams for the specified...
+    short: Fetch a list of webcams for the specified region(s) with optional parameters for language and content detail.
+    medium: Fetch a list of webcams for the specified region(s) with optional parameters for language and content detail.
+    long: Fetch a list of webcams for the specified region(s) with optional parameters for language and content detail.
+    verbose: Fetch a list of webcams for the specified region(s) with optional parameters for language and content detail.
+  parameters:
+  - name: region
+    type: string
+    description: A comma-separated list of ISO 3166-1-alpha-2 country codes and region codes separated by a dot.
+    required: true
+  - name: lang
+    type: string
+    description: The language code to localize the results, if available. Default is 'en'.
+    required: false
+    default: en
+  - name: show
+    type: string
+    description: Specifies the content details to include in the response. Default is 'webcams:image,location'.
+    required: false
+    default: webcams:image,location
+  tags:
+  - webcams
+  - list
+  - region
+  test_prompts:
+    single:
+    - Find webcams in the region of California, USA.
+    single_clear:
+    - Find webcams in the region of California, USA.
+- name: count
+  descriptions:
+    minimal: Fetches the total number of expired followers...
+    short: Fetches the total number of expired followers from an OnlyFans API endpoint.
+    medium: Fetches the total number of expired followers from an OnlyFans API endpoint.
+    long: Fetches the total number of expired followers from an OnlyFans API endpoint.
+    verbose: Fetches the total number of expired followers from an OnlyFans API endpoint.
+  parameters:
+  - name: signstart
+    type: string
+    description: The start of the signature used for authorization.
+    required: true
+  - name: apptoken
+    type: string
+    description: The application token.
+    required: true
+  - name: signend
+    type: string
+    description: The end of the signature used for authorization.
+    required: true
+  - name: xbc
+    type: string
+    description: The XBC token.
+    required: true
+  - name: timezone
+    type: string
+    description: The timezone setting.
+    required: true
+    default: America/Los_Angeles
+  - name: useragent
+    type: string
+    description: The user agent string.
+    required: true
+  - name: auth_id
+    type: string
+    description: The authentication ID.
+    required: true
+    default: '729369'
+  - name: sess
+    type: string
+    description: The session ID.
+    required: true
+  tags:
+  - count
+  test_prompts:
+    single:
+    - Count expired followers for an OnlyFans account with different authentication details.
+    - Count the number of expired followers for an OnlyFans account with specific authentication details.
+    single_clear:
+    - Count expired followers for an OnlyFans account with different authentication details.
+    - Count the number of expired followers for an OnlyFans account with specific authentication details.
+- name: minmax
+  descriptions:
+    minimal: Retrieve the lowest and highest values over a...
+    short: Retrieve the lowest and highest values over a specified period (MINMAX) for a given financial instrument.
+    medium: Retrieve the lowest and highest values over a specified period (MINMAX) for a given financial instrument.
+    long: Retrieve the lowest and highest values over a specified period (MINMAX) for a given financial instrument.
+    verbose: Retrieve the lowest and highest values over a specified period (MINMAX) for a given financial instrument.
+  parameters:
+  - name: interval
+    type: string
+    description: 'Interval between two consecutive points in the time series. Supports: ''1min'', ''5min'', ''15min'', ''30min'',
+      ''45min'', ''1h'', ''2h'', ''4h'', ''1day'', ''1week'', ''1month''.'
+    required: true
+    default: 1min
+  - name: symbol
+    type: string
+    description: Instrument symbol, which can be any equity, index, ETF, forex, or cryptocurrency (e.g., 'AAPL', 'EUR/USD',
+      'ETH/BTC').
+    required: true
+    default: AAPL
+  - name: series_type
+    type: string
+    description: 'Type of series data. Supports: ''open'', ''high'', ''low'', ''close''. Default is ''close''.'
+    required: false
+    default: close
+  - name: outputsize
+    type: integer
+    description: Number of data points to return. Default is 30.
+    required: false
+    default: 30
+  - name: format
+    type: string
+    description: Desired format of the output. Can be 'CSV' or 'JSON'. Default is 'json'.
+    required: false
+    default: json
+  - name: time_period
+    type: integer
+    description: Time period over which the minmax values are calculated. Default is 9.
+    required: false
+    default: 9
+  tags:
+  - minmax
+  test_prompts:
+    single:
+    - What are the highest and lowest values for Bitcoin over the last 1 month?
+    single_clear:
+    - What are the highest and lowest values for Bitcoin over the last 1 month?
+- name: getplatformlist
+  descriptions:
+    minimal: Fetches the list of platforms with their IDs and...
+    short: Fetches the list of platforms with their IDs and names from the API endpoint as JSON.
+    medium: Fetches the list of platforms with their IDs and names from the API endpoint as JSON.
+    long: Fetches the list of platforms with their IDs and names from the API endpoint as JSON.
+    verbose: Fetches the list of platforms with their IDs and names from the API endpoint as JSON.
+  parameters:
+  - name: page
+    type: integer
+    description: Page number to retrieve the platform list from the API.
+    required: true
+    default: '0'
+  tags:
+  - getplatformlist
+  test_prompts:
+    single:
+    - Get the list of gaming platforms from the second page of the API.
+    - Fetch the platform list starting from page 10.
+    single_clear:
+    - Get the list of gaming platforms from the second page of the API.
+    - Fetch the platform list starting from page 10.
+- name: properties_get_facilities
+  descriptions:
+    minimal: Fetches the facilities of a property given its...
+    short: Fetches the facilities of a property given its hotel ID.
+    medium: Fetches the facilities of a property given its hotel ID.
+    long: Fetches the facilities of a property given its hotel ID.
+    verbose: Fetches the facilities of a property given its hotel ID.
+  parameters:
+  - name: hotel_ids
+    type: integer
+    description: The value of the hotel_id field from the properties/list API.
+    required: true
+    default: '1528418'
+  - name: languagecode
+    type: string
+    description: The language code for the response. Default is 'en-us'. Possible values include en, en-us, ar, bg, ca, cs,
+      da, de, el, es, es-ar, et, fi, fr, he, hr, hu, id, is, it, ja, ko, lt, lv, ms, nl, no, pl, pt, pt-br, ro, ru, sk, sl,
+      sr, sv, th, tl, tr, uk, vi, zh, zh-tw.
+    required: false
+    default: en-us
+  tags:
+  - properties
+  - get
+  - facilities
+  test_prompts:
+    single:
+    - Retrieve facilities of a hotel with ID 12345 in French.
+    - What facilities are available at the Hilton New York, given its hotel ID?
+    single_clear:
+    - Retrieve facilities of a hotel with ID 12345 in French.
+    - What facilities are available at the Hilton New York, given its hotel ID?
+- name: v_card_qr_code
+  descriptions:
+    minimal: Creates a static QR code for a vCard with...
+    short: Creates a static QR code for a vCard with specified customization options and returns the response from the API.
+    medium: Creates a static QR code for a vCard with specified customization options and returns the response from the API.
+    long: Creates a static QR code for a vCard with specified customization options and returns the response from the API.
+    verbose: Creates a static QR code for a vCard with specified customization options and returns the response from the API.
+  parameters:
+  - name: uname
+    type: string
+    description: The username for the vCard.
+    required: true
+    default: Tanisha
+  - name: error_correction
+    type: string
+    description: The error correction level for the QR code. Defaults to 'M'.
+    required: false
+    default: M
+  - name: data_gradient_start_color
+    type: string
+    description: The start color for the data gradient. Defaults to '#000000'.
+    required: false
+    default: '#000000'
+  - name: eye_color_inner
+    type: string
+    description: The inner color of the QR code eyes. Defaults to '#000000'.
+    required: false
+    default: '#000000'
+  - name: data_gradient_style
+    type: string
+    description: The style of the data gradient. Defaults to 'None'.
+    required: false
+    default: None
+  - name: data_gradient_end_color
+    type: string
+    description: The end color for the data gradient. Defaults to '#000000'.
+    required: false
+    default: '#000000'
+  - name: background_color
+    type: string
+    description: The background color of the QR code. Defaults to '#FFFFFF'.
+    required: false
+    default: '#FFFFFF'
+  - name: eye_color_outer
+    type: string
+    description: The outer color of the QR code eyes. Defaults to '#000000'.
+    required: false
+    default: '#000000'
+  - name: eye_pattern
+    type: string
+    description: The pattern of the QR code eyes. Defaults to 'RECT_RECT'.
+    required: false
+    default: RECT_RECT
+  - name: size
+    type: string
+    description: The size of the QR code. Defaults to 'm'.
+    required: false
+    default: m
+  - name: data_pattern
+    type: string
+    description: The pattern of the QR code data. Defaults to 'RECT'.
+    required: false
+    default: RECT
+  tags:
+  - v
+  - card
+  - qr
+  test_prompts:
+    single:
+    - Generate a QR code for the vCard of 'JohnDoe' with high error correction and a blue gradient background.
+    - Design a QR code for 'TechGuru' with a red to orange gradient and low error correction.
+    single_clear:
+    - Generate a QR code for the vCard of 'JohnDoe' with high error correction and a blue gradient background.
+    - Design a QR code for 'TechGuru' with a red to orange gradient and low error correction.
+- name: get_airplane_details
+  descriptions:
+    minimal: Fetches details of an airplane using the provided...
+    short: Fetches details of an airplane using the provided code.
+    medium: Fetches details of an airplane using the provided code.
+    long: Fetches details of an airplane using the provided code.
+    verbose: Fetches details of an airplane using the provided code.
+  parameters:
+  - name: code
+    type: string
+    description: The unique identifier of the airplane to fetch details for.
+    required: true
+    default: '777'
+  tags:
+  - get
+  - airplane
+  - details
+  test_prompts:
+    single:
+    - What are the details of the airplane with the code 'A380'?
+    single_clear:
+    - What are the details of the airplane with the code 'A380'?
+- name: partenaire_par_id
+  descriptions:
+    minimal: Fetches a partner's details by their ID from the...
+    short: Fetches a partner's details by their ID from the designated API.
+    medium: Fetches a partner's details by their ID from the designated API.
+    long: Fetches a partner's details by their ID from the designated API.
+    verbose: Fetches a partner's details by their ID from the designated API.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the partner to be fetched, as provided by the API.
+    required: true
+    default: '14'
+  tags:
+  - partenaire
+  - par
+  - id
+  test_prompts:
+    single:
+    - Fetch contact information for partner 'PART002'.
+    single_clear:
+    - Fetch contact information for partner 'PART002'.
+- name: get_3_fluctuation_endpoint
+  descriptions:
+    minimal: Fetches the percentage change in exchange rates...
+    short: Fetches the percentage change in exchange rates for specified currencies over a given time period.
+    medium: Fetches the percentage change in exchange rates for specified currencies over a given time period.
+    long: Fetches the percentage change in exchange rates for specified currencies over a given time period.
+    verbose: Fetches the percentage change in exchange rates for specified currencies over a given time period.
+  parameters:
+  - name: end_date
+    type: string
+    description: The end date for the time period of the fluctuation data.
+    required: true
+    default: '2023-02-28'
+  - name: base
+    type: string
+    description: The base currency for which the fluctuation data is to be retrieved.
+    required: true
+    default: eur
+  - name: start_date
+    type: string
+    description: The start date for the time period of the fluctuation data.
+    required: true
+    default: '2023-01-01'
+  - name: symbols
+    type: string
+    description: Specific currencies for which the fluctuation data is to be retrieved. Defaults to 'usd'.
+    required: false
+    default: usd
+  tags:
+  - get
+  - '3'
+  - fluctuation
+  test_prompts:
+    single:
+    - Can you fetch the percentage change in exchange rates for EUR against USD from January 1, 2023, to March 31, 2023?
+    - How much has the Euro fluctuated against the USD over the last month?
+    single_clear:
+    - Can you fetch the percentage change in exchange rates for EUR against USD from January 1, 2023, to March 31, 2023?
+    - How much has the Euro fluctuated against the USD over the last month?
+- name: license_plate_lookup
+  descriptions:
+    minimal: Perform a license plate lookup using the provided...
+    short: Perform a license plate lookup using the provided license plate number and state code.
+    medium: Perform a license plate lookup using the provided license plate number and state code.
+    long: Perform a license plate lookup using the provided license plate number and state code.
+    verbose: Perform a license plate lookup using the provided license plate number and state code.
+  parameters:
+  - name: license_plate
+    type: string
+    description: The license plate number to look up.
+    required: true
+    default: S8TAN
+  - name: state_code
+    type: string
+    description: The state code where the license plate is registered (e.g., 'TX' for Texas).
+    required: true
+    default: AL
+  tags:
+  - license
+  - plate
+  - lookup
+  test_prompts:
+    single:
+    - What information can I get about a car with license plate 'ABC123' registered in California?
+    single_clear:
+    - What information can I get about a car with license plate 'ABC123' registered in California?
+- name: convert_hsl
+  descriptions:
+    minimal: Converts an HSL color code to other color codes...
+    short: Converts an HSL color code to other color codes such as Hex, RGB, and CMYK using the Convexity API.
+    medium: Converts an HSL color code to other color codes such as Hex, RGB, and CMYK using the Convexity API.
+    long: Converts an HSL color code to other color codes such as Hex, RGB, and CMYK using the Convexity API.
+    verbose: Converts an HSL color code to other color codes such as Hex, RGB, and CMYK using the Convexity API.
+  parameters:
+  - name: s
+    type: integer
+    description: The saturation component of the HSL color code.
+    required: true
+    default: '78'
+  - name: h
+    type: integer
+    description: The hue component of the HSL color code.
+    required: true
+    default: '250'
+  - name: l
+    type: integer
+    description: The lightness component of the HSL color code.
+    required: true
+    default: '45'
+  tags:
+  - convert
+  - hsl
+  test_prompts:
+    single:
+    - How can I convert an HSL color with a saturation of 50, hue of 120, and lightness of 75 to other color codes?
+    - I'm designing a website and need to convert a specific HSL color code to RGB and Hex. The color I'm using has a hue
+      of 200, saturation of 50, and lightness of 40. Can you help me with this?
+    single_clear:
+    - How can I convert an HSL color with a saturation of 50, hue of 120, and lightness of 75 to other color codes?
+    - I'm designing a website and need to convert a specific HSL color code to RGB and Hex. The color I'm using has a hue
+      of 200, saturation of 50, and lightness of 40. Can you help me with this?
+- name: getlatestbysecuritiescode
+  descriptions:
+    minimal: Fetches the latest securities report data for a...
+    short: Fetches the latest securities report data for a given company based on its securities code.
+    medium: Fetches the latest securities report data for a given company based on its securities code.
+    long: Fetches the latest securities report data for a given company based on its securities code.
+    verbose: Fetches the latest securities report data for a given company based on its securities code.
+  parameters:
+  - name: securities_code
+    type: integer
+    description: The securities code representing the company.
+    required: true
+    default: '7203'
+  tags:
+  - getlatestbysecuritiescode
+  test_prompts:
+    single:
+    - Could you get the latest securities report for Mitsubishi UFJ Financial Group, Inc. with the code 8306?
+    - Please provide the latest securities data for Nippon Telegraph and Telephone Corporation with the code 9432.
+    single_clear:
+    - Could you get the latest securities report for Mitsubishi UFJ Financial Group, Inc. with the code 8306?
+    - Please provide the latest securities data for Nippon Telegraph and Telephone Corporation with the code 9432.
+- name: fish_api_fish_name
+  descriptions:
+    minimal: Fetch information for a specific fish from the...
+    short: Fetch information for a specific fish from the Fish API.
+    medium: Fetch information for a specific fish from the Fish API.
+    long: Fetch information for a specific fish from the Fish API.
+    verbose: Fetch information for a specific fish from the Fish API.
+  parameters:
+  - name: name
+    type: string
+    description: Name of the fish to be found.
+    required: true
+    default: Tarpon
+  tags:
+  - fish
+  - api
+  - fish
+  test_prompts:
+    single:
+    - What information is available about the 'Salmon' fish species?
+    single_clear:
+    - What information is available about the 'Salmon' fish species?
+- name: convert_hex
+  descriptions:
+    minimal: Converts a hex color code to other color formats...
+    short: Converts a hex color code to other color formats such as RGB, HSL, and CMYK using the Convexity API.
+    medium: Converts a hex color code to other color formats such as RGB, HSL, and CMYK using the Convexity API.
+    long: Converts a hex color code to other color formats such as RGB, HSL, and CMYK using the Convexity API.
+    verbose: Converts a hex color code to other color formats such as RGB, HSL, and CMYK using the Convexity API.
+  parameters:
+  - name: hex
+    type: string
+    description: The hex color code to be converted.
+    required: true
+    default: ffffff
+  tags:
+  - convert
+  - hex
+  test_prompts:
+    single:
+    - Convert the hex color code '#FF5733' to RGB, HSL, and CMYK formats.
+    single_clear:
+    - Convert the hex color code '#FF5733' to RGB, HSL, and CMYK formats.
+- name: market_growth_technology_stocks
+  descriptions:
+    minimal: Retrieves a list of technology stocks with...
+    short: Retrieves a list of technology stocks with revenue and earnings growth in excess of 25% from the mboum-finance
+      API.
+    medium: Retrieves a list of technology stocks with revenue and earnings growth in excess of 25% from the mboum-finance
+      API.
+    long: Retrieves a list of technology stocks with revenue and earnings growth in excess of 25% from the mboum-finance API.
+    verbose: Retrieves a list of technology stocks with revenue and earnings growth in excess of 25% from the mboum-finance
+      API.
+  parameters:
+  - name: start
+    type: integer
+    description: The starting index for the list of stocks. Defaults to 0.
+    required: false
+    default: '0'
+  tags:
+  - market
+  - growth
+  - technology
+  test_prompts:
+    single:
+    - List technology stocks with high growth starting from the 10th entry.
+    single_clear:
+    - List technology stocks with high growth starting from the 10th entry.
+- name: search_by_genre
+  descriptions:
+    minimal: Discover movies by genre using the RapidAPI.
+    short: Discover movies by genre using the RapidAPI.
+    medium: Discover movies by genre using the RapidAPI.
+    long: Discover movies by genre using the RapidAPI.
+    verbose: Discover movies by genre using the RapidAPI.
+  parameters:
+  - name: with_genres
+    type: string
+    description: The genre code to filter movies by. Defaults to '80'.
+    required: true
+    default: '80'
+  - name: page
+    type: integer
+    description: The page number of results to retrieve. Defaults to 1.
+    required: true
+    default: '1'
+  tags:
+  - search
+  - by
+  - genre
+  test_prompts:
+    single:
+    - Can you find movies from the 'Action' genre on page 2?
+    - I'm looking for movies in the crime genre. Can you provide the list for page 2?
+    single_clear:
+    - Can you find movies from the 'Action' genre on page 2?
+    - I'm looking for movies in the crime genre. Can you provide the list for page 2?
+- name: bouncer_email_checker
+  descriptions:
+    minimal: Validates an email address using the Bouncer...
+    short: Validates an email address using the Bouncer Email Checker API.
+    medium: Validates an email address using the Bouncer Email Checker API.
+    long: Validates an email address using the Bouncer Email Checker API.
+    verbose: Validates an email address using the Bouncer Email Checker API.
+  parameters:
+  - name: email
+    type: string
+    description: The email address to be validated.
+    required: true
+    default: example@gmail.com
+  tags:
+  - bouncer
+  - email
+  - checker
+  test_prompts:
+    single:
+    - Check the validity of 'sales@mybusiness.biz' using the Bouncer Email Checker API.
+    single_clear:
+    - Check the validity of 'sales@mybusiness.biz' using the Bouncer Email Checker API.
+- name: stock_quotes
+  descriptions:
+    minimal: Fetches real-time stock quotes for given company...
+    short: Fetches real-time stock quotes for given company symbols.
+    medium: Fetches real-time stock quotes for given company symbols.
+    long: Fetches real-time stock quotes for given company symbols.
+    verbose: Fetches real-time stock quotes for given company symbols.
+  parameters:
+  - name: symbols
+    type: string
+    description: Comma-separated list of stock symbols for which to retrieve real-time quotes.
+    required: true
+    default: MSFT, PLTR, PG, TSLA
+  tags:
+  - stock
+  - quotes
+  test_prompts:
+    single:
+    - What are the stock quotes for Microsoft and Google in real-time?
+    single_clear:
+    - What are the stock quotes for Microsoft and Google in real-time?
+- name: get_artist_s_albums
+  descriptions:
+    minimal: Fetches and returns basic details about the...
+    short: Fetches and returns basic details about the albums of an artist from a given Spotify URL.
+    medium: Fetches and returns basic details about the albums of an artist from a given Spotify URL.
+    long: Fetches and returns basic details about the albums of an artist from a given Spotify URL.
+    verbose: Fetches and returns basic details about the albums of an artist from a given Spotify URL.
+  parameters:
+  - name: spotify_url
+    type: string
+    description: The URL of the artist's Spotify page.
+    required: true
+    default: https://open.spotify.com/artist/1nIUhcKHnK6iyumRyoV68C
+  tags:
+  - get
+  - artist
+  - s
+  test_prompts:
+    single:
+    - Retrieve the albums of the artist Taylor Swift from her Spotify page.
+    single_clear:
+    - Retrieve the albums of the artist Taylor Swift from her Spotify page.
+- name: laliga_standings
+  descriptions:
+    minimal: Fetches the standings for LaLiga for a given...
+    short: Fetches the standings for LaLiga for a given season.
+    medium: Fetches the standings for LaLiga for a given season.
+    long: Fetches the standings for LaLiga for a given season.
+    verbose: Fetches the standings for LaLiga for a given season.
+  parameters:
+  - name: season
+    type: string
+    description: The season to retrieve the standings for, e.g., '2022'. Defaults to None.
+    required: false
+  tags:
+  - laliga
+  - standings
+  test_prompts:
+    single:
+    - Provide the standings of LaLiga for the 2014 season.
+    - I'm looking for the LaLiga standings from the 2017 season.
+    single_clear:
+    - Provide the standings of LaLiga for the 2014 season.
+    - I'm looking for the LaLiga standings from the 2017 season.
+- name: captcha_generator
+  descriptions:
+    minimal: Generates a CAPTCHA image with optional...
+    short: Generates a CAPTCHA image with optional customizations and returns the resulting data.
+    medium: Generates a CAPTCHA image with optional customizations and returns the resulting data.
+    long: Generates a CAPTCHA image with optional customizations and returns the resulting data.
+    verbose: Generates a CAPTCHA image with optional customizations and returns the resulting data.
+  parameters:
+  - name: fontname
+    type: string
+    description: The font to be used for the CAPTCHA text. Supported font names are 'sora', 'noto-sans', and 'ubuntu'. Default
+      is 'sora'.
+    required: false
+    default: sora
+  - name: noise_number
+    type: integer
+    description: The amount of noise to include in the CAPTCHA image. Default is 10.
+    required: false
+    default: '10'
+  - name: text
+    type: string
+    description: Custom text to be used as the CAPTCHA solution. If not provided, a random text solution will be generated.
+    required: false
+  tags:
+  - captcha
+  - generator
+  test_prompts:
+    single:
+    - I want to create a CAPTCHA with the text 'secure' and a bit more noise than usual. Can you set the font to 'noto-sans'?
+    single_clear:
+    - I want to create a CAPTCHA with the text 'secure' and a bit more noise than usual. Can you set the font to 'noto-sans'?
+- name: getmediumquestion
+  descriptions:
+    minimal: Fetches the number of medium-level questions...
+    short: Fetches the number of medium-level questions solved by the given user from the LeetCode API.
+    medium: Fetches the number of medium-level questions solved by the given user from the LeetCode API.
+    long: Fetches the number of medium-level questions solved by the given user from the LeetCode API.
+    verbose: Fetches the number of medium-level questions solved by the given user from the LeetCode API.
+  parameters:
+  - name: username
+    type: string
+    description: The username of the LeetCode user whose medium-level questions solved count is to be fetched.
+    required: true
+    default: mujtabah258
+  tags:
+  - getmediumquestion
+  test_prompts:
+    single:
+    - How many medium-level questions has 'python_guru' solved on LeetCode?
+    single_clear:
+    - How many medium-level questions has 'python_guru' solved on LeetCode?

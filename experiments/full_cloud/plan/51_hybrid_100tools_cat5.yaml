@@ -1,0 +1,24 @@
+# ============================================================
+# Hybrid Category Analysis: 100 tools, k=5 categories
+# ============================================================
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+name: hybrid_100tools_cat5
+description: "Hybrid with 100 tools and top_k_categories=5 for category impact analysis"
+
+num_tools: 100
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+methodology: hybrid
+hybrid_config:
+  embedding_model: all-MiniLM-L6-v2
+  top_k_categories: 5
+  category_embedding_strategy: mean
+  cache_embeddings: true
+
+output_dir: experiments/full_cloud/results

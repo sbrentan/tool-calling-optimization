@@ -1,0 +1,860 @@
+category: category_5
+tools:
+- name: getnews
+  descriptions:
+    minimal: Fetch the latest coronavirus news for a specified...
+    short: Fetch the latest coronavirus news for a specified location or globally.
+    medium: Fetch the latest coronavirus news for a specified location or globally.
+    long: Fetch the latest coronavirus news for a specified location or globally.
+    verbose: Fetch the latest coronavirus news for a specified location or globally.
+  parameters:
+  - name: location
+    type: string
+    description: The ISO 3166-2 location code. Use "FR" for France, "US" for the United States, "US-CA" for California, or
+      "global" for worldwide news.
+    required: true
+    default: US
+  tags:
+  - getnews
+  test_prompts:
+    single:
+    - Fetch the latest coronavirus news for California.
+    - What are the latest news articles on Power BI from page 3?
+    single_clear:
+    - Fetch the latest coronavirus news for California.
+    - What are the latest news articles on Power BI from page 3?
+- name: currency_news
+  descriptions:
+    minimal: Fetch the latest news related to a specific...
+    short: Fetch the latest news related to a specific currency, forex, or cryptocurrency pair.
+    medium: Fetch the latest news related to a specific currency, forex, or cryptocurrency pair.
+    long: Fetch the latest news related to a specific currency, forex, or cryptocurrency pair.
+    verbose: Fetch the latest news related to a specific currency, forex, or cryptocurrency pair.
+  parameters:
+  - name: from_symbol
+    type: string
+    description: A 3-letter currency code or symbol (ISO 4217) representing the base currency (e.g., 'USD').
+    required: true
+    default: USD
+  - name: to_symbol
+    type: string
+    description: A 3-letter currency code or symbol (ISO 4217) representing the target currency (e.g., 'EUR').
+    required: true
+    default: EUR
+  - name: language
+    type: string
+    description: The language of the news results, specified as a 2-letter language code (ISO 639-1). Default is 'en'.
+    required: false
+    default: en
+  tags:
+  - currency
+  - news
+  test_prompts:
+    single:
+    - I'm looking for news on the JPY to KRW currency pair, but in Korean.
+    - Fetch news about the CAD to AUD exchange rate in Spanish.
+    - Retrieve news about the GBP/JPY currency pair in English.
+    single_clear:
+    - I'm looking for news on the JPY to KRW currency pair, but in Korean.
+    - Fetch news about the CAD to AUD exchange rate in Spanish.
+    - Retrieve news about the GBP/JPY currency pair in English.
+- name: serie_a_standings
+  descriptions:
+    minimal: Fetches the Serie A football standings for a...
+    short: Fetches the Serie A football standings for a given season using the provided RapidAPI key.
+    medium: Fetches the Serie A football standings for a given season using the provided RapidAPI key.
+    long: Fetches the Serie A football standings for a given season using the provided RapidAPI key.
+    verbose: Fetches the Serie A football standings for a given season using the provided RapidAPI key.
+  parameters:
+  - name: season
+    type: string
+    description: The season year for which the standings are to be fetched (e.g., '2022'). Defaults to None.
+    required: false
+  tags:
+  - serie
+  - a
+  - standings
+  test_prompts:
+    single:
+    - What are the Serie A standings for the 2021 season?
+    single_clear:
+    - What are the Serie A standings for the 2021 season?
+- name: agents_get_profile
+  descriptions:
+    minimal: Fetches the profile information for a real estate...
+    short: Fetches the profile information for a real estate agent using their NRDS ID and advertiser ID.
+    medium: Fetches the profile information for a real estate agent using their NRDS ID and advertiser ID.
+    long: Fetches the profile information for a real estate agent using their NRDS ID and advertiser ID.
+    verbose: Fetches the profile information for a real estate agent using their NRDS ID and advertiser ID.
+  parameters:
+  - name: nrds_id
+    type: string
+    description: The NRDS ID of the agent, typically returned from the /agents/list endpoint.
+    required: true
+    default: '150577018'
+  - name: advertiser_id
+    type: integer
+    description: The advertiser ID of the agent, typically returned from the /agents/list endpoint.
+    required: true
+    default: '1633379'
+  tags:
+  - agents
+  - get
+  - profile
+  test_prompts:
+    single:
+    - Could you retrieve the profile info for agent '999999' with advertiser ID 3333?
+    single_clear:
+    - Could you retrieve the profile info for agent '999999' with advertiser ID 3333?
+- name: find_missing_ranges
+  descriptions:
+    minimal: Finds the missing ranges between lower and upper...
+    short: Finds the missing ranges between lower and upper in a sorted list of integers.
+    medium: Finds the missing ranges between lower and upper in a sorted list of integers.
+    long: Finds the missing ranges between lower and upper in a sorted list of integers.
+    verbose: Finds the missing ranges between lower and upper in a sorted list of integers.
+  parameters:
+  - name: nums
+    type: string
+    description: The sorted list of integers.
+    required: true
+  - name: lower
+    type: integer
+    description: The lower bound.
+    required: true
+  - name: upper
+    type: integer
+    description: The upper bound.
+    required: true
+  tags:
+  - find
+  - missing
+  - ranges
+  test_prompts:
+    single:
+    - Find missing ranges between 10 and 50 in a list [15, 20, 35, 40]
+    - Find missing ranges between 10 and 50 in the list [15, 20, 35, 40]
+    - Find the missing ranges between 10 and 30 in the list [12, 15, 25, 28].
+    - What are the missing ranges between 10 and 20 in the list [12, 15, 18]?
+    - Identify the missing ranges in the sequence 1, 3, 5, 7, 10 given a lower bound of 0 and an upper bound of 12.
+    - Find the missing ranges between 10 and 50 in the list [15, 20, 35, 40].
+    - Find missing ranges in the list [3, 5, 10] between 1 and 12.
+    - Find missing ranges between 10 and 50 in the list [15, 20, 35, 40].
+    single_clear:
+    - Find missing ranges between 10 and 50 in a list [15, 20, 35, 40]
+    - Find missing ranges between 10 and 50 in the list [15, 20, 35, 40]
+    - Find the missing ranges between 10 and 30 in the list [12, 15, 25, 28].
+    - What are the missing ranges between 10 and 20 in the list [12, 15, 18]?
+    - Identify the missing ranges in the sequence 1, 3, 5, 7, 10 given a lower bound of 0 and an upper bound of 12.
+    - Find the missing ranges between 10 and 50 in the list [15, 20, 35, 40].
+    - Find missing ranges in the list [3, 5, 10] between 1 and 12.
+    - Find missing ranges between 10 and 50 in the list [15, 20, 35, 40].
+- name: getdivision
+  descriptions:
+    minimal: Divides two numbers by making an API call to a...
+    short: Divides two numbers by making an API call to a division service.
+    medium: Divides two numbers by making an API call to a division service.
+    long: Divides two numbers by making an API call to a division service.
+    verbose: Divides two numbers by making an API call to a division service.
+  parameters:
+  - name: divisor
+    type: integer
+    description: The divisor in the division operation.
+    required: true
+  - name: dividend
+    type: integer
+    description: The dividend in the division operation.
+    required: true
+  tags:
+  - getdivision
+  test_prompts:
+    single:
+    - What is the result of dividing 100 by 25?
+    - What is the division result of 75 divided by 25?
+    single_clear:
+    - What is the result of dividing 100 by 25?
+    - What is the division result of 75 divided by 25?
+- name: is_valid_sudoku
+  descriptions:
+    minimal: Checks if a 9x9 Sudoku board is valid.
+    short: Checks if a 9x9 Sudoku board is valid.
+    medium: Checks if a 9x9 Sudoku board is valid.
+    long: Checks if a 9x9 Sudoku board is valid.
+    verbose: Checks if a 9x9 Sudoku board is valid.
+  parameters:
+  - name: board
+    type: string
+    description: The Sudoku board represented as a 2D list of strings.
+    required: true
+  tags:
+  - is
+  - valid
+  - sudoku
+  test_prompts:
+    single:
+    - Is this Sudoku board valid? It has the numbers 53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....419..5....8..79
+    - Is the Sudoku board valid where the first row is [5, 3, '.', '.', 7, '.', '.', '.', '.'], the second row is [6, '.',
+      '.', 1, 9, 5, '.', '.', '.'], and so on for all 9 rows?
+    - Verify if the Sudoku board is valid.
+    - Is the Sudoku board valid where each row, column, and 3x3 box contains the digits 1-9 without repetition?
+    - Check if a Sudoku board with the first row [8, '.', '.', '.', '.', '.', '.', '.', 6], and the second row ['.', '.',
+      3, 7, '.', '.', '.', '.', '.'], and so on is valid.
+    - 'Check if the Sudoku board is valid: [[5,3,''.'',''.'',7,''.'',''.'',''.'',''.''], [6,''.'',''.'',1,9,5,''.'',''.'',''.''],
+      [''.'',9,8,''.'',''.'',''.'',''.'',6,''.''], [8,''.'',''.'',''.'',6,''.'',''.'',''.'',3], [4,''.'',''.'',8,''.'',3,''.'',''.'',1],
+      [7,''.'',''.'',''.'',2,''.'',''.'',''.'',6], [''.'',6,''.'',''.'',''.'',''.'',2,8,''.''], [''.'',''.'',''.'',4,1,9,''.'',''.'',5],
+      [''.'',''.'',''.'',''.'',8,''.'',''.'',7,9]]'
+    - Is the following Sudoku board valid? [[5,3,'.','.',7,'.','.','.','.'], [6,'.','.',1,9,5,'.','.','.'], ['.',9,8,'.','.','.','.',6,'.'],
+      [8,'.','.','.',6,'.','.','.',3], [4,'.','.',8,'.',3,'.','.',1], [7,'.','.','.',2,'.','.','.',6], ['.',6,'.','.','.','.',2,8,'.'],
+      ['.','.','.',4,1,9,'.','.',5], ['.','.','.','.',8,'.','.',7,9]]
+    - Check if the Sudoku board [[1,2,3,4,5,6,7,8,9],[1,2,3,4,5,6,7,8,9],[1,2,3,4,5,6,7,8,9]...] is valid.
+    - Check if a Sudoku board with the first row [2, '.', '.', '.', '.', '.', '.', '.', '.'], the second row ['.', '.', 3,
+      '.', '.', '.', '.', '.', '.'], and so on is valid.
+    - Determine if the Sudoku board [[5,3,'.','.',7,'.','.','.','.'], [6,'.','.',1,9,5,'.','.','.'], ['.',9,8,'.','.','.','.',6,'.'],
+      [8,'.','.','.',6,'.','.','.',3], [4,'.','.',8,'.',3,'.','.',1], [7,'.','.','.',2,'.','.','.',6], ['.',6,'.','.','.','.',2,8,'.'],
+      ['.','.','.',4,1,9,'.','.',5], ['.','.','.','.',8,'.','.',7,9]] is valid.
+    - Check the validity of a Sudoku board where the first three numbers in the first row are '1', '2', '3', and so on for
+      the rest of the board.
+    single_clear:
+    - Is this Sudoku board valid? It has the numbers 53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....419..5....8..79
+    - Is the Sudoku board valid where the first row is [5, 3, '.', '.', 7, '.', '.', '.', '.'], the second row is [6, '.',
+      '.', 1, 9, 5, '.', '.', '.'], and so on for all 9 rows?
+    - Verify if the Sudoku board is valid.
+    - Is the Sudoku board valid where each row, column, and 3x3 box contains the digits 1-9 without repetition?
+    - Check if a Sudoku board with the first row [8, '.', '.', '.', '.', '.', '.', '.', 6], and the second row ['.', '.',
+      3, 7, '.', '.', '.', '.', '.'], and so on is valid.
+    - 'Check if the Sudoku board is valid: [[5,3,''.'',''.'',7,''.'',''.'',''.'',''.''], [6,''.'',''.'',1,9,5,''.'',''.'',''.''],
+      [''.'',9,8,''.'',''.'',''.'',''.'',6,''.''], [8,''.'',''.'',''.'',6,''.'',''.'',''.'',3], [4,''.'',''.'',8,''.'',3,''.'',''.'',1],
+      [7,''.'',''.'',''.'',2,''.'',''.'',''.'',6], [''.'',6,''.'',''.'',''.'',''.'',2,8,''.''], [''.'',''.'',''.'',4,1,9,''.'',''.'',5],
+      [''.'',''.'',''.'',''.'',8,''.'',''.'',7,9]]'
+    - Is the following Sudoku board valid? [[5,3,'.','.',7,'.','.','.','.'], [6,'.','.',1,9,5,'.','.','.'], ['.',9,8,'.','.','.','.',6,'.'],
+      [8,'.','.','.',6,'.','.','.',3], [4,'.','.',8,'.',3,'.','.',1], [7,'.','.','.',2,'.','.','.',6], ['.',6,'.','.','.','.',2,8,'.'],
+      ['.','.','.',4,1,9,'.','.',5], ['.','.','.','.',8,'.','.',7,9]]
+    - Check if the Sudoku board [[1,2,3,4,5,6,7,8,9],[1,2,3,4,5,6,7,8,9],[1,2,3,4,5,6,7,8,9]...] is valid.
+    - Check if a Sudoku board with the first row [2, '.', '.', '.', '.', '.', '.', '.', '.'], the second row ['.', '.', 3,
+      '.', '.', '.', '.', '.', '.'], and so on is valid.
+    - Determine if the Sudoku board [[5,3,'.','.',7,'.','.','.','.'], [6,'.','.',1,9,5,'.','.','.'], ['.',9,8,'.','.','.','.',6,'.'],
+      [8,'.','.','.',6,'.','.','.',3], [4,'.','.',8,'.',3,'.','.',1], [7,'.','.','.',2,'.','.','.',6], ['.',6,'.','.','.','.',2,8,'.'],
+      ['.','.','.',4,1,9,'.','.',5], ['.','.','.','.',8,'.','.',7,9]] is valid.
+    - Check the validity of a Sudoku board where the first three numbers in the first row are '1', '2', '3', and so on for
+      the rest of the board.
+- name: reverse_words
+  descriptions:
+    minimal: Reverses the order of words in a sentence.
+    short: Reverses the order of words in a sentence.
+    medium: Reverses the order of words in a sentence.
+    long: Reverses the order of words in a sentence.
+    verbose: Reverses the order of words in a sentence.
+  parameters:
+  - name: sentence
+    type: string
+    description: The input sentence.
+    required: true
+  tags:
+  - reverse
+  - words
+  test_prompts:
+    single:
+    - Reverse the sentence 'Hello world, how are you?'
+    - Reverse the order of words in the sentence 'The quick brown fox'.
+    - Reverse the sentence 'Quantum computing is the future'.
+    - 'Reverse the words in the sentence: ''Data science is fun and challenging''.'
+    - Reverse the order of words in the sentence 'Hello world this is a test'.
+    single_clear:
+    - Reverse the sentence 'Hello world, how are you?'
+    - Reverse the order of words in the sentence 'The quick brown fox'.
+    - Reverse the sentence 'Quantum computing is the future'.
+    - 'Reverse the words in the sentence: ''Data science is fun and challenging''.'
+    - Reverse the order of words in the sentence 'Hello world this is a test'.
+- name: get_video_urls
+  descriptions:
+    minimal: Retrieves video or shorts URLs from YouTube using...
+    short: Retrieves video or shorts URLs from YouTube using a provided video ID.
+    medium: Retrieves video or shorts URLs from YouTube using a provided video ID.
+    long: Retrieves video or shorts URLs from YouTube using a provided video ID.
+    verbose: Retrieves video or shorts URLs from YouTube using a provided video ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The YouTube video ID for which the URLs are to be fetched.
+    required: true
+    default: ppCIVJE3my4
+  tags:
+  - get
+  - video
+  - urls
+  test_prompts:
+    single:
+    - Retrieve URLs for the YouTube video with ID '123456789'.
+    - Get video URLs for the YouTube video with ID 'dQw4w9WgXcQ'.
+    single_clear:
+    - Retrieve URLs for the YouTube video with ID '123456789'.
+    - Get video URLs for the YouTube video with ID 'dQw4w9WgXcQ'.
+- name: obd2_code
+  descriptions:
+    minimal: Retrieve the human-readable version of a...
+    short: Retrieve the human-readable version of a requested OBD2 code using the Toolbench RapidAPI.
+    medium: Retrieve the human-readable version of a requested OBD2 code using the Toolbench RapidAPI.
+    long: Retrieve the human-readable version of a requested OBD2 code using the Toolbench RapidAPI.
+    verbose: Retrieve the human-readable version of a requested OBD2 code using the Toolbench RapidAPI.
+  parameters:
+  - name: code
+    type: string
+    description: The OBD2 code to be translated into human-readable format.
+    required: true
+    default: P0001
+  tags:
+  - obd2
+  - code
+  test_prompts:
+    single:
+    - Translate OBD2 code P0420 into a human-readable format.
+    single_clear:
+    - Translate OBD2 code P0420 into a human-readable format.
+- name: potential_energy
+  descriptions:
+    minimal: Calculates the electrostatic potential energy...
+    short: Calculates the electrostatic potential energy given the charge and voltage.
+    medium: Calculates the electrostatic potential energy given the charge and voltage.
+    long: Calculates the electrostatic potential energy given the charge and voltage.
+    verbose: Calculates the electrostatic potential energy given the charge and voltage.
+  parameters:
+  - name: charge
+    type: number
+    description: The electric charge.
+    required: true
+  - name: voltage
+    type: number
+    description: The electric potential difference (voltage).
+    required: true
+  tags:
+  - potential
+  - energy
+  test_prompts:
+    single:
+    - A lab assistant needs to verify the potential energy of a charged system with a voltage of 20 volts and a charge of
+      0.009 coulombs. What is the potential energy of this system?
+    - An engineer needs to calculate the potential energy stored in a capacitor with a charge of 0.005 Coulombs and a voltage
+      of 5000 volts. Can you provide the calculation?
+    - Calculate the potential energy for a charge of 5 coulombs at a voltage of 10 volts.
+    - A student is conducting an experiment with a charged particle at a voltage of 50 volts. The charge on the particle is
+      0.002 coulombs. What is the electrostatic potential energy of the particle?
+    - Calculate the potential energy of a system with a charge of 2 Coulombs and a voltage of 100 volts.
+    - What is the potential energy of a charge of 2 Coulombs at a voltage of 180 volts?
+    single_clear:
+    - A lab assistant needs to verify the potential energy of a charged system with a voltage of 20 volts and a charge of
+      0.009 coulombs. What is the potential energy of this system?
+    - An engineer needs to calculate the potential energy stored in a capacitor with a charge of 0.005 Coulombs and a voltage
+      of 5000 volts. Can you provide the calculation?
+    - Calculate the potential energy for a charge of 5 coulombs at a voltage of 10 volts.
+    - A student is conducting an experiment with a charged particle at a voltage of 50 volts. The charge on the particle is
+      0.002 coulombs. What is the electrostatic potential energy of the particle?
+    - Calculate the potential energy of a system with a charge of 2 Coulombs and a voltage of 100 volts.
+    - What is the potential energy of a charge of 2 Coulombs at a voltage of 180 volts?
+- name: forward_geocode
+  descriptions:
+    minimal: Fetches latitude and longitude coordinates from a...
+    short: Fetches latitude and longitude coordinates from a given address using the RapidAPI forward geocoding service.
+    medium: Fetches latitude and longitude coordinates from a given address using the RapidAPI forward geocoding service.
+    long: Fetches latitude and longitude coordinates from a given address using the RapidAPI forward geocoding service.
+    verbose: Fetches latitude and longitude coordinates from a given address using the RapidAPI forward geocoding service.
+  parameters:
+  - name: address
+    type: string
+    description: The address to be geocoded.
+    required: true
+    default: 2795 Hastings St, Vancouver, BC V5K 1Z8
+  tags:
+  - forward
+  - geocode
+  test_prompts:
+    single:
+    - Find the latitude and longitude for '350 Fifth Avenue, New York, NY'.
+    single_clear:
+    - Find the latitude and longitude for '350 Fifth Avenue, New York, NY'.
+- name: is_valid_palindrome
+  descriptions:
+    minimal: Checks if a string is a valid palindrome...
+    short: Checks if a string is a valid palindrome, considering only alphanumeric characters and ignoring case.
+    medium: Checks if a string is a valid palindrome, considering only alphanumeric characters and ignoring case.
+    long: Checks if a string is a valid palindrome, considering only alphanumeric characters and ignoring case.
+    verbose: Checks if a string is a valid palindrome, considering only alphanumeric characters and ignoring case.
+  parameters:
+  - name: s
+    type: string
+    description: The input string.
+    required: true
+  tags:
+  - is
+  - valid
+  - palindrome
+  test_prompts:
+    single:
+    - Is 'Eva, can I see bees in a cave?' a valid palindrome?
+    - 'Is ''A man, a plan, a canal: Panama'' a valid palindrome?'
+    - 'Check if the string ''A man, a plan, a canal: Panama'' is a valid palindrome.'
+    - Check if '12321' is a palindrome.
+    - Is 'Eva, can I see bees in a cave?' a palindrome?
+    - Determine if 'No 'x' in Nixon' is a valid palindrome.
+    - 'Determine if the string ''A man, a plan, a canal: Panama'' is a valid palindrome.'
+    - Is 'Able was I ere I saw Elba' a valid palindrome?
+    - Check if 'Never odd or even' is a valid palindrome.
+    - Is 'No lemon, no melon' a valid palindrome?
+    single_clear:
+    - Is 'Eva, can I see bees in a cave?' a valid palindrome?
+    - 'Is ''A man, a plan, a canal: Panama'' a valid palindrome?'
+    - 'Check if the string ''A man, a plan, a canal: Panama'' is a valid palindrome.'
+    - Check if '12321' is a palindrome.
+    - Is 'Eva, can I see bees in a cave?' a palindrome?
+    - Determine if 'No 'x' in Nixon' is a valid palindrome.
+    - 'Determine if the string ''A man, a plan, a canal: Panama'' is a valid palindrome.'
+    - Is 'Able was I ere I saw Elba' a valid palindrome?
+    - Check if 'Never odd or even' is a valid palindrome.
+    - Is 'No lemon, no melon' a valid palindrome?
+- name: models_by_make_id_year_category
+  descriptions:
+    minimal: Retrieves motorcycle models based on year...
+    short: Retrieves motorcycle models based on year, category, and make ID.
+    medium: Retrieves motorcycle models based on year, category, and make ID.
+    long: Retrieves motorcycle models based on year, category, and make ID.
+    verbose: Retrieves motorcycle models based on year, category, and make ID.
+  parameters:
+  - name: year
+    type: integer
+    description: The year of the motorcycle models to retrieve.
+    required: true
+    default: '2015'
+  - name: category
+    type: string
+    description: The category of the motorcycle models to retrieve.
+    required: true
+    default: Sport
+  - name: make
+    type: integer
+    description: The make ID of the motorcycle models to retrieve.
+    required: true
+    default: '100'
+  tags:
+  - models
+  - by
+  - make
+  test_prompts:
+    single:
+    - List all the off-road motorcycles from Kawasaki made in 2019.
+    - I need information on all sports bike models from Yamaha produced in 2020.
+    - Please provide details of all touring motorcycles from BMW manufactured in 2018.
+    - What are the motorcycle models from 2008 in the cruiser category made by the manufacturer with ID 5?
+    single_clear:
+    - List all the off-road motorcycles from Kawasaki made in 2019.
+    - I need information on all sports bike models from Yamaha produced in 2020.
+    - Please provide details of all touring motorcycles from BMW manufactured in 2018.
+    - What are the motorcycle models from 2008 in the cruiser category made by the manufacturer with ID 5?
+- name: get_stores
+  descriptions:
+    minimal: Fetches a list of stores from the "Get Promo...
+    short: Fetches a list of stores from the "Get Promo Codes" API.
+    medium: Fetches a list of stores from the "Get Promo Codes" API.
+    long: Fetches a list of stores from the "Get Promo Codes" API.
+    verbose: Fetches a list of stores from the "Get Promo Codes" API.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number for pagination. Defaults to 1.
+    required: false
+    default: '1'
+  tags:
+  - get
+  - stores
+  test_prompts:
+    single:
+    - Can you fetch the list of stores from page 3 using the 'get_stores' function?
+    - Can you list the stores available on page 3 from the 'Get Promo Codes' API?
+    - What are the stores available on page 3 from the 'Get Promo Codes' API?
+    single_clear:
+    - Can you fetch the list of stores from page 3 using the 'get_stores' function?
+    - Can you list the stores available on page 3 from the 'Get Promo Codes' API?
+    - What are the stores available on page 3 from the 'Get Promo Codes' API?
+- name: free_ofac_api
+  descriptions:
+    minimal: This function performs an OFAC (Office of Foreign...
+    short: This function performs an OFAC (Office of Foreign Assets Control) scan request using the Free OFAC Scan API and
+      returns a response indicating whether a target is found.
+    medium: This function performs an OFAC (Office of Foreign Assets Control) scan request using the Free OFAC Scan API and
+      returns a response indicating whether a target is found.
+    long: This function performs an OFAC (Office of Foreign Assets Control) scan request using the Free OFAC Scan API and
+      returns a response indicating whether a target is found.
+    verbose: This function performs an OFAC (Office of Foreign Assets Control) scan request using the Free OFAC Scan API and
+      returns a response indicating whether a target is found.
+  parameters:
+  - name: street_address
+    type: string
+    description: Street address of the individual or business entity. Defaults to '79 ul. Sadovnicheskaya'.
+    required: true
+    default: 79 ul. Sadovnicheskaya
+  - name: business_name
+    type: string
+    description: Name of the business entity. Defaults to 'SME Bank'.
+    required: true
+    default: SME Bank
+  - name: first_name
+    type: string
+    description: First name(s) of the individual. Defaults to 'Gener'.
+    required: true
+    default: Gener
+  - name: last_name
+    type: string
+    description: Last name(s) of the individual. Defaults to 'Garcia Molina'.
+    required: true
+    default: Garcia Molina
+  tags:
+  - free
+  - ofac
+  - api
+  test_prompts:
+    single:
+    - Perform an OFAC scan for an individual named 'John Doe' at '123 Main St', and a business named 'Tech Solutions'.
+    single_clear:
+    - Perform an OFAC scan for an individual named 'John Doe' at '123 Main St', and a business named 'Tech Solutions'.
+- name: mini_chart
+  descriptions:
+    minimal: Generates a TradingView mini chart image based on...
+    short: Generates a TradingView mini chart image based on the specified parameters and returns the image data or error
+      message.
+    medium: Generates a TradingView mini chart image based on the specified parameters and returns the image data or error
+      message.
+    long: Generates a TradingView mini chart image based on the specified parameters and returns the image data or error message.
+    verbose: Generates a TradingView mini chart image based on the specified parameters and returns the image data or error
+      message.
+  parameters:
+  - name: width
+    type: integer
+    description: 'Width of the chart image. Must be within the valid range. Minimum: 320. Default is 800.'
+    required: false
+    default: '800'
+  - name: format
+    type: string
+    description: Format of the chart image. Supported formats are 'png' and 'jpeg'. Default is 'png'.
+    required: false
+    default: png
+  - name: symbol
+    type: string
+    description: TradingView symbol for the chart. Examples include 'BINANCE:BTCUSDT' and 'BINANCE:BTCUSDTPERP'. Default is
+      'BINANCE:BTCUSDT'.
+    required: false
+    default: BINANCE:BTCUSDT
+  - name: interval
+    type: string
+    description: Time interval for the chart. Supported intervals are '1d', '1M', '3M', '1Y', '5Y', and 'all'. Default is
+      '1M'.
+    required: false
+    default: 1M
+  - name: theme
+    type: string
+    description: Color theme of the chart. Supported themes are 'light' and 'dark'. Default is 'dark'.
+    required: false
+    default: dark
+  - name: height
+    type: integer
+    description: 'Height of the chart image. Must be within the valid range. Minimum: 220. Default is 400.'
+    required: false
+    default: '400'
+  tags:
+  - mini
+  - chart
+  test_prompts:
+    single:
+    - Create a mini chart for BTCUSDTPERP on Binance with a 1-day interval, dark theme, and standard chart size.
+    single_clear:
+    - Create a mini chart for BTCUSDTPERP on Binance with a 1-day interval, dark theme, and standard chart size.
+- name: competitions_standings
+  descriptions:
+    minimal: Fetch the current standings for a specified...
+    short: Fetch the current standings for a specified competition using the Zeus API.
+    medium: Fetch the current standings for a specified competition using the Zeus API.
+    long: Fetch the current standings for a specified competition using the Zeus API.
+    verbose: Fetch the current standings for a specified competition using the Zeus API.
+  parameters:
+  - name: is_id
+    type: string
+    description: The unique identifier for the competition.
+    required: true
+    default: PRL
+  - name: year
+    type: string
+    description: The year for which standings are to be retrieved. Defaults to '2020'.
+    required: false
+    default: '2020'
+  tags:
+  - competitions
+  - standings
+  test_prompts:
+    single:
+    - Fetch the standings for the 'Premier League' competition in the year 2022.
+    - Retrieve the standings for the English Premier League in the year 2022 using its unique ID.
+    single_clear:
+    - Fetch the standings for the 'Premier League' competition in the year 2022.
+    - Retrieve the standings for the English Premier League in the year 2022 using its unique ID.
+- name: is_anagram_phrase
+  descriptions:
+    minimal: Checks if two phrases are anagrams of each other...
+    short: Checks if two phrases are anagrams of each other, ignoring whitespace and punctuation.
+    medium: Checks if two phrases are anagrams of each other, ignoring whitespace and punctuation.
+    long: Checks if two phrases are anagrams of each other, ignoring whitespace and punctuation.
+    verbose: Checks if two phrases are anagrams of each other, ignoring whitespace and punctuation.
+  parameters:
+  - name: phrase1
+    type: string
+    description: The first phrase.
+    required: true
+  - name: phrase2
+    type: string
+    description: The second phrase.
+    required: true
+  tags:
+  - is
+  - anagram
+  - phrase
+  test_prompts:
+    single:
+    - Are 'A gentleman' and 'Elegant man' anagrams?
+    - Check if 'Dormitory' and 'Dirty room' are anagrams.
+    - Determine if the phrases 'Eleven plus two' and 'Twelve plus one' are anagrams of each other.
+    single_clear:
+    - Are 'A gentleman' and 'Elegant man' anagrams?
+    - Check if 'Dormitory' and 'Dirty room' are anagrams.
+    - Determine if the phrases 'Eleven plus two' and 'Twelve plus one' are anagrams of each other.
+- name: bacterial_growth
+  descriptions:
+    minimal: Calculates the bacterial population after a given...
+    short: Calculates the bacterial population after a given time based on the initial population and growth rate.
+    medium: Calculates the bacterial population after a given time based on the initial population and growth rate.
+    long: Calculates the bacterial population after a given time based on the initial population and growth rate.
+    verbose: Calculates the bacterial population after a given time based on the initial population and growth rate.
+  parameters:
+  - name: initial_population
+    type: integer
+    description: The initial bacterial population.
+    required: true
+    default: 20
+  - name: growth_rate
+    type: number
+    description: The growth rate per unit time.
+    required: true
+    default: 20
+  - name: time
+    type: number
+    description: The time elapsed.
+    required: true
+  - name: doubling_time
+    type: number
+    description: The doubling time of the bacteria in minutes. Defaults to 20.
+    required: false
+  tags:
+  - bacterial
+  - growth
+  test_prompts:
+    single:
+    - If the initial bacterial population is 1000 and the growth rate is 0.02 per minute, what will the population be after
+      1 hour, assuming a doubling time of 20 minutes?
+    - Determine the bacterial count after 50 minutes if the initial population was 2500 and the growth rate is 0.025 per minute.
+      The doubling time is 20 minutes.
+    - Estimate the bacterial population after 30 minutes if the initial population is 1000 and the growth rate is 0.05 per
+      minute.
+    - If the initial bacterial population in a lab experiment is 3000 and the growth rate is 0.03 per minute, what will the
+      population be after 1 hour?
+    - Determine the bacterial population after 30 minutes if the initial population is 1000 and the growth rate is 0.05 per
+      minute.
+    - If the initial population of bacteria is 2000 and the growth rate is 0.03 per minute, what will the population be after
+      50 minutes?
+    - If a bacterial culture starts with 5000 bacteria and has a growth rate of 0.1 per minute, how many bacteria will there
+      be after 45 minutes with a doubling time of 15 minutes?
+    - Estimate the bacterial population in a culture that started with 1000 bacteria, a growth rate of 0.05 per minute, and
+      30 minutes of growth.
+    - Given an initial population of 2000 bacteria with a growth rate of 0.03 per minute, how many bacteria will there be
+      after 60 minutes with a doubling time of 15 minutes?
+    - If the initial bacterial population is 1000 and the growth rate is 0.05 per minute, what will be the population after
+      30 minutes?
+    - How many bacteria will there be after 75 minutes if the initial population was 1000 and the growth rate is 0.035 per
+      minute? The doubling time for this bacteria is 18 minutes.
+    - If the initial bacterial population is 3000 and the growth rate is 0.04 per minute, what will the population be after
+      60 minutes?
+    - Determine the bacterial count after 2 hours starting with 3000 bacteria and a growth rate of 0.01 per minute, considering
+      a doubling time of 30 minutes.
+    - Given an initial bacterial population of 2000, a growth rate of 0.02 per minute, and a doubling time of 15 minutes,
+      what is the population after 25 minutes?
+    - Calculate the final bacterial population starting with 2000 bacteria, a growth rate of 0.03 per minute, and a doubling
+      time of 25 minutes, after 60 minutes of growth.
+    single_clear:
+    - If the initial bacterial population is 1000 and the growth rate is 0.02 per minute, what will the population be after
+      1 hour, assuming a doubling time of 20 minutes?
+    - Determine the bacterial count after 50 minutes if the initial population was 2500 and the growth rate is 0.025 per minute.
+      The doubling time is 20 minutes.
+    - Estimate the bacterial population after 30 minutes if the initial population is 1000 and the growth rate is 0.05 per
+      minute.
+    - If the initial bacterial population in a lab experiment is 3000 and the growth rate is 0.03 per minute, what will the
+      population be after 1 hour?
+    - Determine the bacterial population after 30 minutes if the initial population is 1000 and the growth rate is 0.05 per
+      minute.
+    - If the initial population of bacteria is 2000 and the growth rate is 0.03 per minute, what will the population be after
+      50 minutes?
+    - If a bacterial culture starts with 5000 bacteria and has a growth rate of 0.1 per minute, how many bacteria will there
+      be after 45 minutes with a doubling time of 15 minutes?
+    - Estimate the bacterial population in a culture that started with 1000 bacteria, a growth rate of 0.05 per minute, and
+      30 minutes of growth.
+    - Given an initial population of 2000 bacteria with a growth rate of 0.03 per minute, how many bacteria will there be
+      after 60 minutes with a doubling time of 15 minutes?
+    - If the initial bacterial population is 1000 and the growth rate is 0.05 per minute, what will be the population after
+      30 minutes?
+    - How many bacteria will there be after 75 minutes if the initial population was 1000 and the growth rate is 0.035 per
+      minute? The doubling time for this bacteria is 18 minutes.
+    - If the initial bacterial population is 3000 and the growth rate is 0.04 per minute, what will the population be after
+      60 minutes?
+    - Determine the bacterial count after 2 hours starting with 3000 bacteria and a growth rate of 0.01 per minute, considering
+      a doubling time of 30 minutes.
+    - Given an initial bacterial population of 2000, a growth rate of 0.02 per minute, and a doubling time of 15 minutes,
+      what is the population after 25 minutes?
+    - Calculate the final bacterial population starting with 2000 bacteria, a growth rate of 0.03 per minute, and a doubling
+      time of 25 minutes, after 60 minutes of growth.
+- name: airplanes_by_brand
+  descriptions:
+    minimal: Fetches all airplanes by a specified brand from...
+    short: Fetches all airplanes by a specified brand from the airplanes database.
+    medium: Fetches all airplanes by a specified brand from the airplanes database.
+    long: Fetches all airplanes by a specified brand from the airplanes database.
+    verbose: Fetches all airplanes by a specified brand from the airplanes database.
+  parameters:
+  - name: brand
+    type: string
+    description: The brand of airplanes to fetch information for.
+    required: true
+    default: Airbus
+  tags:
+  - airplanes
+  - by
+  - brand
+  test_prompts:
+    single:
+    - Can you list all the airplanes manufactured by Boeing?
+    - What are the airplanes available from the brand 'Boeing'?
+    - Fetch details of all Embraer airplanes.
+    - Can you list all the airplanes manufactured by Boeing?
+    - List all airplanes made by Boeing.
+    single_clear:
+    - Can you list all the airplanes manufactured by Boeing?
+    - What are the airplanes available from the brand 'Boeing'?
+    - Fetch details of all Embraer airplanes.
+    - Can you list all the airplanes manufactured by Boeing?
+    - List all airplanes made by Boeing.
+- name: flatten_list
+  descriptions:
+    minimal: Flattens a nested list into a single-level list.
+    short: Flattens a nested list into a single-level list.
+    medium: Flattens a nested list into a single-level list.
+    long: Flattens a nested list into a single-level list.
+    verbose: Flattens a nested list into a single-level list.
+  parameters:
+  - name: nested_list
+    type: array
+    description: The nested list to be flattened.
+    required: true
+  tags:
+  - flatten
+  - list
+  test_prompts:
+    single:
+    - What would be the flattened result of the list [[1, [2, 3]], [4, 5], 6]?
+    - Can you help me flatten a list that includes another list of lists, like [[1, 2], [3, [4, 5, [6, 7]]]]?
+    - How to flatten a list with elements like [1, [2, 3], 'a', ['b', ['c', 'd']]]?
+    - Flatten the nested list [1, [2, [3, 4], 5]]
+    single_clear:
+    - What would be the flattened result of the list [[1, [2, 3]], [4, 5], 6]?
+    - Can you help me flatten a list that includes another list of lists, like [[1, 2], [3, [4, 5, [6, 7]]]]?
+    - How to flatten a list with elements like [1, [2, 3], 'a', ['b', ['c', 'd']]]?
+    - Flatten the nested list [1, [2, [3, 4], 5]]
+- name: product_categorization
+  descriptions:
+    minimal: Categorizes a product based on its title and...
+    short: Categorizes a product based on its title and optional price using the Toolbench RapidAPI service.
+    medium: Categorizes a product based on its title and optional price using the Toolbench RapidAPI service.
+    long: Categorizes a product based on its title and optional price using the Toolbench RapidAPI service.
+    verbose: Categorizes a product based on its title and optional price using the Toolbench RapidAPI service.
+  parameters:
+  - name: title
+    type: string
+    description: The title of the product to be categorized.
+    required: true
+    default: 'Abstract Egghead Plus Size Female Mannequin - Matte White Item '
+  - name: price
+    type: integer
+    description: The price of the product. Default is 200.
+    required: false
+    default: '200'
+  tags:
+  - product
+  - categorization
+  test_prompts:
+    single:
+    - What is the category of a product called 'Eco-Friendly Water Bottle' priced at 30?
+    - Categorize a product named 'High-End Laptop' priced at 1500.
+    single_clear:
+    - What is the category of a product called 'Eco-Friendly Water Bottle' priced at 30?
+    - Categorize a product named 'High-End Laptop' priced at 1500.
+- name: eredivisie_standings
+  descriptions:
+    minimal: Fetches Eredivisie standings for a given season...
+    short: Fetches Eredivisie standings for a given season using the RapidAPI service.
+    medium: Fetches Eredivisie standings for a given season using the RapidAPI service.
+    long: Fetches Eredivisie standings for a given season using the RapidAPI service.
+    verbose: Fetches Eredivisie standings for a given season using the RapidAPI service.
+  parameters:
+  - name: season
+    type: string
+    description: The season for which to fetch the standings, e.g., '2022'. Defaults to None.
+    required: false
+  tags:
+  - eredivisie
+  - standings
+  test_prompts:
+    single:
+    - Can you provide the Eredivisie standings for the 2021 season?
+    single_clear:
+    - Can you provide the Eredivisie standings for the 2021 season?
+- name: navigations_get_tabs
+  descriptions:
+    minimal: Fetches navigation tabs for a given language...
+    short: Fetches navigation tabs for a given language, country, and currency using the unofficial SHEIN API.
+    medium: Fetches navigation tabs for a given language, country, and currency using the unofficial SHEIN API.
+    long: Fetches navigation tabs for a given language, country, and currency using the unofficial SHEIN API.
+    verbose: Fetches navigation tabs for a given language, country, and currency using the unofficial SHEIN API.
+  parameters:
+  - name: language
+    type: string
+    description: The 2-letter language code. Defaults to 'en'.
+    required: true
+    default: en
+  - name: country
+    type: string
+    description: The 2-letter country code. Defaults to 'US'.
+    required: true
+    default: US
+  - name: currency
+    type: string
+    description: The 3-letter currency code. Defaults to 'USD'.
+    required: true
+    default: USD
+  tags:
+  - navigations
+  - get
+  - tabs
+  test_prompts:
+    single:
+    - Fetch navigation tabs in French for France.
+    - What are the navigation tabs for German users in Germany using Euros?
+    - Show navigation tabs for Spanish users in Spain using Euros.
+    - Fetch navigation tabs for French language, Canadian country, and CAD currency.
+    - What are the navigation tabs for English users in the US using USD?
+    single_clear:
+    - Fetch navigation tabs in French for France.
+    - What are the navigation tabs for German users in Germany using Euros?
+    - Show navigation tabs for Spanish users in Spain using Euros.
+    - Fetch navigation tabs for French language, Canadian country, and CAD currency.
+    - What are the navigation tabs for English users in the US using USD?

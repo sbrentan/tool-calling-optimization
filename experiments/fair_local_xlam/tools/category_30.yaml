@@ -1,0 +1,650 @@
+category: category_30
+tools:
+- name: top_athletes
+  descriptions:
+    minimal: Fetches the top athletes based on the provided...
+    short: Fetches the top athletes based on the provided parameters by making a request to the allscores API.
+    medium: Fetches the top athletes based on the provided parameters by making a request to the allscores API.
+    long: Fetches the top athletes based on the provided parameters by making a request to the allscores API.
+    verbose: Fetches the top athletes based on the provided parameters by making a request to the allscores API.
+  parameters:
+  - name: langid
+    type: integer
+    description: The language id to use in the request.
+    required: true
+    default: 1
+  - name: timezone
+    type: string
+    description: The timezone name.
+    required: true
+    default: America/Chicago
+  - name: limit
+    type: integer
+    description: The number of athletes to return.
+    required: true
+    default: 10
+  - name: sporttype
+    type: integer
+    description: The sport type for which to fetch top athletes.
+    required: true
+    default: 2
+  tags:
+  - top
+  - athletes
+  test_prompts:
+    single:
+    - Find the top 5 athletes in soccer from the UK timezone.
+    single_clear:
+    - Find the top 5 athletes in soccer from the UK timezone.
+- name: get_posts_from_page
+  descriptions:
+    minimal: Fetches posts from a specified category on a 9gag...
+    short: Fetches posts from a specified category on a 9gag page.
+    medium: Fetches posts from a specified category on a 9gag page.
+    long: Fetches posts from a specified category on a 9gag page.
+    verbose: Fetches posts from a specified category on a 9gag page.
+  parameters:
+  - name: category
+    type: string
+    description: The category of posts to fetch, as supported by the /get_pages endpoint.
+    required: true
+    default: trending
+  - name: counter
+    type: string
+    description: Counter for pagination; leave blank for the first request. For subsequent requests, provide the counter value
+      from the previous response.
+    required: false
+  - name: after
+    type: string
+    description: Pagination parameter to fetch posts after a certain point; leave blank for the first request. For subsequent
+      requests, provide the after value from the previous response.
+    required: false
+  tags:
+  - get
+  - posts
+  - from
+  test_prompts:
+    single:
+    - Fetch more posts from the 'gaming' category on 9gag after the counter '1122334455'.
+    single_clear:
+    - Fetch more posts from the 'gaming' category on 9gag after the counter '1122334455'.
+- name: wrt_transformer
+  descriptions:
+    minimal: Processes text input to identify entities using...
+    short: Processes text input to identify entities using the Walnut Entity Recognition API.
+    medium: Processes text input to identify entities using the Walnut Entity Recognition API.
+    long: Processes text input to identify entities using the Walnut Entity Recognition API.
+    verbose: Processes text input to identify entities using the Walnut Entity Recognition API.
+  parameters:
+  - name: payload
+    type: string
+    description: The text input to be processed.
+    required: true
+    default: I am Richard from New York and I work at Microsoft.
+  tags:
+  - wrt
+  - transformer
+  test_prompts:
+    single:
+    - Can you find entities in the sentence 'The New York Stock Exchange is located in Manhattan.'?
+    single_clear:
+    - Can you find entities in the sentence 'The New York Stock Exchange is located in Manhattan.'?
+- name: spellout
+  descriptions:
+    minimal: Spells out a given number in the specified...
+    short: Spells out a given number in the specified language using the provided rule set.
+    medium: Spells out a given number in the specified language using the provided rule set.
+    long: Spells out a given number in the specified language using the provided rule set.
+    verbose: Spells out a given number in the specified language using the provided rule set.
+  parameters:
+  - name: data
+    type: integer
+    description: The number to be spelled out.
+    required: true
+    default: 123
+  - name: lang
+    type: string
+    description: The 2-letter ISO 639 language code specifying the language in which the number will be spelled out. Use the
+      `/v1/languages` endpoint to list all supported languages.
+    required: true
+    default: en
+  - name: ruleset
+    type: string
+    description: The name of the rule set to use for spelling out the number. Use the `/v1/rulesets` endpoint to list all
+      supported rule sets for any given language.
+    required: true
+    default: spellout-cardinal
+  tags:
+  - spellout
+  test_prompts:
+    single:
+    - Spell out the number 12345 in English using the default rule set.
+    single_clear:
+    - Spell out the number 12345 in English using the default rule set.
+- name: get_by_id
+  descriptions:
+    minimal: Fetches a specific joke by its ID from the...
+    short: Fetches a specific joke by its ID from the Manatee Jokes API.
+    medium: Fetches a specific joke by its ID from the Manatee Jokes API.
+    long: Fetches a specific joke by its ID from the Manatee Jokes API.
+    verbose: Fetches a specific joke by its ID from the Manatee Jokes API.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the joke to retrieve.
+    required: true
+  tags:
+  - get
+  - by
+  - id
+  test_prompts:
+    single:
+    - What is the content of the joke identified by '54321'?
+    single_clear:
+    - What is the content of the joke identified by '54321'?
+- name: search_text
+  descriptions:
+    minimal: Search for verses from the Bible that match the...
+    short: Search for verses from the Bible that match the given text using the Toolbench RapidAPI service.
+    medium: Search for verses from the Bible that match the given text using the Toolbench RapidAPI service.
+    long: Search for verses from the Bible that match the given text using the Toolbench RapidAPI service.
+    verbose: Search for verses from the Bible that match the given text using the Toolbench RapidAPI service.
+  parameters:
+  - name: text
+    type: string
+    description: The text to search for within Bible verses.
+    required: true
+    default: Melchizedek
+  tags:
+  - search
+  - text
+  test_prompts:
+    single:
+    - Can you find Bible verses that include the words 'wisdom' and 'understanding'?
+    single_clear:
+    - Can you find Bible verses that include the words 'wisdom' and 'understanding'?
+- name: check_1_param
+  descriptions:
+    minimal: This function checks the validity of a given VAT...
+    short: This function checks the validity of a given VAT number using the RapidAPI service.
+    medium: This function checks the validity of a given VAT number using the RapidAPI service.
+    long: This function checks the validity of a given VAT number using the RapidAPI service.
+    verbose: This function checks the validity of a given VAT number using the RapidAPI service.
+  parameters:
+  - name: vat
+    type: string
+    description: The VAT number to be checked, including the country code.
+    required: true
+    default: SK2121316722
+  tags:
+  - check
+  - '1'
+  - param
+  test_prompts:
+    single:
+    - Verify if VAT number FR987654321 is valid.
+    - Is the VAT number for a Dutch business (NL123456789) valid?
+    single_clear:
+    - Verify if VAT number FR987654321 is valid.
+    - Is the VAT number for a Dutch business (NL123456789) valid?
+- name: get_by_origin
+  descriptions:
+    minimal: Fetches plants by their origin using the...
+    short: Fetches plants by their origin using the specified RapidAPI key.
+    medium: Fetches plants by their origin using the specified RapidAPI key.
+    long: Fetches plants by their origin using the specified RapidAPI key.
+    verbose: Fetches plants by their origin using the specified RapidAPI key.
+  parameters:
+  - name: origin
+    type: string
+    description: The origin of the plants to retrieve. Default is 'Asia'.
+    required: true
+    default: Asia
+  tags:
+  - get
+  - by
+  - origin
+  test_prompts:
+    single:
+    - Fetch plants native to Asia.
+    - Fetch plants from their origin in Africa.
+    single_clear:
+    - Fetch plants native to Asia.
+    - Fetch plants from their origin in Africa.
+- name: video_videoid
+  descriptions:
+    minimal: Fetches video information and status from the...
+    short: Fetches video information and status from the video-builder API using the provided video ID and RapidAPI key.
+    medium: Fetches video information and status from the video-builder API using the provided video ID and RapidAPI key.
+    long: Fetches video information and status from the video-builder API using the provided video ID and RapidAPI key.
+    verbose: Fetches video information and status from the video-builder API using the provided video ID and RapidAPI key.
+  parameters:
+  - name: videoid
+    type: integer
+    description: The unique identifier for the video.
+    required: true
+  tags:
+  - video
+  - videoid
+  test_prompts:
+    single:
+    - Get details about the video with ID 987654321 from the video-builder API.
+    single_clear:
+    - Get details about the video with ID 987654321 from the video-builder API.
+- name: links_finder
+  descriptions:
+    minimal: Fetches relevant links based on a given query...
+    short: Fetches relevant links based on a given query using the ExplorArc's Link Finder API.
+    medium: Fetches relevant links based on a given query using the ExplorArc's Link Finder API.
+    long: Fetches relevant links based on a given query using the ExplorArc's Link Finder API.
+    verbose: Fetches relevant links based on a given query using the ExplorArc's Link Finder API.
+  parameters:
+  - name: query
+    type: string
+    description: The search query to find relevant links. Defaults to 'roadmap'.
+    required: true
+    default: roadmap
+  tags:
+  - links
+  - finder
+  test_prompts:
+    single:
+    - Find links related to 'machine learning'.
+    single_clear:
+    - Find links related to 'machine learning'.
+- name: get_analysis
+  descriptions:
+    minimal: Fetches website traffic and key metrics for a...
+    short: Fetches website traffic and key metrics for a given domain using the RapidAPI service.
+    medium: Fetches website traffic and key metrics for a given domain using the RapidAPI service.
+    long: Fetches website traffic and key metrics for a given domain using the RapidAPI service.
+    verbose: Fetches website traffic and key metrics for a given domain using the RapidAPI service.
+  parameters:
+  - name: domain
+    type: string
+    description: The domain to analyze, e.g., 'amazon.com'.
+    required: true
+  tags:
+  - get
+  - analysis
+  test_prompts:
+    single:
+    - Provide the traffic ranking and source for 'wikipedia.org'.
+    - Can you provide the traffic ranking and engagement rate for 'nytimes.com'? Also, what are the main traffic sources for
+      this site?
+    - Analyze the traffic sources for 'google.com'.
+    single_clear:
+    - Provide the traffic ranking and source for 'wikipedia.org'.
+    - Can you provide the traffic ranking and engagement rate for 'nytimes.com'? Also, what are the main traffic sources for
+      this site?
+    - Analyze the traffic sources for 'google.com'.
+- name: top_players_by_royal
+  descriptions:
+    minimal: Fetch the top players by their royal rank from...
+    short: Fetch the top players by their royal rank from the Trackmania API.
+    medium: Fetch the top players by their royal rank from the Trackmania API.
+    long: Fetch the top players by their royal rank from the Trackmania API.
+    verbose: Fetch the top players by their royal rank from the Trackmania API.
+  parameters:
+  - name: page
+    type: integer
+    description: The result page, each containing 50 results. Default page is `0`.
+    required: false
+    default: '0'
+  - name: limit
+    type: integer
+    description: The number of results to return. Default limit is `50`.
+    required: false
+    default: '50'
+  tags:
+  - top
+  - players
+  - by
+  test_prompts:
+    single:
+    - What are the top royal ranked players in Trackmania on page 2 with a limit of 75?
+    single_clear:
+    - What are the top royal ranked players in Trackmania on page 2 with a limit of 75?
+- name: video_no_watermark
+  descriptions:
+    minimal: Retrieves a video without a watermark from a...
+    short: Retrieves a video without a watermark from a given URL using the Toolbench RapidAPI service.
+    medium: Retrieves a video without a watermark from a given URL using the Toolbench RapidAPI service.
+    long: Retrieves a video without a watermark from a given URL using the Toolbench RapidAPI service.
+    verbose: Retrieves a video without a watermark from a given URL using the Toolbench RapidAPI service.
+  parameters:
+  - name: video_url
+    type: string
+    description: The URL of the video to be retrieved without watermark.
+    required: true
+    default: https://www.tiktok.com/@tiktok/video/7173042191730740523
+  tags:
+  - video
+  - 'no'
+  - watermark
+  test_prompts:
+    single:
+    - Retrieve a video without a watermark from 'https://www.tiktok.com/yet_another_example_video'.
+    single_clear:
+    - Retrieve a video without a watermark from 'https://www.tiktok.com/yet_another_example_video'.
+- name: team_recent_form
+  descriptions:
+    minimal: Fetches and returns the recent form of a sports...
+    short: Fetches and returns the recent form of a sports team using the given team ID.
+    medium: Fetches and returns the recent form of a sports team using the given team ID.
+    long: Fetches and returns the recent form of a sports team using the given team ID.
+    verbose: Fetches and returns the recent form of a sports team using the given team ID.
+  parameters:
+  - name: team_id
+    type: integer
+    description: The ID of the team for which the recent form is to be retrieved.
+    required: true
+    default: '2817'
+  tags:
+  - team
+  - recent
+  - form
+  test_prompts:
+    single:
+    - I'm curious about the recent performance stats for team 77777.
+    - Get the recent form of the football team with ID 103.
+    single_clear:
+    - I'm curious about the recent performance stats for team 77777.
+    - Get the recent form of the football team with ID 103.
+- name: getbookcoverimage
+  descriptions:
+    minimal: Fetches the book cover image for a given ISBN and...
+    short: Fetches the book cover image for a given ISBN and language code from the RapidAPI service.
+    medium: Fetches the book cover image for a given ISBN and language code from the RapidAPI service.
+    long: Fetches the book cover image for a given ISBN and language code from the RapidAPI service.
+    verbose: Fetches the book cover image for a given ISBN and language code from the RapidAPI service.
+  parameters:
+  - name: isbn
+    type: string
+    description: The International Standard Book Number of the book.
+    required: true
+    default: '9781526606198'
+  - name: languagecode
+    type: string
+    description: The language code for the book.
+    required: true
+    default: en
+  tags:
+  - getbookcoverimage
+  test_prompts:
+    single:
+    - Can you get the cover image for 'The Great Gatsby' with ISBN 9780743273565 in Italian?
+    single_clear:
+    - Can you get the cover image for 'The Great Gatsby' with ISBN 9780743273565 in Italian?
+- name: billboard_hot_100
+  descriptions:
+    minimal: Fetches the Billboard Hot 100 chart for a...
+    short: Fetches the Billboard Hot 100 chart for a specified week.
+    medium: Fetches the Billboard Hot 100 chart for a specified week.
+    long: Fetches the Billboard Hot 100 chart for a specified week.
+    verbose: Fetches the Billboard Hot 100 chart for a specified week.
+  parameters:
+  - name: week
+    type: string
+    description: The specific week for which to fetch the Billboard Hot 100 chart. Defaults to '2022-10-08'. The date should
+      be in the format 'YYYY-MM-DD'.
+    required: false
+    default: '2022-10-08'
+  tags:
+  - billboard
+  - hot
+  - '100'
+  test_prompts:
+    single:
+    - Can you fetch the Billboard Hot 100 chart for the week starting on 2023-01-01?
+    - I need the Billboard Hot 100 for the week of 2023-02-28.
+    - Fetch the latest Billboard Hot 100 chart.
+    single_clear:
+    - Can you fetch the Billboard Hot 100 chart for the week starting on 2023-01-01?
+    - I need the Billboard Hot 100 for the week of 2023-02-28.
+    - Fetch the latest Billboard Hot 100 chart.
+- name: prediction
+  descriptions:
+    minimal: Predict the next periods of a time series using...
+    short: Predict the next periods of a time series using given dates and values.
+    medium: Predict the next periods of a time series using given dates and values.
+    long: Predict the next periods of a time series using given dates and values.
+    verbose: Predict the next periods of a time series using given dates and values.
+  parameters:
+  - name: periods
+    type: integer
+    description: Number of future periods to predict.
+    required: true
+    default: '1'
+  - name: values
+    type: string
+    description: Historical values of the time series data in a comma-separated string.
+    required: true
+    default: '[281.5,244.8,382.1]'
+  - name: dates
+    type: string
+    description: Corresponding dates of the historical values in a comma-separated string.
+    required: true
+    default: '[''2023-01-01'', ''2023-01-02'', ''2023-01-03''] '
+  tags:
+  - prediction
+  test_prompts:
+    single:
+    - Can you forecast the next 2 weeks of weather temperature? The previous data is '20,22,24' on '2023-04-01,2023-04-02,2023-04-03'.
+    single_clear:
+    - Can you forecast the next 2 weeks of weather temperature? The previous data is '20,22,24' on '2023-04-01,2023-04-02,2023-04-03'.
+- name: get_weather_updates
+  descriptions:
+    minimal: Fetches weather updates for a given city using...
+    short: Fetches weather updates for a given city using the RapidAPI Weather API.
+    medium: Fetches weather updates for a given city using the RapidAPI Weather API.
+    long: Fetches weather updates for a given city using the RapidAPI Weather API.
+    verbose: Fetches weather updates for a given city using the RapidAPI Weather API.
+  parameters:
+  - name: city
+    type: string
+    description: The name of the city for which to retrieve weather information.
+    required: true
+    default: London
+  tags:
+  - get
+  - weather
+  - updates
+  test_prompts:
+    single:
+    - Get the current weather updates for Tokyo.
+    single_clear:
+    - Get the current weather updates for Tokyo.
+- name: getpeople
+  descriptions:
+    minimal: Fetches a list of artificial intelligence...
+    short: Fetches a list of artificial intelligence influencers, entrepreneurs, and top researchers from the specified API
+      endpoint.
+    medium: Fetches a list of artificial intelligence influencers, entrepreneurs, and top researchers from the specified API
+      endpoint.
+    long: Fetches a list of artificial intelligence influencers, entrepreneurs, and top researchers from the specified API
+      endpoint.
+    verbose: Fetches a list of artificial intelligence influencers, entrepreneurs, and top researchers from the specified
+      API endpoint.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number to retrieve.
+    required: true
+    default: '1'
+  tags:
+  - getpeople
+  test_prompts:
+    single:
+    - Who are the top AI influencers on page 2?
+    - Please get the list of AI influencers, entrepreneurs, and top researchers from page 3.
+    single_clear:
+    - Who are the top AI influencers on page 2?
+    - Please get the list of AI influencers, entrepreneurs, and top researchers from page 3.
+- name: title_get_parental_guide
+  descriptions:
+    minimal: Fetches parental guide information for a specific...
+    short: Fetches parental guide information for a specific movie from the online movie database.
+    medium: Fetches parental guide information for a specific movie from the online movie database.
+    long: Fetches parental guide information for a specific movie from the online movie database.
+    verbose: Fetches parental guide information for a specific movie from the online movie database.
+  parameters:
+  - name: tconst
+    type: string
+    description: The unique identifier for the movie. It should start with 'tt' and can be obtained from the `/title/auto-complete`
+      or `/title/find` endpoints. For example, 'tt0944947'.
+    required: true
+    default: tt0944947
+  tags:
+  - title
+  - get
+  - parental
+  test_prompts:
+    single:
+    - Can you provide the parental guide for the movie with ID tt0944947?
+    single_clear:
+    - Can you provide the parental guide for the movie with ID tt0944947?
+- name: forecast_weather_api
+  descriptions:
+    minimal: Fetches weather forecast and alerts from a...
+    short: Fetches weather forecast and alerts from a weather API.
+    medium: Fetches weather forecast and alerts from a weather API.
+    long: Fetches weather forecast and alerts from a weather API.
+    verbose: Fetches weather forecast and alerts from a weather API.
+  parameters:
+  - name: q
+    type: string
+    description: 'Query parameter to specify the location. It can be:'
+    required: true
+    default: London
+  - name: days
+    type: integer
+    description: Number of days of weather forecast required, with a default of 3 days.
+    required: false
+    default: '3'
+  - name: dt
+    type: string
+    description: Specific date for the forecast in 'yyyy-MM-dd' format. Must be between today and the next 10 days.
+    required: false
+  - name: lang
+    type: string
+    description: Desired language for the 'condition:text' field in the response.
+    required: false
+  tags:
+  - forecast
+  - weather
+  - api
+  test_prompts:
+    single:
+    - Fetch the 3-day weather forecast for Paris, France.
+    single_clear:
+    - Fetch the 3-day weather forecast for Paris, France.
+- name: filter_group_giveaways
+  descriptions:
+    minimal: Filters and groups giveaways based on the...
+    short: Filters and groups giveaways based on the provided platform and type, using the provided API key to make the request.
+    medium: Filters and groups giveaways based on the provided platform and type, using the provided API key to make the request.
+    long: Filters and groups giveaways based on the provided platform and type, using the provided API key to make the request.
+    verbose: Filters and groups giveaways based on the provided platform and type, using the provided API key to make the
+      request.
+  parameters:
+  - name: platform
+    type: string
+    description: The platform for which to filter the giveaways (e.g., 'pc', 'ps4', 'xbox').
+    required: true
+    default: epic-games-store.steam.android
+  - name: type
+    type: string
+    description: The type of giveaway to filter (default is 'game.loot').
+    required: false
+    default: game.loot
+  tags:
+  - filter
+  - group
+  - giveaways
+  test_prompts:
+    single:
+    - List all 'ps4' platform giveaways.
+    single_clear:
+    - List all 'ps4' platform giveaways.
+- name: hsl_to_rgb
+  descriptions:
+    minimal: Converts HSL color values to RGB color values...
+    short: Converts HSL color values to RGB color values using an external API.
+    medium: Converts HSL color values to RGB color values using an external API.
+    long: Converts HSL color values to RGB color values using an external API.
+    verbose: Converts HSL color values to RGB color values using an external API.
+  parameters:
+  - name: s
+    type: integer
+    description: Saturation component of the HSL color value (0-100).
+    required: true
+    default: '78'
+  - name: h
+    type: integer
+    description: Hue component of the HSL color value (0-360).
+    required: true
+    default: '250'
+  - name: l
+    type: integer
+    description: Lightness component of the HSL color value (0-100).
+    required: true
+    default: '45'
+  tags:
+  - hsl
+  - to
+  - rgb
+  test_prompts:
+    single:
+    - Convert the HSL color with saturation 80, hue 340, and lightness 60 to its RGB form.
+    single_clear:
+    - Convert the HSL color with saturation 80, hue 340, and lightness 60 to its RGB form.
+- name: getsearchresults
+  descriptions:
+    minimal: Fetches the results from a specific YouTube...
+    short: Fetches the results from a specific YouTube influencer search using the provided search ID.
+    medium: Fetches the results from a specific YouTube influencer search using the provided search ID.
+    long: Fetches the results from a specific YouTube influencer search using the provided search ID.
+    verbose: Fetches the results from a specific YouTube influencer search using the provided search ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: Unique identifier of the search.
+    required: true
+    default: '5'
+  tags:
+  - getsearchresults
+  test_prompts:
+    single:
+    - Get the search results for the YouTube influencer with search ID 'YT1122334455'.
+    single_clear:
+    - Get the search results for the YouTube influencer with search ID 'YT1122334455'.
+- name: user_login
+  descriptions:
+    minimal: Logs in a user with the given username and...
+    short: Logs in a user with the given username and password, and returns a JSON object containing the account's session
+      key.
+    medium: Logs in a user with the given username and password, and returns a JSON object containing the account's session
+      key.
+    long: Logs in a user with the given username and password, and returns a JSON object containing the account's session
+      key.
+    verbose: Logs in a user with the given username and password, and returns a JSON object containing the account's session
+      key.
+  parameters:
+  - name: username
+    type: string
+    description: 'Username for the user account. For US domestic users, this should be a 10-digit number. For international
+      users, use the full E.164 format (e.g., US: 5555555555, E.164: +1155555555555).'
+    required: true
+  - name: password
+    type: string
+    description: Password associated with the username.
+    required: true
+  tags:
+  - user
+  - login
+  test_prompts:
+    single:
+    - And if I attempt to log in with the username +1255555555555 and password 'pass12345'?
+    single_clear:
+    - And if I attempt to log in with the username +1255555555555 and password 'pass12345'?

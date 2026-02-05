@@ -1,0 +1,671 @@
+category: category_24
+tools:
+- name: telegram_channel_info
+  descriptions:
+    minimal: Fetch realtime information about a public...
+    short: Fetch realtime information about a public Telegram Channel.
+    medium: Fetch realtime information about a public Telegram Channel.
+    long: Fetch realtime information about a public Telegram Channel.
+    verbose: Fetch realtime information about a public Telegram Channel.
+  parameters:
+  - name: channel
+    type: string
+    description: The @username of the Telegram channel.
+    required: true
+    default: telegram
+  tags:
+  - telegram
+  - channel
+  - info
+  test_prompts:
+    single:
+    - I need information about the 'CryptoNews' Telegram channel. What is its description and how many members does it have?
+    single_clear:
+    - I need information about the 'CryptoNews' Telegram channel. What is its description and how many members does it have?
+- name: ayah_recitations
+  descriptions:
+    minimal: Fetches the list of recitations for a specific...
+    short: Fetches the list of recitations for a specific Ayah by its key and recitation ID.
+    medium: Fetches the list of recitations for a specific Ayah by its key and recitation ID.
+    long: Fetches the list of recitations for a specific Ayah by its key and recitation ID.
+    verbose: Fetches the list of recitations for a specific Ayah by its key and recitation ID.
+  parameters:
+  - name: recitation_id
+    type: integer
+    description: The ID of the recitation.
+    required: true
+  - name: ayah_key
+    type: string
+    description: The key of the Ayah, which is a combination of the Surah number and Ayah number (e.g., '1:1' for the first
+      Ayah of the first Surah).
+    required: true
+  tags:
+  - ayah
+  - recitations
+  test_prompts:
+    single:
+    - Can you get the recitations for Ayah 7:189 using recitation ID 20?
+    - Can you fetch the recitations for Ayah '2:187' with recitation ID 5?
+    single_clear:
+    - Can you get the recitations for Ayah 7:189 using recitation ID 20?
+    - Can you fetch the recitations for Ayah '2:187' with recitation ID 5?
+- name: get_language_by_id
+  descriptions:
+    minimal: Fetches language details from the FluentMe API...
+    short: Fetches language details from the FluentMe API using a given language ID.
+    medium: Fetches language details from the FluentMe API using a given language ID.
+    long: Fetches language details from the FluentMe API using a given language ID.
+    verbose: Fetches language details from the FluentMe API using a given language ID.
+  parameters:
+  - name: language_id
+    type: integer
+    description: The unique identifier for the language to be fetched.
+    required: true
+  tags:
+  - get
+  - language
+  - by
+  test_prompts:
+    single:
+    - Provide information about the language with ID 112233.
+    - Fetch details for language ID 445566.
+    single_clear:
+    - Provide information about the language with ID 112233.
+    - Fetch details for language ID 445566.
+- name: v1_geocoding
+  descriptions:
+    minimal: Fetches geolocation information of a specified...
+    short: Fetches geolocation information of a specified city using the API Ninjas Geocoding API.
+    medium: Fetches geolocation information of a specified city using the API Ninjas Geocoding API.
+    long: Fetches geolocation information of a specified city using the API Ninjas Geocoding API.
+    verbose: Fetches geolocation information of a specified city using the API Ninjas Geocoding API.
+  parameters:
+  - name: city
+    type: string
+    description: The name of the city to geocode.
+    required: true
+    default: Seattle
+  - name: country
+    type: string
+    description: The country name, 2-letter ISO country code, or 3-letter ISO country code.
+    required: false
+  - name: state
+    type: string
+    description: The US state (for United States cities only).
+    required: false
+  tags:
+  - v1
+  - geocoding
+  test_prompts:
+    single:
+    - How can I get the geolocation of Berlin in Germany?
+    single_clear:
+    - How can I get the geolocation of Berlin in Germany?
+- name: gettechdomains
+  descriptions:
+    minimal: Retrieve the domains that use a specific...
+    short: Retrieve the domains that use a specific technology.
+    medium: Retrieve the domains that use a specific technology.
+    long: Retrieve the domains that use a specific technology.
+    verbose: Retrieve the domains that use a specific technology.
+  parameters:
+  - name: tech
+    type: string
+    description: The name of the technology to search for.
+    required: true
+    default: g-suite
+  tags:
+  - gettechdomains
+  test_prompts:
+    single:
+    - List all the domains that use the technology 'Python'.
+    single_clear:
+    - List all the domains that use the technology 'Python'.
+- name: town
+  descriptions:
+    minimal: Retrieves information about a specified town...
+    short: Retrieves information about a specified town, such as province and block, using the Mzansi Loadshedding API.
+    medium: Retrieves information about a specified town, such as province and block, using the Mzansi Loadshedding API.
+    long: Retrieves information about a specified town, such as province and block, using the Mzansi Loadshedding API.
+    verbose: Retrieves information about a specified town, such as province and block, using the Mzansi Loadshedding API.
+  parameters:
+  - name: town
+    type: string
+    description: The name of the town for which information is being requested.
+    required: true
+    default: kagiso
+  tags:
+  - town
+  test_prompts:
+    single:
+    - Detail the town information for Port Elizabeth.
+    - Provide town details for Pretoria.
+    single_clear:
+    - Detail the town information for Port Elizabeth.
+    - Provide town details for Pretoria.
+- name: drivers
+  descriptions:
+    minimal: Fetches a list of all drivers for a given season...
+    short: Fetches a list of all drivers for a given season using the F1 Live Motorsport Data API.
+    medium: Fetches a list of all drivers for a given season using the F1 Live Motorsport Data API.
+    long: Fetches a list of all drivers for a given season using the F1 Live Motorsport Data API.
+    verbose: Fetches a list of all drivers for a given season using the F1 Live Motorsport Data API.
+  parameters:
+  - name: season_id
+    type: integer
+    description: The ID of the season for which to list the drivers.
+    required: true
+    default: '2020'
+  tags:
+  - drivers
+  test_prompts:
+    single:
+    - List all drivers from the 2020 F1 season.
+    - Can you list all the drivers from the 2022 F1 season?
+    single_clear:
+    - List all drivers from the 2020 F1 season.
+    - Can you list all the drivers from the 2022 F1 season?
+- name: suggestqueries
+  descriptions:
+    minimal: Fetches suggestions based on the given query...
+    short: Fetches suggestions based on the given query using the specified RapidAPI key.
+    medium: Fetches suggestions based on the given query using the specified RapidAPI key.
+    long: Fetches suggestions based on the given query using the specified RapidAPI key.
+    verbose: Fetches suggestions based on the given query using the specified RapidAPI key.
+  parameters:
+  - name: query
+    type: string
+    description: The search query for which suggestions are to be fetched.
+    required: true
+    default: How to
+  tags:
+  - suggestqueries
+  test_prompts:
+    single:
+    - Get suggestions for queries related to 'travel Europe'.
+    single_clear:
+    - Get suggestions for queries related to 'travel Europe'.
+- name: v1_sticker_sticker_id
+  descriptions:
+    minimal: Fetches the sticker information for a given...
+    short: Fetches the sticker information for a given sticker ID using the TokAPI service.
+    medium: Fetches the sticker information for a given sticker ID using the TokAPI service.
+    long: Fetches the sticker information for a given sticker ID using the TokAPI service.
+    verbose: Fetches the sticker information for a given sticker ID using the TokAPI service.
+  parameters:
+  - name: sticker_id
+    type: string
+    description: The ID of the sticker to fetch information for.
+    required: true
+    default: '1108584'
+  tags:
+  - v1
+  - sticker
+  - sticker
+  test_prompts:
+    single:
+    - Can you help me find information about the sticker with ID 'sticker789' from TokAPI?
+    single_clear:
+    - Can you help me find information about the sticker with ID 'sticker789' from TokAPI?
+- name: match
+  descriptions:
+    minimal: Fetch the detailed information of an individual...
+    short: Fetch the detailed information of an individual tennis match using the provided match ID from the Tennis Live Data
+      API.
+    medium: Fetch the detailed information of an individual tennis match using the provided match ID from the Tennis Live
+      Data API.
+    long: Fetch the detailed information of an individual tennis match using the provided match ID from the Tennis Live Data
+      API.
+    verbose: Fetch the detailed information of an individual tennis match using the provided match ID from the Tennis Live
+      Data API.
+  parameters:
+  - name: match_id
+    type: integer
+    description: The unique identifier for the tennis match to retrieve information for.
+    required: true
+    default: '10535'
+  tags:
+  - match
+  test_prompts:
+    single:
+    - Get detailed information about the tennis match with ID 12345.
+    single_clear:
+    - Get detailed information about the tennis match with ID 12345.
+- name: flag_riddle
+  descriptions:
+    minimal: Flags a riddle for further review using the...
+    short: Flags a riddle for further review using the specified criteria.
+    medium: Flags a riddle for further review using the specified criteria.
+    long: Flags a riddle for further review using the specified criteria.
+    verbose: Flags a riddle for further review using the specified criteria.
+  parameters:
+  - name: is_id
+    type: string
+    description: The unique identifier of the riddle to be flagged.
+    required: true
+    default: 63bdef027183b71946b64ee6
+  - name: flag
+    type: integer
+    description: The type of flag to be applied to the riddle (default is 0).
+    required: false
+    default: '0'
+  tags:
+  - flag
+  - riddle
+  test_prompts:
+    single:
+    - Flag a riddle with ID 'riddle012' as missing information.
+    single_clear:
+    - Flag a riddle with ID 'riddle012' as missing information.
+- name: competition_image
+  descriptions:
+    minimal: Fetches the image associated with a given...
+    short: Fetches the image associated with a given competition ID using the Soccerway RapidAPI service.
+    medium: Fetches the image associated with a given competition ID using the Soccerway RapidAPI service.
+    long: Fetches the image associated with a given competition ID using the Soccerway RapidAPI service.
+    verbose: Fetches the image associated with a given competition ID using the Soccerway RapidAPI service.
+  parameters:
+  - name: competition_id
+    type: integer
+    description: The ID of the competition for which the image is requested.
+    required: true
+    default: '8'
+  tags:
+  - competition
+  - image
+  test_prompts:
+    single:
+    - Can you fetch the image for the soccer competition with ID 12345?
+    - Retrieve the image associated with the soccer competition ID 999888.
+    single_clear:
+    - Can you fetch the image for the soccer competition with ID 12345?
+    - Retrieve the image associated with the soccer competition ID 999888.
+- name: zappos_search_product
+  descriptions:
+    minimal: Searches for products on Zappos using the given...
+    short: Searches for products on Zappos using the given keyword and various optional parameters for sorting and pagination.
+    medium: Searches for products on Zappos using the given keyword and various optional parameters for sorting and pagination.
+    long: Searches for products on Zappos using the given keyword and various optional parameters for sorting and pagination.
+    verbose: Searches for products on Zappos using the given keyword and various optional parameters for sorting and pagination.
+  parameters:
+  - name: keyword
+    type: string
+    description: The search term to use for finding products on Zappos.
+    required: true
+    default: crocs body
+  - name: sort
+    type: string
+    description: The sorting criteria for the search results. Possible values are 'best_seller', 'relevance', 'low_to_high',
+      'high_to_low', 'customer_rating', 'new_arrivals', and 'brand_name'. Defaults to 'new_arrivals'.
+    required: false
+    default: new_arrivals
+  - name: page
+    type: integer
+    description: The page number for pagination of search results. Defaults to 1.
+    required: false
+    default: '1'
+  tags:
+  - zappos
+  - search
+  - product
+  test_prompts:
+    single:
+    - A shopper wants to see the highest-rated sandals. How can they fetch the first page of results sorted by customer rating?
+    - An online shopper needs to compare prices of dresses on Zappos. What code would they use to get the first page of dresses
+      sorted from low to high?
+    - You need to compare prices of sandals. What function call would you use to search for 'sandals' sorted from 'low_to_high'
+      on page 1?
+    single_clear:
+    - A shopper wants to see the highest-rated sandals. How can they fetch the first page of results sorted by customer rating?
+    - An online shopper needs to compare prices of dresses on Zappos. What code would they use to get the first page of dresses
+      sorted from low to high?
+    - You need to compare prices of sandals. What function call would you use to search for 'sandals' sorted from 'low_to_high'
+      on page 1?
+- name: house_prices_get_points_of_interest
+  descriptions:
+    minimal: Fetches the nearest points of interest for a...
+    short: Fetches the nearest points of interest for a given property using the Zoopla API.
+    medium: Fetches the nearest points of interest for a given property using the Zoopla API.
+    long: Fetches the nearest points of interest for a given property using the Zoopla API.
+    verbose: Fetches the nearest points of interest for a given property using the Zoopla API.
+  parameters:
+  - name: property_id
+    type: integer
+    description: The ID of the property for which to retrieve points of interest. This is usually obtained from the `/house-prices/estimate`
+      endpoint.
+    required: true
+    default: '27175510'
+  tags:
+  - house
+  - prices
+  - get
+  test_prompts:
+    single:
+    - Fetch the nearest amenities for a property identified by '789012'.
+    single_clear:
+    - Fetch the nearest amenities for a property identified by '789012'.
+- name: cars
+  descriptions:
+    minimal: Fetches and filters a list of cars from the...
+    short: Fetches and filters a list of cars from the RapidAPI service.
+    medium: Fetches and filters a list of cars from the RapidAPI service.
+    long: Fetches and filters a list of cars from the RapidAPI service.
+    verbose: Fetches and filters a list of cars from the RapidAPI service.
+  parameters:
+  - name: page
+    type: string
+    description: The page number to retrieve.
+    required: true
+    default: '0'
+  - name: limit
+    type: string
+    description: The maximum number of results to return per page.
+    required: true
+    default: '10'
+  - name: type
+    type: string
+    description: Filter cars by type (e.g., SUV, sedan).
+    required: false
+  - name: model
+    type: string
+    description: Filter cars by model.
+    required: false
+  - name: make
+    type: string
+    description: Filter cars by make (manufacturer).
+    required: false
+  - name: year
+    type: string
+    description: Filter cars by year of manufacture.
+    required: false
+  tags:
+  - cars
+  test_prompts:
+    single:
+    - List all SUVs made by Ford in 2018, with a limit of 20 results per page.
+    single_clear:
+    - List all SUVs made by Ford in 2018, with a limit of 20 results per page.
+- name: sticker_search
+  descriptions:
+    minimal: Searches for animated stickers on Giphy using a...
+    short: Searches for animated stickers on Giphy using a search query and optional parameters.
+    medium: Searches for animated stickers on Giphy using a search query and optional parameters.
+    long: Searches for animated stickers on Giphy using a search query and optional parameters.
+    verbose: Searches for animated stickers on Giphy using a search query and optional parameters.
+  parameters:
+  - name: q
+    type: string
+    description: Search query term or phrase.
+    required: true
+    default: cat
+  - name: limit
+    type: string
+    description: Number of results to return, with a maximum of 100. Defaults to 25.
+    required: false
+  - name: offset
+    type: string
+    description: Results offset, defaults to 0.
+    required: false
+  - name: rating
+    type: string
+    description: Limit results to those rated (y, g, pg, pg-13, or r).
+    required: false
+  tags:
+  - sticker
+  - search
+  test_prompts:
+    single:
+    - Search for Giphy stickers about 'celebration' with a PG rating and start from the 30th result.
+    single_clear:
+    - Search for Giphy stickers about 'celebration' with a PG rating and start from the 30th result.
+- name: get_job_details
+  descriptions:
+    minimal: Fetch detailed job information from a given job...
+    short: Fetch detailed job information from a given job URL, optionally including skills, using the ToolBench RapidAPI
+      service.
+    medium: Fetch detailed job information from a given job URL, optionally including skills, using the ToolBench RapidAPI
+      service.
+    long: Fetch detailed job information from a given job URL, optionally including skills, using the ToolBench RapidAPI service.
+    verbose: Fetch detailed job information from a given job URL, optionally including skills, using the ToolBench RapidAPI
+      service.
+  parameters:
+  - name: job_url
+    type: string
+    description: The URL to the job posting.
+    required: true
+    default: https://www.linkedin.com/jobs/view/3690897280/
+  - name: include_skills
+    type: string
+    description: Flag to include skills in the fetched details. Defaults to 'false'. Including skills will cost 1 more credit.
+    required: false
+    default: 'false'
+  tags:
+  - get
+  - job
+  - details
+  test_prompts:
+    single:
+    - Retrieve detailed job information for a data scientist role at Facebook, with skills included.
+    single_clear:
+    - Retrieve detailed job information for a data scientist role at Facebook, with skills included.
+- name: earnings
+  descriptions:
+    minimal: This function retrieves the earnings information...
+    short: This function retrieves the earnings information for a given company using the Yahoo Finance Complete API.
+    medium: This function retrieves the earnings information for a given company using the Yahoo Finance Complete API.
+    long: This function retrieves the earnings information for a given company using the Yahoo Finance Complete API.
+    verbose: This function retrieves the earnings information for a given company using the Yahoo Finance Complete API.
+  parameters:
+  - name: symbol
+    type: string
+    description: The stock ticker symbol of the company for which earnings information is to be retrieved.
+    required: true
+  tags:
+  - earnings
+  test_prompts:
+    single:
+    - Get the earnings information for Tesla Inc.
+    - Retrieve earnings information for Amazon.com Inc.
+    - Fetch the earnings data for Apple Inc. (AAPL) from Yahoo Finance.
+    single_clear:
+    - Get the earnings information for Tesla Inc.
+    - Retrieve earnings information for Amazon.com Inc.
+    - Fetch the earnings data for Apple Inc. (AAPL) from Yahoo Finance.
+- name: racecards
+  descriptions:
+    minimal: Fetches the list of races for a given date from...
+    short: Fetches the list of races for a given date from the Greyhound Racing UK API.
+    medium: Fetches the list of races for a given date from the Greyhound Racing UK API.
+    long: Fetches the list of races for a given date from the Greyhound Racing UK API.
+    verbose: Fetches the list of races for a given date from the Greyhound Racing UK API.
+  parameters:
+  - name: date
+    type: string
+    description: The date for which to fetch the racecards in 'YYYY-MM-DD' format. Defaults to '2021-06-05' if not provided.
+    required: true
+    default: '2021-06-05'
+  tags:
+  - racecards
+  test_prompts:
+    single:
+    - I'm planning to attend a greyhound race in the UK next week. Can you tell me the race schedule for the 12th of July?
+    - What races are scheduled for the day after tomorrow?
+    - Fetch racecards for the date '2023-04-15'.
+    single_clear:
+    - I'm planning to attend a greyhound race in the UK next week. Can you tell me the race schedule for the 12th of July?
+    - What races are scheduled for the day after tomorrow?
+    - Fetch racecards for the date '2023-04-15'.
+- name: random_profiles
+  descriptions:
+    minimal: Generates a list of fake user profiles given a...
+    short: Generates a list of fake user profiles given a specified size using the Toolbench RapidAPI service.
+    medium: Generates a list of fake user profiles given a specified size using the Toolbench RapidAPI service.
+    long: Generates a list of fake user profiles given a specified size using the Toolbench RapidAPI service.
+    verbose: Generates a list of fake user profiles given a specified size using the Toolbench RapidAPI service.
+  parameters:
+  - name: size
+    type: string
+    description: A string indicating the number of fake user profiles to generate. Defaults to '1'.
+    required: true
+    default: '5'
+  tags:
+  - random
+  - profiles
+  test_prompts:
+    single:
+    - Generate 5 random user profiles.
+    single_clear:
+    - Generate 5 random user profiles.
+- name: random_skin_from_class
+  descriptions:
+    minimal: Fetches information about a random Counter-Strike...
+    short: Fetches information about a random Counter-Strike skin from a specified class using the CS Skin API.
+    medium: Fetches information about a random Counter-Strike skin from a specified class using the CS Skin API.
+    long: Fetches information about a random Counter-Strike skin from a specified class using the CS Skin API.
+    verbose: Fetches information about a random Counter-Strike skin from a specified class using the CS Skin API.
+  parameters:
+  - name: class_name
+    type: string
+    description: The class of Counter-Strike skin to retrieve, e.g., "Rifle".
+    required: true
+    default: Knife
+  tags:
+  - random
+  - skin
+  - from
+  test_prompts:
+    single:
+    - What is the name and price of a random skin from the 'SMG' class in Counter-Strike?
+    single_clear:
+    - What is the name and price of a random skin from the 'SMG' class in Counter-Strike?
+- name: search_social_links
+  descriptions:
+    minimal: Search for social profile links based on a given...
+    short: Search for social profile links based on a given query or keywords.
+    medium: Search for social profile links based on a given query or keywords.
+    long: Search for social profile links based on a given query or keywords.
+    verbose: Search for social profile links based on a given query or keywords.
+  parameters:
+  - name: query
+    type: string
+    description: The search query or keywords to find social profile links.
+    required: true
+    default: John Smith
+  - name: social_networks
+    type: string
+    description: A comma-delimited list of social networks to search for.
+    required: false
+    default: facebook,tiktok,instagram,snapchat,twitter,youtube,linkedin,github,pinterest
+  tags:
+  - search
+  - social
+  - links
+  test_prompts:
+    single:
+    - Search for social media profiles of 'Tech Innovators' across Facebook, Twitter, and LinkedIn.
+    - Locate GitHub and Pinterest profiles for the term 'digital art'.
+    single_clear:
+    - Search for social media profiles of 'Tech Innovators' across Facebook, Twitter, and LinkedIn.
+    - Locate GitHub and Pinterest profiles for the term 'digital art'.
+- name: getsamples
+  descriptions:
+    minimal: Retrieves Power BI samples from the specified...
+    short: Retrieves Power BI samples from the specified page using the provided RapidAPI key.
+    medium: Retrieves Power BI samples from the specified page using the provided RapidAPI key.
+    long: Retrieves Power BI samples from the specified page using the provided RapidAPI key.
+    verbose: Retrieves Power BI samples from the specified page using the provided RapidAPI key.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number to retrieve samples from.
+    required: true
+    default: '1'
+  tags:
+  - getsamples
+  test_prompts:
+    single:
+    - Retrieve Power BI samples from page 1.
+    - Fetch the first page of Power BI samples.
+    single_clear:
+    - Retrieve Power BI samples from page 1.
+    - Fetch the first page of Power BI samples.
+- name: map_image_get
+  descriptions:
+    minimal: Fetches a static map image for a specified...
+    short: Fetches a static map image for a specified location with given parameters such as width, height, center, and zoom
+      level.
+    medium: Fetches a static map image for a specified location with given parameters such as width, height, center, and zoom
+      level.
+    long: Fetches a static map image for a specified location with given parameters such as width, height, center, and zoom
+      level.
+    verbose: Fetches a static map image for a specified location with given parameters such as width, height, center, and
+      zoom level.
+  parameters:
+  - name: width
+    type: integer
+    description: Width of the map image. Must be between 1 and 999.
+    required: true
+    default: '500'
+  - name: center
+    type: string
+    description: The center coordinates of the map (latitude,longitude).
+    required: true
+    default: 35.681236,139.767125
+  - name: zoom
+    type: integer
+    description: The zoom level of the map. Must be between 6 and 19.
+    required: true
+    default: '15'
+  - name: height
+    type: integer
+    description: Height of the map image. Must be between 1 and 999.
+    required: true
+    default: '500'
+  - name: datum
+    type: string
+    description: 'The geodetic system to use. Defaults to ''wgs84''. Options are:'
+    required: false
+    default: wgs84
+  - name: coord_unit
+    type: string
+    description: 'The unit of latitude and longitude in the output data. Defaults to ''degree''. Options are:'
+    required: false
+    default: degree
+  tags:
+  - map
+  - image
+  - get
+  test_prompts:
+    single:
+    - Retrieve a map image of Tokyo with a specific datum and coordinate unit.
+    - Show me a map of Tokyo at zoom level 14 with the Tokyo datum and a size of 400x400 pixels.
+    single_clear:
+    - Retrieve a map image of Tokyo with a specific datum and coordinate unit.
+    - Show me a map of Tokyo at zoom level 14 with the Tokyo datum and a size of 400x400 pixels.
+- name: fetch_by_region
+  descriptions:
+    minimal: Fetches records by region from the Magical Taske...
+    short: Fetches records by region from the Magical Taske API.
+    medium: Fetches records by region from the Magical Taske API.
+    long: Fetches records by region from the Magical Taske API.
+    verbose: Fetches records by region from the Magical Taske API.
+  parameters:
+  - name: region
+    type: string
+    description: The region for which to fetch records.
+    required: true
+    default: Central
+  - name: limit
+    type: integer
+    description: The maximum number of records to return.
+    required: true
+    default: '5'
+  tags:
+  - fetch
+  - by
+  - region
+  test_prompts:
+    single:
+    - Retrieve 20 records for the region 'Europe'.
+    single_clear:
+    - Retrieve 20 records for the region 'Europe'.

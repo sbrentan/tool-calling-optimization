@@ -1,0 +1,34 @@
+# ============================================================
+# PHASE 5: Hybrid - 500 Tools (verbose Docs)
+# ============================================================
+# Purpose: Test doc_length impact on hybrid
+# Hypothesis: Affects both category and tool selection
+# Rubric: Experiments - doc_length exploration
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase5_hybrid_500tools_verbose
+description: "Hybrid with 500 tools, verbose documentation"
+
+# --- Tool Configuration ---
+num_tools: 500
+doc_length: verbose
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: hybrid
+hybrid_config:
+  embedding_model: all-MiniLM-L6-v2
+  top_k_categories: 3
+  cache_embeddings: true
+  category_embedding_strategy: mean
+
+# --- Output ---
+output_dir: experiments/full_cloud/results

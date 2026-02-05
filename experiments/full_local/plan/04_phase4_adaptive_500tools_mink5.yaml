@@ -1,0 +1,37 @@
+# ============================================================
+# PHASE 4: Adaptive RAG - 500 Tools (min_k=5)
+# ============================================================
+# Purpose: Test higher minimum K floor
+# Hypothesis: Higher floor ensures more context coverage
+# Rubric: Experiments - min_k parameter exploration
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: phase4_adaptive_500tools_mink5
+description: "Adaptive RAG with 500 tools, min_k=5"
+
+# --- Tool Configuration ---
+num_tools: 500
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: adaptive_rag
+adaptive_rag_config:
+  embedding_model: all-MiniLM-L6-v2
+  min_k: 5
+  max_k: 20
+  similarity_drop_threshold: 0.1
+  min_similarity: 0.3
+  cache_embeddings: true
+  include_params_in_embedding: false
+
+# --- Output ---
+output_dir: experiments/full_local/results

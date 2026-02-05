@@ -1,0 +1,899 @@
+category: category_17
+tools:
+- name: title_seasons
+  descriptions:
+    minimal: Fetch the seasons of the specified Netflix titles.
+    short: Fetch the seasons of the specified Netflix titles.
+    medium: Fetch the seasons of the specified Netflix titles.
+    long: Fetch the seasons of the specified Netflix titles.
+    verbose: Fetch the seasons of the specified Netflix titles.
+  parameters:
+  - name: ids
+    type: string
+    description: Comma-separated string of Netflix title IDs for which seasons are to be fetched.
+    required: true
+    default: '80057281'
+  - name: lang
+    type: string
+    description: Language code for the fetched data, default is 'en'.
+    required: false
+    default: en
+  - name: offset
+    type: integer
+    description: Offset for the seasons data, default is 0.
+    required: false
+    default: '0'
+  - name: limit
+    type: integer
+    description: Limit for the number of seasons to fetch, default is 25.
+    required: false
+    default: '25'
+  tags:
+  - title
+  - seasons
+  test_prompts:
+    single:
+    - I need the seasons of the Netflix titles with IDs 's1', 's2', and 's3' in French, starting from offset 10 with a limit
+      of 30.
+    - Fetch the seasons for the Netflix titles 's1_9876' and 's4_6543' with an offset of 10 and limit of 30.
+    - Please retrieve the seasons of Netflix titles with IDs 's1', 's2', and 's3' in French language, starting from offset
+      10 with a limit of 30.
+    single_clear:
+    - I need the seasons of the Netflix titles with IDs 's1', 's2', and 's3' in French, starting from offset 10 with a limit
+      of 30.
+    - Fetch the seasons for the Netflix titles 's1_9876' and 's4_6543' with an offset of 10 and limit of 30.
+    - Please retrieve the seasons of Netflix titles with IDs 's1', 's2', and 's3' in French language, starting from offset
+      10 with a limit of 30.
+- name: recitations_by_chapter_number
+  descriptions:
+    minimal: Fetches a list of ayah recitations for a specific...
+    short: Fetches a list of ayah recitations for a specific Surah (chapter) based on the given chapter number and recitation
+      ID.
+    medium: Fetches a list of ayah recitations for a specific Surah (chapter) based on the given chapter number and recitation
+      ID.
+    long: Fetches a list of ayah recitations for a specific Surah (chapter) based on the given chapter number and recitation
+      ID.
+    verbose: Fetches a list of ayah recitations for a specific Surah (chapter) based on the given chapter number and recitation
+      ID.
+  parameters:
+  - name: chapter_number
+    type: integer
+    description: The chapter (Surah) number for which to fetch the ayah recitations.
+    required: true
+  - name: recitation_id
+    type: integer
+    description: The recitation ID to specify the reciter.
+    required: true
+  tags:
+  - recitations
+  - by
+  - chapter
+  test_prompts:
+    single:
+    - Fetch recitations for Surah 5 by reciter ID 789.
+    - Can you fetch the recitations for Surah 1 by reciter ID 123?
+    - Retrieve recitations for Surah Al-Baqarah by reciter ID 2.
+    single_clear:
+    - Fetch recitations for Surah 5 by reciter ID 789.
+    - Can you fetch the recitations for Surah 1 by reciter ID 123?
+    - Retrieve recitations for Surah Al-Baqarah by reciter ID 2.
+- name: language_by_id
+  descriptions:
+    minimal: Fetches language information from the API based...
+    short: Fetches language information from the API based on the provided language identifier and optional filters.
+    medium: Fetches language information from the API based on the provided language identifier and optional filters.
+    long: Fetches language information from the API based on the provided language identifier and optional filters.
+    verbose: Fetches language information from the API based on the provided language identifier and optional filters.
+  parameters:
+  - name: lang
+    type: string
+    description: A 2-letter ISO language code used to fetch the language data.
+    required: true
+    default: sv
+  - name: lang_3
+    type: string
+    description: An optional 3-letter ISO language code filter.
+    required: false
+  - name: iso_a2
+    type: string
+    description: An optional 2-letter country code filter.
+    required: false
+  - name: fields
+    type: string
+    description: A comma-separated string specifying the fields to be included in the response. Default is 'iso_a2,lang_3,flag'.
+    required: false
+    default: iso_a2,lang_3,flag
+  tags:
+  - language
+  - by
+  - id
+  test_prompts:
+    single:
+    - Identify the language and ISO 2-letter code for Spanish spoken in Spain.
+    - I need information on Spanish including its flag, but only using the 2-letter code.
+    single_clear:
+    - Identify the language and ISO 2-letter code for Spanish spoken in Spain.
+    - I need information on Spanish including its flag, but only using the 2-letter code.
+- name: song_info
+  descriptions:
+    minimal: Retrieve basic information about a song from a...
+    short: Retrieve basic information about a song from a given track URL using the SoundCloud API.
+    medium: Retrieve basic information about a song from a given track URL using the SoundCloud API.
+    long: Retrieve basic information about a song from a given track URL using the SoundCloud API.
+    verbose: Retrieve basic information about a song from a given track URL using the SoundCloud API.
+  parameters:
+  - name: track_url
+    type: string
+    description: The URL of the track for which the information is to be retrieved.
+    required: true
+    default: https://soundcloud.com/user-977421934/the-phoenix
+  tags:
+  - song
+  - info
+  test_prompts:
+    single:
+    - Can you fetch song details for 'https://soundcloud.com/theweeknd/blinding-lights'?
+    - Retrieve information about the song available at the URL 'https://soundcloud.com/user123/song123'
+    single_clear:
+    - Can you fetch song details for 'https://soundcloud.com/theweeknd/blinding-lights'?
+    - Retrieve information about the song available at the URL 'https://soundcloud.com/user123/song123'
+- name: downloadminecraftjar
+  descriptions:
+    minimal: Downloads the Minecraft .jar file for a specified...
+    short: Downloads the Minecraft .
+    medium: Downloads the Minecraft .jar file for a specified version.
+    long: Downloads the Minecraft .jar file for a specified version.
+    verbose: Downloads the Minecraft .jar file for a specified version.
+  parameters:
+  - name: minecraftversion
+    type: string
+    description: The version of Minecraft for which to download the .jar file.
+    required: true
+  tags:
+  - downloadminecraftjar
+  test_prompts:
+    single:
+    - Can you download the Minecraft .jar file for version 1.16.5?
+    single_clear:
+    - Can you download the Minecraft .jar file for version 1.16.5?
+- name: advanced_search
+  descriptions:
+    minimal: Performs an advanced search for movies or TV...
+    short: Performs an advanced search for movies or TV shows based on multiple filtering parameters such as release year,
+      IMDb rating, genre, language, etc.
+    medium: Performs an advanced search for movies or TV shows based on multiple filtering parameters such as release year,
+      IMDb rating, genre, language, etc.
+    long: Performs an advanced search for movies or TV shows based on multiple filtering parameters such as release year,
+      IMDb rating, genre, language, etc.
+    verbose: Performs an advanced search for movies or TV shows based on multiple filtering parameters such as release year,
+      IMDb rating, genre, language, etc.
+  parameters:
+  - name: start_year
+    type: integer
+    description: The starting year for the search range. Valid values range from 1970 to 2020. Defaults to 1970.
+    required: false
+    default: '1970'
+  - name: page
+    type: integer
+    description: The page number of the search results. Defaults to 1.
+    required: false
+    default: '1'
+  - name: max_imdb
+    type: integer
+    description: The maximum IMDb rating for the search results. Defaults to 7.
+    required: false
+    default: '7.8'
+  - name: type
+    type: string
+    description: The type of content to search for, either 'movie' or 'show'. Defaults to 'movie'.
+    required: false
+    default: movie
+  - name: sort
+    type: string
+    description: The sorting order of the results. Valid values are 'highestrated', 'lowestrated', 'latest', 'oldest'. Defaults
+      to 'latest'.
+    required: false
+    default: latest
+  - name: min_imdb
+    type: integer
+    description: The minimum IMDb rating for the search results. Defaults to 6.
+    required: false
+    default: '6'
+  - name: genre
+    type: string
+    description: The genre(s) of the content. Use comma-separated values for multiple genres (e.g., 'action,horror'). Defaults
+      to 'action'.
+    required: false
+    default: action
+  - name: language
+    type: string
+    description: The language(s) of the content. Use comma-separated values for multiple languages (e.g., 'english,german').
+      Defaults to 'english'.
+    required: false
+    default: english
+  - name: end_year
+    type: integer
+    description: The ending year for the search range. Valid values range from 1970 to 2020. Defaults to 2020.
+    required: false
+    default: '2020'
+  tags:
+  - advanced
+  - search
+  test_prompts:
+    single:
+    - Can you find movies released between 2000 and 2010 with IMDb ratings between 7 and 9, sorted by highest rating, in the
+      genres of sci-fi and drama?
+    - I'm interested in watching a French sci-fi movie from the 2000s. Can you help me find one?
+    single_clear:
+    - Can you find movies released between 2000 and 2010 with IMDb ratings between 7 and 9, sorted by highest rating, in the
+      genres of sci-fi and drama?
+    - I'm interested in watching a French sci-fi movie from the 2000s. Can you help me find one?
+- name: mileages
+  descriptions:
+    minimal: Fetch mileage data from the car API based on...
+    short: Fetch mileage data from the car API based on various optional filters and sorting options.
+    medium: Fetch mileage data from the car API based on various optional filters and sorting options.
+    long: Fetch mileage data from the car API based on various optional filters and sorting options.
+    verbose: Fetch mileage data from the car API based on various optional filters and sorting options.
+  parameters:
+  - name: make_model_id
+    type: string
+    description: The ID of the make and model.
+    required: false
+  - name: limit
+    type: integer
+    description: The number of results to limit the response to.
+    required: false
+  - name: make_model_trim_id
+    type: string
+    description: The ID of the make, model, and trim.
+    required: false
+  - name: trim
+    type: string
+    description: The trim level of the car.
+    required: false
+  - name: json
+    type: string
+    description: An array of URL encoded JSON conditions for complex queries.
+    required: false
+  - name: range_highway
+    type: string
+    description: The range of highway mileage.
+    required: false
+  - name: sort
+    type: string
+    description: The field to sort the results by. Default is 'id'.
+    required: false
+    default: id
+  - name: direction
+    type: string
+    description: The direction to sort by ('asc' or 'desc'). Default is 'asc'.
+    required: false
+    default: asc
+  - name: range_city
+    type: string
+    description: The range of city mileage.
+    required: false
+  - name: page
+    type: integer
+    description: The page number for paginated results.
+    required: false
+  - name: combined_mpg
+    type: string
+    description: The combined miles per gallon value.
+    required: false
+  - name: verbose
+    type: string
+    description: Include make, model and trim information in the results. Default is 'yes'.
+    required: false
+    default: 'yes'
+  - name: epa_highway_mpg
+    type: string
+    description: The EPA highway miles per gallon value.
+    required: false
+  - name: epa_city_mpg
+    type: string
+    description: The EPA city miles per gallon value.
+    required: false
+  - name: model
+    type: string
+    description: The car model.
+    required: false
+  - name: year
+    type: string
+    description: The year of the car.
+    required: false
+  - name: make_id
+    type: string
+    description: The ID of the car make.
+    required: false
+  - name: make
+    type: string
+    description: The car make.
+    required: false
+  tags:
+  - mileages
+  test_prompts:
+    single:
+    - Fetch mileage data for Toyota Camry from the year 2015, sorted by 'id' in ascending order.
+    - Could you fetch mileage data for cars from the year 2015, sorted by combined MPG in descending order, with a limit of
+      10 results per page, and include detailed information about the make, model, and trim?
+    single_clear:
+    - Fetch mileage data for Toyota Camry from the year 2015, sorted by 'id' in ascending order.
+    - Could you fetch mileage data for cars from the year 2015, sorted by combined MPG in descending order, with a limit of
+      10 results per page, and include detailed information about the make, model, and trim?
+- name: displacement
+  descriptions:
+    minimal: Calculates the displacement of an object given...
+    short: Calculates the displacement of an object given its initial velocity, acceleration, and time.
+    medium: Calculates the displacement of an object given its initial velocity, acceleration, and time.
+    long: Calculates the displacement of an object given its initial velocity, acceleration, and time.
+    verbose: Calculates the displacement of an object given its initial velocity, acceleration, and time.
+  parameters:
+  - name: initial_velocity
+    type: number
+    description: The initial velocity of the object.
+    required: true
+  - name: acceleration
+    type: number
+    description: The acceleration of the object.
+    required: true
+  - name: time
+    type: number
+    description: The time elapsed.
+    required: true
+  tags:
+  - displacement
+  test_prompts:
+    single:
+    - Calculate the displacement of an object with an initial velocity of 5 m/s, accelerating at 2 m/s² for 10 seconds.
+    - Calculate the displacement of an object with an initial velocity of 5 m/s, accelerating at 1.5 m/s² for 3 seconds.
+    - Calculate the displacement when an object starts at 0 m/s, accelerates at 3 m/s² for 10 seconds.
+    - A vehicle moving at 30 m/s accelerates at 2 m/s² for 5 seconds. What is its displacement during this period?
+    - An athlete starts running at 5 m/s, accelerates at 1.5 m/s², and runs for 10 seconds. What is the total displacement
+      covered by the athlete?
+    - Calculate the displacement of an object with an initial velocity of 5 m/s, accelerating at 2 m/s² for 10 seconds.
+    single_clear:
+    - Calculate the displacement of an object with an initial velocity of 5 m/s, accelerating at 2 m/s² for 10 seconds.
+    - Calculate the displacement of an object with an initial velocity of 5 m/s, accelerating at 1.5 m/s² for 3 seconds.
+    - Calculate the displacement when an object starts at 0 m/s, accelerates at 3 m/s² for 10 seconds.
+    - A vehicle moving at 30 m/s accelerates at 2 m/s² for 5 seconds. What is its displacement during this period?
+    - An athlete starts running at 5 m/s, accelerates at 1.5 m/s², and runs for 10 seconds. What is the total displacement
+      covered by the athlete?
+    - Calculate the displacement of an object with an initial velocity of 5 m/s, accelerating at 2 m/s² for 10 seconds.
+- name: explore
+  descriptions:
+    minimal: Fetches a list of recipes from the Worldwide...
+    short: Fetches a list of recipes from the Worldwide Recipes API with optional pagination support.
+    medium: Fetches a list of recipes from the Worldwide Recipes API with optional pagination support.
+    long: Fetches a list of recipes from the Worldwide Recipes API with optional pagination support.
+    verbose: Fetches a list of recipes from the Worldwide Recipes API with optional pagination support.
+  parameters:
+  - name: start
+    type: integer
+    description: The starting point for pagination. Page 1 corresponds to start=0, Page 2 to start=20, and so on.
+    required: false
+  tags:
+  - explore
+  test_prompts:
+    single:
+    - I need to explore recipes starting from the 30th one, can you help?
+    - Please get me the first 20 recipes from the Worldwide Recipes API.
+    single_clear:
+    - I need to explore recipes starting from the 30th one, can you help?
+    - Please get me the first 20 recipes from the Worldwide Recipes API.
+- name: find_n_largest_numbers
+  descriptions:
+    minimal: Finds the n largest numbers in a list.
+    short: Finds the n largest numbers in a list.
+    medium: Finds the n largest numbers in a list.
+    long: Finds the n largest numbers in a list.
+    verbose: Finds the n largest numbers in a list.
+  parameters:
+  - name: nums
+    type: string
+    description: The list of numbers.
+    required: true
+  - name: n
+    type: integer
+    description: The number of largest numbers to find.
+    required: true
+  tags:
+  - find
+  - n
+  - largest
+  test_prompts:
+    single:
+    - Find the 3 largest numbers in the list [12, 45, 23, 67, 89, 34, 56]
+    - What are the 3 largest numbers in the list [99, 88, 77, 66, 55, 44, 33, 22, 11]?
+    - Retrieve the 2 largest numbers from the list [10, 20, 15, 7, 25, 30].
+    - Find the 2 largest numbers from the list [5, 10, 15, 20, 25].
+    - What are the 4 largest numbers in the list [10, 20, 30, 40, 50, 60, 70, 80, 90]
+    - Find the 2 largest numbers in the list [5, 12, 9, 21, 34, 18].
+    - Find the 3 largest numbers from the list [15, 8, 23, 45, 32, 99, 76, 54, 31, 22]
+    single_clear:
+    - Find the 3 largest numbers in the list [12, 45, 23, 67, 89, 34, 56]
+    - What are the 3 largest numbers in the list [99, 88, 77, 66, 55, 44, 33, 22, 11]?
+    - Retrieve the 2 largest numbers from the list [10, 20, 15, 7, 25, 30].
+    - Find the 2 largest numbers from the list [5, 10, 15, 20, 25].
+    - What are the 4 largest numbers in the list [10, 20, 30, 40, 50, 60, 70, 80, 90]
+    - Find the 2 largest numbers in the list [5, 12, 9, 21, 34, 18].
+    - Find the 3 largest numbers from the list [15, 8, 23, 45, 32, 99, 76, 54, 31, 22]
+- name: get_coin_modifiers
+  descriptions:
+    minimal: Fetches the modifiers of a coin's supply and...
+    short: Fetches the modifiers of a coin's supply and their balance using the CoinRanking API.
+    medium: Fetches the modifiers of a coin's supply and their balance using the CoinRanking API.
+    long: Fetches the modifiers of a coin's supply and their balance using the CoinRanking API.
+    verbose: Fetches the modifiers of a coin's supply and their balance using the CoinRanking API.
+  parameters:
+  - name: uuid
+    type: string
+    description: The UUID of the coin for which to request the modifiers.
+    required: true
+    default: Qwsogvtv82FCd
+  - name: offset
+    type: integer
+    description: Offset for pagination. Default is 0.
+    required: false
+    default: '0'
+  - name: limit
+    type: integer
+    description: Limit for pagination. Default is 50. Must be in the range 0-100.
+    required: false
+    default: '50'
+  tags:
+  - get
+  - coin
+  - modifiers
+  test_prompts:
+    single:
+    - Obtain the modifiers for Ripple with a limit of 10 and an offset of 20.
+    single_clear:
+    - Obtain the modifiers for Ripple with a limit of 10 and an offset of 20.
+- name: stockprice
+  descriptions:
+    minimal: Fetches the live price of a given stock symbol...
+    short: Fetches the live price of a given stock symbol from the exchange using the RapidAPI service.
+    medium: Fetches the live price of a given stock symbol from the exchange using the RapidAPI service.
+    long: Fetches the live price of a given stock symbol from the exchange using the RapidAPI service.
+    verbose: Fetches the live price of a given stock symbol from the exchange using the RapidAPI service.
+  parameters:
+  - name: symbol
+    type: string
+    description: The stock symbol for which to fetch the live price (e.g., TATAMOTORS, M&M).
+    required: true
+    default: TATAMOTORS
+  tags:
+  - stockprice
+  test_prompts:
+    single:
+    - I need the current stock price for TATAMOTORS. Can you fetch that for me?
+    single_clear:
+    - I need the current stock price for TATAMOTORS. Can you fetch that for me?
+- name: years
+  descriptions:
+    minimal: Fetch data from a car API based on various search...
+    short: Fetch data from a car API based on various search parameters related to years, makes, models, and trims.
+    medium: Fetch data from a car API based on various search parameters related to years, makes, models, and trims.
+    long: Fetch data from a car API based on various search parameters related to years, makes, models, and trims.
+    verbose: Fetch data from a car API based on various search parameters related to years, makes, models, and trims.
+  parameters:
+  - name: make_id
+    type: string
+    description: The unique identifier for the make.
+    required: false
+  - name: make
+    type: string
+    description: The name of the car make.
+    required: false
+  - name: year
+    type: string
+    description: The model year of the car.
+    required: false
+  - name: json
+    type: string
+    description: A JSON-encoded string containing additional query conditions.
+    required: false
+  - name: make_model_id
+    type: string
+    description: The unique identifier for the make and model.
+    required: false
+  - name: model
+    type: string
+    description: The model name of the car.
+    required: false
+  - name: trim
+    type: string
+    description: The trim level of the car.
+    required: false
+  tags:
+  - years
+  test_prompts:
+    single:
+    - Find all available years for the Tesla Model S.
+    single_clear:
+    - Find all available years for the Tesla Model S.
+- name: seasonendconstructorstanding
+  descriptions:
+    minimal: Fetches the Constructor Standings at the end of...
+    short: Fetches the Constructor Standings at the end of the specified Formula 1 season.
+    medium: Fetches the Constructor Standings at the end of the specified Formula 1 season.
+    long: Fetches the Constructor Standings at the end of the specified Formula 1 season.
+    verbose: Fetches the Constructor Standings at the end of the specified Formula 1 season.
+  parameters:
+  - name: year
+    type: string
+    description: The year for which to fetch the constructor standings.
+    required: true
+    default: year
+  tags:
+  - seasonendconstructorstanding
+  test_prompts:
+    single:
+    - Get the constructor standings from the 1980 Formula 1 season.
+    single_clear:
+    - Get the constructor standings from the 1980 Formula 1 season.
+- name: reversegeocode
+  descriptions:
+    minimal: Obtain the human-readable address for a given...
+    short: Obtain the human-readable address for a given geographical location.
+    medium: Obtain the human-readable address for a given geographical location.
+    long: Obtain the human-readable address for a given geographical location.
+    verbose: Obtain the human-readable address for a given geographical location.
+  parameters:
+  - name: location
+    type: string
+    description: The latitude and longitude coordinates (comma-separated) for which to obtain the address.
+    required: true
+    default: 37.7879493,-122.3961974
+  - name: language
+    type: string
+    description: The language in which to return results. Defaults to 'en'.
+    required: false
+    default: en
+  tags:
+  - reversegeocode
+  test_prompts:
+    single:
+    - I need the address corresponding to the coordinates 34.0522, -118.2437 in English.
+    - What is the address for latitude 34.0522 and longitude -118.2437 in English?
+    single_clear:
+    - I need the address corresponding to the coordinates 34.0522, -118.2437 in English.
+    - What is the address for latitude 34.0522 and longitude -118.2437 in English?
+- name: getmessage
+  descriptions:
+    minimal: Retrieves message details based on the provided...
+    short: Retrieves message details based on the provided message ID using the Toolbench RapidAPI service.
+    medium: Retrieves message details based on the provided message ID using the Toolbench RapidAPI service.
+    long: Retrieves message details based on the provided message ID using the Toolbench RapidAPI service.
+    verbose: Retrieves message details based on the provided message ID using the Toolbench RapidAPI service.
+  parameters:
+  - name: message_id
+    type: integer
+    description: The unique identifier of the message to retrieve.
+    required: true
+  tags:
+  - getmessage
+  test_prompts:
+    single:
+    - Retrieve details of the SMS message with ID 12345.
+    - Detail of the SMS with ID 67890, please.
+    single_clear:
+    - Retrieve details of the SMS message with ID 12345.
+    - Detail of the SMS with ID 67890, please.
+- name: recent_unique_tournaments
+  descriptions:
+    minimal: Fetches the recent unique tournaments associated...
+    short: Fetches the recent unique tournaments associated with a given team ID using the RapidAPI service.
+    medium: Fetches the recent unique tournaments associated with a given team ID using the RapidAPI service.
+    long: Fetches the recent unique tournaments associated with a given team ID using the RapidAPI service.
+    verbose: Fetches the recent unique tournaments associated with a given team ID using the RapidAPI service.
+  parameters:
+  - name: team_id
+    type: integer
+    description: The ID of the team for which recent unique tournaments are to be retrieved.
+    required: true
+    default: '14486'
+  tags:
+  - recent
+  - unique
+  - tournaments
+  test_prompts:
+    single:
+    - Show me the recent tournaments for team 90123.
+    - List the tournaments that the team 78901 has recently participated in.
+    single_clear:
+    - Show me the recent tournaments for team 90123.
+    - List the tournaments that the team 78901 has recently participated in.
+- name: v1_dogs
+  descriptions:
+    minimal: Fetch a list of dog breeds matching specified...
+    short: Fetch a list of dog breeds matching specified parameters from the API.
+    medium: Fetch a list of dog breeds matching specified parameters from the API. Returns at most 20 results by default.
+    long: Fetch a list of dog breeds matching specified parameters from the API. Returns at most 20 results by default.
+    verbose: Fetch a list of dog breeds matching specified parameters from the API. Returns at most 20 results by default.
+  parameters:
+  - name: offset
+    type: integer
+    description: Number of results to offset for pagination. Defaults to None.
+    required: false
+  - name: energy
+    type: integer
+    description: Energy level of the breed (0-5, where 0 indicates low energy and 5 indicates high energy). Defaults to None.
+    required: false
+  - name: protectiveness
+    type: integer
+    description: Protectiveness level of the breed (0-5, where 0 indicates minimal alerting and 5 indicates maximum alerting).
+      Defaults to None.
+    required: false
+  - name: max_weight
+    type: integer
+    description: Maximum weight of the breed in pounds. Defaults to None.
+    required: false
+  - name: min_weight
+    type: integer
+    description: Minimum weight of the breed in pounds. Defaults to None.
+    required: false
+  - name: trainability
+    type: integer
+    description: Ease of training the breed (0-5, where 0 indicates very difficult and 5 indicates very easy). Defaults to
+      None.
+    required: false
+  - name: shedding
+    type: integer
+    description: Shedding level of the breed (0-5, where 0 indicates no shedding and 5 indicates maximum shedding). Defaults
+      to None.
+    required: false
+  - name: name
+    type: string
+    description: Name of the dog breed. Defaults to 'golden retriever'.
+    required: false
+    default: golden retriever
+  - name: min_height
+    type: integer
+    description: Minimum height of the breed in inches. Defaults to None.
+    required: false
+  - name: barking
+    type: integer
+    description: Barking tendency of the breed (0-5, where 0 indicates minimal barking and 5 indicates maximum barking). Defaults
+      to None.
+    required: false
+  - name: max_height
+    type: integer
+    description: Maximum height of the breed in inches. Defaults to None.
+    required: false
+  - name: max_life_expectancy
+    type: integer
+    description: Maximum life expectancy of the breed in years. Defaults to None.
+    required: false
+  - name: min_life_expectancy
+    type: integer
+    description: Minimum life expectancy of the breed in years. Defaults to None.
+    required: false
+  tags:
+  - v1
+  - dogs
+  test_prompts:
+    single:
+    - Retrieve breeds that are highly trainable, protective, and weigh no more than 50 pounds.
+    - Identify breeds that are easy to train, have a minimum height of 18 inches, and a maximum weight of 70 pounds.
+    - List breeds that bark minimally, have a maximum height of 20 inches, and a minimum weight of 30 pounds.
+    single_clear:
+    - Retrieve breeds that are highly trainable, protective, and weigh no more than 50 pounds.
+    - Identify breeds that are easy to train, have a minimum height of 18 inches, and a maximum weight of 70 pounds.
+    - List breeds that bark minimally, have a maximum height of 20 inches, and a minimum weight of 30 pounds.
+- name: get_brands
+  descriptions:
+    minimal: Fetches cigar brands from the RapidAPI endpoint...
+    short: Fetches cigar brands from the RapidAPI endpoint, allowing for pagination and optional search filtering.
+    medium: Fetches cigar brands from the RapidAPI endpoint, allowing for pagination and optional search filtering.
+    long: Fetches cigar brands from the RapidAPI endpoint, allowing for pagination and optional search filtering.
+    verbose: Fetches cigar brands from the RapidAPI endpoint, allowing for pagination and optional search filtering.
+  parameters:
+  - name: page
+    type: integer
+    description: The page number to retrieve for pagination.
+    required: true
+    default: '1'
+  - name: search
+    type: string
+    description: A search term to filter cigar brands. Defaults to 'Dominican'.
+    required: false
+    default: Dominican
+  tags:
+  - get
+  - brands
+  test_prompts:
+    single:
+    - Can you list all cigar brands from the Dominican Republic on page 1?
+    - What are the brands available on the second page with a focus on 'Honduran' cigars?
+    single_clear:
+    - Can you list all cigar brands from the Dominican Republic on page 1?
+    - What are the brands available on the second page with a focus on 'Honduran' cigars?
+- name: get_products_in_category
+  descriptions:
+    minimal: Fetches products from a specified category using...
+    short: Fetches products from a specified category using the Toolbench RapidAPI.
+    medium: Fetches products from a specified category using the Toolbench RapidAPI.
+    long: Fetches products from a specified category using the Toolbench RapidAPI.
+    verbose: Fetches products from a specified category using the Toolbench RapidAPI.
+  parameters:
+  - name: limit
+    type: integer
+    description: The maximum number of products to retrieve.
+    required: true
+  - name: skip
+    type: integer
+    description: The number of products to skip before starting to collect the result set.
+    required: true
+  - name: category
+    type: string
+    description: The category of products to fetch.
+    required: true
+  tags:
+  - get
+  - products
+  - in
+  test_prompts:
+    single:
+    - Retrieve 15 products from the 'Home Decor' category, skipping the first 10 products.
+    - Get the first 10 products in the 'Electronics' category from the store catalog.
+    - What are the next 5 products after the first 10 in the 'Electronics' category?
+    - I'm looking for products in the 'Electronics' category in my store. Can you list the first 10 products?
+    - Can you list the first 10 electronics products from the catalog?
+    - Retrieve the first 10 products in the 'Electronics' category.
+    - What are the products available in the 'Electronics' category? Please limit the results to 10 and skip the first 5.
+    single_clear:
+    - Retrieve 15 products from the 'Home Decor' category, skipping the first 10 products.
+    - Get the first 10 products in the 'Electronics' category from the store catalog.
+    - What are the next 5 products after the first 10 in the 'Electronics' category?
+    - I'm looking for products in the 'Electronics' category in my store. Can you list the first 10 products?
+    - Can you list the first 10 electronics products from the catalog?
+    - Retrieve the first 10 products in the 'Electronics' category.
+    - What are the products available in the 'Electronics' category? Please limit the results to 10 and skip the first 5.
+- name: crypto_exchanges
+  descriptions:
+    minimal: Fetches the list of cryptocurrency exchanges...
+    short: Fetches the list of cryptocurrency exchanges available at Twelve Data API.
+    medium: Fetches the list of cryptocurrency exchanges available at Twelve Data API.
+    long: Fetches the list of cryptocurrency exchanges available at Twelve Data API.
+    verbose: Fetches the list of cryptocurrency exchanges available at Twelve Data API.
+  parameters:
+  - name: format
+    type: string
+    description: The desired response format. Acceptable values are 'json' (default) and 'csv'.
+    required: true
+    default: json
+  tags:
+  - crypto
+  - exchanges
+  test_prompts:
+    single:
+    - List all cryptocurrency exchanges in JSON format.
+    - Could you fetch the latest list of cryptocurrency exchanges in JSON format from Twelve Data API?
+    single_clear:
+    - List all cryptocurrency exchanges in JSON format.
+    - Could you fetch the latest list of cryptocurrency exchanges in JSON format from Twelve Data API?
+- name: stock_price
+  descriptions:
+    minimal: Fetches the current price and details for a given...
+    short: Fetches the current price and details for a given public stock using the RapidAPI service.
+    medium: Fetches the current price and details for a given public stock using the RapidAPI service.
+    long: Fetches the current price and details for a given public stock using the RapidAPI service.
+    verbose: Fetches the current price and details for a given public stock using the RapidAPI service.
+  parameters:
+  - name: ticker
+    type: string
+    description: The ticker symbol of the stock for which to retrieve the price and details.
+    required: true
+  tags:
+  - stock
+  - price
+  test_prompts:
+    single:
+    - Fetch the current stock price for Apple Inc. (AAPL).
+    - Could you tell me the latest stock price for Facebook?
+    single_clear:
+    - Fetch the current stock price for Apple Inc. (AAPL).
+    - Could you tell me the latest stock price for Facebook?
+- name: fixtures_by_series
+  descriptions:
+    minimal: Fetches fixtures and results for a given cricket...
+    short: Fetches fixtures and results for a given cricket series using the RapidAPI service.
+    medium: Fetches fixtures and results for a given cricket series using the RapidAPI service.
+    long: Fetches fixtures and results for a given cricket series using the RapidAPI service.
+    verbose: Fetches fixtures and results for a given cricket series using the RapidAPI service.
+  parameters:
+  - name: series_id
+    type: integer
+    description: The unique identifier for the cricket series.
+    required: true
+    default: '606'
+  tags:
+  - fixtures
+  - by
+  - series
+  test_prompts:
+    single:
+    - Could you fetch the fixtures for the upcoming cricket series in India?
+    - Fetch fixtures for the 2023 Big Bash League.
+    - What are the upcoming fixtures for the cricket series with ID '3001'?
+    single_clear:
+    - Could you fetch the fixtures for the upcoming cricket series in India?
+    - Fetch fixtures for the 2023 Big Bash League.
+    - What are the upcoming fixtures for the cricket series with ID '3001'?
+- name: recordcount
+  descriptions:
+    minimal: Retrieve a specified number of records from the...
+    short: Retrieve a specified number of records from the CrossRef database using the RapidAPI service.
+    medium: Retrieve a specified number of records from the CrossRef database using the RapidAPI service.
+    long: Retrieve a specified number of records from the CrossRef database using the RapidAPI service.
+    verbose: Retrieve a specified number of records from the CrossRef database using the RapidAPI service.
+  parameters:
+  - name: rows
+    type: integer
+    description: The number of records to retrieve.
+    required: true
+    default: '0'
+  tags:
+  - recordcount
+  test_prompts:
+    single:
+    - Is it possible to fetch 500 records from CrossRef for a large-scale analysis?
+    - Can we get 700 records from CrossRef for a detailed study?
+    single_clear:
+    - Is it possible to fetch 500 records from CrossRef for a large-scale analysis?
+    - Can we get 700 records from CrossRef for a detailed study?
+- name: california_alimony
+  descriptions:
+    minimal: Calculates the total alimony one spouse would...
+    short: Calculates the total alimony one spouse would have to pay to the other in California over a given duration.
+    medium: Calculates the total alimony one spouse would have to pay to the other in California over a given duration.
+    long: Calculates the total alimony one spouse would have to pay to the other in California over a given duration.
+    verbose: Calculates the total alimony one spouse would have to pay to the other in California over a given duration.
+  parameters:
+  - name: payor_monthly_income
+    type: integer
+    description: The monthly gross income of the payor spouse.
+    required: true
+  - name: recipient_monthly_income
+    type: integer
+    description: The monthly gross income of the recipient spouse.
+    required: true
+  - name: duration_years
+    type: integer
+    description: The duration of the alimony in years.
+    required: true
+  tags:
+  - california
+  - alimony
+  test_prompts:
+    single:
+    - Calculate the total alimony for a payor earning $5000 per month and a recipient earning $2000 per month over 5 years.
+    - How much alimony would a spouse with a monthly income of $5000 pay to a spouse with a monthly income of $2000 over 5
+      years?
+    - What is the alimony for a payor with a monthly income of $6500 and a recipient with $2500 over 3 years?
+    - How much alimony is due if the payor earns $6000 and the recipient earns $3000 over 10 years?
+    - What is the alimony for a payor with a monthly income of $7000 and a recipient with $2800 over 4 years?
+    - A couple in California is divorcing, where the husband earns $5500 monthly and the wife earns $3000. They have agreed
+      upon a 7-year alimony term. Calculate the total alimony the husband will pay.
+    - Calculate the total alimony a spouse with a monthly income of $3500 would pay to a spouse with a monthly income of $1500
+      over 3 years in California.
+    - If one spouse earns $5000 monthly and the other earns $2000, how much alimony will be paid over 5 years?
+    - Determine the total alimony to be paid in California for a duration of 5 years, where the payor earns $5000 monthly
+      and the recipient earns $2000 monthly.
+    single_clear:
+    - Calculate the total alimony for a payor earning $5000 per month and a recipient earning $2000 per month over 5 years.
+    - How much alimony would a spouse with a monthly income of $5000 pay to a spouse with a monthly income of $2000 over 5
+      years?
+    - What is the alimony for a payor with a monthly income of $6500 and a recipient with $2500 over 3 years?
+    - How much alimony is due if the payor earns $6000 and the recipient earns $3000 over 10 years?
+    - What is the alimony for a payor with a monthly income of $7000 and a recipient with $2800 over 4 years?
+    - A couple in California is divorcing, where the husband earns $5500 monthly and the wife earns $3000. They have agreed
+      upon a 7-year alimony term. Calculate the total alimony the husband will pay.
+    - Calculate the total alimony a spouse with a monthly income of $3500 would pay to a spouse with a monthly income of $1500
+      over 3 years in California.
+    - If one spouse earns $5000 monthly and the other earns $2000, how much alimony will be paid over 5 years?
+    - Determine the total alimony to be paid in California for a duration of 5 years, where the payor earns $5000 monthly
+      and the recipient earns $2000 monthly.

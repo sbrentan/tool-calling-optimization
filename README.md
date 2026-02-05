@@ -24,14 +24,19 @@ cp .env.example .env
 
 ## Supported Providers
 
-| Provider | Models | Free Tier |
-|----------|--------|-----------|
-| **Cerebras** | llama-3.3-70b, llama3.1-8b, qwen-3-32b | ✅ 1M tokens/day |
-| **Gemini** | gemini-2.0-flash, gemini-1.5-pro, etc. | ✅ Limited |
-| **OpenAI** | gpt-4o, gpt-4o-mini, gpt-3.5-turbo | ❌ Paid |
+**Disclaimer:** Only Cerebras has been tested for cloud experiments. 
+
+| Provider | Models |
+|----------|--------|
+| **Cerebras** | llama-3.3-70b, llama3.1-8b, qwen-3-32b |
+| **Gemini** | gemini-2.0-flash, gemini-1.5-pro, etc. |
+| **OpenAI** | gpt-4o, gpt-4o-mini, gpt-3.5-turbo |
+| **Local** | Local Llama 3.2 3B, Local Qwen 3.2 7B |
+
+All models not matching Cerebras, Gemini, or OpenAI naming conventions are treated as local models with Ollama API (check docs/CONFIG_REFERENCE.md for details).
 
 Get free API keys:
-- **Cerebras**: https://cloud.cerebras.ai/ (Recommended for testing!)
+- **Cerebras**: https://cloud.cerebras.ai/
 - **Gemini**: https://aistudio.google.com/
 - **OpenAI**: https://platform.openai.com/
 
@@ -119,3 +124,7 @@ Or for Linux/Mac:
 ```bash
 for file in tools/*.yaml; do count=$(grep -c "^  - name:" "$file"); echo "$(basename "$file"): $count tools"; done | sort
 ```
+
+## Run Multiple Experiments
+
+You can run multiple experiments with different configurations by executing `scripts/run_plan.py`. Check `scripts/PLAN_CONFIGURATION.md` for details on how to set up a plan configuration file.

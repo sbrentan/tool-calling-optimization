@@ -1,0 +1,33 @@
+# ============================================================
+# Cross-Methodology Comparison: Hybrid at 200 tools
+# ============================================================
+# Purpose: Direct comparison with MCP, RAG, Adaptive at 200 tools
+# Uses k=3 categories for balanced comparison
+# ============================================================
+
+# --- Environment-Configurable Parameters ---
+num_test_samples: "__env__"
+model: "__env__"
+seed: "__env__"
+
+# --- Experiment Identification ---
+name: cross_hybrid_200tools
+description: "Hybrid at 200 tools for cross-methodology comparison"
+
+# --- Tool Configuration ---
+num_tools: 200
+doc_length: medium
+prompt_type: concise
+num_similar_tools: 0
+categories: null
+
+# --- Methodology ---
+methodology: hybrid
+hybrid_config:
+  embedding_model: all-MiniLM-L6-v2
+  top_k_categories: 3
+  category_embedding_strategy: mean
+  cache_embeddings: true
+
+# --- Output ---
+output_dir: experiments/full_cloud/results

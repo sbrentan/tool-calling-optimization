@@ -24,7 +24,7 @@ This document provides a comprehensive reference for all configurable parameters
 ## Configuration Overview
 
 Configurations can be specified via:
-- **YAML files** in `experiments/configs/`
+- **YAML files** in experiment configs
 - **Command-line arguments** when running experiments
 - **Python code** using the `ExperimentConfig` dataclass
 

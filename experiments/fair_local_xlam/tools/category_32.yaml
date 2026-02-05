@@ -1,0 +1,653 @@
+category: category_32
+tools:
+- name: paragraph
+  descriptions:
+    minimal: Generates a specified amount of Lorem Ipsum...
+    short: Generates a specified amount of Lorem Ipsum paragraphs using the RapidAPI Lorem Ipsum API.
+    medium: Generates a specified amount of Lorem Ipsum paragraphs using the RapidAPI Lorem Ipsum API.
+    long: Generates a specified amount of Lorem Ipsum paragraphs using the RapidAPI Lorem Ipsum API.
+    verbose: Generates a specified amount of Lorem Ipsum paragraphs using the RapidAPI Lorem Ipsum API.
+  parameters:
+  - name: amount
+    type: integer
+    description: The number of Lorem Ipsum paragraphs to generate. Defaults to 2.
+    required: false
+    default: '2'
+  tags:
+  - paragraph
+  test_prompts:
+    single:
+    - Generate 5 Lorem Ipsum paragraphs for a mock website design.
+    - Could you generate 5 paragraphs of Lorem Ipsum text for my website design mockups?
+    single_clear:
+    - Generate 5 Lorem Ipsum paragraphs for a mock website design.
+    - Could you generate 5 paragraphs of Lorem Ipsum text for my website design mockups?
+- name: random_quote
+  descriptions:
+    minimal: Fetches random quotes filtered by length and tags...
+    short: Fetches random quotes filtered by length and tags from the Semantic Quotes API.
+    medium: Fetches random quotes filtered by length and tags from the Semantic Quotes API.
+    long: Fetches random quotes filtered by length and tags from the Semantic Quotes API.
+    verbose: Fetches random quotes filtered by length and tags from the Semantic Quotes API.
+  parameters:
+  - name: max_length
+    type: integer
+    description: Maximum length of the quotes. Defaults to 4000.
+    required: false
+    default: 4000
+  - name: tags
+    type: string
+    description: Comma-separated tags for filtering quotes. Examples include 'faith', 'god', 'humor', 'hope', 'inspirational',
+      'love', 'life', 'motivational', 'philosophy', 'religion', 'science', 'spirituality', 'success', 'truth', 'wisdom', 'poetry'.
+      Defaults to 'inspirational,motivational'.
+    required: false
+    default: inspirational,motivational
+  - name: min_length
+    type: integer
+    description: Minimum length of the quotes. Defaults to 0.
+    required: false
+    default: '0'
+  - name: limit
+    type: integer
+    description: Number of quotes to return. Defaults to 3.
+    required: false
+    default: 3
+  tags:
+  - random
+  - quote
+  test_prompts:
+    single:
+    - Can you fetch three motivational quotes with a maximum length of 200 characters and a minimum length of 50 characters?
+    single_clear:
+    - Can you fetch three motivational quotes with a maximum length of 200 characters and a minimum length of 50 characters?
+- name: generate_litecoin_wallet
+  descriptions:
+    minimal: Generate a BIP44 compatible Litecoin wallet using...
+    short: Generate a BIP44 compatible Litecoin wallet using a given mnemonic phrase and a RapidAPI key.
+    medium: Generate a BIP44 compatible Litecoin wallet using a given mnemonic phrase and a RapidAPI key.
+    long: Generate a BIP44 compatible Litecoin wallet using a given mnemonic phrase and a RapidAPI key.
+    verbose: Generate a BIP44 compatible Litecoin wallet using a given mnemonic phrase and a RapidAPI key.
+  parameters:
+  - name: mnemonic
+    type: string
+    description: A mnemonic phrase consisting of 24 words, up to 500 characters. This phrase is used to generate extended
+      public and private keys. If not provided, a default mnemonic is used.
+    required: true
+    default: next one hip dutch manage shock glide gospel arch vacuum ski biology hood tip wall invite flame cycle file clinic
+      head among device autumn
+  tags:
+  - generate
+  - litecoin
+  - wallet
+  test_prompts:
+    single:
+    - Generate a Litecoin wallet with the default mnemonic.
+    single_clear:
+    - Generate a Litecoin wallet with the default mnemonic.
+- name: list_of_countries
+  descriptions:
+    minimal: Fetches information about countries where...
+    short: Fetches information about countries where Booking.
+    medium: Fetches information about countries where Booking.com offers hotels.
+    long: Fetches information about countries where Booking.com offers hotels.
+    verbose: Fetches information about countries where Booking.com offers hotels.
+  parameters:
+  - name: country
+    type: string
+    description: The country code for filtering the results. Defaults to None.
+    required: false
+  tags:
+  - list
+  - of
+  - countries
+  test_prompts:
+    single:
+    - List all countries where Booking.com offers hotels.
+    single_clear:
+    - List all countries where Booking.com offers hotels.
+- name: google_images
+  descriptions:
+    minimal: Fetches JSON data of image results from Google...
+    short: Fetches JSON data of image results from Google Images based on a query and various optional parameters.
+    medium: Fetches JSON data of image results from Google Images based on a query and various optional parameters.
+    long: Fetches JSON data of image results from Google Images based on a query and various optional parameters.
+    verbose: Fetches JSON data of image results from Google Images based on a query and various optional parameters.
+  parameters:
+  - name: query
+    type: string
+    description: The search query for the images.
+    required: true
+    default: football
+  - name: gl
+    type: string
+    description: The country to use for the search. Defaults to 'us'.
+    required: false
+    default: us
+  - name: hl
+    type: string
+    description: The language to use for the search. Defaults to 'en_us'.
+    required: false
+    default: en_us
+  - name: duration
+    type: string
+    description: The time duration for the search (e.g., 'd' for day, 'w' for week).
+    required: false
+  - name: chips
+    type: string
+    description: Additional search filters.
+    required: false
+  - name: lr
+    type: string
+    description: The language restriction for the search.
+    required: false
+  - name: ijn
+    type: string
+    description: Index of the search results page. Defaults to '0'.
+    required: false
+    default: '0'
+  - name: html
+    type: string
+    description: If True, returns HTML content.
+    required: false
+  - name: uule
+    type: string
+    description: Encoded location parameters.
+    required: false
+  - name: device
+    type: string
+    description: The device to use for the search (e.g., 'desktop', 'mobile'). Defaults to 'desktop'.
+    required: false
+    default: desktop
+  - name: safe
+    type: string
+    description: Safe search setting.
+    required: false
+  - name: nfpr
+    type: string
+    description: Filter option for non-personal results.
+    required: false
+  - name: tbs
+    type: string
+    description: Additional search parameters.
+    required: false
+  tags:
+  - google
+  - images
+  test_prompts:
+    single:
+    - Can you fetch images of 'penguins' from the United States, using English language, and filter results for the past week?
+    single_clear:
+    - Can you fetch images of 'penguins' from the United States, using English language, and filter results for the past week?
+- name: find_favicon
+  descriptions:
+    minimal: Find the favicon for a given URL using the...
+    short: Find the favicon for a given URL using the RapidAPI favicon finder service.
+    medium: Find the favicon for a given URL using the RapidAPI favicon finder service.
+    long: Find the favicon for a given URL using the RapidAPI favicon finder service.
+    verbose: Find the favicon for a given URL using the RapidAPI favicon finder service.
+  parameters:
+  - name: url
+    type: string
+    description: The URL for which to find the favicon.
+    required: true
+    default: https://www.google.com/
+  tags:
+  - find
+  - favicon
+  test_prompts:
+    single:
+    - Find the favicon for https://www.wikipedia.org.
+    single_clear:
+    - Find the favicon for https://www.wikipedia.org.
+- name: country_location_api
+  descriptions:
+    minimal: Retrieves location data for a specified country...
+    short: Retrieves location data for a specified country using the Country Location API.
+    medium: Retrieves location data for a specified country using the Country Location API.
+    long: Retrieves location data for a specified country using the Country Location API.
+    verbose: Retrieves location data for a specified country using the Country Location API.
+  parameters:
+  - name: country
+    type: string
+    description: Name of the country for which to retrieve location data. Defaults to 'canada'.
+    required: true
+    default: canada
+  tags:
+  - country
+  - location
+  - api
+  test_prompts:
+    single:
+    - Retrieve location data for Germany.
+    single_clear:
+    - Retrieve location data for Germany.
+- name: get_plus_one
+  descriptions:
+    minimal: This function takes an integer `number` and uses...
+    short: This function takes an integer `number` and uses the RapidAPI service to get the number incremented by one.
+    medium: This function takes an integer `number` and uses the RapidAPI service to get the number incremented by one.
+    long: This function takes an integer `number` and uses the RapidAPI service to get the number incremented by one.
+    verbose: This function takes an integer `number` and uses the RapidAPI service to get the number incremented by one.
+  parameters:
+  - name: number
+    type: integer
+    description: The integer to be incremented.
+    required: true
+    default: '15'
+  tags:
+  - get
+  - plus
+  - one
+  test_prompts:
+    single:
+    - Increase the number 15 by one using an API service.
+    - Get the number that follows 3000.
+    single_clear:
+    - Increase the number 15 by one using an API service.
+    - Get the number that follows 3000.
+- name: getinfo
+  descriptions:
+    minimal: Fetches information about a given mobile number...
+    short: Fetches information about a given mobile number using the Ajith Indian Mobile Info API.
+    medium: Fetches information about a given mobile number using the Ajith Indian Mobile Info API.
+    long: Fetches information about a given mobile number using the Ajith Indian Mobile Info API.
+    verbose: Fetches information about a given mobile number using the Ajith Indian Mobile Info API.
+  parameters:
+  - name: mobno
+    type: integer
+    description: A 10-digit mobile number to fetch information for.
+    required: true
+    default: '9090909090'
+  tags:
+  - getinfo
+  test_prompts:
+    single:
+    - Fetch information about mobile number 9876543210.
+    single_clear:
+    - Fetch information about mobile number 9876543210.
+- name: city_list
+  descriptions:
+    minimal: Fetches a list of valid cities for a given...
+    short: Fetches a list of valid cities for a given province using the Canadian Gas Prices API.
+    medium: Fetches a list of valid cities for a given province using the Canadian Gas Prices API.
+    long: Fetches a list of valid cities for a given province using the Canadian Gas Prices API.
+    verbose: Fetches a list of valid cities for a given province using the Canadian Gas Prices API.
+  parameters:
+  - name: province
+    type: string
+    description: The name of the province for which to fetch the list of cities.
+    required: true
+  tags:
+  - city
+  - list
+  test_prompts:
+    single:
+    - Retrieve a list of cities in Ontario, Canada.
+    - Can you provide a list of cities in Quebec using the Canadian Gas Prices API?
+    single_clear:
+    - Retrieve a list of cities in Ontario, Canada.
+    - Can you provide a list of cities in Quebec using the Canadian Gas Prices API?
+- name: getrandomsolution
+  descriptions:
+    minimal: Fetches a JSON data consisting of a random...
+    short: Fetches a JSON data consisting of a random optimal solution for a given cube position.
+    medium: Fetches a JSON data consisting of a random optimal solution for a given cube position.
+    long: Fetches a JSON data consisting of a random optimal solution for a given cube position.
+    verbose: Fetches a JSON data consisting of a random optimal solution for a given cube position.
+  parameters:
+  - name: position
+    type: string
+    description: The cube position for which to retrieve the random optimal solution.
+    required: true
+    default: GBWGYOGYRYOORWROBRWYGWBB
+  tags:
+  - getrandomsolution
+  test_prompts:
+    single:
+    - Provide a random solution for the cube position 'UF UR UB UL DF DR DB DL FR FL BR BL UFR URB UBL ULF DRF DFL DBR DLB'.
+    single_clear:
+    - Provide a random solution for the cube position 'UF UR UB UL DF DR DB DL FR FL BR BL UFR URB UBL ULF DRF DFL DBR DLB'.
+- name: get_a_conversation_turn
+  descriptions:
+    minimal: Fetch a specific conversation turn by its ID and...
+    short: Fetch a specific conversation turn by its ID and return its details.
+    medium: Fetch a specific conversation turn by its ID and return its details.
+    long: Fetch a specific conversation turn by its ID and return its details.
+    verbose: Fetch a specific conversation turn by its ID and return its details.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the conversation turn to fetch.
+    required: true
+  tags:
+  - get
+  - a
+  - conversation
+  test_prompts:
+    single:
+    - Retrieve the conversation turn with ID 67890.
+    single_clear:
+    - Retrieve the conversation turn with ID 67890.
+- name: video_data
+  descriptions:
+    minimal: Retrieves video data for a given video ID from...
+    short: Retrieves video data for a given video ID from YouTube using the RapidAPI service.
+    medium: Retrieves video data for a given video ID from YouTube using the RapidAPI service.
+    long: Retrieves video data for a given video ID from YouTube using the RapidAPI service.
+    verbose: Retrieves video data for a given video ID from YouTube using the RapidAPI service.
+  parameters:
+  - name: video_id
+    type: string
+    description: The ID of the YouTube video for which to retrieve data.
+    required: true
+    default: hs1W2KQluWA
+  tags:
+  - video
+  - data
+  test_prompts:
+    single:
+    - Get the video details for a popular tutorial on YouTube with ID 'y987654321'.
+    single_clear:
+    - Get the video details for a popular tutorial on YouTube with ID 'y987654321'.
+- name: section_list
+  descriptions:
+    minimal: Returns a list of sections from the RapidAPI...
+    short: Returns a list of sections from the RapidAPI sports score service.
+    medium: Returns a list of sections from the RapidAPI sports score service.
+    long: Returns a list of sections from the RapidAPI sports score service.
+    verbose: Returns a list of sections from the RapidAPI sports score service.
+  parameters:
+  - name: page
+    type: integer
+    description: Page number to retrieve. Defaults to 1.
+    required: false
+    default: '1'
+  tags:
+  - section
+  - list
+  test_prompts:
+    single:
+    - What are the sections available on the sports score service for page 2?
+    single_clear:
+    - What are the sections available on the sports score service for page 2?
+- name: job_salary
+  descriptions:
+    minimal: Fetch estimated job salaries based on job title...
+    short: Fetch estimated job salaries based on job title and location using the RapidAPI Job Salary API.
+    medium: Fetch estimated job salaries based on job title and location using the RapidAPI Job Salary API.
+    long: Fetch estimated job salaries based on job title and location using the RapidAPI Job Salary API.
+    verbose: Fetch estimated job salaries based on job title and location using the RapidAPI Job Salary API.
+  parameters:
+  - name: job_title
+    type: string
+    description: The job title for which to get the salary estimation.
+    required: true
+    default: nodejs developer
+  - name: location
+    type: string
+    description: The location or area to search for the job salary estimation.
+    required: true
+    default: new york, usa
+  - name: radius
+    type: string
+    description: The search radius in kilometers from the location. Defaults to '200'.
+    required: false
+    default: '200'
+  tags:
+  - job
+  - salary
+  test_prompts:
+    single:
+    - What is the estimated salary for a Financial Analyst in Chicago within a 300km radius?
+    single_clear:
+    - What is the estimated salary for a Financial Analyst in Chicago within a 300km radius?
+- name: get_10_year_historical_quarterly_prices
+  descriptions:
+    minimal: Fetch the 10-year historical quarterly prices for...
+    short: Fetch the 10-year historical quarterly prices for a given stock ticker.
+    medium: Fetch the 10-year historical quarterly prices for a given stock ticker.
+    long: Fetch the 10-year historical quarterly prices for a given stock ticker.
+    verbose: Fetch the 10-year historical quarterly prices for a given stock ticker.
+  parameters:
+  - name: ticker
+    type: string
+    description: The stock ticker symbol for which the historical data is to be fetched.
+    required: true
+    default: AAPL
+  tags:
+  - get
+  - '10'
+  - year
+  test_prompts:
+    single:
+    - Get the 10-year historical quarterly prices for Microsoft (MSFT).
+    single_clear:
+    - Get the 10-year historical quarterly prices for Microsoft (MSFT).
+- name: blockit
+  descriptions:
+    minimal: Detect if an IP address is associated with a...
+    short: Detect if an IP address is associated with a proxy, Tor, hosting service, cloud service, or is a Bogon IP.
+    medium: Detect if an IP address is associated with a proxy, Tor, hosting service, cloud service, or is a Bogon IP.
+    long: Detect if an IP address is associated with a proxy, Tor, hosting service, cloud service, or is a Bogon IP.
+    verbose: Detect if an IP address is associated with a proxy, Tor, hosting service, cloud service, or is a Bogon IP.
+  parameters:
+  - name: ip
+    type: string
+    description: The IP address to be checked.
+    required: true
+    default: 34.95.185.149
+  tags:
+  - blockit
+  test_prompts:
+    single:
+    - Is the IP address 1.1.1.1 associated with any proxy or cloud service?
+    single_clear:
+    - Is the IP address 1.1.1.1 associated with any proxy or cloud service?
+- name: word
+  descriptions:
+    minimal: Generates lorem ipsum text by requesting a...
+    short: Generates lorem ipsum text by requesting a specified number of words from the RapidAPI lorem ipsum service.
+    medium: Generates lorem ipsum text by requesting a specified number of words from the RapidAPI lorem ipsum service.
+    long: Generates lorem ipsum text by requesting a specified number of words from the RapidAPI lorem ipsum service.
+    verbose: Generates lorem ipsum text by requesting a specified number of words from the RapidAPI lorem ipsum service.
+  parameters:
+  - name: amount
+    type: integer
+    description: The number of lorem ipsum words to generate.
+    required: true
+    default: '5'
+  tags:
+  - word
+  test_prompts:
+    single:
+    - Generate 10 words of lorem ipsum text.
+    single_clear:
+    - Generate 10 words of lorem ipsum text.
+- name: channel_details
+  descriptions:
+    minimal: Fetches details of a YouTube channel given its ID...
+    short: Fetches details of a YouTube channel given its ID and desired parts using the RapidAPI service.
+    medium: Fetches details of a YouTube channel given its ID and desired parts using the RapidAPI service.
+    long: Fetches details of a YouTube channel given its ID and desired parts using the RapidAPI service.
+    verbose: Fetches details of a YouTube channel given its ID and desired parts using the RapidAPI service.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the YouTube channel to fetch details for.
+    required: true
+    default: UCBVjMGOIkavEAhyqpxJ73Dw
+  - name: part
+    type: string
+    description: The part parameter specifies a comma-separated list of one or more channel resource properties that the API
+      response will include.
+    required: true
+    default: snippet,statistics
+  tags:
+  - channel
+  - details
+  test_prompts:
+    single:
+    - Get details of YouTube channel with ID 'UC_x5XG1OV2P6uZZ5FSM9Ttw' including statistics and branding.
+    single_clear:
+    - Get details of YouTube channel with ID 'UC_x5XG1OV2P6uZZ5FSM9Ttw' including statistics and branding.
+- name: new_releases
+  descriptions:
+    minimal: Retrieves new music releases from Spotify based...
+    short: Retrieves new music releases from Spotify based on the given country code.
+    medium: Retrieves new music releases from Spotify based on the given country code.
+    long: Retrieves new music releases from Spotify based on the given country code.
+    verbose: Retrieves new music releases from Spotify based on the given country code.
+  parameters:
+  - name: country
+    type: string
+    description: The country code to fetch new releases for. Example values include 'US', 'CA', 'SE', 'IN', 'UK'.
+    required: true
+    default: us
+  tags:
+  - new
+  - releases
+  test_prompts:
+    single:
+    - What are the new music releases in the United States?
+    single_clear:
+    - What are the new music releases in the United States?
+- name: company_balance_sheet
+  descriptions:
+    minimal: Retrieves the balance sheet of a public company...
+    short: Retrieves the balance sheet of a public company for a specified period.
+    medium: Retrieves the balance sheet of a public company for a specified period.
+    long: Retrieves the balance sheet of a public company for a specified period.
+    verbose: Retrieves the balance sheet of a public company for a specified period.
+  parameters:
+  - name: period
+    type: string
+    description: Period for which to get the company's balance sheet. Can be 'QUARTERLY' or 'ANNUAL'.
+    required: true
+  - name: symbol
+    type: string
+    description: Stock symbol (ticker) of the company, e.g., 'MSFT' or 'AAPL'.
+    required: true
+    default: AAPL:NASDAQ
+  - name: language
+    type: string
+    description: The language to use for the results, specified as a 2-letter language code according to ISO 639-1. Default
+      is 'en'.
+    required: false
+    default: en
+  tags:
+  - company
+  - balance
+  - sheet
+  test_prompts:
+    single:
+    - Provide the quarterly financials for Facebook in Portuguese.
+    - I need the annual balance sheet for Apple Inc. in French.
+    single_clear:
+    - Provide the quarterly financials for Facebook in Portuguese.
+    - I need the annual balance sheet for Apple Inc. in French.
+- name: get_from_yts
+  descriptions:
+    minimal: Fetches torrent data from YTS for a given search...
+    short: Fetches torrent data from YTS for a given search topic using RapidAPI.
+    medium: Fetches torrent data from YTS for a given search topic using RapidAPI.
+    long: Fetches torrent data from YTS for a given search topic using RapidAPI.
+    verbose: Fetches torrent data from YTS for a given search topic using RapidAPI.
+  parameters:
+  - name: searchtopic
+    type: string
+    description: The topic or keyword to search for on YTS.
+    required: true
+    default: cars
+  tags:
+  - get
+  - from
+  - yts
+  test_prompts:
+    single:
+    - Find torrent data for the movie 'Interstellar' on YTS.
+    - Can you fetch torrent details for the movie 'Inception'?
+    single_clear:
+    - Find torrent data for the movie 'Interstellar' on YTS.
+    - Can you fetch torrent details for the movie 'Inception'?
+- name: check_if_text_contains_profanity
+  descriptions:
+    minimal: Check if a given text contains profanity using...
+    short: Check if a given text contains profanity using the Purgomalum API.
+    medium: Check if a given text contains profanity using the Purgomalum API.
+    long: Check if a given text contains profanity using the Purgomalum API.
+    verbose: Check if a given text contains profanity using the Purgomalum API.
+  parameters:
+  - name: text
+    type: string
+    description: The text to be checked for profanity.
+    required: true
+    default: This is some test input
+  tags:
+  - check
+  - if
+  - text
+  test_prompts:
+    single:
+    - Check if the text 'Hello, world!' contains any profanity.
+    - Check if the text 'This is a test.' contains any profanity.
+    single_clear:
+    - Check if the text 'Hello, world!' contains any profanity.
+    - Check if the text 'This is a test.' contains any profanity.
+- name: get_details_of_a_news_item
+  descriptions:
+    minimal: Fetches the details of a news item including the...
+    short: Fetches the details of a news item including the title, image, body, and other properties from the specified API
+      using the provided parameters.
+    medium: Fetches the details of a news item including the title, image, body, and other properties from the specified API
+      using the provided parameters.
+    long: Fetches the details of a news item including the title, image, body, and other properties from the specified API
+      using the provided parameters.
+    verbose: Fetches the details of a news item including the title, image, body, and other properties from the specified
+      API using the provided parameters.
+  parameters:
+  - name: is_id
+    type: string
+    description: The unique identifier of the news item.
+    required: true
+    default: '.196030'
+  - name: title
+    type: string
+    description: The title of the news item.
+    required: true
+    default: mai-nishikata-game-between-the-suits-manga-resumes-after-2-years
+  - name: date
+    type: string
+    description: The publication date of the news item.
+    required: true
+    default: '2023-03-17'
+  tags:
+  - get
+  - details
+  - of
+  test_prompts:
+    single:
+    - Can you provide details of the news item titled 'Anime Expo 2023' published on July 1, 2023?
+    single_clear:
+    - Can you provide details of the news item titled 'Anime Expo 2023' published on July 1, 2023?
+- name: fetch_track_details
+  descriptions:
+    minimal: Fetches the details of a specific track using the...
+    short: Fetches the details of a specific track using the provided track ID from the latest Spotify downloader API.
+    medium: Fetches the details of a specific track using the provided track ID from the latest Spotify downloader API.
+    long: Fetches the details of a specific track using the provided track ID from the latest Spotify downloader API.
+    verbose: Fetches the details of a specific track using the provided track ID from the latest Spotify downloader API.
+  parameters:
+  - name: track_id
+    type: string
+    description: The unique identifier of the track to fetch details for.
+    required: true
+    default: 2gAKyzcfFIlMYdJ2b836At
+  tags:
+  - fetch
+  - track
+  - details
+  test_prompts:
+    single:
+    - Fetch detailed information about the track with ID '6y0igZArWnL6O91FH8sXDh'.
+    single_clear:
+    - Fetch detailed information about the track with ID '6y0igZArWnL6O91FH8sXDh'.

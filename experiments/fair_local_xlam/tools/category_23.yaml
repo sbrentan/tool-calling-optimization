@@ -1,0 +1,728 @@
+category: category_23
+tools:
+- name: generate_qr_code
+  descriptions:
+    minimal: Generates a QR code from the given content using...
+    short: Generates a QR code from the given content using the Toolbench RapidAPI service.
+    medium: Generates a QR code from the given content using the Toolbench RapidAPI service.
+    long: Generates a QR code from the given content using the Toolbench RapidAPI service.
+    verbose: Generates a QR code from the given content using the Toolbench RapidAPI service.
+  parameters:
+  - name: content
+    type: string
+    description: The content to encode in the QR code.
+    required: true
+    default: https://google.com
+  tags:
+  - generate
+  - qr
+  - code
+  test_prompts:
+    single:
+    - Generate a QR code for the URL 'https://www.example.com'
+    single_clear:
+    - Generate a QR code for the URL 'https://www.example.com'
+- name: email_qr_code
+  descriptions:
+    minimal: Creates and returns a static QR code encoded with...
+    short: Creates and returns a static QR code encoded with the provided email address.
+    medium: Creates and returns a static QR code encoded with the provided email address. The QR code can be customized with
+      various design parameters such as background color, eye pattern, error correction level, size, data gradient colors,
+      and data patterns. When scanned, the QR code will prompt the user to send an email to the specified address.
+    long: Creates and returns a static QR code encoded with the provided email address. The QR code can be customized with
+      various design parameters such as background color, eye pattern, error correction level, size, data gradient colors,
+      and data patterns. When scanned, the QR code will prompt the user to send an email to the specified address.
+    verbose: Creates and returns a static QR code encoded with the provided email address. The QR code can be customized with
+      various design parameters such as background color, eye pattern, error correction level, size, data gradient colors,
+      and data patterns. When scanned, the QR code will prompt the user to send an email to the specified address.
+  parameters:
+  - name: address
+    type: string
+    description: The email address to encode in the QR code.
+    required: true
+    default: marketing@scanova.io
+  - name: background_color
+    type: string
+    description: The background color of the QR code. Defaults to '#FFFFFF'.
+    required: false
+    default: '#FFFFFF'
+  - name: eye_pattern
+    type: string
+    description: The pattern of the QR code eyes. Defaults to 'RECT_RECT'.
+    required: false
+    default: RECT_RECT
+  - name: error_correction
+    type: string
+    description: The error correction level of the QR code. Defaults to 'M'.
+    required: false
+    default: M
+  - name: size
+    type: string
+    description: The size of the QR code. Defaults to 'm'.
+    required: false
+    default: m
+  - name: data_gradient_start_color
+    type: string
+    description: The starting color for the data gradient. Defaults to '#000000'.
+    required: false
+    default: '#000000'
+  - name: data_gradient_style
+    type: string
+    description: The style of the data gradient. Defaults to 'None'.
+    required: false
+    default: None
+  - name: data_pattern
+    type: string
+    description: The pattern for the QR code data. Defaults to 'RECT'.
+    required: false
+    default: RECT
+  - name: eye_color_outer
+    type: string
+    description: The outer color of the QR code eyes. Defaults to '#000000'.
+    required: false
+    default: '#000000'
+  - name: data_gradient_end_color
+    type: string
+    description: The ending color for the data gradient. Defaults to '#000000'.
+    required: false
+    default: '#000000'
+  - name: eye_color_inner
+    type: string
+    description: The inner color of the QR code eyes. Defaults to '#000000'.
+    required: false
+    default: '#000000'
+  tags:
+  - email
+  - qr
+  - code
+  test_prompts:
+    single:
+    - Create a QR code for 'support@techhelp.com' with a gradient from green to yellow and a circular eye pattern.
+    - Create a QR code for 'feedback@shop.com' with a striped data pattern and a gradient from blue to green.
+    single_clear:
+    - Create a QR code for 'support@techhelp.com' with a gradient from green to yellow and a circular eye pattern.
+    - Create a QR code for 'feedback@shop.com' with a striped data pattern and a gradient from blue to green.
+- name: get_types
+  descriptions:
+    minimal: Fetches available types for a specified period...
+    short: Fetches available types for a specified period from the horoscopes API.
+    medium: Fetches available types for a specified period from the horoscopes API.
+    long: Fetches available types for a specified period from the horoscopes API.
+    verbose: Fetches available types for a specified period from the horoscopes API.
+  parameters:
+  - name: period
+    type: string
+    description: The time period for which to retrieve the available types (e.g., daily, weekly, monthly).
+    required: true
+  tags:
+  - get
+  - types
+  test_prompts:
+    single:
+    - Get the types available for horoscopes for the current week.
+    single_clear:
+    - Get the types available for horoscopes for the current week.
+- name: get_article_by_sid
+  descriptions:
+    minimal: Retrieve the content of a news article based on...
+    short: Retrieve the content of a news article based on the given article ID (`sid`).
+    medium: Retrieve the content of a news article based on the given article ID (`sid`).
+    long: Retrieve the content of a news article based on the given article ID (`sid`).
+    verbose: Retrieve the content of a news article based on the given article ID (`sid`).
+  parameters:
+  - name: sid
+    type: integer
+    description: The article ID for the news article to be retrieved.
+    required: true
+    default: '565154'
+  tags:
+  - get
+  - article
+  - by
+  test_prompts:
+    single:
+    - I'm looking for the article with ID 24680 from Malaysia Kini, can you provide it?
+    single_clear:
+    - I'm looking for the article with ID 24680 from Malaysia Kini, can you provide it?
+- name: reverse_geocoding
+  descriptions:
+    minimal: Translates location coordinates into...
+    short: Translates location coordinates into human-readable addresses using the Reverse Geocoding API.
+    medium: Translates location coordinates into human-readable addresses using the Reverse Geocoding API.
+    long: Translates location coordinates into human-readable addresses using the Reverse Geocoding API.
+    verbose: Translates location coordinates into human-readable addresses using the Reverse Geocoding API.
+  parameters:
+  - name: query
+    type: string
+    description: The location coordinates to be translated into a readable address.
+    required: true
+    default: 40.7624284 -73.973794
+  tags:
+  - reverse
+  - geocoding
+  test_prompts:
+    single:
+    - Convert the coordinates (51.5074, -0.1278) to an address.
+    - What is the address corresponding to the coordinates 34.0522° N, 118.2437° W?
+    single_clear:
+    - Convert the coordinates (51.5074, -0.1278) to an address.
+    - What is the address corresponding to the coordinates 34.0522° N, 118.2437° W?
+- name: url_metrics
+  descriptions:
+    minimal: Fetches and returns various metrics for a given...
+    short: Fetches and returns various metrics for a given target URL, such as Domain Authority Score, Page Authority Score,
+      Spam Score, and Total Backlinks, using the Toolbench RapidAPI service.
+    medium: Fetches and returns various metrics for a given target URL, such as Domain Authority Score, Page Authority Score,
+      Spam Score, and Total Backlinks, using the Toolbench RapidAPI service.
+    long: Fetches and returns various metrics for a given target URL, such as Domain Authority Score, Page Authority Score,
+      Spam Score, and Total Backlinks, using the Toolbench RapidAPI service.
+    verbose: Fetches and returns various metrics for a given target URL, such as Domain Authority Score, Page Authority Score,
+      Spam Score, and Total Backlinks, using the Toolbench RapidAPI service.
+  parameters:
+  - name: target
+    type: string
+    description: The target URL, page, or domain for which to fetch the metrics.
+    required: true
+    default: www.google.com
+  tags:
+  - url
+  - metrics
+  test_prompts:
+    single:
+    - What are the metrics for the URL 'https://www.example.com'?
+    single_clear:
+    - What are the metrics for the URL 'https://www.example.com'?
+- name: dividends
+  descriptions:
+    minimal: Retrieve the amount of dividends paid out for a...
+    short: Retrieve the amount of dividends paid out for a given stock symbol within specified dates and other optional parameters.
+    medium: Retrieve the amount of dividends paid out for a given stock symbol within specified dates and other optional parameters.
+    long: Retrieve the amount of dividends paid out for a given stock symbol within specified dates and other optional parameters.
+    verbose: Retrieve the amount of dividends paid out for a given stock symbol within specified dates and other optional
+      parameters.
+  parameters:
+  - name: symbol
+    type: string
+    description: The stock symbol for which to retrieve dividend information.
+    required: true
+    default: AAPL
+  - name: start_date
+    type: string
+    description: The start date for the dividend data in YYYY-MM-DD format. Defaults to None.
+    required: false
+  - name: end_date
+    type: string
+    description: The end date for the dividend data in YYYY-MM-DD format. Defaults to None.
+    required: false
+  - name: country
+    type: string
+    description: The country of the stock exchange. Defaults to None.
+    required: false
+  - name: range
+    type: string
+    description: 'The range for the dividend data. Example: ''6m'' for six months. Defaults to ''6m''.'
+    required: false
+    default: 6m
+  - name: exchange
+    type: string
+    description: The stock exchange where the symbol is listed. Defaults to None.
+    required: false
+  tags:
+  - dividends
+  test_prompts:
+    single:
+    - Retrieve dividend information for Apple Inc. from the last six months.
+    - Retrieve dividend data for Microsoft Corp. (MSFT) for the entire year of 2022.
+    single_clear:
+    - Retrieve dividend information for Apple Inc. from the last six months.
+    - Retrieve dividend data for Microsoft Corp. (MSFT) for the entire year of 2022.
+- name: chart_by_id
+  descriptions:
+    minimal: Get an IMDb chart given a specific chart ID.
+    short: Get an IMDb chart given a specific chart ID.
+    medium: Get an IMDb chart given a specific chart ID.
+    long: Get an IMDb chart given a specific chart ID.
+    verbose: Get an IMDb chart given a specific chart ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID representing the type of IMDb chart to retrieve (e.g., 'boxoffice', 'moviemeter', 'top').
+    required: true
+    default: boxoffice
+  tags:
+  - chart
+  - by
+  - id
+  test_prompts:
+    single:
+    - Fetch the IMDb Box Office chart.
+    single_clear:
+    - Fetch the IMDb Box Office chart.
+- name: about_channel
+  descriptions:
+    minimal: Fetches detailed information about a YouTube...
+    short: Fetches detailed information about a YouTube channel using its ID.
+    medium: Fetches detailed information about a YouTube channel using its ID.
+    long: Fetches detailed information about a YouTube channel using its ID.
+    verbose: Fetches detailed information about a YouTube channel using its ID.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the YouTube channel for which information is being fetched.
+    required: true
+    default: UCE_M8A5yxnLfW0KghEeajjw
+  tags:
+  - about
+  - channel
+  test_prompts:
+    single:
+    - Please provide information about the YouTube channel 'UCsXVk37bltHxD1rDPwtNM8Q'. What are its features?
+    single_clear:
+    - Please provide information about the YouTube channel 'UCsXVk37bltHxD1rDPwtNM8Q'. What are its features?
+- name: get_user_id_by_username
+  descriptions:
+    minimal: Fetch the Instagram user ID associated with a...
+    short: Fetch the Instagram user ID associated with a given username.
+    medium: Fetch the Instagram user ID associated with a given username.
+    long: Fetch the Instagram user ID associated with a given username.
+    verbose: Fetch the Instagram user ID associated with a given username.
+  parameters:
+  - name: username
+    type: string
+    description: The Instagram username for which the user ID needs to be retrieved.
+    required: true
+    default: abdallhdev
+  tags:
+  - get
+  - user
+  - id
+  test_prompts:
+    single:
+    - I need to find the user ID for the Instagram account 'travel_enthusiast'. Can you help me with that?
+    single_clear:
+    - I need to find the user ID for the Instagram account 'travel_enthusiast'. Can you help me with that?
+- name: find_longest_word
+  descriptions:
+    minimal: Finds the longest word in a list of words.
+    short: Finds the longest word in a list of words.
+    medium: Finds the longest word in a list of words.
+    long: Finds the longest word in a list of words.
+    verbose: Finds the longest word in a list of words.
+  parameters:
+  - name: words
+    type: string
+    description: A list of words.
+    required: true
+  tags:
+  - find
+  - longest
+  - word
+  test_prompts:
+    single:
+    - Locate the longest word in a list with 'pineapple', 'grapefruit', 'lemon', and 'orange'.
+    - What is the longest word in the list ['python', 'programming', 'computer', 'algorithm']?
+    - Identify the longest word among 'elephant', 'giraffe', 'zebra', and 'rhinoceros'.
+    - Find the longest word in the list ['zebra', 'giraffe', 'lion']
+    single_clear:
+    - Locate the longest word in a list with 'pineapple', 'grapefruit', 'lemon', and 'orange'.
+    - What is the longest word in the list ['python', 'programming', 'computer', 'algorithm']?
+    - Identify the longest word among 'elephant', 'giraffe', 'zebra', and 'rhinoceros'.
+    - Find the longest word in the list ['zebra', 'giraffe', 'lion']
+- name: staffs_list_by_club
+  descriptions:
+    minimal: Retrieves a list of staff members for a specific...
+    short: Retrieves a list of staff members for a specific club from the Transfermarket API.
+    medium: Retrieves a list of staff members for a specific club from the Transfermarket API.
+    long: Retrieves a list of staff members for a specific club from the Transfermarket API.
+    verbose: Retrieves a list of staff members for a specific club from the Transfermarket API.
+  parameters:
+  - name: is_id
+    type: integer
+    description: The ID of the club whose staff members are to be retrieved.
+    required: true
+    default: '631'
+  - name: domain
+    type: string
+    description: 'The domain specification for the API request. One of the following: com, de, be, es, it, nl, pl, pt, com.tr,
+      world. Defaults to ''de''.'
+    required: false
+    default: de
+  tags:
+  - staffs
+  - list
+  - by
+  test_prompts:
+    single:
+    - List staff members for the English club with ID 'C2345'.
+    single_clear:
+    - List staff members for the English club with ID 'C2345'.
+- name: convert
+  descriptions:
+    minimal: Convert easting and northing coordinates to...
+    short: Convert easting and northing coordinates to latitude and longitude using the RapidAPI toolbench service.
+    medium: Convert easting and northing coordinates to latitude and longitude using the RapidAPI toolbench service.
+    long: Convert easting and northing coordinates to latitude and longitude using the RapidAPI toolbench service.
+    verbose: Convert easting and northing coordinates to latitude and longitude using the RapidAPI toolbench service.
+  parameters:
+  - name: northing
+    type: integer
+    description: The northing coordinate.
+    required: true
+    default: '179645'
+  - name: easting
+    type: integer
+    description: The easting coordinate.
+    required: true
+    default: '529090'
+  tags:
+  - convert
+  test_prompts:
+    single:
+    - Convert easting and northing coordinates (525000, 180000) to latitude and longitude.
+    single_clear:
+    - Convert easting and northing coordinates (525000, 180000) to latitude and longitude.
+- name: get_order
+  descriptions:
+    minimal: Fetches the order details for a given order ID...
+    short: Fetches the order details for a given order ID using RapidAPI.
+    medium: Fetches the order details for a given order ID using RapidAPI.
+    long: Fetches the order details for a given order ID using RapidAPI.
+    verbose: Fetches the order details for a given order ID using RapidAPI.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the order to retrieve.
+    required: true
+  tags:
+  - get
+  - order
+  test_prompts:
+    single:
+    - What are the details of the order 'ORD345678' from the onboarding project?
+    - Retrieve details of order 987654321 from the store.
+    - What are the details of the order with ID 'ORD987654321'?
+    - Retrieve details of the order with ID 'ORD246810'.
+    - Fetch the details of order '2468101214'.
+    single_clear:
+    - What are the details of the order 'ORD345678' from the onboarding project?
+    - Retrieve details of order 987654321 from the store.
+    - What are the details of the order with ID 'ORD987654321'?
+    - Retrieve details of the order with ID 'ORD246810'.
+    - Fetch the details of order '2468101214'.
+- name: topic
+  descriptions:
+    minimal: Fetches topics from the Quotes Diffusion API with...
+    short: Fetches topics from the Quotes Diffusion API with optional pagination and search functionality.
+    medium: Fetches topics from the Quotes Diffusion API with optional pagination and search functionality.
+    long: Fetches topics from the Quotes Diffusion API with optional pagination and search functionality.
+    verbose: Fetches topics from the Quotes Diffusion API with optional pagination and search functionality.
+  parameters:
+  - name: page
+    type: integer
+    description: Page number for pagination. Defaults to None.
+    required: false
+  - name: search
+    type: string
+    description: Custom search term to filter topics. Defaults to None.
+    required: false
+  tags:
+  - topic
+  test_prompts:
+    single:
+    - Fetch topics about 'courage' from the quotes API on page 3.
+    single_clear:
+    - Fetch topics about 'courage' from the quotes API on page 3.
+- name: search_wikihow
+  descriptions:
+    minimal: Searches for a 'how-to' question on WikiHow and...
+    short: Searches for a 'how-to' question on WikiHow and returns summarized methods and steps.
+    medium: Searches for a 'how-to' question on WikiHow and returns summarized methods and steps.
+    long: Searches for a 'how-to' question on WikiHow and returns summarized methods and steps.
+    verbose: Searches for a 'how-to' question on WikiHow and returns summarized methods and steps.
+  parameters:
+  - name: q
+    type: string
+    description: A 'how-to' question to search on WikiHow, e.g., 'find meaning in life', 'learn any language', 'play soccer',
+      'change an oil filter'.
+    required: true
+    default: be thankful
+  tags:
+  - search
+  - wikihow
+  test_prompts:
+    single:
+    - How can I learn to play the guitar effectively?
+    single_clear:
+    - How can I learn to play the guitar effectively?
+- name: countries
+  descriptions:
+    minimal: List or search for countries of the world in...
+    short: List or search for countries of the world in different languages.
+    medium: List or search for countries of the world in different languages. This function allows filtering and specifying
+      the fields to return for each country, such as ISO codes, currency details, and dial codes.
+    long: List or search for countries of the world in different languages. This function allows filtering and specifying
+      the fields to return for each country, such as ISO codes, currency details, and dial codes.
+    verbose: List or search for countries of the world in different languages. This function allows filtering and specifying
+      the fields to return for each country, such as ISO codes, currency details, and dial codes.
+  parameters:
+  - name: currency
+    type: string
+    description: Filter by the currency name in the chosen language.
+    required: false
+  - name: dial_code
+    type: integer
+    description: Filter by the country's dial code.
+    required: false
+  - name: currency_code
+    type: string
+    description: Filter by the 3-letter currency code (ISO).
+    required: false
+  - name: fields
+    type: string
+    description: Specify which fields to return for each country. Defaults to 'currency,currency_num_code,currency_code,continent_code,currency,iso_a3,dial_code'.
+    required: false
+    default: currency,currency_num_code,currency_code,continent_code,currency,iso_a3,dial_code
+  - name: iso_a2
+    type: string
+    description: Filter by the 2-letter ISO country code.
+    required: false
+  - name: name
+    type: string
+    description: Search string for the country name, can be partial.
+    required: false
+  - name: limit
+    type: integer
+    description: Limit the number of results returned. Defaults to 250.
+    required: false
+    default: '250'
+  - name: continent_code
+    type: string
+    description: Filter by the 2-letter region/continent code (e.g., 'eu', 'na', 'sa', 'as', 'af', 'oc', 'an').
+    required: false
+  - name: iso_a3
+    type: string
+    description: Filter by the 3-letter ISO country code.
+    required: false
+  - name: currency_num_code
+    type: string
+    description: Filter by the 3-digit numeric currency code (ISO).
+    required: false
+  - name: lang
+    type: string
+    description: Language selection ISO 639-1 code. Overrides the Accept-Language header. Defaults to 'en'.
+    required: false
+  tags:
+  - countries
+  test_prompts:
+    single:
+    - What are the countries that use the currency code 'USD' and are located in the continent code 'NA'?
+    single_clear:
+    - What are the countries that use the currency code 'USD' and are located in the continent code 'NA'?
+- name: v1_airlines
+  descriptions:
+    minimal: Fetches airline information using the API Ninjas...
+    short: Fetches airline information using the API Ninjas Airlines API given certain parameters.
+    medium: Fetches airline information using the API Ninjas Airlines API given certain parameters.
+    long: Fetches airline information using the API Ninjas Airlines API given certain parameters.
+    verbose: Fetches airline information using the API Ninjas Airlines API given certain parameters.
+  parameters:
+  - name: iata
+    type: string
+    description: International Air Transport Association (IATA) 2-character airline code. Defaults to None.
+    required: false
+  - name: name
+    type: string
+    description: Airline name. Supports partial matching (e.g., 'United' will match 'United Airlines'). Defaults to 'Singapore
+      Airlines'.
+    required: false
+    default: Singapore Airlines
+  - name: icao
+    type: string
+    description: International Civil Aviation Organization (ICAO) 3-character airline code. Defaults to None.
+    required: false
+  tags:
+  - v1
+  - airlines
+  test_prompts:
+    single:
+    - Search for details about Lufthansa using its IATA code.
+    single_clear:
+    - Search for details about Lufthansa using its IATA code.
+- name: theaters_list
+  descriptions:
+    minimal: List theaters around a specified postal code or...
+    short: List theaters around a specified postal code or GEO location using the Flixster API.
+    medium: List theaters around a specified postal code or GEO location using the Flixster API.
+    long: List theaters around a specified postal code or GEO location using the Flixster API.
+    verbose: List theaters around a specified postal code or GEO location using the Flixster API.
+  parameters:
+  - name: longitude
+    type: integer
+    description: The GEO longitude to search for theaters.
+    required: false
+  - name: zipcode
+    type: string
+    description: The postal code to search for theaters. Default is '90002'.
+    required: false
+    default: '90002'
+  - name: latitude
+    type: integer
+    description: The GEO latitude to search for theaters.
+    required: false
+  - name: radius
+    type: integer
+    description: The radius (in miles) around the specified location to search for theaters. Default is 50.
+    required: false
+    default: '50'
+  tags:
+  - theaters
+  - list
+  test_prompts:
+    single:
+    - Find theaters around longitude -122.4194, latitude 37.7749 within 25 miles.
+    single_clear:
+    - Find theaters around longitude -122.4194, latitude 37.7749 within 25 miles.
+- name: getstatsbyyear
+  descriptions:
+    minimal: Retrieves Trinidad & Tobago Covid-19 statistics...
+    short: Retrieves Trinidad & Tobago Covid-19 statistics by year.
+    medium: Retrieves Trinidad & Tobago Covid-19 statistics by year.
+    long: Retrieves Trinidad & Tobago Covid-19 statistics by year.
+    verbose: Retrieves Trinidad & Tobago Covid-19 statistics by year.
+  parameters:
+  - name: is_id
+    type: string
+    description: The year for which the Covid-19 statistics are being requested. Must be between 2020 and the current year.
+    required: true
+    default: '2020'
+  tags:
+  - getstatsbyyear
+  test_prompts:
+    single:
+    - What are the Covid-19 statistics for Trinidad & Tobago in 2022?
+    single_clear:
+    - What are the Covid-19 statistics for Trinidad & Tobago in 2022?
+- name: stock_get_annual_avg_div_yield
+  descriptions:
+    minimal: Fetches the annual average dividend yield for a...
+    short: Fetches the annual average dividend yield for a given stock symbol.
+    medium: Fetches the annual average dividend yield for a given stock symbol.
+    long: Fetches the annual average dividend yield for a given stock symbol.
+    verbose: Fetches the annual average dividend yield for a given stock symbol.
+  parameters:
+  - name: symbol
+    type: string
+    description: The ticker symbol of the stock (e.g., "AAPL" for Apple Inc.).
+    required: true
+    default: AAPL
+  - name: region
+    type: string
+    description: The region code for the stock market. Default is 'US'. Allowed values are 'US', 'BR', 'AU', 'CA', 'FR', 'DE',
+      'HK', 'IN', 'IT', 'ES', 'GB', 'S'.
+    required: false
+    default: US
+  tags:
+  - stock
+  - get
+  - annual
+  test_prompts:
+    single:
+    - I need the annual average dividend yield for BHP Group in Australia.
+    single_clear:
+    - I need the annual average dividend yield for BHP Group in Australia.
+- name: getresult
+  descriptions:
+    minimal: Retrieves the result of a previously requested...
+    short: Retrieves the result of a previously requested video rendering job using the given job ID.
+    medium: Retrieves the result of a previously requested video rendering job using the given job ID.
+    long: Retrieves the result of a previously requested video rendering job using the given job ID.
+    verbose: Retrieves the result of a previously requested video rendering job using the given job ID.
+  parameters:
+  - name: job_id
+    type: string
+    description: The ID of the previously requested rendering job.
+    required: true
+  tags:
+  - getresult
+  test_prompts:
+    single:
+    - What is the result of the video rendering job with ID '123456789'? I need the latest status.
+    - Retrieve the result of a video rendering job with job ID '123456789'.
+    single_clear:
+    - What is the result of the video rendering job with ID '123456789'? I need the latest status.
+    - Retrieve the result of a video rendering job with job ID '123456789'.
+- name: memre_api_v1_readiness
+  descriptions:
+    minimal: Get the readiness status of a user for a...
+    short: Get the readiness status of a user for a specified item from the memre API.
+    medium: Get the readiness status of a user for a specified item from the memre API.
+    long: Get the readiness status of a user for a specified item from the memre API.
+    verbose: Get the readiness status of a user for a specified item from the memre API.
+  parameters:
+  - name: user_id
+    type: string
+    description: The ID of the user whose readiness status is being queried.
+    required: true
+  - name: item_id
+    type: string
+    description: The ID of the item for which the readiness status is being queried.
+    required: true
+  tags:
+  - memre
+  - api
+  - v1
+  test_prompts:
+    single:
+    - What is the readiness status of user 77777 for item 33333?
+    - Can you tell me the readiness status for user 44444 regarding item 66666?
+    - Is user 111 ready for item 222?
+    single_clear:
+    - What is the readiness status of user 77777 for item 33333?
+    - Can you tell me the readiness status for user 44444 regarding item 66666?
+    - Is user 111 ready for item 222?
+- name: nhl_picks
+  descriptions:
+    minimal: Retrieves the NHL PickCenter data for a specified...
+    short: Retrieves the NHL PickCenter data for a specified game using the NHL API.
+    medium: Retrieves the NHL PickCenter data for a specified game using the NHL API.
+    long: Retrieves the NHL PickCenter data for a specified game using the NHL API.
+    verbose: Retrieves the NHL PickCenter data for a specified game using the NHL API.
+  parameters:
+  - name: is_id
+    type: string
+    description: The ID of the NHL game for which PickCenter data is requested.
+    required: true
+    default: '401458986'
+  tags:
+  - nhl
+  - picks
+  test_prompts:
+    single:
+    - Retrieve the NHL PickCenter data for the game with ID '20230215_LAV_NYR'
+    single_clear:
+    - Retrieve the NHL PickCenter data for the game with ID '20230215_LAV_NYR'
+- name: popular_posts
+  descriptions:
+    minimal: Fetches popular posts from Reddit based on the...
+    short: Fetches popular posts from Reddit based on the given sort type.
+    medium: Fetches popular posts from Reddit based on the given sort type.
+    long: Fetches popular posts from Reddit based on the given sort type.
+    verbose: Fetches popular posts from Reddit based on the given sort type.
+  parameters:
+  - name: sort
+    type: string
+    description: The sorting method for the posts. Accepted values are 'new' and 'hot'.
+    required: true
+    default: new
+  - name: cursor
+    type: string
+    description: An optional cursor for pagination to fetch the next set of results. Defaults to None.
+    required: false
+  tags:
+  - popular
+  - posts
+  test_prompts:
+    single:
+    - Retrieve popular posts sorted by 'new' on Reddit without pagination.
+    single_clear:
+    - Retrieve popular posts sorted by 'new' on Reddit without pagination.
