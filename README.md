@@ -33,7 +33,7 @@ cp .env.example .env
 | **OpenAI** | gpt-4o, gpt-4o-mini, gpt-3.5-turbo |
 | **Local** | Local Llama 3.2 3B, Local Qwen 3.2 7B |
 
-All models not matching Cerebras, Gemini, or OpenAI naming conventions are treated as local models with Ollama API (check docs/CONFIG_REFERENCE.md for details).
+All models not matching Cerebras, Gemini, or OpenAI naming conventions are treated as local models with Ollama API - e.g. `llama3.2:3b` (check docs/CONFIG_REFERENCE.md for details).
 
 Get free API keys:
 - **Cerebras**: https://cloud.cerebras.ai/

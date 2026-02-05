@@ -1,0 +1,33 @@
+# Example Plan Configuration for Multi-Run Experiments
+#
+# This file defines multiple runs for the experiment plan.
+# Each run uses different seeds/models to enable statistical analysis.
+#
+# Usage:
+#   python scripts/run_plan.py --plan-config experiments/fair_local_xlam/plan_runs.yaml
+#
+# The runs below will execute each experiment config 3 times:
+# - Once with seed 42 using llama3.2:3b
+# - Once with seed 123 using llama3.2:3b  
+# - Once with seed 456 using llama3.2:3b
+#
+
+runs:
+  - name: run_1
+    model: llama3.2:3b
+    seed: 42
+    num_samples: 10
+    
+  - name: run_2
+    model: llama3.2:3b
+    seed: 123
+    num_samples: 10
+    
+  - name: run_3
+    model: llama3.2:3b
+    seed: 456
+    num_samples: 10
+
+# Optional: Default values applied to any run that doesn't specify them
+defaults:
+  num_samples: 10
