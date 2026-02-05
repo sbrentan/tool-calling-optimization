@@ -200,7 +200,7 @@ def save_progress_state(
     progress_dir.mkdir(parents=True, exist_ok=True)
     
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    progress_file = progress_dir / f"progress_{plan_dir}_{timestamp}.json"
+    progress_file = progress_dir / f"progress_{plan_dir.replace('/', '_')}_{timestamp}.json"
     
     state = {
         "timestamp": datetime.now().isoformat(),
