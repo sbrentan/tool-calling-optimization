@@ -22,7 +22,7 @@ from src.clients.base import BaseLLMClient
 from .base import BaseMethodology, MethodologyResult, StepInfo, StepType, StepBasedMethodology
 
 
-TOOLS_FOLDER = "tools_xlam"
+TOOLS_FOLDER = "tools"
 
 class HybridMethodology(BaseMethodology):
     """

@@ -22,7 +22,7 @@ from .base import (
     StepType,
 )
 
-TOOLS_FOLDER = "tools_xlam"
+TOOLS_FOLDER = "tools"
 
 
 # Default category descriptions if categories.yaml doesn't exist

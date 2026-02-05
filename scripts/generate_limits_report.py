@@ -1720,68 +1720,6 @@ def generate_adaptive_tokens_vs_tools(df: pd.DataFrame, output_path: Path):
     logger.info(f"Saved: {output_path}")
 
 
-def generate_adaptive_vs_rag_accuracy(df: pd.DataFrame, output_path: Path):
-    """
-    Generate comparison of Adaptive RAG vs standard RAG accuracy (verbose).
-    """
-    import matplotlib.pyplot as plt
-    setup_matplotlib()
-    
-    fig, ax = plt.subplots(figsize=(10, 6))
-    
-    for methodology in ["rag", "adaptive_rag"]:
-        # Use verbose for adaptive comparison as specified
-        meth_df = df[(df["methodology"] == methodology) & (df["doc_length"] == "verbose")]
-        if meth_df.empty:
-            # Fallback to medium
-            meth_df = df[(df["methodology"] == methodology) & (df["doc_length"] == "medium")]
-        if meth_df.empty:
-            meth_df = df[df["methodology"] == methodology]
-        
-        if meth_df.empty:
-            continue
-        
-        agg = meth_df.groupby("num_tools").agg({
-            "accuracy": ["mean", "std"]
-        }).reset_index()
-        agg.columns = ["num_tools", "accuracy_mean", "accuracy_std"]
-        agg = agg.sort_values("num_tools")
-        
-        color = METHODOLOGY_COLORS.get(methodology, "#666666")
-        label = METHODOLOGY_DISPLAY_NAMES.get(methodology, methodology)
-        
-        ax.plot(agg["num_tools"], agg["accuracy_mean"] * 100, 
-                marker='o', linewidth=2, markersize=8,
-                color=color, label=label)
-        
-        if agg["accuracy_std"].notna().any():
-            ax.fill_between(
-                agg["num_tools"],
-                (agg["accuracy_mean"] - agg["accuracy_std"]) * 100,
-                (agg["accuracy_mean"] + agg["accuracy_std"]) * 100,
-                alpha=0.2, color=color
-            )
-    
-    ax.set_xlabel("Number of Tools")
-    ax.set_ylabel("Accuracy (%)")
-    ax.set_title("Adaptive RAG vs RAG: Accuracy Comparison (Verbose)\n(Dynamic K selection maintains accuracy while reducing context)", 
-                 fontsize=14, fontweight='bold')
-    ax.set_ylim(0, 105)
-    ax.legend(loc='lower left', frameon=True)
-    ax.grid(True, alpha=0.3)
-    
-    all_tools = df["num_tools"].unique()
-    if len(all_tools) > 0 and max(all_tools) / min(all_tools) > 5:
-        ax.set_xscale('log')
-        ax.set_xticks(sorted(all_tools))
-        ax.get_xaxis().set_major_formatter(plt.ScalarFormatter())
-    
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches='tight')
-    plt.close()
-    logger.info(f"Saved: {output_path}")
-
-
 def generate_adaptive_vs_rag_tokens(df: pd.DataFrame, output_path: Path):
     """
     Generate comparison of Adaptive RAG vs standard RAG token usage (verbose).
@@ -2265,14 +2203,11 @@ def generate_limits_html_report(
             <h3>Adaptive RAG vs Standard RAG</h3>
             
             <div class="figure">
-                <img src="limits_figures/16_adaptive_vs_rag_accuracy.png" alt="Adaptive vs RAG Accuracy">
-                <p class="figure-caption">Adaptive RAG vs standard RAG accuracy comparison (verbose).</p>
-            </div>
-            
-            <div class="figure">
                 <img src="limits_figures/17_adaptive_vs_rag_tokens.png" alt="Adaptive vs RAG Tokens">
                 <p class="figure-caption">Adaptive RAG token savings compared to fixed-K RAG.</p>
             </div>
+            
+            <h3>Adaptive RAG Prompt Clarity Impact</h3>
             
             <div class="figure">
                 <img src="limits_figures/18_adaptive_prompt_clarity.png" alt="Adaptive Prompt Clarity">
@@ -2404,7 +2339,6 @@ def generate_report(
     logger.info("Generating Section 5: Adaptive RAG...")
     generate_adaptive_accuracy_vs_tools(df, figures_dir / "15_adaptive_accuracy_vs_tools.png")
     generate_adaptive_tokens_vs_tools(df, figures_dir / "15a_adaptive_tokens_vs_tools.png")
-    generate_adaptive_vs_rag_accuracy(df, figures_dir / "16_adaptive_vs_rag_accuracy.png")
     generate_adaptive_vs_rag_tokens(df, figures_dir / "17_adaptive_vs_rag_tokens.png")
     generate_adaptive_prompt_clarity_comparison(df, figures_dir / "18_adaptive_prompt_clarity.png")
     
