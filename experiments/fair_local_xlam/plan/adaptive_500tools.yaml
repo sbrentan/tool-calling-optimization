@@ -16,6 +16,7 @@ name: phase4_adaptive_500tools_default
 description: "Adaptive RAG with 500 tools, default parameters"
 
 # --- Tool Configuration ---
+tools_dir: experiments/fair_local_xlam/tools
 num_tools: 500
 doc_length: medium
 prompt_type: concise

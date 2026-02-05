@@ -17,6 +17,7 @@ name: phase1_mcp_10tools_medium
 description: "MCP baseline with 10 tools - establishing accuracy ceiling"
 
 # --- Tool Configuration ---
+tools_dir: experiments/fair_local_xlam/tools
 num_tools: 10
 doc_length: medium
 prompt_type: concise

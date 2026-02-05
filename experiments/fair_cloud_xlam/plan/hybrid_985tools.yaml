@@ -16,6 +16,7 @@ name: phase5_hybrid_985tools_cat5
 description: "Hybrid with all 985 tools, top_k_categories=5"
 
 # --- Tool Configuration ---
+tools_dir: experiments/fair_cloud_xlam/tools
 num_tools: 985
 doc_length: medium
 prompt_type: concise

@@ -174,6 +174,7 @@ def run_experiment(
             allow_backtrack=config.allow_backtrack,
             allow_decline=config.allow_no_tool_call,
             allow_clarification=getattr(config, 'allow_clarification', False),
+            tools_dir=tools_dir,
             **extra_kwargs,
         )
         logger.info(f"Using methodology: {methodology.NAME}")

@@ -16,6 +16,7 @@ name: phase3_rag_500tools_k10
 description: "RAG with 500 tools and top_k=10"
 
 # --- Tool Configuration ---
+tools_dir: experiments/fair_local_xlam/tools
 num_tools: 500
 doc_length: medium
 prompt_type: concise

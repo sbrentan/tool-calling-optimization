@@ -8,6 +8,7 @@ seed: "__env__"
 name: fill_rag_50tools
 description: "RAG at 50 tools to fill heatmap gap"
 
+tools_dir: experiments/fair_local_xlam/tools
 num_tools: 50
 doc_length: medium
 prompt_type: concise

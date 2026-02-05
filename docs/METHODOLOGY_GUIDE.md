@@ -513,6 +513,5 @@ adaptive_rag_config:
 | Hybrid Methodology | `src/methodologies/hybrid.py` |
 | Adaptive RAG Methodology | `src/methodologies/adaptive_rag.py` |
 | Tool Categories | `tools/categories.yaml` |
-| Experiment Configs | `experiments/configs/*.yaml` |
-| Analysis Script | `scripts/analyze_results.py` |
-| Analysis Notebook | `notebooks/analysis.ipynb` |
+| Experiment Configs | `experiments/<experiment>/plan/*.yaml` |
+| Report Generator | `scripts/utils/generate_limits_report.py` |

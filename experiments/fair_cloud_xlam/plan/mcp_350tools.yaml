@@ -16,6 +16,7 @@ name: phase1_mcp_350tools_medium
 description: "MCP baseline with 350 tools - significant context load"
 
 # --- Tool Configuration ---
+tools_dir: experiments/fair_cloud_xlam/tools
 num_tools: 350
 doc_length: medium
 prompt_type: concise

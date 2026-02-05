@@ -16,6 +16,7 @@ name: phase5_hybrid_200tools_cat5
 description: "Hybrid with 200 tools, top_k_categories=5"
 
 # --- Tool Configuration ---
+tools_dir: experiments/fair_local_xlam/tools
 num_tools: 200
 doc_length: medium
 prompt_type: concise

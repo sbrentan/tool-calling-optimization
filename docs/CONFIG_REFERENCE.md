@@ -410,7 +410,7 @@ Any YAML parameter can be overridden via command line:
 
 ```bash
 python scripts/run_experiment.py run \
-  --config experiments/configs/rag.yaml \
+  --config experiments/full_cloud/plan/03_phase3_rag_100tools_k10.yaml \
   --num-tools 100 \
   --methodology adaptive_rag \
   --name override_test
@@ -422,6 +422,5 @@ See `python scripts/run_experiment.py run --help` for all options.
 
 ## See Also
 
-- [TUNING_GUIDE.md](TUNING_GUIDE.md) - Detailed tuning recommendations
-- [METHODOLOGY_GUIDE.md](METHODOLOGY_GUIDE.md) - Methodology explanations
-- [RECOMMENDATIONS.md](RECOMMENDATIONS.md) - Best practices and findings
+- [METHODOLOGY_GUIDE.md](METHODOLOGY_GUIDE.md) - Methodology explanations and tuning guidelines
+- [PLAN_CONFIGURATION.md](PLAN_CONFIGURATION.md) - Multi-run experiment setup

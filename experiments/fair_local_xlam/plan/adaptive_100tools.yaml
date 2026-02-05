@@ -8,6 +8,7 @@ seed: "__env__"
 name: fill_adaptive_100tools
 description: "Adaptive RAG at 100 tools to fill heatmap gap"
 
+tools_dir: experiments/fair_local_xlam/tools
 num_tools: 100
 doc_length: medium
 prompt_type: concise

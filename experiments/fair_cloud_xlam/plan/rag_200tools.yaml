@@ -16,6 +16,7 @@ name: phase3_rag_200tools_k10
 description: "RAG with 200 tools and top_k=10"
 
 # --- Tool Configuration ---
+tools_dir: experiments/fair_cloud_xlam/tools
 num_tools: 200
 doc_length: medium
 prompt_type: concise

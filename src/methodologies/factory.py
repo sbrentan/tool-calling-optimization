@@ -84,6 +84,7 @@ def create_methodology(
     allow_backtrack: bool = True,
     allow_decline: bool = False,
     allow_clarification: bool = False,
+    tools_dir: Optional[str] = None,
     **kwargs: Any,
 ) -> BaseMethodology:
     """
@@ -95,6 +96,7 @@ def create_methodology(
         allow_backtrack: Allow backtracking (for step-based methodologies)
         allow_decline: Allow declining to call any tool
         allow_clarification: Allow requesting clarification for ambiguous requests
+        tools_dir: Path to tools directory (for custom tool sets)
         **kwargs: Additional methodology-specific options
         
     Returns:
@@ -114,6 +116,7 @@ def create_methodology(
             allow_backtrack=allow_backtrack,
             allow_decline=allow_decline,
             allow_clarification=allow_clarification,
+            tools_dir=tools_dir,
             **kwargs,
         )
     elif name == "rag":
@@ -128,6 +131,7 @@ def create_methodology(
             name,
             allow_no_tool_call=allow_decline,
             allow_clarification=allow_clarification,
+            tools_dir=tools_dir,
             **kwargs,
         )
     elif name == "adaptive_rag":

@@ -8,6 +8,7 @@ seed: "__env__"
 name: fill_hybrid_50tools
 description: "Hybrid at 50 tools to fill heatmap gap"
 
+tools_dir: experiments/fair_cloud_xlam/tools
 num_tools: 50
 doc_length: medium
 prompt_type: concise

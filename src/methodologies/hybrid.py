@@ -50,6 +50,7 @@ class HybridMethodology(BaseMethodology):
         allow_clarification: bool = False,
         cache_embeddings: bool = True,
         category_embedding_strategy: str = "mean",  # "mean" or "description"
+        tools_dir: Optional[str] = None,
     ):
         """
         Initialize Hybrid methodology.
@@ -63,6 +64,7 @@ class HybridMethodology(BaseMethodology):
             category_embedding_strategy: How to compute category embeddings:
                 - "mean": Average of tool embeddings in category
                 - "description": Embed category description directly
+            tools_dir: Path to tools directory (defaults to project "tools" folder)
         """
         self.embedding_model_name = embedding_model
         self.top_k_categories = top_k_categories
@@ -70,6 +72,7 @@ class HybridMethodology(BaseMethodology):
         self.allow_clarification = allow_clarification
         self.cache_embeddings = cache_embeddings
         self.category_embedding_strategy = category_embedding_strategy
+        self.tools_dir = tools_dir
         
         # Lazy load the embedding model
         self._embedder = None
@@ -84,7 +87,8 @@ class HybridMethodology(BaseMethodology):
         
         logger.debug(
             f"[Hybrid] Initialized with model={embedding_model}, "
-            f"top_k_categories={top_k_categories}, strategy={category_embedding_strategy}"
+            f"top_k_categories={top_k_categories}, strategy={category_embedding_strategy}, "
+            f"tools_dir={tools_dir}"
         )
     
     def _load_embedder(self):
@@ -111,7 +115,12 @@ class HybridMethodology(BaseMethodology):
         import yaml
         
         project_root = Path(__file__).parent.parent.parent
-        categories_file = project_root / TOOLS_FOLDER / "categories.yaml"
+        
+        # Use custom tools_dir if provided, otherwise default
+        if self.tools_dir:
+            categories_file = project_root / self.tools_dir / "categories.yaml"
+        else:
+            categories_file = project_root / TOOLS_FOLDER / "categories.yaml"
         
         descriptions = {}
         if categories_file.exists():

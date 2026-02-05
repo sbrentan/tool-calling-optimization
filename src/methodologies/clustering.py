@@ -93,7 +93,8 @@ class ClusteringMethodology(StepBasedMethodology):
         allow_backtrack: bool = True,
         allow_decline: bool = False,
         allow_clarification: bool = False,
-        categories_file: Optional[str] = None
+        categories_file: Optional[str] = None,
+        tools_dir: Optional[str] = None,
     ):
         """
         Initialize clustering methodology.
@@ -103,24 +104,31 @@ class ClusteringMethodology(StepBasedMethodology):
             allow_backtrack: Whether to allow backtracking to category selection
             allow_decline: Whether to allow declining to call any tool
             allow_clarification: Whether to allow requesting clarification
-            categories_file: Path to YAML file with category descriptions
+            categories_file: Path to YAML file with category descriptions (deprecated, use tools_dir)
+            tools_dir: Path to tools directory (defaults to project "tools" folder)
         """
         super().__init__(max_steps=max_steps)
         self.allow_backtrack = allow_backtrack
         self.allow_decline = allow_decline
         self.allow_clarification = allow_clarification
+        self.tools_dir = tools_dir
         self.category_descriptions = self._load_category_descriptions(categories_file)
-        logger.debug(f"[Clustering] Initialized with max_steps={max_steps}, allow_backtrack={allow_backtrack}, allow_decline={allow_decline}, allow_clarification={allow_clarification}")
+        logger.debug(f"[Clustering] Initialized with max_steps={max_steps}, allow_backtrack={allow_backtrack}, allow_decline={allow_decline}, allow_clarification={allow_clarification}, tools_dir={tools_dir}")
         logger.debug(f"[Clustering] Loaded {len(self.category_descriptions)} category descriptions")
     
     def _load_category_descriptions(self, categories_file: Optional[str]) -> dict[str, str]:
         """Load category descriptions from file or use defaults."""
-        if categories_file is None:
-            # Try default location
-            project_root = Path(__file__).parent.parent.parent
-            categories_file = project_root / TOOLS_FOLDER / "categories.yaml"
-        else:
+        project_root = Path(__file__).parent.parent.parent
+        
+        if categories_file is not None:
+            # Use explicit categories file path
             categories_file = Path(categories_file)
+        elif self.tools_dir:
+            # Use tools_dir to find categories.yaml
+            categories_file = project_root / self.tools_dir / "categories.yaml"
+        else:
+            # Default location
+            categories_file = project_root / TOOLS_FOLDER / "categories.yaml"
         
         if categories_file.exists():
             try:

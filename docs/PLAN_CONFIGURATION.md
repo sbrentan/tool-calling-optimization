@@ -20,23 +20,23 @@ Multi-run mode is useful for:
 
 ```bash
 # Run all experiments once with default settings
-python scripts/run_plan.py
+python scripts/run_plan.py run
 
 # Override model/seed via environment variables
-EXPERIMENT_MODEL=gpt-4o EXPERIMENT_SEED=42 python scripts/run_plan.py
+EXPERIMENT_MODEL=gpt-4o EXPERIMENT_SEED=42 python scripts/run_plan.py run
 ```
 
 ### Multi-run mode
 
 ```bash
 # Run with 3 different seeds (quick CLI)
-python scripts/run_plan.py --seeds "42,123,456"
+python scripts/run_plan.py run --seeds "42,123,456"
 
 # Run with multiple models
-python scripts/run_plan.py --models "llama-4-scout-17b-16e-instruct,qwen-3-32b"
+python scripts/run_plan.py run --models "llama-4-scout-17b-16e-instruct,qwen-3-32b"
 
 # Use a YAML plan config file
-python scripts/run_plan.py --plan-config experiments/plan_runs.yaml
+python scripts/run_plan.py run --plan-config experiments/plan_runs.yaml
 ```
 
 ## Plan Configuration YAML
@@ -133,11 +133,11 @@ When running the same experiments with multiple plan configs (e.g., different mo
 
 ```bash
 # First plan config run
-python scripts/run_plan.py --plan-config configs_a.yaml --run-prefix "a"
+python scripts/run_plan.py run --plan-config configs_a.yaml --run-prefix "a"
 # Results: experiment_a_run_1, experiment_a_run_2, ...
 
 # Second plan config run  
-python scripts/run_plan.py --plan-config configs_b.yaml --run-prefix "b"
+python scripts/run_plan.py run --plan-config configs_b.yaml --run-prefix "b"
 # Results: experiment_b_run_1, experiment_b_run_2, ...
 ```
 
@@ -155,10 +155,10 @@ Results are saved with a suffix indicating the run:
 
 ## Aggregating Results
 
-Use the analyze_results script to aggregate across runs:
+After running experiments, use the report generator to aggregate and visualize results:
 
 ```bash
-python scripts/analyze_results.py
+python scripts/utils/generate_limits_report.py --results-dir experiments/<experiment>/results --output-dir experiments/<experiment>/report
 ```
 
 The aggregation system:
@@ -225,7 +225,7 @@ The system automatically rotates API keys when rate limits are hit:
 
 Make sure experiment configs exist in the plan directory:
 ```bash
-ls experiments/plan/
+ls experiments/<experiment>/plan/
 ```
 
 ### "Rate limit exceeded"
@@ -244,14 +244,14 @@ ls experiments/plan/
 
 ```bash
 # 1. Preview what will run
-python scripts/run_plan.py --list
+python scripts/run_plan.py list-experiments --plan-dir full_cloud/plan
 
 # 2. Do a quick test run with fewer samples
-python scripts/run_plan.py --num-samples 5 --no-confirm
+python scripts/run_plan.py run --plan-dir full_cloud/plan --num-samples 5 --no-confirm
 
 # 3. Run full experiments with multiple seeds
-python scripts/run_plan.py --seeds "42,123,456" --no-confirm
+python scripts/run_plan.py run --plan-dir full_cloud/plan --plan-config experiments/full_cloud/plan_runs.yaml --no-confirm
 
-# 4. Analyze and aggregate results
-python scripts/analyze_results.py
+# 4. Generate analysis report
+python scripts/utils/generate_limits_report.py --results-dir experiments/full_cloud/results --output-dir experiments/full_cloud/report
 ```

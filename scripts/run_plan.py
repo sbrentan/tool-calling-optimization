@@ -87,6 +87,7 @@ DEFAULT_MAX_RETRIES = 3  # Maximum retries on timeout
 
 # Progress state file location
 PROGRESS_DIR = project_root / "tmp" / "progress"
+PROGRESS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class InterruptState:

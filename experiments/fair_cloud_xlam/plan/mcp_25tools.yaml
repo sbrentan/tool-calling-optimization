@@ -16,6 +16,7 @@ name: phase1_mcp_25tools_medium
 description: "MCP baseline with 25 tools - small scale test"
 
 # --- Tool Configuration ---
+tools_dir: experiments/fair_cloud_xlam/tools
 num_tools: 25
 doc_length: medium
 prompt_type: concise
